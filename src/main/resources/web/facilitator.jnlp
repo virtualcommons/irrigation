@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- irrigation facilitator JNLP -->
+<jnlp spec="1.6+" codebase="@CODEBASE_URL@" href="facilitator.jnlp">
+  <information>
+    <title>Virtual Commons Experiment</title>
+    <vendor>The Virtual Commons, Center for the Study of Institutional Diversity, Dr. Marco Janssen, Marty Anderies, Allen Lee, Sanket Joshi</vendor>
+    <homepage href="http://commons.asu.edu"/>
+    <description>Virtual Commons Experiment</description>
+  </information> 
+  <resources> 
+    <j2se version="1.6+"/>
+    <jar href="facilitator.jar"/>
+    <jar href='@FRAMEWORK_JAR@'/>
+  </resources>
+  <application-desc main-class="@MAIN_CLASS@"/> 
+</jnlp>
+
