@@ -164,7 +164,7 @@ public class MiddleScorePanel extends JPanel {
 		filesDownloadedText.setText(new Integer(clientData.getCropsGrown()).toString());
 		tokensText.setText(new Integer(clientData.getTotalTokensEarned()).toString());
 		
-		if(clientData.isDownloading() == true && clientData.getAvailableFlowCapacity() > 0)
+		if(clientData.isGateOpen() == true && clientData.getAvailableFlowCapacity() > 0)
 			fileLabel.setVisible(true);
 		else
 			fileLabel.setVisible(false);

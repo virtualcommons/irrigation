@@ -20,15 +20,15 @@ import edu.asu.commons.irrigation.conf.ServerConfiguration;
 import edu.asu.commons.irrigation.events.BeginCommunicationRequest;
 import edu.asu.commons.irrigation.events.DisplaySubmitTokenRequest;
 import edu.asu.commons.irrigation.events.EndRoundEvent;
-import edu.asu.commons.irrigation.events.GateOpenedEvent;
+import edu.asu.commons.irrigation.events.OpenGateEvent;
 import edu.asu.commons.irrigation.events.InstructionEnableRequest;
 import edu.asu.commons.irrigation.events.InvestedTokensEvent;
 import edu.asu.commons.irrigation.events.RegistrationEvent;
 import edu.asu.commons.irrigation.events.RoundStartedEvent;
 import edu.asu.commons.irrigation.events.SendContributionStatusEvent;
 import edu.asu.commons.irrigation.events.SendFileProgressEvent;
-import edu.asu.commons.irrigation.events.StartPausedEvent;
-import edu.asu.commons.irrigation.events.StopDownloadEvent;
+import edu.asu.commons.irrigation.events.PauseEvent;
+import edu.asu.commons.irrigation.events.CloseGateEvent;
 import edu.asu.commons.irrigation.server.ClientData;
 import edu.asu.commons.net.ClientDispatcher;
 import edu.asu.commons.net.DispatcherFactory;
@@ -143,7 +143,7 @@ public class IrrigationClient {
     public void transmitTokenContributed(int tokens) {
         InvestedTokensEvent transferTokenBandwidthEvent = new InvestedTokensEvent(
                 getId(), tokens);
-        clientDispatcher.transmit(transferTokenBandwidthEvent);
+        transmit(transferTokenBandwidthEvent);
     }
 
     /**
@@ -152,22 +152,21 @@ public class IrrigationClient {
      * 
      * @param fileNo
      */
-    public void startDownload(String fileNo) {
-        GateOpenedEvent startDownloadEvent = new GateOpenedEvent(getId());
-        startDownloadEvent.setFileNumber(fileNo);
-        clientDispatcher.transmit(startDownloadEvent);
+    public void openGate(String fileNo) {
+        OpenGateEvent openGateEvent = new OpenGateEvent(getId());
+        transmit(openGateEvent);
     }
 
-    public void stopDownload(String fileNo) {
-        StopDownloadEvent stopDownloadEvent = new StopDownloadEvent(getId());
-        stopDownloadEvent.setFileNumber(fileNo);
-        clientDispatcher.transmit(stopDownloadEvent);
+    public void closeGate(String fileNo) {
+        CloseGateEvent closeGateEvent = new CloseGateEvent(getId());
+        closeGateEvent.setFileNumber(fileNo);
+        transmit(closeGateEvent);
     }
 
     public void startPause(String fileNo) {
-        StartPausedEvent startPausedEvent = new StartPausedEvent(getId());
+        PauseEvent startPausedEvent = new PauseEvent(getId());
         startPausedEvent.setFileNumber(fileNo);
-        clientDispatcher.transmit(startPausedEvent);
+        transmit(startPausedEvent);
     }
     
     public void transmit(Event event) {

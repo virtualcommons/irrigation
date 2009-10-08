@@ -22,7 +22,7 @@ import edu.asu.commons.irrigation.events.BeginCommunicationRequest;
 import edu.asu.commons.irrigation.events.DisplaySubmitTokenRequest;
 import edu.asu.commons.irrigation.events.EndRoundEvent;
 import edu.asu.commons.irrigation.events.FacilitatorEndRoundEvent;
-import edu.asu.commons.irrigation.events.GateOpenedEvent;
+import edu.asu.commons.irrigation.events.OpenGateEvent;
 import edu.asu.commons.irrigation.events.InstructionEnableRequest;
 import edu.asu.commons.irrigation.events.InvestedTokensEvent;
 import edu.asu.commons.irrigation.events.QuizCompletedEvent;
@@ -30,8 +30,8 @@ import edu.asu.commons.irrigation.events.RegistrationEvent;
 import edu.asu.commons.irrigation.events.RoundStartedEvent;
 import edu.asu.commons.irrigation.events.SendContributionStatusEvent;
 import edu.asu.commons.irrigation.events.SendFileProgressEvent;
-import edu.asu.commons.irrigation.events.StartPausedEvent;
-import edu.asu.commons.irrigation.events.StopDownloadEvent;
+import edu.asu.commons.irrigation.events.PauseEvent;
+import edu.asu.commons.irrigation.events.CloseGateEvent;
 import edu.asu.commons.net.Dispatcher;
 import edu.asu.commons.net.Identifier;
 import edu.asu.commons.net.event.ConnectionEvent;
@@ -39,12 +39,12 @@ import edu.asu.commons.net.event.DisconnectionRequest;
 import edu.asu.commons.util.Duration;
 
 /**
- * $Id: IrrigationServer.java 129 2009-04-29 23:38:45Z alllee $
+ * $Id$
  * 
  * Main entry point for the irrigation experiment server.
  * 
  * @author Sanket Joshi, <a href='Allen.Lee@asu.edu'>Allen Lee</a>
- * @version $Revision: 129 $
+ * @version $Revision$
  */
 public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
 
@@ -220,22 +220,19 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
                 }
             }
         });
-        addEventProcessor(new EventTypeProcessor<GateOpenedEvent>(GateOpenedEvent.class) {
-            public void handle(GateOpenedEvent event) {
+        addEventProcessor(new EventTypeProcessor<OpenGateEvent>(OpenGateEvent.class) {
+            public void handle(OpenGateEvent event) {
                 ClientData clientData = clients.get(event.getId());
-                String fileNumber = event.getFileNumber();
-                clientData.setFileNumber(fileNumber);
-                clientData.setFileSize(getRoundConfiguration().getFileSize(fileNumber));
-                clientData.setStartDownload();
+                clientData.openGate();
             }
         });
-        addEventProcessor(new EventTypeProcessor<StopDownloadEvent>(StopDownloadEvent.class) {
-            public void handle(StopDownloadEvent event) {
-                clients.get(event.getId()).setStoppedDownloading();
+        addEventProcessor(new EventTypeProcessor<CloseGateEvent>(CloseGateEvent.class) {
+            public void handle(CloseGateEvent event) {
+                clients.get(event.getId()).closeGate();
             }
         });
-        addEventProcessor(new EventTypeProcessor<StartPausedEvent>(StartPausedEvent.class) {
-            public void handle(StartPausedEvent event) {
+        addEventProcessor(new EventTypeProcessor<PauseEvent>(PauseEvent.class) {
+            public void handle(PauseEvent event) {
                 clients.get(event.getId()).setPaused();
             }
         });
@@ -298,12 +295,12 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
         	if(clientData.getAvailableFlowCapacity()<=0 && getConfiguration().isUndisruptedBandwidth()){
         		clientData.init(group.getCurrentlyAvailableFlowCapacity());
         	}
-        	if (clientData.isDownloading()) {
+        	if (clientData.isGateOpen()) {
             	//System.out.println("Downloading file"+clientData.getFileNumber()+"Current time"+System.currentTimeMillis()/1000);
                 group.allocateFlowCapacity(clientData);
             }
 
-            else if (clientData.isStopped()) {
+            else if (clientData.isGateClosed()) {
             	clientData.init(group.getCurrentlyAvailableFlowCapacity());
             }
             else if (clientData.isPaused()) {

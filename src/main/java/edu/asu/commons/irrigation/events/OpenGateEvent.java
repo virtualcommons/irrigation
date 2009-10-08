@@ -1,16 +1,17 @@
 package edu.asu.commons.irrigation.events;
 
+import edu.asu.commons.event.AbstractPersistableEvent;
 import edu.asu.commons.net.Identifier;
 
 /**
- * @author Sanket
+ *  
  *
  */
-public class GateOpenedEvent extends TransferFileInformationEvent {
+public class OpenGateEvent extends AbstractPersistableEvent {
     
     private static final long serialVersionUID = -4902131375099741851L;
 
-	public GateOpenedEvent(Identifier id) {
+	public OpenGateEvent(Identifier id) {
 		super(id);
 	}
 

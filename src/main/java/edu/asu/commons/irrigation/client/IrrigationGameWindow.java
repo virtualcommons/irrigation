@@ -376,7 +376,7 @@ public class IrrigationGameWindow extends JPanel {
 		 * time" + System.currentTimeMillis() / 1000);
 		 */
 		
-		client.startDownload(fileNo);
+		client.openGate(fileNo);
 		disableAllFiles();
 		initEnable();
 		
@@ -391,7 +391,7 @@ public class IrrigationGameWindow extends JPanel {
 		// TODO Auto-generated method stub
 		int i;
 		for (i = 0; i < TOTAL_CROPS_AVAILABLE; i++) {
-			if (isDownloaded[i] == false && fileClicked == false && !clientData.isDownloading()) {
+			if (isDownloaded[i] == false && fileClicked == false && !clientData.isGateOpen()) {
 				(getFile(i)).setBackground(new Color(186, 226, 237));
 				(getFile(i)).setEnabled(true);
 			}
@@ -795,7 +795,7 @@ public class IrrigationGameWindow extends JPanel {
 								pauseDownload.setText("Pause");
 								// StopDownload.setEnabled(true);
 								disableAllFiles();
-								client.startDownload(fileNo);
+								client.openGate(fileNo);
 							}
 						}
 					});
@@ -1072,7 +1072,7 @@ public class IrrigationGameWindow extends JPanel {
 					updateFileFinished(clientData.getDownloadListArray());
 				}
 				else
-					if(clientData.isDownloading() || clientData.isPaused()){
+					if(clientData.isGateOpen() || clientData.isPaused()){
 						disableAllFiles();	
 						initEnable();
 					}

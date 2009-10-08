@@ -7,7 +7,7 @@ import java.util.Properties;
 import edu.asu.commons.conf.ExperimentConfiguration;
 
 /**
- * $Id: ServerConfiguration.java 131 2009-04-30 01:52:21Z alllee $
+ * $Id$
  * 
  * Contains the know-how for parsing and programmatically accessing the forager
  * server's configuration file properties. The forager server's config file
@@ -23,7 +23,7 @@ import edu.asu.commons.conf.ExperimentConfiguration;
  * @author <a href='mailto:Allen.Lee@asu.edu'>Allen Lee</a>
  * @see edu.asu.csid.irrigation.RoundConfiguration,
  *      edu.asu.csid.conf.ExperimentConfiguration
- * @version $Revision: 131 $
+ * @version $Revision$
  */
 public class ServerConfiguration 
 extends ExperimentConfiguration.Base<RoundConfiguration> {
@@ -33,8 +33,6 @@ extends ExperimentConfiguration.Base<RoundConfiguration> {
 	private final static String CONFIGURATION_FILE_NAME = "irrigation.xml";
 
 	private final static String DEFAULT_LOG_FILE_DESTINATION = "irrigation.log";
-
-	//FIXME: can move this parameter to the configuration files
 
 	public ServerConfiguration() {
 		super();
@@ -57,9 +55,8 @@ extends ExperimentConfiguration.Base<RoundConfiguration> {
 	}
 
 	@Override
-	protected RoundConfiguration createConfiguration(
-			String roundConfigurationResource) {
-		return new RoundConfiguration(roundConfigurationResource);
+	protected RoundConfiguration createConfiguration(String roundConfigurationFile) {
+		return new RoundConfiguration(roundConfigurationFile);
 	}
 
 	@Override
@@ -70,42 +67,42 @@ extends ExperimentConfiguration.Base<RoundConfiguration> {
 	/**
 	 * getting the general welcome instructions
 	 * 
+	 * FIXME: Refactor this method.
+	 * 
 	 * @param instructionNumber
 	 * @param pagesTraversed
 	 * @return
 	 */
 	public String getGeneralInstructions(int instructionNumber,
-			int pagesTraversed,int clientPriority) {
+			int pagesTraversed, int clientPosition) {
 		String position = "";
 		String undisruptedBandwidthInstruction = "";
-		//System.out.println("Instruction Nnumber :"+instructionNumber+" Pages Traversed :"+pagesTraversed);
 		
 		if (instructionNumber != 11) {
 			if (instructionNumber > pagesTraversed) {
 				if (instructionNumber == 4) {
 					//instructionNumber = getNewInstructionNumber(clientPriority);
-					position = "\n YOUR POSITION : "+getPosition(clientPriority);
+					position = "\n Your position : "+toPriorityString(clientPosition);
 				}
 				if(instructionNumber == 5 && isUndisruptedBandwidth()){
 					undisruptedBandwidthInstruction=assistant.getStringProperty("general-instructions"+"-undisruptedBandwidth");
 				}
-				
-				return (position+assistant.getStringProperty("general-instructions"
-						+ instructionNumber
-						)+undisruptedBandwidthInstruction+assistant
-						.getStringProperty("general-instructionsq"
-								+ instructionNumber));
-			} else {
+				return (position 
+				        + assistant.getStringProperty("general-instructions" + instructionNumber) 
+				        + undisruptedBandwidthInstruction
+				        + assistant.getStringProperty("general-instructionsq" + instructionNumber));
+			} 
+			else {
 				if (instructionNumber == 4) {
 					//instructionNumber = getNewInstructionNumber(clientPriority);
-					position = "\n YOUR POSITION : "+getPosition(clientPriority);
+					position = "\n YOUR POSITION : "+toPriorityString(clientPosition);
 				}
 				if(instructionNumber == 5 && isUndisruptedBandwidth()){
 					undisruptedBandwidthInstruction=assistant.getStringProperty("general-instructions"+"-undisruptedBandwidth");
 				}
-				return position+assistant.getStringProperty("general-instructions"
-						+ instructionNumber,
-						"<b>No instructions available for this round</b>")+undisruptedBandwidthInstruction;
+				return (position
+				        + assistant.getStringProperty("general-instructions" + instructionNumber, "<b>No instructions available for this round</b>")
+				        + undisruptedBandwidthInstruction);
 			}
 
 		}
@@ -115,27 +112,33 @@ extends ExperimentConfiguration.Base<RoundConfiguration> {
 				"<b>No instructions available for this round</b>");
 
 	}
+	
+	private final static String[] PRIORITY_STRINGS = { "A", "B", "C", "D", "E" };
 
-	private String getPosition(int clientPriority) {
-		// TODO Auto-generated method stub
-		switch(clientPriority){
-		case 0 : return "A";
-		case 1 : return "B";
-		case 2:  return "C";
-		case 3:  return "D";
-		case 4:  return "E";
-		}
-		return "Position not found";
+	private String toPriorityString(int clientPriority) {
+	    // bounds check
+	    if (clientPriority >= 0 && clientPriority < PRIORITY_STRINGS.length) {
+	        return PRIORITY_STRINGS[clientPriority];
+	    }
+//
+//		switch(clientPriority){
+//		case 0 : return "A";
+//		case 1 : return "B";
+//		case 2:  return "C";
+//		case 3:  return "D";
+//		case 4:  return "E";
+//		}
+        return "Position not found";
 	}
 
 	//overriding method isLastRound
-	public boolean isLastRound(){
-		System.out.println("The Current round Number is :"+getCurrentRoundNumber());
-		if(getCurrentRoundNumber() == assistant.getIntProperty("number-of-rounds")-1)
-			return true;
-		else
-			return false;
-	}
+//	public boolean isLastRound(){
+//		System.out.println("The Current round Number is :"+getCurrentRoundNumber());
+//		if(getCurrentRoundNumber() == assistant.getIntProperty("number-of-rounds")-1)
+//			return true;
+//		else
+//			return false;
+//	}
 	
 	public boolean isUndisruptedBandwidth(){
 		if(assistant.getBooleanProperty("undisrupted-bandwidth")== true)
@@ -143,24 +146,8 @@ extends ExperimentConfiguration.Base<RoundConfiguration> {
 		return false;
 	}
 	
-	private int getNewInstructionNumber(int clientPriority) {
-		// TODO Auto-generated method stub
-		switch(clientPriority){
-		case 0 : return 40;
-				 
-		case 1: return 41;
-						
-		}
-		//FIXME: AT present just returning case 1 's case when clientPriority is 2,3,4. Need to change this.
-		if(clientPriority == 2 || clientPriority == 3 || clientPriority == 4){
-			return 41;
-		}
-		return -1;
-	}
-
-	public String getShowUpFees() {
-		// TODO Auto-generated method stub
-		return assistant.getStringProperty("showup-fees", "5");
+	public double getShowUpPayment() {
+		return assistant.getDoubleProperty("showup-payment", 5.0d);
 	}
 
 	public Map<String, String> getQuizAnswers() {

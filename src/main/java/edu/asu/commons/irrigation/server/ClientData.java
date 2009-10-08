@@ -20,7 +20,7 @@ import edu.asu.commons.net.Identifier;
  * minus tokens subtracted by sanctioning others
  * 
  * @author <a href='anonymouslee@gmail.com'>Allen Lee</a>, Deepali Bhagvat
- * @version $Revision: 131 $
+ * @version $Revision$
  */
 
 public class ClientData implements Serializable {
@@ -46,7 +46,7 @@ public class ClientData implements Serializable {
     private int cropsGrown = 0;
 
     // maximum available bandwidth
-    private double maximumDeliveryBandwidth;
+    private double maximumIndividualFlowCapacity;
     /**
      * current download speed
      */
@@ -64,10 +64,7 @@ public class ClientData implements Serializable {
 
     private boolean paused = false;
 
-    // FIXME: this is just the negation of downloading, we do not need two flags for this.
-    private boolean stopped = true;
-
-    private boolean downloading = false;
+    private boolean gateOpen = false;
 
     public ClientData(Identifier id) {
         this.id = id;
@@ -77,12 +74,12 @@ public class ClientData implements Serializable {
         return paused;
     }
 
-    public boolean isStopped(){
-        return stopped;
+    public boolean isGateClosed(){
+        return ! gateOpen;
     }
 
-    public boolean isDownloading(){
-        return downloading;
+    public boolean isGateOpen(){
+        return gateOpen;
     }
     
     // cap on the size of the entire stream (e.g,. 50 kbps)
@@ -91,12 +88,12 @@ public class ClientData implements Serializable {
     }
 
     // cap on the size of the stream that can be delivered to the client (e.g., 25 kbps)
-    public void setMaximumDeliveryBandwidth(double deliveryBandwidth){
-        this.maximumDeliveryBandwidth = deliveryBandwidth;
+    public void setMaximumIndividualFlowCapacity(double deliveryBandwidth){
+        this.maximumIndividualFlowCapacity = deliveryBandwidth;
     }
 
-    public double getMaximumDeliveryBandwidth(){
-        return maximumDeliveryBandwidth;
+    public double getMaximumIndividualFlowCapacity(){
+        return maximumIndividualFlowCapacity;
     }
 
     /**
@@ -126,18 +123,6 @@ public class ClientData implements Serializable {
         return fileNumber;
     }
 
-    /**
-     * Gets and sets the size of the file
-     * @param fileSize
-     */
-    public void setFileSize(int fileSize){
-        this.fileSize = fileSize;
-    }
-
-    public double getFileSize(){
-        return fileSize;
-    }
-
     public double getPercentFileDownload(){
         return percentFileDownloaded;
     }
@@ -148,21 +133,23 @@ public class ClientData implements Serializable {
      * that the users are allowed to do.
      */
 
-    public void setStartDownload(){
-        downloading = true;
+    public void openGate(){
+        gateOpen = true;
         paused = false;
-        stopped = false;
     }
 
     public void setPaused(){
         paused = true;
-        downloading = false;
-        stopped = false;
+        gateOpen = false;
+    }
+    
+    public void unpause() {
+        paused = false;
+        gateOpen = true;
     }
 
-    public void setStoppedDownloading(){
-        stopped = true;
-        downloading = false;
+    public void closeGate(){
+        gateOpen = false;
         paused = false;
     }
 
@@ -197,7 +184,7 @@ public class ClientData implements Serializable {
  */
     public void reset() {
         resetFileInformation();
-        setStoppedDownloading();
+        closeGate();
         contributedTokens = 0;
         //adding number of files to be downloaded = 0 per round
         cropsGrown = 0;
@@ -235,7 +222,7 @@ public class ClientData implements Serializable {
     public void init(double availableBandwidth) {
         resetFileInformation();
         //maximumDeliveryBandwidth = getRoundConfiguration().getBtmax()/getRoundConfiguration().getClientsPerGroup();
-        maximumDeliveryBandwidth = getRoundConfiguration().getBtmax()/2;
+        maximumIndividualFlowCapacity = getRoundConfiguration().getMaximumIndividualFlowCapacity();
         //currentBandwidth = totalContributedBandwidth;
         this.availableFlowCapacity = availableBandwidth;
     }
@@ -245,7 +232,7 @@ public class ClientData implements Serializable {
         fileNumber = "";
         downloadedFileSize = 0;
         percentFileDownloaded = 0;
-        setStoppedDownloading();
+        closeGate();
     }
     
     public void award() {
@@ -310,7 +297,7 @@ public class ClientData implements Serializable {
      *as processDownload function
      */
     public void allocateFlowCapacity(double availableBandwidth) {
-        assert downloading;
+        assert gateOpen;
         fileDownloaded = false;
         incrementFileDownloadSize();
     }

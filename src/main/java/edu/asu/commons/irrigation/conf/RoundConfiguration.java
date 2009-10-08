@@ -8,6 +8,15 @@ import java.util.Properties;
 import edu.asu.commons.conf.ExperimentRoundParameters;
 import edu.asu.commons.util.Duration;
 
+/**
+ * $Id$
+ * 
+ * Configuration parameters for a given round in the irrigation experiment. 
+ * Provides reward functions, etc. 
+ *
+ * @author <a href='mailto:Allen.Lee@asu.edu'>Allen Lee</a>
+ * @version $Rev$
+ */
 public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerConfiguration> {
 
     private static final long serialVersionUID = -5053624886508752562L;
@@ -20,15 +29,6 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
     
     public RoundConfiguration(String resource) {
         super(resource);
-    }
-
-    /**
-     * used to get the file Size given the File number from the current
-     * configuration file
-     */
-    public int getFileSize(String fileNumber) {
-        // FIXME: lift constants
-        return getIntProperty(fileNumber, 250);
     }
 
     public int getMaximumClientFlowCapacity() {
@@ -47,12 +47,6 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
         return getIntProperty("max-canal-flow-capacity", 40);
     }
 
-    public double getFilesDownloadAwardConversion() {
-        // FIXME: change String key to something more meaningful
-        return getDoubleProperty("FilesDownload-Award-Conversion", 1.0d);
-        //        return (double) Integer.parseInt(properties.getProperty("FilesDownload-Award-Conversion"));
-    }
-
     public int getMaximumTokenContribution() {
         return getIntProperty("max-token-contribution", 10);
     }
@@ -61,28 +55,29 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
      * returns maximum number of tokens that could have been contributed
      * @return
      */
-    public int getMaximumTotalTokenContribution(){
+    public int getMaximumTotalTokenContribution() {
         return getMaximumTokenContribution() * getClientsPerGroup();
     }
 
     public int getMaximumInfrastructureEfficiency() {
-        return getIntProperty("maximum-infrastructure-efficiency", 100);
+        return getIntProperty("max-infrastructure-efficiency", 100);
     }
 
-    public int getBtmax() {
-        return getIntProperty("Btmax");
+    public double getMaximumIndividualFlowCapacity() {
+        return getDoubleProperty("max-individual-flow-capacity", 20.0d);
     }
 
     public boolean isPracticeRound() {
         return getBooleanProperty("practice-round");
     }
 
+    // FIXME: horrible hack.. figure out why this is here again.
     public boolean isSecondPracticeRound(){
         return getBooleanProperty("second-practice-round",false);
     }
 
     public int getClientsPerGroup() {
-        return getIntProperty("clients-per-group", 0);
+        return getIntProperty("clients-per-group", 5);
     }
 
     /**
@@ -148,30 +143,6 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
 
     public int getChatDuration() {
         return getIntProperty("communication-duration", 40);
-    }
-
-    public double getAlpha() {
-        return getDoubleProperty("TBM-alpha", 0.0d);
-    }
-
-    public double getA() {
-        return getDoubleProperty("TBM-a", 0.0d);
-    }
-
-    public double getB() {
-        return getDoubleProperty("TBM-b", 0.0d);
-    }
-
-    public double getAlphaAward() {
-        return getDoubleProperty("FAM-alpha", 0.0d);
-    }
-
-    public double getA_award() {
-        return getDoubleProperty("FAM-a", 0.0d);
-    }
-
-    public double getB_award() {
-        return getDoubleProperty("FAM-b", 0.0d);
     }
 
     /**

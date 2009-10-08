@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Costly Sanctioning XML-ized experiment round configuration</comment>
+<entry key="round-time">100</entry>
+<entry key="Bs">60</entry>
+<entry key="Bt">40</entry>
+<entry key="Btmax">50</entry>
+<entry key="Token-Bandwidth-Mapping">2</entry>
+<entry key="FilesDownload-Award-Conversion">2</entry>
+<entry key="TBM-alpha">40</entry>
+<entry key="TBM-a">30</entry>
+<entry key="TBM-b">10</entry>
+<entry key="max-total-token-contribution">50</entry>
+<entry key="practice-round">false</entry>
+<entry key="clients-per-group">5</entry>
+<entry key="FAM-alpha">20</entry>
+<entry key="FAM-a">5</entry>
+<entry key="FAM-b">6</entry>
+
+<entry key='first-round'>true</entry>
+
+<entry key="board-width">14</entry>
+<entry key="board-height">14</entry>
+
+<entry key="F1">100</entry>
+<entry key="F2">100</entry>
+<entry key="F3">100</entry>
+<entry key="F4">100</entry>
+<entry key="F5">100</entry>
+<entry key="F6">100</entry>
+<entry key="F7">100</entry>
+<entry key="F8">100</entry>
+<entry key="F9">100</entry>
+<entry key="F10">100</entry>
+
+
+
+<entry key="instructions">
+<![CDATA[
+<h3>Round 1 Instructions</h3>
+<p>
+This is the first round of twenty.  Before this round begins you will have the
+opportunity to text chat with the other participant for fifty seconds, then
+decide on your level of investment in the irrigation infrastructure.  After
+the total irrigation infrastructure investment has been determined you will
+begin the experiment and make decisions on when to open your irrigation gates
+and grow crops.
+</p>
+]]>
+</entry>
+</properties>

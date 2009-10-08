@@ -192,10 +192,10 @@ public class GroupDataModel implements Serializable {
 
 
     public void allocateFlowCapacity(ClientData clientData) {
-        if (currentlyAvailableFlowCapacity >= clientData.getMaximumDeliveryBandwidth()) {
-            currentlyAvailableFlowCapacity -= clientData.getMaximumDeliveryBandwidth();
+        if (currentlyAvailableFlowCapacity >= clientData.getMaximumIndividualFlowCapacity()) {
+            currentlyAvailableFlowCapacity -= clientData.getMaximumIndividualFlowCapacity();
 //            setAvailableBandwidth(clientData.getTotalContributedBandwidth() - clientData.getDeliveryBandwidth());
-            clientData.setAvailableFlowCapacity(clientData.getMaximumDeliveryBandwidth());
+            clientData.setAvailableFlowCapacity(clientData.getMaximumIndividualFlowCapacity());
         } 
         else {
             clientData.setAvailableFlowCapacity(currentlyAvailableFlowCapacity);

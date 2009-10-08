@@ -46,7 +46,7 @@ import edu.asu.commons.net.Identifier;
  * not linear.
  * 
  * @author alllee
- * @version $Revision: $
+ * @version $Revision$
  */
 
 @SuppressWarnings("serial")

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Costly Sanctioning XML-ized experiment round configuration</comment>
+<entry key="round-time">100</entry>
+<entry key="Bs">60</entry>
+<entry key="Bt">40</entry>
+<entry key="Btmax">50</entry>
+<entry key="Token-Bandwidth-Mapping">2</entry>
+<entry key="FilesDownload-Award-Conversion">2</entry>
+<entry key="TBM-alpha">40</entry>
+<entry key="TBM-a">30</entry>
+<entry key="TBM-b">10</entry>
+<entry key='infrastructure-degradation-factor'>10</entry>
+<entry key="practice-round">false</entry>
+<entry key="clients-per-group">5</entry>
+<entry key="FAM-alpha">20</entry>
+<entry key="FAM-a">5</entry>
+<entry key="FAM-b">6</entry>
+
+<entry key="board-width">14</entry>
+<entry key="board-height">14</entry>
+
+<entry key="F1">100</entry>
+<entry key="F2">100</entry>
+<entry key="F3">100</entry>
+<entry key="F4">100</entry>
+<entry key="F5">100</entry>
+<entry key="F6">100</entry>
+<entry key="F7">100</entry>
+<entry key="F8">100</entry>
+<entry key="F9">100</entry>
+<entry key="F10">100</entry>
+
+
+
+<entry key="instructions">
+<![CDATA[
+<h3>Round 14 Instructions</h3>
+<p>
+This is round 14/20.  The infrastructure has been degraded by 10%.
+</p>
+
+]]>
+</entry>
+</properties>

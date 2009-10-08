@@ -30,7 +30,7 @@
  * Original Author:  David Gilbert (for Object Refinery Limited);
  * Contributor(s):   -;
  *
- * $Id: ChartWindowPanel.java 127 2009-04-29 21:31:34Z alllee $
+ * $Id$
  *
  * Changes
  * -------

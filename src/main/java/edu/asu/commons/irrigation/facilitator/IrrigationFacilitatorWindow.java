@@ -181,7 +181,7 @@ public class IrrigationFacilitatorWindow extends JPanel {
                             clientId.toString(), 
                             data.getTotalTokensEarned(), 
                             data.getTotalTokensEarned() * model.getCurrentConfiguration().getDollarsPerToken(),
-                            data.getTotalTokens() * model.getCurrentConfiguration().getDollarsPerToken()+Double.parseDouble(facilitator.getConfiguration().getShowUpFees())));
+                            data.getTotalTokens() * model.getCurrentConfiguration().getDollarsPerToken()+ facilitator.getConfiguration().getShowUpPayment()));
         }
         builder.append("</tbody></table><hr>");
         //FIXME: Could not understand how to evaluate .isLastRound(), hence using the 

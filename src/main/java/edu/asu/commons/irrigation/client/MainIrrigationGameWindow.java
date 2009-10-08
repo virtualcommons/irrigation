@@ -257,14 +257,14 @@ public class MainIrrigationGameWindow extends JPanel {
 						else{
 							scoreBoxPanel.update(clientData);
 						}
-							if(clientData.isDownloading() == true){
+							if(clientData.isGateOpen() == true){
 								upperPanel.openGates(clientData.getPriority());
 								
 							}
 							else if(clientData.isPaused() == true){
 								upperPanel.closeGates(clientData.getPriority());
 							}
-							if(clientData.isStopped() == true){
+							if(clientData.isGateClosed() == true){
 								upperPanel.closeGates(clientData.getPriority());
 							}
 					}

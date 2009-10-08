@@ -30,7 +30,7 @@
  * Original Author:  David Gilbert (for Object Refinery Limited);
  * Contributor(s):   -;
  *
- * $Id: ChartWindowPanelTokenBandwidth.java 124 2009-04-23 17:56:22Z alllee $
+ * $Id$
  *
  * Changes
  * -------
