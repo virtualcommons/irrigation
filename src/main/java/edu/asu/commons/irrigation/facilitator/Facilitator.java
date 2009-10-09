@@ -27,9 +27,9 @@ import edu.asu.commons.net.Identifier;
  * @author Sanket
  *
  */
-public class IrrigationFacilitator {
+public class Facilitator {
 
-	private final static IrrigationFacilitator INSTANCE = new IrrigationFacilitator();
+	private final static Facilitator INSTANCE = new Facilitator();
 	
 	private Identifier id;  //  @jve:decl-index=0:
 
@@ -39,7 +39,7 @@ public class IrrigationFacilitator {
 	
 	private ServerDataModel serverGameState;  //  @jve:decl-index=0:
 	
-	private IrrigationFacilitatorWindow irrigationFacilitatorWindow;
+	private FacilitatorWindow irrigationFacilitatorWindow;
 	
 	private boolean stopExperiment = false;
 	
@@ -47,11 +47,11 @@ public class IrrigationFacilitator {
     
     private final EventTypeChannel channel = new EventTypeChannel();
 	
-	private IrrigationFacilitator() {
+	private Facilitator() {
         this(new ServerConfiguration());
     }
     
-    public IrrigationFacilitator(ServerConfiguration configuration) {
+    public Facilitator(ServerConfiguration configuration) {
         dispatcher = DispatcherFactory.getInstance().createClientDispatcher(channel);
         setConfiguration(configuration);
         initializeEventProcessors();
@@ -73,7 +73,7 @@ public class IrrigationFacilitator {
         });
     }
 
-    public static IrrigationFacilitator getInstance(){
+    public static Facilitator getInstance(){
         return INSTANCE;
     }
     
@@ -111,7 +111,7 @@ public class IrrigationFacilitator {
     }
     
     void createFacilitatorWindow(Dimension dimension) {
-        irrigationFacilitatorWindow = new IrrigationFacilitatorWindow(dimension, this);
+        irrigationFacilitatorWindow = new FacilitatorWindow(dimension, this);
         //if (id == null) {
             // configure for unconnected functionality
         //    facilitatorWindow.configureForReplay();            
@@ -131,7 +131,7 @@ public class IrrigationFacilitator {
 		public void run() {
 			// TODO Auto-generated method stub
 			Dimension dimension = new Dimension(500, 600);
-			IrrigationFacilitator facilitator = IrrigationFacilitator.getInstance();
+			Facilitator facilitator = Facilitator.getInstance();
 			facilitator.connect();
 			JFrame frame = new JFrame();
             frame.setTitle("Facilitator window: " + facilitator.id);
@@ -229,7 +229,7 @@ public class IrrigationFacilitator {
         dispatcher.transmit(new ConfigurationEvent(id, getConfiguration()));
     }
        
-    public IrrigationFacilitatorWindow getFacilitatorWindow() {
+    public FacilitatorWindow getFacilitatorWindow() {
         return irrigationFacilitatorWindow;
     }
     

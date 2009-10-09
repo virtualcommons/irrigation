@@ -67,7 +67,6 @@
   <!-- default web & deployment properties -->
   <property name='web.dir' value='src/main/webapp'/>
   <property name='server.port' value='16001'/>
-  <property name='server.xml' value='server.xml'/>
   <property name='codebase.url' value='http://${server.address}/${ant.project.name}'/>
   <property name='client.class' value='edu.asu.commons.irrigation.client.IrrigationClient'/>
   <property name='facilitator.class' value='edu.asu.commons.irrigation.facilitator.Facilitator'/>
@@ -145,7 +144,7 @@
       </fileset>
     </copy>
     <!-- copy images -->
-    <copy todir='${deploy.dir}/images' overwrite='true'>
+    <copy todir='${deploy.dir}/images' overwrite='true' failonerror='false'>
       <fileset dir='${resources.dir}/images'/>
     </copy>
     <!-- 
@@ -248,10 +247,7 @@
       <compilerarg value='-Xlint:unchecked'/> 
       <classpath refid="project.classpath" />
     </javac>
-    <copy todir='${build.dir}/data'>
-      <fileset dir='${resources.dir}/data'/>
-    </copy>
-    <copy todir='${build.dir}/images'>
+    <copy todir='${build.dir}/images' failonerror='false'>
       <fileset dir='${resources.dir}/images'/>
     </copy>
   </target>

@@ -31,9 +31,9 @@ import edu.asu.commons.util.HtmlEditorPane;
  * @author Sanket
  *
  */
-public class IrrigationFacilitatorWindow extends JPanel {
+public class FacilitatorWindow extends JPanel {
 
-	private IrrigationFacilitator facilitator;
+	private Facilitator facilitator;
 	
 	private Dimension windowDimension;
 	
@@ -52,7 +52,7 @@ public class IrrigationFacilitatorWindow extends JPanel {
 	 * This is the default constructor
 	 */
 	
-	public IrrigationFacilitatorWindow(Dimension dimension, IrrigationFacilitator facilitator) {
+	public FacilitatorWindow(Dimension dimension, Facilitator facilitator) {
 		windowDimension = dimension;
 		this.facilitator = facilitator;
 		initialize();
@@ -123,7 +123,7 @@ public class IrrigationFacilitatorWindow extends JPanel {
 	    return beginChatButton;
 	}
 	
-	public IrrigationFacilitator getFacilitator(){
+	public Facilitator getFacilitator(){
 		return facilitator;
 	}
 
