@@ -141,12 +141,12 @@ public class GroupDataModel implements Serializable {
     }
     
     /**
-     * The main transfer function that maps the number of tokens generated to the Bandwidth Bi
+     * This function maps flow capacity to infrastructure efficiency.  Returns an int representing
+     * the flow capacity given the infrastructure efficiency.
      * this needs to be designed.
      * @param totalTokens
      * @return
      */
-    
     public int calculateFlowCapacity(final int infrastructureEfficiency) {
     	if (infrastructureEfficiency <= 45) {
     		return 0;
@@ -189,7 +189,6 @@ public class GroupDataModel implements Serializable {
     public void resetCurrentlyAvailableFlowCapacity() {
         currentlyAvailableFlowCapacity = maximumAvailableFlowCapacity;
     }
-
 
     public void allocateFlowCapacity(ClientData clientData) {
         if (currentlyAvailableFlowCapacity >= clientData.getMaximumIndividualFlowCapacity()) {

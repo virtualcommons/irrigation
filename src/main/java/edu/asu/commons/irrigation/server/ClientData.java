@@ -219,12 +219,12 @@ public class ClientData implements Serializable {
      * This would initialize the clientData before the start of each download.
      *
      */
-    public void init(double availableBandwidth) {
+    public void init(double availableFlowCapacity) {
         resetFileInformation();
         //maximumDeliveryBandwidth = getRoundConfiguration().getBtmax()/getRoundConfiguration().getClientsPerGroup();
         maximumIndividualFlowCapacity = getRoundConfiguration().getMaximumIndividualFlowCapacity();
         //currentBandwidth = totalContributedBandwidth;
-        this.availableFlowCapacity = availableBandwidth;
+        this.availableFlowCapacity = availableFlowCapacity;
     }
     
     private void resetFileInformation() {

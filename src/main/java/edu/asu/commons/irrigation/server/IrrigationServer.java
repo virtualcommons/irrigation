@@ -19,22 +19,23 @@ import edu.asu.commons.experiment.StateMachine;
 import edu.asu.commons.irrigation.conf.RoundConfiguration;
 import edu.asu.commons.irrigation.conf.ServerConfiguration;
 import edu.asu.commons.irrigation.events.BeginCommunicationRequest;
+import edu.asu.commons.irrigation.events.CloseGateEvent;
 import edu.asu.commons.irrigation.events.DisplaySubmitTokenRequest;
 import edu.asu.commons.irrigation.events.EndRoundEvent;
 import edu.asu.commons.irrigation.events.FacilitatorEndRoundEvent;
-import edu.asu.commons.irrigation.events.OpenGateEvent;
 import edu.asu.commons.irrigation.events.InstructionEnableRequest;
 import edu.asu.commons.irrigation.events.InvestedTokensEvent;
+import edu.asu.commons.irrigation.events.OpenGateEvent;
+import edu.asu.commons.irrigation.events.PauseEvent;
 import edu.asu.commons.irrigation.events.QuizCompletedEvent;
 import edu.asu.commons.irrigation.events.RegistrationEvent;
 import edu.asu.commons.irrigation.events.RoundStartedEvent;
 import edu.asu.commons.irrigation.events.SendContributionStatusEvent;
 import edu.asu.commons.irrigation.events.SendFileProgressEvent;
-import edu.asu.commons.irrigation.events.PauseEvent;
-import edu.asu.commons.irrigation.events.CloseGateEvent;
 import edu.asu.commons.net.Dispatcher;
 import edu.asu.commons.net.Identifier;
 import edu.asu.commons.net.event.ConnectionEvent;
+import edu.asu.commons.net.event.DisconnectionEvent;
 import edu.asu.commons.net.event.DisconnectionRequest;
 import edu.asu.commons.util.Duration;
 
@@ -152,32 +153,32 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
     private void initializeClientHandlers() {
         // client handlers
         addEventProcessor(new EventTypeProcessor<ConnectionEvent>(ConnectionEvent.class) {
+            @Override
             public void handle(ConnectionEvent event) {
                 // handle incoming connections
                 Identifier identifier = event.getId();
                 ClientData clientData = new ClientData(identifier);
                 synchronized (clients) {
                     clients.put(identifier, clientData);
+                    serverDataModel.addClient(clientData);
                 }
-                serverDataModel.addClient(clientData);
+
                 transmit(new RegistrationEvent(clientData.getId(), getRoundConfiguration(), clientData));
             }
         });
         addEventProcessor(new EventTypeProcessor<DisconnectionRequest>(DisconnectionRequest.class) {
-            public void handle(DisconnectionRequest event) {
+            @Override
+            public void handleInExperimentThread(DisconnectionRequest request) {
+                getLogger().warning("disconnecting: " + request);
+                Identifier disconnectedClientId = request.getId();
                 synchronized (clients) {
-                    // FIXME: thread-safe?
-                	//removing the entire group from the client list, when one of the members get disconnected
-                	GroupDataModel groupDataModel =clients.get(event.getId()).getGroupDataModel();
-                	for(ClientData clientData : groupDataModel.getClientDataMap().values()){
-            			System.out.println("Removing the client id :"+clientData.getId());
-            			clients.remove(clientData.getId());
-            		}
-                	//clients.remove(event.getId());
+                    clients.remove(request.getId());
+                    serverDataModel.removeClient(request.getId());
                 }
             }
         });
         addEventProcessor(new EventTypeProcessor<ChatRequest>(ChatRequest.class) {
+            @Override
             public void handle(ChatRequest request) {
                 Identifier source = request.getSource();
                 Identifier target = request.getTarget();
@@ -282,7 +283,6 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
      * @param group 
      */
     private void process(GroupDataModel group) {
-    
         // reset group's available bandwidth and re-allocate client delivery bandwidths.
         group.resetCurrentlyAvailableFlowCapacity();
         long time = currentRoundDuration.getTimeLeft() / 1000;
@@ -299,10 +299,10 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
             	//System.out.println("Downloading file"+clientData.getFileNumber()+"Current time"+System.currentTimeMillis()/1000);
                 group.allocateFlowCapacity(clientData);
             }
-
             else if (clientData.isGateClosed()) {
             	clientData.init(group.getCurrentlyAvailableFlowCapacity());
             }
+        	// right now the clients cannot be paused.
             else if (clientData.isPaused()) {
 
             }

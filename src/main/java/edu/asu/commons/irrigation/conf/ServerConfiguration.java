@@ -141,9 +141,7 @@ extends ExperimentConfiguration.Base<RoundConfiguration> {
 //	}
 	
 	public boolean isUndisruptedBandwidth(){
-		if(assistant.getBooleanProperty("undisrupted-bandwidth")== true)
-			return true;
-		return false;
+	    return assistant.getBooleanProperty("undisruptedBandwidth", false);
 	}
 	
 	public double getShowUpPayment() {
