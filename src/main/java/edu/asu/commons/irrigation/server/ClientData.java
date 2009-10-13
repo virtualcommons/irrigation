@@ -9,8 +9,7 @@ import edu.asu.commons.irrigation.events.FileDownloadedEvent;
 import edu.asu.commons.net.Identifier;
 
 /**
- * 
- * $Id: Exp$
+ * $Id$
  * 
  * Stores client-specific information used by the server. 
  *

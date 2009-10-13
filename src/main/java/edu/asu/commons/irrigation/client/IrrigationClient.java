@@ -17,18 +17,18 @@ import edu.asu.commons.event.EventChannelFactory;
 import edu.asu.commons.event.EventTypeProcessor;
 import edu.asu.commons.irrigation.conf.RoundConfiguration;
 import edu.asu.commons.irrigation.conf.ServerConfiguration;
-import edu.asu.commons.irrigation.events.BeginCommunicationRequest;
+import edu.asu.commons.irrigation.events.BeginChatRoundRequest;
+import edu.asu.commons.irrigation.events.ClientUpdateEvent;
+import edu.asu.commons.irrigation.events.CloseGateEvent;
 import edu.asu.commons.irrigation.events.DisplaySubmitTokenRequest;
 import edu.asu.commons.irrigation.events.EndRoundEvent;
-import edu.asu.commons.irrigation.events.OpenGateEvent;
-import edu.asu.commons.irrigation.events.InstructionEnableRequest;
+import edu.asu.commons.irrigation.events.GroupUpdateEvent;
 import edu.asu.commons.irrigation.events.InvestedTokensEvent;
+import edu.asu.commons.irrigation.events.OpenGateEvent;
+import edu.asu.commons.irrigation.events.PauseRequest;
 import edu.asu.commons.irrigation.events.RegistrationEvent;
 import edu.asu.commons.irrigation.events.RoundStartedEvent;
-import edu.asu.commons.irrigation.events.SendContributionStatusEvent;
-import edu.asu.commons.irrigation.events.SendFileProgressEvent;
-import edu.asu.commons.irrigation.events.PauseEvent;
-import edu.asu.commons.irrigation.events.CloseGateEvent;
+import edu.asu.commons.irrigation.events.ShowInstructionsRequest;
 import edu.asu.commons.irrigation.server.ClientData;
 import edu.asu.commons.net.ClientDispatcher;
 import edu.asu.commons.net.DispatcherFactory;
@@ -152,7 +152,7 @@ public class IrrigationClient {
      * 
      * @param fileNo
      */
-    public void openGate(String fileNo) {
+    public void openGate() {
         OpenGateEvent openGateEvent = new OpenGateEvent(getId());
         transmit(openGateEvent);
     }
@@ -163,10 +163,9 @@ public class IrrigationClient {
         transmit(closeGateEvent);
     }
 
-    public void startPause(String fileNo) {
-        PauseEvent startPausedEvent = new PauseEvent(getId());
-        startPausedEvent.setFileNumber(fileNo);
-        transmit(startPausedEvent);
+    public void pause() {
+        PauseRequest pauseRequest = new PauseRequest(getId());
+        transmit(pauseRequest);
     }
     
     public void transmit(Event event) {
@@ -189,11 +188,12 @@ public class IrrigationClient {
                 }
             }
         });
-        channel.add(this, new EventTypeProcessor<SendContributionStatusEvent>(SendContributionStatusEvent.class) {
-            public void handle(SendContributionStatusEvent event) {
+        channel.add(this, new EventTypeProcessor<GroupUpdateEvent>(GroupUpdateEvent.class) {
+            public void handle(GroupUpdateEvent event) {
+                System.err.println("Received group update event: " + event);
                 clientGameState.setGroupDataModel(event.getGroupDataModel());
                 experimentGameWindow.updateGraphDisplay(event.getClientDataMap().get(event.getId()));
-                experimentGameWindow.updateSendContributionStatus();
+                experimentGameWindow.updateContributions();
             }
         });
         channel.add(this, new EventTypeProcessor<RoundStartedEvent>(RoundStartedEvent.class) {
@@ -207,12 +207,11 @@ public class IrrigationClient {
                 experimentGameWindow.updateEndRoundEvent(event);
             }
         });
-        channel.add(this, new EventTypeProcessor<SendFileProgressEvent>(SendFileProgressEvent.class) {
-            public void handle(SendFileProgressEvent sendFileProgressEvent) {
-                // setting the clientDataMap for this client's clientGameState
-                clientGameState.setGroupDataModel(sendFileProgressEvent.getGroupDataModel());
-                clientGameState.setTimeRemaining(sendFileProgressEvent.getTimeRemaining());
-                experimentGameWindow.updateSendFileProgress();
+        channel.add(this, new EventTypeProcessor<ClientUpdateEvent>(ClientUpdateEvent.class) {
+            public void handle(ClientUpdateEvent clientUpdateEvent) {
+                // update the client game state and then update the view.
+                clientGameState.update(clientUpdateEvent);
+                experimentGameWindow.update();
             }
         });
         channel.add(this, new EventTypeProcessor<DisplaySubmitTokenRequest>(DisplaySubmitTokenRequest.class) {
@@ -220,14 +219,14 @@ public class IrrigationClient {
                 experimentGameWindow.updateSubmitTokenScreenDisplay();
             }
         });
-        channel.add(this, new EventTypeProcessor<BeginCommunicationRequest>(BeginCommunicationRequest.class) {
-            public void handle(BeginCommunicationRequest request) {
+        channel.add(this, new EventTypeProcessor<BeginChatRoundRequest>(BeginChatRoundRequest.class) {
+            public void handle(BeginChatRoundRequest request) {
                 clientGameState.setGroupDataModel(request.getGroupDataModel());
                 experimentGameWindow.initializeChatWindow();
             }
         });
-        channel.add(this, new EventTypeProcessor<InstructionEnableRequest>(InstructionEnableRequest.class) {
-            public void handle(InstructionEnableRequest request) {
+        channel.add(this, new EventTypeProcessor<ShowInstructionsRequest>(ShowInstructionsRequest.class) {
+            public void handle(ShowInstructionsRequest request) {
                 experimentGameWindow.enableInstructions();
             }
         });

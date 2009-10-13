@@ -84,7 +84,7 @@ extends ExperimentConfiguration.Base<RoundConfiguration> {
 					//instructionNumber = getNewInstructionNumber(clientPriority);
 					position = "\n Your position : "+toPriorityString(clientPosition);
 				}
-				if(instructionNumber == 5 && isUndisruptedBandwidth()){
+				if(instructionNumber == 5 && isUndisruptedFlowRequired()){
 					undisruptedBandwidthInstruction=assistant.getStringProperty("general-instructions"+"-undisruptedBandwidth");
 				}
 				return (position 
@@ -97,7 +97,7 @@ extends ExperimentConfiguration.Base<RoundConfiguration> {
 					//instructionNumber = getNewInstructionNumber(clientPriority);
 					position = "\n YOUR POSITION : "+toPriorityString(clientPosition);
 				}
-				if(instructionNumber == 5 && isUndisruptedBandwidth()){
+				if(instructionNumber == 5 && isUndisruptedFlowRequired()){
 					undisruptedBandwidthInstruction=assistant.getStringProperty("general-instructions"+"-undisruptedBandwidth");
 				}
 				return (position
@@ -140,8 +140,8 @@ extends ExperimentConfiguration.Base<RoundConfiguration> {
 //			return false;
 //	}
 	
-	public boolean isUndisruptedBandwidth(){
-	    return assistant.getBooleanProperty("undisruptedBandwidth", false);
+	public boolean isUndisruptedFlowRequired(){
+	    return assistant.getBooleanProperty("undisrupted-flow-required", false);
 	}
 	
 	public double getShowUpPayment() {

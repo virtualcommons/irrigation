@@ -9,17 +9,17 @@ import edu.asu.commons.net.Identifier;
  * @author Sanket
  *
  */
-public class BeginCommunicationRequest extends AbstractEvent implements FacilitatorRequest {
+public class BeginChatRoundRequest extends AbstractEvent implements FacilitatorRequest {
 	
 	private static final long serialVersionUID = -5770187653413351080L;
 	
 	private final GroupDataModel groupDataModel;
 
-    public BeginCommunicationRequest(Identifier id){
+    public BeginChatRoundRequest(Identifier id){
 		this(id, null);
 	}
 	
-	public BeginCommunicationRequest(Identifier id, GroupDataModel groupDataModel) {
+	public BeginChatRoundRequest(Identifier id, GroupDataModel groupDataModel) {
 	    super(id);
 	    this.groupDataModel = groupDataModel;
 	}

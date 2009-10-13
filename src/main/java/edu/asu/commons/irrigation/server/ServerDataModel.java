@@ -8,35 +8,39 @@ import java.util.Map;
 import java.util.Set;
 
 import edu.asu.commons.event.EventChannel;
+import edu.asu.commons.experiment.DataModel;
 import edu.asu.commons.irrigation.conf.RoundConfiguration;
 import edu.asu.commons.net.Identifier;
 
 /**
- * @author Sanket
+ * $Id$
+ * 
  *
+ * @author <a href='mailto:Allen.Lee@asu.edu'>Allen Lee</a>
+ * @version $Rev$
  */
-public class ServerDataModel implements Serializable {
+public class ServerDataModel implements DataModel<RoundConfiguration>, Serializable {
 
     private static final long serialVersionUID = -2633842942700901843L;
 
-    // Maps client Identifiers to the Group that client belongs to.
+    // maps client Identifiers to the Group that client belongs to.
     private final Map<Identifier, GroupDataModel> clientsToGroups = new HashMap<Identifier, GroupDataModel>();
 
-    private RoundConfiguration currentConfiguration;
+    private RoundConfiguration roundConfiguration;
     
     private transient EventChannel eventChannel;
     
-    public RoundConfiguration getCurrentConfiguration() {
-        return currentConfiguration;
+    public RoundConfiguration getRoundConfiguration() {
+        return roundConfiguration;
     }
 
-    public void setCurrentConfiguration(RoundConfiguration currentConfiguration) {
-        this.currentConfiguration = currentConfiguration;
+    public void setRoundConfiguration(RoundConfiguration roundConfiguration) {
+        this.roundConfiguration = roundConfiguration;
     }
 
-    public void addClient(ClientData clientData) {
+    public synchronized void addClient(ClientData clientData) {
         // iterate through all existing groups
-        for (GroupDataModel group : getAllGroupDataModels()) {
+        for (GroupDataModel group : clientsToGroups.values()) {
             if (!group.isFull()) {
                 addClientToGroup(clientData, group);
                 return;
@@ -48,30 +52,23 @@ public class ServerDataModel implements Serializable {
     }
 
     public Set<GroupDataModel> getAllGroupDataModels() {
-        Set<GroupDataModel> groups = new HashSet<GroupDataModel>();
-        groups.addAll(clientsToGroups.values());
-        return groups;
+        return new HashSet<GroupDataModel>(clientsToGroups.values());
     }
 
     public GroupDataModel getGroupDataModel(Identifier id) {
         GroupDataModel group = clientsToGroups.get(id);
         if (group == null) {
-            System.err.println("\n\n\nXXX: clients to groups map: " + clientsToGroups + " this game state: " + this);
-            throw new IllegalArgumentException("No group available for id:" + id);
+            throw new NullPointerException("No group available for id:" + id);
         }
         return group;
     }
 
 
-    public void addClientToGroup(ClientData clientData, GroupDataModel group) {
-        System.err.println("Adding client: " + clientData.getId() + " to group: " + group + " in this game state: " + this);
-//      clientData.setPosition(position);
-        clientData.setRoundConfiguration(currentConfiguration);
+    private void addClientToGroup(ClientData clientData, GroupDataModel group) {
+        clientData.setRoundConfiguration(roundConfiguration);
         group.addClient(clientData);
         clientData.setGroupDataModel(group);
         clientsToGroups.put(clientData.getId(), group);
-//      System.err.println("\n\n\nXXXX: groups is: " + clientsToGroups + " this game state is: " + this + "\n\n\n");
-        //channel.handle(new AddClientEvent(clientData, group, clientData.getPosition()));
     }
 
     public Map<Identifier, ClientData> getClientDataMap(Identifier clientId) {
@@ -80,8 +77,6 @@ public class ServerDataModel implements Serializable {
     }
 
     public void clear() {
-        // XXX: we no longer remove the Groups from the ServerGameState since we want persistent groups.
-        // This should be configurable?
         for (Iterator<GroupDataModel> iter = clientsToGroups.values().iterator(); iter.hasNext(); ) {
             GroupDataModel group = iter.next();
             group.clear();
@@ -90,8 +85,8 @@ public class ServerDataModel implements Serializable {
     }
     
     public void removeClient(Identifier id) {
-    	clientsToGroups.get(id).removeClient(id);
-        clientsToGroups.remove(id);
+        GroupDataModel groupDataModel = clientsToGroups.remove(id);
+    	groupDataModel.removeClient(id);
     }
 
     public EventChannel getEventChannel() {

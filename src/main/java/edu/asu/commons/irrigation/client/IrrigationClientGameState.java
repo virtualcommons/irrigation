@@ -9,6 +9,7 @@ import java.util.Map;
 
 import edu.asu.commons.event.EventChannel;
 import edu.asu.commons.irrigation.conf.RoundConfiguration;
+import edu.asu.commons.irrigation.events.ClientUpdateEvent;
 import edu.asu.commons.irrigation.events.RoundStartedEvent;
 import edu.asu.commons.irrigation.server.ClientData;
 import edu.asu.commons.irrigation.server.GroupDataModel;
@@ -32,7 +33,7 @@ public class IrrigationClientGameState {
 
     private int priority = 0;
 
-    private long timeRemaining = 0;
+    private int timeLeft = 0;
 
     public IrrigationClientGameState(EventChannel channel, IrrigationClient client) {
         this.client = client;
@@ -55,7 +56,7 @@ public class IrrigationClientGameState {
      */
     public synchronized void initialize(RoundStartedEvent event) {
         groupDataModel.clear();
-        setTimeRemaining(event.getConfiguration().getRoundDuration().getDelta());
+        setTimeLeft((int) (event.getConfiguration().getRoundDuration().getDelta() / 1000L));
         setConfiguration(event.getConfiguration());
         groupDataModel = event.getGroupDataModel();
     }
@@ -70,16 +71,19 @@ public class IrrigationClientGameState {
     public int getPriority(){
         return priority;
     }
-
-    public void setTimeRemaining(long timeRemaining) {
-        this.timeRemaining = timeRemaining;
+    
+    public void update(ClientUpdateEvent clientUpdateEvent) {
+        setGroupDataModel(clientUpdateEvent.getGroupDataModel());
+        setTimeLeft(clientUpdateEvent.getTimeLeft());
     }
 
-    public double getTimeRemaining() {
-        return timeRemaining;
+    public void setTimeLeft(int timeLeft) {
+        this.timeLeft = timeLeft;
     }
 
-
+    public int getTimeLeft() {
+        return timeLeft;
+    }
 
     public RoundConfiguration getConfiguration() {
         return configuration;

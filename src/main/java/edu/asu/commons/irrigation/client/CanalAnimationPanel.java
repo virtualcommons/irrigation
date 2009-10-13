@@ -12,10 +12,16 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 /**
+ * $Id$
+ * 
+ * The animation for the irrigation canal.
+ * 
+ * FIXME: needs heavy refactoring.
+ * 
  * @author Sanket
- *
+ * @version $Rev$
  */
-public class CanalPanelAnimationNew extends JPanel {
+public class CanalAnimationPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
@@ -71,7 +77,7 @@ public class CanalPanelAnimationNew extends JPanel {
 
 	////////////////////////////////////////////////////////////////////////////
 
-	public CanalPanelAnimationNew(double totalContributedBandwidth) {
+	public CanalAnimationPanel(double totalContributedBandwidth) {
 		super();
 		this.totalContributedBandwidth = totalContributedBandwidth;
 		initialize();

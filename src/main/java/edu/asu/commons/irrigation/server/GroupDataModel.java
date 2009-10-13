@@ -1,27 +1,34 @@
 package edu.asu.commons.irrigation.server;
 
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import edu.asu.commons.event.EventChannel;
+import edu.asu.commons.experiment.DataModel;
 import edu.asu.commons.irrigation.conf.RoundConfiguration;
 import edu.asu.commons.net.Identifier;
 
-
 /**
- * @author Sanket
- *
+ * $Id$
+ * 
+ * Data model for a single Group of clients.  Each Group manages its own unique resource shared among
+ * its own participants.
+ * 
+ * @author <a href='mailto:Allen.Lee@asu.edu'>Allen Lee</a>
+ * @version $Rev$
  */
-public class GroupDataModel implements Serializable {
+public class GroupDataModel implements DataModel<RoundConfiguration> {
 
     private static final long serialVersionUID = 5817418171228817123L;
 
     private final Map<Identifier, ClientData> clients = new LinkedHashMap<Identifier, ClientData>();
 
     private transient ServerDataModel serverDataModel;
+    
+    private transient Logger logger = Logger.getLogger(GroupDataModel.class.getName());
 
     private int currentlyAvailableFlowCapacity = 0;
     private int maximumAvailableFlowCapacity = 0;
@@ -32,8 +39,6 @@ public class GroupDataModel implements Serializable {
     
     private int totalContributedTokens = 0;
     
-    private static int maximumClientFlowCapacity;
-
     public GroupDataModel(ServerDataModel serverDataModel) {
         this.serverDataModel = serverDataModel;
     }
@@ -62,18 +67,16 @@ public class GroupDataModel implements Serializable {
     }
 
     public void addClient(ClientData clientData) {
-//      RoundConfiguration configuration = serverDataModel.getCurrentConfiguration();
         clients.put(clientData.getId(), clientData);
         clientData.setAssignedNumber(clients.size());
     }
 
     public void removeClient(Identifier id) {
-        // FIXME: add some sort of notification?
         clients.remove(id);
     }
 
     public boolean isFull() {
-        return clients.size() == serverDataModel.getCurrentConfiguration().getClientsPerGroup();
+        return clients.size() == serverDataModel.getRoundConfiguration().getClientsPerGroup();
     }
 
     public void clear() {
@@ -93,7 +96,7 @@ public class GroupDataModel implements Serializable {
     }
 
     public RoundConfiguration getRoundConfiguration() {
-        return serverDataModel.getCurrentConfiguration();
+        return serverDataModel.getRoundConfiguration();
     }
 
     //get totalContributed tokens for this round
@@ -106,14 +109,14 @@ public class GroupDataModel implements Serializable {
     	//setting the total contributed Bandwidth = 0 , so thatfor every round,
     	// fresh totalContributed tokens are calculated
     	totalContributedTokens = 0;
-        for(ClientData clientData : getClientDataMap().values()){
+        for(ClientData clientData : getClientDataMap().values()) {
             totalContributedTokens += clientData.getContributedTokens();
         }
-        System.out.println("The total tokens contributed is :"+totalContributedTokens);
+        getLogger().info("total contributed tokens: " + totalContributedTokens);
     	updateInfrastructureEfficiency(totalContributedTokens);
         
         currentlyAvailableFlowCapacity = maximumAvailableFlowCapacity = getFlowCapacity();
-        System.out.println("Bt = "+ maximumAvailableFlowCapacity);
+        getLogger().info("maximum available flow capacity = "+ maximumAvailableFlowCapacity);
     }
     
     private void updateInfrastructureEfficiency(int totalContributedTokens) {
@@ -128,9 +131,9 @@ public class GroupDataModel implements Serializable {
         }
         else {
             // degrade by infrastructure-degradation-factor, clamp at 0
-            System.err.println("degrading infrastructure efficiency: " + infrastructureEfficiency);
+            getLogger().info("degrading infrastructure efficiency: " + infrastructureEfficiency);
             infrastructureEfficiency = Math.max(infrastructureEfficiency - roundConfiguration.getInfrastructureDegradationFactor(), 0);
-            System.err.println("New infrastructure efficiency: " + infrastructureEfficiency);
+            getLogger().info("New infrastructure efficiency: " + infrastructureEfficiency);
         }
         // set original infrastructure efficiency before token contributions
         initialInfrastructureEfficiency = infrastructureEfficiency;
@@ -207,15 +210,6 @@ public class GroupDataModel implements Serializable {
     public int getMaximumAvailableFlowCapacity() {
         return maximumAvailableFlowCapacity;
     }
-
-    // FIXME: change this to just ask the RoundConfiguration...
-    public static void setMaximumClientFlowCapacity(int maximumClientFlowCapacity) {
-        GroupDataModel.maximumClientFlowCapacity = maximumClientFlowCapacity;
-    }
-    
-    public static double getMaximumClientFlowCapacity() {
-        return maximumClientFlowCapacity;
-    }
     
     public EventChannel getEventChannel() {
         return serverDataModel.getEventChannel();
@@ -227,6 +221,13 @@ public class GroupDataModel implements Serializable {
 
 	public int getInitialInfrastructureEfficiency() {
 		return initialInfrastructureEfficiency;
+	}
+	
+	public Logger getLogger() {
+	    if (logger == null) {
+	        logger = Logger.getLogger(getClass().getName());
+	    }
+	    return logger;
 	}
 
 }

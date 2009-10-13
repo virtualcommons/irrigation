@@ -6,8 +6,13 @@ import edu.asu.commons.irrigation.server.GroupDataModel;
 import edu.asu.commons.net.Identifier;
 
 /**
- * @author Sanket
- *
+ * $Id$
+ * 
+ * Updates a specific client (identified by getId()) with an up-to-date GroupDataModel and the 
+ * number of seconds left in the round.
+ * 
+ * @author <a href='mailto:Allen.Lee@asu.edu'>Allen Lee</a>
+ * @version $Rev$
  */
 public class ClientUpdateEvent extends AbstractEvent
 implements ExperimentUpdateEvent {
@@ -15,9 +20,10 @@ implements ExperimentUpdateEvent {
     private static final long serialVersionUID = -128693557750400520L;
     
     private final GroupDataModel groupDataModel;
-    private final long timeLeft;
+    private final int timeLeft;
 
-    public ClientUpdateEvent(Identifier clientId, GroupDataModel groupDataModel, long timeLeft) {
+    public ClientUpdateEvent(Identifier id, GroupDataModel groupDataModel, int timeLeft) {
+        super(id);
         this.groupDataModel = groupDataModel;
         this.timeLeft = timeLeft;
     }
@@ -26,7 +32,12 @@ implements ExperimentUpdateEvent {
         return groupDataModel;
     }
 
-    public long getTimeLeft() {
+    /**
+     * Returns the time left in the round, in seconds.
+     * 
+     * @return the number of seconds left in the round.
+     */
+    public int getTimeLeft() {
         return timeLeft;
     }
 

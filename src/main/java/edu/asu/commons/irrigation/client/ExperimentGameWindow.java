@@ -123,7 +123,7 @@ public class ExperimentGameWindow extends JPanel {
 
 	public ClientData clientData;
 
-	private CanalPanelAnimationNew canalPanelAnimationNew;
+	private CanalAnimationPanel canalPanelAnimationNew;
 
     public ExperimentGameWindow(Dimension screenSize, IrrigationClient client) {
         this.client = client;
@@ -375,7 +375,7 @@ public class ExperimentGameWindow extends JPanel {
         	animationPanel.setLayout(new BorderLayout());
         	//FIXME: Here the animation panel needs to be decided on fly
         	//canalPanelAnimation = new CanalPanelAnimation(40);
-        	canalPanelAnimationNew = new CanalPanelAnimationNew(40);
+        	canalPanelAnimationNew = new CanalAnimationPanel(40);
             animationPanel.add(canalPanelAnimationNew,BorderLayout.CENTER);
             animationInstructionsEditorPane = createInstructionsEditorPane();
             animationInstructionsScrollPane = new JScrollPane(animationInstructionsEditorPane);
@@ -557,12 +557,12 @@ public class ExperimentGameWindow extends JPanel {
      * This method could be merged somehow with the startRoundEvent. We can get
      * rid of the sendContributionStatus then
      */
-    public void updateSendContributionStatus() {
-        mainIrrigationWindow.updateSendContributionStatus(state);
+    public void updateContributions() {
+        mainIrrigationWindow.updateContributions(state);
     }
 
-    public void updateSendFileProgress() {
-        mainIrrigationWindow.updateSendFileProgress(state);
+    public void update() {
+        mainIrrigationWindow.updateClientStatus(state);
     }
 
     /*

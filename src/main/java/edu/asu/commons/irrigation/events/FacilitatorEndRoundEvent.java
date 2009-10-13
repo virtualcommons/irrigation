@@ -23,7 +23,7 @@ public class FacilitatorEndRoundEvent extends AbstractEvent {
     }
 
     public boolean isLastRound(){
-	    return serverDataModel.getCurrentConfiguration().getParentConfiguration().isLastRound();
+	    return serverDataModel.getRoundConfiguration().getParentConfiguration().isLastRound();
 	}
     
 }

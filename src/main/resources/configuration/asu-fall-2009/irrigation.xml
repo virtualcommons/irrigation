@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
-<comment>Irrigation XML-ized experiment round configuration</comment>
-
+<comment>Irrigation experiment round configuration</comment>
 <!--<entry key="hostname">localhost</entry>-->
 <entry key="hostname">@SERVER_ADDRESS@</entry>
 <entry key="port">@PORT_NUMBER@</entry>
@@ -224,11 +223,11 @@ to the system, only 30 cfps can be delivered.
 </p>
 
 <p>
-So to recap, at the beginning of each round you will be informed of the current
+To recap, at the beginning of each round you will be informed of the current
 irrigation infrastructure efficiency.  You will then decide how many tokens (between
 0 and 10) to invest in the irrigation infrastructure.  After everybody has made
-their decision, you'll be notified of the condition of the irrigation infrastructure
-and the corresponding water delivery capacity.  
+their decision, you will be notified of the condition of the irrigation
+infrastructure and the corresponding water delivery capacity.  
 </p>
 
 <b>Table 1:</b> The water delivery capacity as a function of the irrigation
@@ -276,16 +275,16 @@ infrastructure condition
 To continue to the next page, please answer the following questions:<br>
 <form>
 Question 1:<br>
-If the existing infrastructure is at 20% efficiency and if the five participants
-invest a total of 29 additional tokens, what will the efficiency of the irrigation
-infrastructure become?
+Given an existing infrastructure efficiency of 20%, if the five participants invest
+a <b>total of 29 additional tokens</b>, what is the new irrigation infrastructure
+efficiency?
 <input type="text" name="q3" value = "">
 <br><br>
 
 Question 2:<br>
-If the existing infrastructure is 50% and if two participants invest 10 tokens <b>each</b>
-while the three other participants invest 2 tokens <b>each</b>, what will the
-efficiency of the irrigation infrastructure become?
+Given an existing infrastructure efficiency of 50%, if <b>two participants invest 10 tokens each</b>
+while the <b>three other participants invest 2 tokens each</b>, what is the new
+irrigation infrastructure efficiency?
 <br>
 <input type="text" name="q4" value = "">
 <br><br>

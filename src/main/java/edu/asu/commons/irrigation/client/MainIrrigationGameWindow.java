@@ -16,6 +16,14 @@ import javax.swing.SwingUtilities;
 
 import edu.asu.commons.irrigation.server.ClientData;
 
+/**
+ * $Id$
+ * 
+ * Displays the canal animation and so on.
+ * 
+ * @author <a href='mailto:Allen.Lee@asu.edu'>Allen Lee</a>
+ * @version $Rev$
+ */
 public class MainIrrigationGameWindow extends JPanel {
 
 	//public ChartWindowPanelTokenBandwidth xySeriesDemo;
@@ -45,17 +53,17 @@ public class MainIrrigationGameWindow extends JPanel {
 
 	public Dimension screenSize;
 
-	public JProgressBar timeRemainingjProgressBar = null;
+	public JProgressBar timeRemainingProgressBar = null;
 
-	private JLabel timeRemainingjLabel = null; 
+	private JLabel timeRemainingLabel = null; 
 
-	private JTextField timeRemainingjText;
+	private JTextField timeRemainingTextField;
 
 	private JLabel priorityjLabel = null;
 
 	private JLabel totalContributedBandwidthjLabel = null;
 
-	private JLabel totalContributedBandwidthTextjLabel = null;
+	private JLabel maximumAvailableFlowCapacityLabel = null;
 
 	private IrrigationClientGameState clientGameState;  //  @jve:decl-index=0:
 
@@ -72,25 +80,23 @@ public class MainIrrigationGameWindow extends JPanel {
 		initialize();
 	}
 	/**
-	 * This method initializes this
-	 *
-	 * @return void
+	 * Initializes the main game window.
+	 * @return 
 	 */
-
 	private void initialize() {
-		timeRemainingjLabel = new JLabel();
-		timeRemainingjLabel.setBounds(new Rectangle(469, 39, 146, 23));
-		timeRemainingjLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		timeRemainingjLabel.setHorizontalTextPosition(SwingConstants.CENTER);
-		timeRemainingjLabel.setText("TIME REMAINING");
-		timeRemainingjText = new JTextField();
-		timeRemainingjText.setEditable(false);
-		timeRemainingjText.setBounds(new Rectangle(620, 39, 61, 23));
-		timeRemainingjText.setText("50 sec");
-		timeRemainingjText.setBackground(Color.white);
-		timeRemainingjText.setFont(new Font("serif", Font.BOLD, 14));
-		timeRemainingjText.setForeground(new Color(102, 204, 255));
-		timeRemainingjText.setHorizontalAlignment(SwingConstants.CENTER);
+		timeRemainingLabel = new JLabel();
+		timeRemainingLabel.setBounds(new Rectangle(469, 39, 146, 23));
+		timeRemainingLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		timeRemainingLabel.setHorizontalTextPosition(SwingConstants.CENTER);
+		timeRemainingLabel.setText("TIME REMAINING");
+		timeRemainingTextField = new JTextField();
+		timeRemainingTextField.setEditable(false);
+		timeRemainingTextField.setBounds(new Rectangle(620, 39, 61, 23));
+		timeRemainingTextField.setText("50 sec");
+		timeRemainingTextField.setBackground(Color.white);
+		timeRemainingTextField.setFont(new Font("serif", Font.BOLD, 14));
+		timeRemainingTextField.setForeground(new Color(102, 204, 255));
+		timeRemainingTextField.setHorizontalAlignment(SwingConstants.CENTER);
 
 		this.setLayout(new BorderLayout(4,4));
 		this.setSize(1130, 558);
@@ -121,9 +127,9 @@ public class MainIrrigationGameWindow extends JPanel {
 			dashBoardLabel.setBounds(new Rectangle(13,225+100+35,530,20));
 			dashBoardLabel.setHorizontalAlignment(SwingConstants.CENTER);
 			dashBoardLabel.setText("YOUR DASHBOARD");
-			totalContributedBandwidthTextjLabel = new JLabel();
-			totalContributedBandwidthTextjLabel.setBounds(new Rectangle(200, 18, 55, 17));
-			totalContributedBandwidthTextjLabel.setText("");
+			maximumAvailableFlowCapacityLabel = new JLabel();
+			maximumAvailableFlowCapacityLabel.setBounds(new Rectangle(200, 18, 55, 17));
+			maximumAvailableFlowCapacityLabel.setText("");
 			totalContributedBandwidthjLabel = new JLabel();
 			totalContributedBandwidthjLabel.setBounds(new Rectangle(19, 17, 170, 16));
 			totalContributedBandwidthjLabel.setText("Total Water Availability Capacity: ");
@@ -135,16 +141,16 @@ public class MainIrrigationGameWindow extends JPanel {
 			downloadScreenPanel.setName("downloadScreenPanel");
 			downloadScreenPanel.setBackground(Color.white);
 			downloadScreenPanel.add(getJPanelUpperWindow(),null);
-			downloadScreenPanel.add(getTimeRemainingjProgressBar(), null);
-			downloadScreenPanel.add(timeRemainingjLabel, null);
-			downloadScreenPanel.add(timeRemainingjText,null);
+			downloadScreenPanel.add(getTimeRemainingProgressBar(), null);
+			downloadScreenPanel.add(timeRemainingLabel, null);
+			downloadScreenPanel.add(timeRemainingTextField,null);
 			//downloadScreenPanel.add(upStreamjLabel, null);
 			//downloadScreenPanel.add(downStreamjLabel, null);
 			//downloadScreenPanel.add(jLabelgif1, null);
 			//downloadScreenPanel.add(jLabelgif2, null);
 			//downloadScreenPanel.add(priorityjLabel, null);
 			downloadScreenPanel.add(totalContributedBandwidthjLabel, null);
-			downloadScreenPanel.add(totalContributedBandwidthTextjLabel, null);
+			downloadScreenPanel.add(maximumAvailableFlowCapacityLabel, null);
 			downloadScreenPanel.add(dashBoardLabel, null);
 			downloadScreenPanel.add(scoreBoardLabel, null);
 		}
@@ -229,54 +235,60 @@ public class MainIrrigationGameWindow extends JPanel {
 	 *
 	 * @return javax.swing.JProgressBar
 	 */
-	private JProgressBar getTimeRemainingjProgressBar() {
-		if (timeRemainingjProgressBar == null) {
-			timeRemainingjProgressBar = new JProgressBar(0, 50);
-			timeRemainingjProgressBar.setBounds(new Rectangle(360, 15, 370, 17));
-			timeRemainingjProgressBar.setBackground(Color.white);
-			timeRemainingjProgressBar.setForeground(new Color(51, 153, 255));
+	private JProgressBar getTimeRemainingProgressBar() {
+		if (timeRemainingProgressBar == null) {
+			timeRemainingProgressBar = new JProgressBar(0, 50);
+			timeRemainingProgressBar.setBounds(new Rectangle(360, 15, 370, 17));
+			timeRemainingProgressBar.setBackground(Color.white);
+			timeRemainingProgressBar.setForeground(new Color(51, 153, 255));
 		}
-		return timeRemainingjProgressBar;
+		return timeRemainingProgressBar;
 	}
 	//this event gets called every second in the experiment.
-	public void updateSendFileProgress(final IrrigationClientGameState clientGameState) {
-		// TODO Auto-generated method stub
+	/**
+	 * Shoudl be invoked every second throughout the experiment, from a ClientUpdateEvent sent by the server.
+	 */
+	public void updateClientStatus(final IrrigationClientGameState clientGameState) {
 	    ////////////new code////////////////////////////////////////////////////////////
-			Runnable createGuiRunnable = new Runnable(){
-				public void run() {
-					for(final ClientData clientData : clientGameState.getClientDataMap().values()){
-						timeRemainingjText.setText((new Integer(((int)clientGameState.getTimeRemaining()))).toString()+"sec");
-						timeRemainingjProgressBar.setValue((int)clientGameState.getTimeRemaining());
-						totalContributedBandwidthTextjLabel.setText((new Double(clientData.getGroupDataModel().getMaximumAvailableFlowCapacity())).toString()+" cubic feet per second (cfps)");
-						middleWindowPanel.update(clientData);
-						if(clientGameState.getPriority() == clientData.getPriority()){
-							controlPanel.update(clientData);
-							//per parameter score panel
-							scoreBoxPanel.update(clientData);
-						}
-						else{
-							scoreBoxPanel.update(clientData);
-						}
-							if(clientData.isGateOpen() == true){
-								upperPanel.openGates(clientData.getPriority());
-								
-							}
-							else if(clientData.isPaused() == true){
-								upperPanel.closeGates(clientData.getPriority());
-							}
-							if(clientData.isGateClosed() == true){
-								upperPanel.closeGates(clientData.getPriority());
-							}
-					}
-				}
+	    Runnable createGuiRunnable = new Runnable(){
+	        public void run() {
+	            for(final ClientData clientData : clientGameState.getClientDataMap().values()){
+	                timeRemainingTextField.setText( clientGameState.getTimeLeft() +" second(s)" );
+	                timeRemainingProgressBar.setValue( (clientGameState.getTimeLeft() / 1000) );
+	                maximumAvailableFlowCapacityLabel.setText(
+	                        clientData.getGroupDataModel().getMaximumAvailableFlowCapacity() +" cubic feet per second (cfps)"
+	                        );
+	                middleWindowPanel.update(clientData);
+	                if (clientGameState.getPriority() == clientData.getPriority()) {
+	                    controlPanel.update(clientData);
+	                    //per parameter score panel
+	                    scoreBoxPanel.update(clientData);
+	                }
+	                else{
+	                    scoreBoxPanel.update(clientData);
+	                }
+	                if(clientData.isGateOpen()){
+	                    upperPanel.openGates(clientData.getPriority());
 
-			};
+	                }
+	                else if(clientData.isPaused()){
+	                    upperPanel.closeGates(clientData.getPriority());
+	                }
+	                if(clientData.isGateClosed()){
+	                    upperPanel.closeGates(clientData.getPriority());
+	                }
+	            }
+	        }
+
+	    };
 		try {
 			SwingUtilities.invokeAndWait(createGuiRunnable);
-		} catch (InterruptedException e) {
+		} 
+		catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (InvocationTargetException e) {
+		} 
+		catch (InvocationTargetException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}		
@@ -320,7 +332,7 @@ public class MainIrrigationGameWindow extends JPanel {
 	/**
 	 * assigns the priority to the window and prepares the irrigationWindowMap
 	 */
-	public void updateSendContributionStatus(final IrrigationClientGameState clientGameState) {
+	public void updateContributions(final IrrigationClientGameState clientGameState) {
 	    this.clientGameState = clientGameState;
 		//Here a map is created with the map consisting of the
 	    //irrigation window as the value and the priority value as the key. This is handled here , because
