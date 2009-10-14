@@ -81,7 +81,7 @@ public class PieChart extends JPanel {
         	case 4 : clientPieLabel = "E = ";
         			 break;
         	}
-        	if(client.getClientGameState().getPriority() == clientData.getPriority()){
+        	if(client.getClientDataModel().getPriority() == clientData.getPriority()){
         		clientPieLabel = "YOU = ";
         	}
         	clientPieLabel = clientPieLabel+new Integer(clientData.getContributedTokens()).toString();

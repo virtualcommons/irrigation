@@ -90,10 +90,10 @@ public class IrrigationGameWindow extends JPanel {
 
 	private JLabel currentBandwidthAvailableTextjLabel = null;
 
-	private MainIrrigationGameWindow mainIrrigationWindow;
+	private IrrigationGamePanel mainIrrigationWindow;
 
 	public IrrigationGameWindow(Dimension screenSize, IrrigationClient client,
-			MainIrrigationGameWindow mainIrrigationWindow) {
+			IrrigationGamePanel mainIrrigationWindow) {
 		this.mainIrrigationWindow = mainIrrigationWindow;
 		this.irrigationClient = client;
 		initialize(screenSize);

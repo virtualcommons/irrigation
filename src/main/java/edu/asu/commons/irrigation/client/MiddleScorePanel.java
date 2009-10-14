@@ -3,14 +3,11 @@ package edu.asu.commons.irrigation.client;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Rectangle;
-import java.net.URL;
 
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import edu.asu.commons.irrigation.server.ClientData;
-import edu.asu.commons.util.ResourceLoader;
 
 /**
  * $Id$
@@ -22,9 +19,6 @@ import edu.asu.commons.util.ResourceLoader;
  */
 public class MiddleScorePanel extends JPanel {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -1329890496417714604L;
 	
 	private JLabel positionText;
@@ -41,9 +35,9 @@ public class MiddleScorePanel extends JPanel {
 	
 	private ClientData clientData;  //  @jve:decl-index=0:
 
-	private IrrigationClientGameState clientGameState;  //  @jve:decl-index=0:
+	private ClientDataModel clientGameState;  //  @jve:decl-index=0:
 	
-	public MiddleScorePanel(int priority,IrrigationClientGameState clientGameState){
+	public MiddleScorePanel(int priority,ClientDataModel clientGameState){
 		super();
 		this.priority = priority;
 		/*this.clientGameState = clientGameState;
@@ -51,7 +45,7 @@ public class MiddleScorePanel extends JPanel {
 		initialize(clientGameState);
 	}
 
-	private void initialize(IrrigationClientGameState clientGameState) {
+	private void initialize(ClientDataModel clientGameState) {
 		// TODO Auto-generated method stub
 		/*GridLayout gridLayout = new GridLayout();
 		gridLayout.setColumns(1);
@@ -68,9 +62,7 @@ public class MiddleScorePanel extends JPanel {
 		else
 			this.setBackground(Color.YELLOW);
 		this.setSize(new Dimension(60,200));
-		
-//		URL fileUrl = ResourceLoader.getResourceAsUrl("images/file.gif");
-		this.add(getFileLabel());
+//		this.add(getFileLabel());
 		this.add(getPositionText(priority),null);
 		this.add(getFilesDownLoadedText(priority),null);
 		this.add(getCurrentBandwidth(),null);
@@ -79,18 +71,16 @@ public class MiddleScorePanel extends JPanel {
 		
 	}
 
-	private JLabel getFileLabel() {
-		// TODO Auto-generated method stub
-		if(fileLabel == null){
-			//URL fileUrl = getClass().getResource("images/file.gif");
-			URL fileUrl = ResourceLoader.getResourceAsUrl("images/file.gif");
-			fileLabel = new JLabel();
-			fileLabel.setBounds(new Rectangle(10,50,30,32));
-			fileLabel.setIcon(new ImageIcon(fileUrl));
-			fileLabel.setVisible(false);
-		}
-		return fileLabel;
-	}
+//	private JLabel getFileLabel() {
+//		if(fileLabel == null){
+//			URL fileUrl = ResourceLoader.getResourceAsUrl("images/file.gif");
+//			fileLabel = new JLabel();
+//			fileLabel.setBounds(new Rectangle(10,50,30,32));
+//			fileLabel.setIcon(new ImageIcon(fileUrl));
+//			fileLabel.setVisible(false);
+//		}
+//		return fileLabel;
+//	}
 
 	private JLabel getTokensCollected() {
 		// TODO Auto-generated method stub

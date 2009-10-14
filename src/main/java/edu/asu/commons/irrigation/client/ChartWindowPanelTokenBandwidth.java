@@ -130,7 +130,7 @@ import edu.asu.commons.irrigation.server.GroupDataModel;
 //				final XYSeries actualFlowCapacitySeriesY = new XYSeries("Actual");
 				final XYSeries initialInfrastructureEfficiencySeries = new XYSeries("Initial");
 				int x,y;
-				GroupDataModel group = client.getClientGameState().getGroupDataModel();
+				GroupDataModel group = client.getClientDataModel().getGroupDataModel();
 	            final int infrastructureEfficiency = group.getInfrastructureEfficiency();
 	            final int actualFlowCapacity = group.getFlowCapacity();
 	            for(y = 0; y <= actualFlowCapacity; y++) {

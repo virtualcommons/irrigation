@@ -1,6 +1,3 @@
-/**
- *
- */
 package edu.asu.commons.irrigation.client;
 
 import java.awt.Dimension;
@@ -35,28 +32,19 @@ import edu.asu.commons.net.DispatcherFactory;
 import edu.asu.commons.net.Identifier;
 
 /**
- * @author Sanket
+ * $Id$
+ * 
+ *
+ * @author <a href='mailto:Allen.Lee@asu.edu'>Allen Lee</a>, Sanket Joshi
+ * @version $Rev$
  */
 public class IrrigationClient {
-    /**
-     * @param args
-     */
+
     enum ClientState {
         UNCONNECTED, CONNECTED, READY, RUNNING, DENIED
     };
 
-    // FIXME: change to enum
-    public final static int PRECONNECT = 0;
-
-    public final static int CONNECTED = 1;
-
-    public final static int READY = 2;
-
-    public final static int RUNNING = 3;
-
-    public final static int DENIED = 100;
-
-    private int state = PRECONNECT;
+    private ClientState state = ClientState.UNCONNECTED;
 
     private ServerConfiguration serverConfiguration;
 
@@ -70,7 +58,7 @@ public class IrrigationClient {
 
     IrrigationGameWindow currentWindow = null;
 
-    private IrrigationClientGameState clientGameState;
+    private ClientDataModel clientDataModel;
 
     private final EventChannel channel;
 
@@ -88,7 +76,7 @@ public class IrrigationClient {
         // of a dispatcher every time we connect
 
         clientDispatcher = DispatcherFactory.getInstance().createClientDispatcher(channel);
-        clientGameState = new IrrigationClientGameState(channel, this);
+        clientDataModel = new ClientDataModel(channel, this);
         experimentGameWindow = new ExperimentGameWindow(screenSize, this);
         // clientGameState.setMainIrrigationGameWindow(irrigationGameWindow1);
         initEventProcessors();
@@ -97,39 +85,32 @@ public class IrrigationClient {
     public void connect() {
         System.err.println("connecting to: " + serverConfiguration.getServerAddress()
                 + " state: " + state);
-        if (state != PRECONNECT)
+        if (state != ClientState.UNCONNECTED)
             return;
         id = clientDispatcher.connect(serverConfiguration.getServerAddress());
-        System.out.println("\nThe id is " + id);
+        System.err.println("Received id from server: " + id);
         if (id == null) {
             throw new RuntimeException("Null ID from Dispatcher.  Server: <"
                     + serverConfiguration.getServerAddress() + "> is probably down.");
         }
-        state = READY;
+        state = ClientState.CONNECTED;
     }
 
     public static void main(String[] args) {
-        // TODO Auto-generated method stub
         Runnable createGuiRunnable = new Runnable() {
-
             public void run() {
-                // TODO Auto-generated method stub
                 Dimension defaultDimension = new Dimension(500, 500);
-                Frame frame = new JFrame();
+                JFrame frame = new JFrame();
                 IrrigationClient client = new IrrigationClient(defaultDimension);
                 client.connect();
                 frame.setTitle("Client Window: " + client.id);
                 frame.setSize(1130, 600);
-
-                ((JFrame) frame).getContentPane().add(
-                        client.getExperimentGameWindow());
-                ((JFrame) frame).setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.getContentPane().add(client.getExperimentGameWindow());
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.setVisible(true);
             }
-
         };
         SwingUtilities.invokeLater(createGuiRunnable);
-
     }
 
     public ExperimentGameWindow getExperimentGameWindow() {
@@ -181,24 +162,25 @@ public class IrrigationClient {
             public void handle(RegistrationEvent event) {
                 RoundConfiguration configuration = event.getRoundConfiguration();
                 setRoundConfiguration(configuration);
-                clientGameState.setPriority(event.getClientData().getPriority());
+                int priority = event.getClientData().getPriority();
+                clientDataModel.setPriority(priority);
                 // FIXME: display priority
-                if (!configuration.isPracticeRound() || configuration.isSecondPracticeRound()) {
-                    experimentGameWindow.updateRoundInstructions(configuration.getInstructions(),event.getClientData().getPriority());
+                if (! configuration.isPracticeRound() || configuration.isSecondPracticeRound()) {
+                    experimentGameWindow.updateRoundInstructions(configuration.getInstructions(),priority);
                 }
             }
         });
         channel.add(this, new EventTypeProcessor<GroupUpdateEvent>(GroupUpdateEvent.class) {
             public void handle(GroupUpdateEvent event) {
                 System.err.println("Received group update event: " + event);
-                clientGameState.setGroupDataModel(event.getGroupDataModel());
+                clientDataModel.setGroupDataModel(event.getGroupDataModel());
                 experimentGameWindow.updateGraphDisplay(event.getClientDataMap().get(event.getId()));
                 experimentGameWindow.updateContributions();
             }
         });
         channel.add(this, new EventTypeProcessor<RoundStartedEvent>(RoundStartedEvent.class) {
             public void handle(RoundStartedEvent event) {
-                clientGameState.initialize(event);
+                clientDataModel.initialize(event);
                 experimentGameWindow.startRound(getRoundConfiguration());
             }
         });
@@ -210,7 +192,7 @@ public class IrrigationClient {
         channel.add(this, new EventTypeProcessor<ClientUpdateEvent>(ClientUpdateEvent.class) {
             public void handle(ClientUpdateEvent clientUpdateEvent) {
                 // update the client game state and then update the view.
-                clientGameState.update(clientUpdateEvent);
+                clientDataModel.update(clientUpdateEvent);
                 experimentGameWindow.update();
             }
         });
@@ -221,7 +203,7 @@ public class IrrigationClient {
         });
         channel.add(this, new EventTypeProcessor<BeginChatRoundRequest>(BeginChatRoundRequest.class) {
             public void handle(BeginChatRoundRequest request) {
-                clientGameState.setGroupDataModel(request.getGroupDataModel());
+                clientDataModel.setGroupDataModel(request.getGroupDataModel());
                 experimentGameWindow.initializeChatWindow();
             }
         });
@@ -232,17 +214,17 @@ public class IrrigationClient {
         });
     }
 
-    public IrrigationClientGameState getClientGameState() {
-        return clientGameState;
+    public ClientDataModel getClientDataModel() {
+        return clientDataModel;
     }
 
     public RoundConfiguration getRoundConfiguration() {
   
-    	return clientGameState.getConfiguration();
+    	return clientDataModel.getRoundConfiguration();
     }
 
     public void setRoundConfiguration(RoundConfiguration roundConfiguration) {
-        clientGameState.setConfiguration(roundConfiguration);
+        clientDataModel.setRoundConfiguration(roundConfiguration);
     }
 
     public ServerConfiguration getServerConfiguration() {

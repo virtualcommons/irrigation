@@ -65,7 +65,7 @@ public class CanalPanel extends JPanel {
 
 	private double totalContributedBandwidth;
 	
-	private IrrigationClientGameState clientGameState;
+	private ClientDataModel clientGameState;
 
 	private int numberofGates = 6;
 
@@ -79,7 +79,7 @@ public class CanalPanel extends JPanel {
 
 	////////////////////////////////////////////////////////////////////////////
 
-	public CanalPanel(IrrigationClientGameState clientGameState) {
+	public CanalPanel(ClientDataModel clientGameState) {
 		super();
 		//when totalContributed bandwidth = 1.0, you dont see the canal line
 		this.totalContributedBandwidth = clientGameState.getGroupDataModel().getMaximumAvailableFlowCapacity();

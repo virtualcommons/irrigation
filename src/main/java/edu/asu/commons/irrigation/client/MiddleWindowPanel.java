@@ -36,9 +36,9 @@ public class MiddleWindowPanel extends JPanel {
 	JLabel tokensCollectedLabel;
 	
 	
-	private IrrigationClientGameState clientGameState;
+	private ClientDataModel clientGameState;
 
-	public MiddleWindowPanel(IrrigationClientGameState clientGameState){
+	public MiddleWindowPanel(ClientDataModel clientGameState){
 		super();
 		this.clientGameState = clientGameState;
 		initialize();
@@ -75,7 +75,7 @@ public class MiddleWindowPanel extends JPanel {
 		this.add(filesDownLoadedLabel, null);
 		this.add(tokensCollectedLabel, null);
 		
-		for(int i=0;i<clientGameState.client.getRoundConfiguration().getClientsPerGroup();i++){
+		for(int i=0;i<clientGameState.getRoundConfiguration().getClientsPerGroup();i++){
 			/*JLabel jTextLabel = new JLabel();
 			jLabelMap.put(new Integer(i), jTextLabel);
 			jTextLabel.setBounds(new Rectangle((258 + 20 + i*198),35,60,50));

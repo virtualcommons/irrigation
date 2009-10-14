@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.asu.commons.event.EventChannel;
+import edu.asu.commons.experiment.DataModel;
 import edu.asu.commons.irrigation.conf.RoundConfiguration;
 import edu.asu.commons.irrigation.events.ClientUpdateEvent;
 import edu.asu.commons.irrigation.events.RoundStartedEvent;
@@ -16,26 +17,28 @@ import edu.asu.commons.irrigation.server.GroupDataModel;
 import edu.asu.commons.net.Identifier;
 
 /**
- * @author Sanket
+ * $Id$
+ * 
+ * The client side data model, simply wraps a GroupDataModel.
  *
+ * @author <a href='mailto:Allen.Lee@asu.edu'>Allen Lee</a>
+ * @version $Rev$
  */
-public class IrrigationClientGameState {
+public class ClientDataModel implements DataModel<RoundConfiguration> { 
 
     private static final long serialVersionUID = -3424256672940188027L;
 
     private GroupDataModel groupDataModel;
     
-    // FIXME: can obtain tokensConsumed from the clientDataMap now.
-
-    public IrrigationClient client;
-
-    private RoundConfiguration configuration;
+    private IrrigationClient client;
+    
+    private RoundConfiguration roundConfiguration;
 
     private int priority = 0;
 
     private int timeLeft = 0;
 
-    public IrrigationClientGameState(EventChannel channel, IrrigationClient client) {
+    public ClientDataModel(EventChannel channel, IrrigationClient client) {
         this.client = client;
     }
 
@@ -51,14 +54,10 @@ public class IrrigationClientGameState {
         return new ArrayList<Identifier>(groupDataModel.getClientIdentifiers());
     }
 
-    /**
-     * Invoked on the client side only.
-     */
-    public synchronized void initialize(RoundStartedEvent event) {
+     public synchronized void initialize(RoundStartedEvent event) {
         groupDataModel.clear();
-        setTimeLeft((int) (event.getConfiguration().getRoundDuration().getDelta() / 1000L));
-        setConfiguration(event.getConfiguration());
-        groupDataModel = event.getGroupDataModel();
+        setGroupDataModel(event.getGroupDataModel());
+        setTimeLeft( (int) (getRoundConfiguration().getRoundDuration().getDelta() / 1000L) );
     }
 
     /**
@@ -85,16 +84,17 @@ public class IrrigationClientGameState {
         return timeLeft;
     }
 
-    public RoundConfiguration getConfiguration() {
-        return configuration;
+    public RoundConfiguration getRoundConfiguration() {
+        return roundConfiguration;
     }
 
-    public void setConfiguration(RoundConfiguration configuration) {
-        this.configuration = configuration;
+    public void setRoundConfiguration(RoundConfiguration roundConfiguration) {
+        this.roundConfiguration = roundConfiguration;
     }
-
+    
     public void setGroupDataModel(GroupDataModel groupDataModel) {
         this.groupDataModel = groupDataModel;
+        setRoundConfiguration(groupDataModel.getRoundConfiguration());
     }
 
     public GroupDataModel getGroupDataModel() {
@@ -104,5 +104,6 @@ public class IrrigationClientGameState {
     public Map<Identifier, ClientData> getClientDataMap() {
         return groupDataModel.getClientDataMap();
     }
+
 
 }

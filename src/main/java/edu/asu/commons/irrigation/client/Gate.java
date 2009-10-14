@@ -1,6 +1,3 @@
-/**
- * 
- */
 package edu.asu.commons.irrigation.client;
 
 /**
