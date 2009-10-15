@@ -147,6 +147,10 @@ extends ExperimentConfiguration.Base<RoundConfiguration> {
 	public double getShowUpPayment() {
 		return assistant.getDoubleProperty("showup-payment", 5.0d);
 	}
+	
+	public String getInitialInstructions() {
+	    return assistant.getProperty("initial-instructions");
+	}
 
 	public Map<String, String> getQuizAnswers() {
 		//System.out.println("I am in the beginning of getquiz");

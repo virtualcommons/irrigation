@@ -64,18 +64,17 @@ public class IrrigationClient {
 
     Map<Identifier, ClientData> updatedClientDataMap = new LinkedHashMap<Identifier, ClientData>();
 
-    private IrrigationClient(Dimension screenSize) {
-        this(EventChannelFactory.create(), screenSize, new ServerConfiguration());
+    private IrrigationClient() {
+        this(EventChannelFactory.create(), new ServerConfiguration());
     }
 
-    public IrrigationClient(EventChannel channel, Dimension screenSize,
-            ServerConfiguration configuration) {
+    public IrrigationClient(EventChannel channel, ServerConfiguration serverConfiguration) {
         this.channel = channel;
-        this.serverConfiguration = configuration;
-        // moved this line down to the connect so that we get a new instance
-        // of a dispatcher every time we connect
-
-        clientDispatcher = DispatcherFactory.getInstance().createClientDispatcher(channel);
+        this.serverConfiguration = serverConfiguration;
+        this.clientDispatcher = DispatcherFactory.getInstance().createClientDispatcher(channel);
+    }
+    
+    private void initialize(Dimension screenSize) {
         clientDataModel = new ClientDataModel(channel, this);
         experimentGameWindow = new ExperimentGameWindow(screenSize, this);
         // clientGameState.setMainIrrigationGameWindow(irrigationGameWindow1);
@@ -101,7 +100,8 @@ public class IrrigationClient {
             public void run() {
                 Dimension defaultDimension = new Dimension(500, 500);
                 JFrame frame = new JFrame();
-                IrrigationClient client = new IrrigationClient(defaultDimension);
+                IrrigationClient client = new IrrigationClient();
+                client.initialize(defaultDimension);
                 client.connect();
                 frame.setTitle("Client Window: " + client.id);
                 frame.setSize(1130, 600);
@@ -162,12 +162,7 @@ public class IrrigationClient {
             public void handle(RegistrationEvent event) {
                 RoundConfiguration configuration = event.getRoundConfiguration();
                 setRoundConfiguration(configuration);
-                int priority = event.getClientData().getPriority();
-                clientDataModel.setPriority(priority);
-                // FIXME: display priority
-                if (! configuration.isPracticeRound() || configuration.isSecondPracticeRound()) {
-                    experimentGameWindow.updateRoundInstructions(configuration.getInstructions(),priority);
-                }
+                experimentGameWindow.updateRoundInstructions(configuration);
             }
         });
         channel.add(this, new EventTypeProcessor<GroupUpdateEvent>(GroupUpdateEvent.class) {
@@ -219,8 +214,7 @@ public class IrrigationClient {
     }
 
     public RoundConfiguration getRoundConfiguration() {
-  
-    	return clientDataModel.getRoundConfiguration();
+      	return clientDataModel.getRoundConfiguration();
     }
 
     public void setRoundConfiguration(RoundConfiguration roundConfiguration) {

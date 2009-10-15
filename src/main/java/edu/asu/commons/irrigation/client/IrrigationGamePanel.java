@@ -26,12 +26,12 @@ import edu.asu.commons.irrigation.server.ClientData;
  */
 public class IrrigationGamePanel extends JPanel {
 
-	public IrrigationGameWindow controlPanel;
+    private static final long serialVersionUID = -3878952269498777014L;
+
+    public IrrigationGameWindow controlPanel;
 	
 	public CanalPanel upperPanel;
 	
-	private static final long serialVersionUID = 1L;
-
 	private JPanel jPanelMain = null;
 	//this contains the CanalPanel
 	private JPanel jPanelUpperWindow = null;
