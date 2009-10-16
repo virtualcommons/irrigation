@@ -110,7 +110,7 @@ public class GroupDataModel implements DataModel<RoundConfiguration> {
     	// fresh totalContributed tokens are calculated
     	totalContributedTokens = 0;
         for(ClientData clientData : getClientDataMap().values()) {
-            totalContributedTokens += clientData.getContributedTokens();
+            totalContributedTokens += clientData.getInvestedTokens();
         }
         getLogger().info("total contributed tokens: " + totalContributedTokens);
     	updateInfrastructureEfficiency(totalContributedTokens);

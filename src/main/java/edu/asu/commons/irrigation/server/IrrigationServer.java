@@ -227,7 +227,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
             @Override
             public void handle(InvestedTokensEvent event) {
                 ClientData clientData = clients.get(event.getId());
-                clientData.setContributedTokens(event.getInvestedTokens());
+                clientData.setInvestedTokens(event.getInvestedTokens());
                 submittedClients++;
                 if (submittedClients == clients.size()) {
                     // everyone's submitted their tokens so we can calculate the available bandwidth and 

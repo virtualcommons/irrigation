@@ -3,6 +3,7 @@
  */
 package edu.asu.commons.irrigation.client;
 
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Rectangle;
 import java.text.AttributedString;
@@ -27,32 +28,21 @@ import edu.asu.commons.net.Identifier;
  */
 public class PieChart extends JPanel {
 
-    /**
-	 * 
-	 */
 	private static final long serialVersionUID = -5382293105043214105L;
 
-	/**
-     * Creates a new demo instance.
-     *
-     * @param title  the frame title.
-     */
-	
-	GroupDataModel groupDataModel;
+	private GroupDataModel groupDataModel;
 
 	private IrrigationClient client;
 	
     public PieChart(GroupDataModel groupDataModel,IrrigationClient client) {
-        super();
         this.groupDataModel = groupDataModel;
         this.client = client;
         final PieDataset dataset = createDataset();
         final JFreeChart chart = createChart(dataset);
         final ChartPanel chartPanel = new ChartPanel(chart);
-        chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
+        chartPanel.setPreferredSize(new Dimension(500, 270));
         this.add(chartPanel);
         this.setBounds(new Rectangle(0,0,500,270));
-        
     }
 
     /**
@@ -84,8 +74,8 @@ public class PieChart extends JPanel {
         	if(client.getClientDataModel().getPriority() == clientData.getPriority()){
         		clientPieLabel = "YOU = ";
         	}
-        	clientPieLabel = clientPieLabel+new Integer(clientData.getContributedTokens()).toString();
-        	dataset.setValue(clientPieLabel,new Double(clientData.getContributedTokens()));
+        	clientPieLabel = clientPieLabel+new Integer(clientData.getInvestedTokens()).toString();
+        	dataset.setValue(clientPieLabel,new Double(clientData.getInvestedTokens()));
         }
         /*dataset.setValue("One", new Double(43.2));
         dataset.setValue("Two", new Double(10.0));
@@ -166,7 +156,6 @@ public class PieChart extends JPanel {
         }
 
 		public AttributedString generateAttributedSectionLabel(PieDataset arg0, Comparable arg1) {
-			// TODO Auto-generated method stub
 			return null;
 		}
    

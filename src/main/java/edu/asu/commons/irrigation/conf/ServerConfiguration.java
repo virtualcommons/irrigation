@@ -28,151 +28,127 @@ import edu.asu.commons.conf.ExperimentConfiguration;
 public class ServerConfiguration 
 extends ExperimentConfiguration.Base<RoundConfiguration> {
 
-	private static final long serialVersionUID = 7867208205942476733L;
+    private static final long serialVersionUID = 7867208205942476733L;
 
-	private final static String CONFIGURATION_FILE_NAME = "irrigation.xml";
+    private final static String CONFIGURATION_FILE_NAME = "irrigation.xml";
 
-	private final static String DEFAULT_LOG_FILE_DESTINATION = "irrigation.log";
+    private final static String DEFAULT_LOG_FILE_DESTINATION = "irrigation.log";
 
-	public ServerConfiguration() {
-		super();
-	}
+    public ServerConfiguration() {
+        super();
+    }
 
-	public ServerConfiguration(String configurationDirectory) {
-		super(configurationDirectory);
-	}
+    public ServerConfiguration(String configurationDirectory) {
+        super(configurationDirectory);
+    }
 
-	public String getLogFileDestination() {
-		return assistant.getStringProperty("log", DEFAULT_LOG_FILE_DESTINATION);
-	}
+    public String getLogFileDestination() {
+        return assistant.getStringProperty("log", DEFAULT_LOG_FILE_DESTINATION);
+    }
 
-	public String getPersistenceDirectory() {
-		return assistant.getStringProperty("save-dir", "data");
-	}
+    public String getPersistenceDirectory() {
+        return assistant.getStringProperty("save-dir", "data");
+    }
 
-	public boolean shouldUpdateFacilitator() {
-		return assistant.getBooleanProperty("update-facilitator");
-	}
+    public boolean shouldUpdateFacilitator() {
+        return assistant.getBooleanProperty("update-facilitator");
+    }
 
-	@Override
-	protected RoundConfiguration createConfiguration(String roundConfigurationFile) {
-		return new RoundConfiguration(roundConfigurationFile);
-	}
+    @Override
+    protected RoundConfiguration createConfiguration(String roundConfigurationFile) {
+        return new RoundConfiguration(roundConfigurationFile);
+    }
 
-	@Override
-	protected String getServerConfigurationFilename() {
-		return CONFIGURATION_FILE_NAME;
-	}
+    @Override
+    protected String getServerConfigurationFilename() {
+        return CONFIGURATION_FILE_NAME;
+    }
+    
+    /**
+     * getting the general welcome instructions
+     * 
+     * FIXME: Refactor this method.
+     * 
+     * @param instructionPageNumber
+     * @param pagesTraversed
+     * @return
+     */
+    public String getGeneralInstructions(
+            int instructionPageNumber,
+            int pagesTraversed, 
+            int clientPosition) 
+    {
+        // FIXME: get rid of hard coded instruction page constants.
+        if (instructionPageNumber < 11) {
+            StringBuilder builder = new StringBuilder();
+            if (instructionPageNumber == 4) {
+                builder.append("Your position: ").append(toPriorityString(clientPosition));
+            }
+            builder.append(getGeneralInstructions(instructionPageNumber));
+            if (isUndisruptedFlowRequired()) {
+                builder.append(getUndisruptedFlowInstructions());
+            }
+            // if the current instruction page number is greater than the number of pages traversed, then 
+            // we need to render the quizzes.  Otherwise, we don't. 
+            if (instructionPageNumber > pagesTraversed) {
+                builder.append( getQuizQuestion(instructionPageNumber) );
+            }
+            return builder.toString();
+        }
+        else {
+            return getGeneralInstructions(instructionPageNumber);
+        }
+    }
 
-	/**
-	 * getting the general welcome instructions
-	 * 
-	 * FIXME: Refactor this method.
-	 * 
-	 * @param instructionNumber
-	 * @param pagesTraversed
-	 * @return
-	 */
-	public String getGeneralInstructions(int instructionNumber,
-			int pagesTraversed, int clientPosition) {
-		String position = "";
-		String undisruptedBandwidthInstruction = "";
-		
-		if (instructionNumber != 11) {
-			if (instructionNumber > pagesTraversed) {
-				if (instructionNumber == 4) {
-					//instructionNumber = getNewInstructionNumber(clientPriority);
-					position = "\n Your position : "+toPriorityString(clientPosition);
-				}
-				if(instructionNumber == 5 && isUndisruptedFlowRequired()){
-					undisruptedBandwidthInstruction=assistant.getStringProperty("general-instructions"+"-undisruptedBandwidth");
-				}
-				return (position 
-				        + assistant.getStringProperty("general-instructions" + instructionNumber) 
-				        + undisruptedBandwidthInstruction
-				        + assistant.getStringProperty("general-instructionsq" + instructionNumber));
-			} 
-			else {
-				if (instructionNumber == 4) {
-					//instructionNumber = getNewInstructionNumber(clientPriority);
-					position = "\n YOUR POSITION : "+toPriorityString(clientPosition);
-				}
-				if(instructionNumber == 5 && isUndisruptedFlowRequired()){
-					undisruptedBandwidthInstruction=assistant.getStringProperty("general-instructions"+"-undisruptedBandwidth");
-				}
-				return (position
-				        + assistant.getStringProperty("general-instructions" + instructionNumber, "<b>No instructions available for this round</b>")
-				        + undisruptedBandwidthInstruction);
-			}
+    private final static String[] PRIORITY_STRINGS = { "A", "B", "C", "D", "E" };
 
-		}
-		
-		return assistant.getStringProperty("general-instructions"
-				+ instructionNumber,
-				"<b>No instructions available for this round</b>");
-
-	}
-	
-	private final static String[] PRIORITY_STRINGS = { "A", "B", "C", "D", "E" };
-
-	private String toPriorityString(int clientPriority) {
-	    // bounds check
-	    if (clientPriority >= 0 && clientPriority < PRIORITY_STRINGS.length) {
-	        return PRIORITY_STRINGS[clientPriority];
-	    }
-//
-//		switch(clientPriority){
-//		case 0 : return "A";
-//		case 1 : return "B";
-//		case 2:  return "C";
-//		case 3:  return "D";
-//		case 4:  return "E";
-//		}
+    public String toPriorityString(int clientPriority) {
+        // bounds check
+        if (clientPriority >= 0 && clientPriority < PRIORITY_STRINGS.length) {
+            return PRIORITY_STRINGS[clientPriority];
+        }
         return "Position not found";
-	}
+    }
 
-	//overriding method isLastRound
-//	public boolean isLastRound(){
-//		System.out.println("The Current round Number is :"+getCurrentRoundNumber());
-//		if(getCurrentRoundNumber() == assistant.getIntProperty("number-of-rounds")-1)
-//			return true;
-//		else
-//			return false;
-//	}
-	
-	public boolean isUndisruptedFlowRequired(){
-	    return assistant.getBooleanProperty("undisrupted-flow-required", false);
-	}
-	
-	public double getShowUpPayment() {
-		return assistant.getDoubleProperty("showup-payment", 5.0d);
-	}
-	
-	public String getInitialInstructions() {
-	    return assistant.getProperty("initial-instructions");
-	}
+    public boolean isUndisruptedFlowRequired(){
+        return assistant.getBooleanProperty("undisrupted-flow-required", false);
+    }
 
-	public Map<String, String> getQuizAnswers() {
-		//System.out.println("I am in the beginning of getquiz");
-		Properties properties = assistant.getProperties();
-		//System.out.println("I get the properties");
-		// if (isQuizEnabled()) {
-		Map<String, String> answers = new HashMap<String, String>();
-		for (int i = 1; properties.containsKey("q" + i); i++) {
-			String key = "q" + i;
-			String answer = properties.getProperty(key);
-			answers.put(key, answer);
-		}
-		//System.out.println("Answers Size :" + answers.size());
-		return answers;
-		// }
-		// return Collections.emptyMap();
-	}
+    public String getUndisruptedFlowInstructions() {
+        return assistant.getProperty("undisrupted-flow-instructions", "");
+    }
 
-	public String getGeneralInstructions(int pageNumber) {
-		return assistant.getStringProperty("general-instructions"
-				+pageNumber,
-				"<b>No instructions available for this round</b>");
-	}
+    public double getShowUpPayment() {
+        return assistant.getDoubleProperty("showup-payment", 5.0d);
+    }
+
+    public String getInitialInstructions() {
+        return assistant.getProperty("initial-instructions");
+    }
+
+    public Map<String, String> getQuizAnswers() {
+        Properties properties = assistant.getProperties();
+        Map<String, String> answers = new HashMap<String, String>();
+        for (int i = 1; properties.containsKey("q" + i); i++) {
+            String key = "q" + i;
+            String answer = properties.getProperty(key);
+            answers.put(key, answer);
+        }
+        return answers;
+    }
+    
+    public String getQuizQuestion(int pageNumber) {
+        return assistant.getProperty("general-instructionsq" + pageNumber);
+    }
+
+    public String getGeneralInstructions(int pageNumber) {
+        return assistant.getProperty(
+                "general-instructions"+pageNumber, 
+                "<b>No instructions available for this round</b>");
+    }
+
+    public String getFinalInstructions() {
+        return assistant.getProperty("final-instructions", "<b>The experiment is now over.  Thanks for participating!</b>");
+    }
 
 }

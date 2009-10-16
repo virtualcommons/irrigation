@@ -51,7 +51,7 @@ public class ClientData implements Serializable {
      */
     private double availableFlowCapacity = 25.0d;
 
-    private int contributedTokens;
+    private int investedTokens;
 
     private int assignedNumber;
 
@@ -106,9 +106,21 @@ public class ClientData implements Serializable {
         return availableFlowCapacity;
     }
 
-    public int getPriority(){
+    public int getPriority() {
         return getAssignedNumber() - 1;
     }
+    
+    private final static String[] PRIORITY_STRINGS = { "A", "B", "C", "D", "E" };
+
+    public String getPriorityAsString() {
+        // bounds check
+        int priority = getPriority();
+        if (priority >= 0 && priority < PRIORITY_STRINGS.length) {
+            return PRIORITY_STRINGS[priority];
+        }
+        return "Position not found";
+    }
+    
     /**
      * set and get the current file_no from the client.The corresponding file sizes and their numbers 
      * are listed down in the configuration file. Thus I can get their sizes.
@@ -156,12 +168,16 @@ public class ClientData implements Serializable {
      * get and set the TOkens that are contributed by this client.
      *     * @param contributedTokens
      */
-    public void setContributedTokens(int contributedTokens) {
-        this.contributedTokens = contributedTokens;
+    public void setInvestedTokens(int investedTokens) {
+        this.investedTokens = investedTokens;
     }
 
-    public int getContributedTokens(){
-        return contributedTokens;
+    public int getInvestedTokens(){
+        return investedTokens;
+    }
+    
+    public int getUninvestedTokens() {
+        return roundConfiguration.getMaximumInvestedTokens() - investedTokens;
     }
 
     public GroupDataModel getGroupDataModel() {
@@ -184,7 +200,7 @@ public class ClientData implements Serializable {
     public void reset() {
         resetFileInformation();
         closeGate();
-        contributedTokens = 0;
+        investedTokens = 0;
         //adding number of files to be downloaded = 0 per round
         cropsGrown = 0;
         filesDownloadedList.clear();
@@ -220,7 +236,6 @@ public class ClientData implements Serializable {
      */
     public void init(double availableFlowCapacity) {
         resetFileInformation();
-        //maximumDeliveryBandwidth = getRoundConfiguration().getBtmax()/getRoundConfiguration().getClientsPerGroup();
         maximumIndividualFlowCapacity = getRoundConfiguration().getMaximumIndividualFlowCapacity();
         //currentBandwidth = totalContributedBandwidth;
         this.availableFlowCapacity = availableFlowCapacity;
@@ -243,7 +258,7 @@ public class ClientData implements Serializable {
      * @return
      */
     public int getTotalTokensEarned(){
-        return calculateTokensEarned() + (getRoundConfiguration().getMaximumTokenContribution() - contributedTokens);
+        return calculateTokensEarned() + (getRoundConfiguration().getMaximumInvestedTokens() - investedTokens);
     }
 
     /**
@@ -337,6 +352,8 @@ public class ClientData implements Serializable {
 	public List<String> getDownloadListArray() {
 		return filesDownloadedList;
 	}
+	
+
 }
 
 

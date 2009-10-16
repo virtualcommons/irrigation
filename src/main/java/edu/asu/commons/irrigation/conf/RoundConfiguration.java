@@ -47,16 +47,16 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
         return getIntProperty("max-canal-flow-capacity", 40);
     }
 
-    public int getMaximumTokenContribution() {
-        return getIntProperty("max-token-contribution", 10);
+    public int getMaximumInvestedTokens() {
+        return getIntProperty("max-invested-tokens", 10);
     }
 
     /**
      * returns maximum number of tokens that could have been contributed
      * @return
      */
-    public int getMaximumTotalTokenContribution() {
-        return getMaximumTokenContribution() * getClientsPerGroup();
+    public int getMaximumTotalInvestedTokens() {
+        return getMaximumInvestedTokens() * getClientsPerGroup();
     }
 
     public int getMaximumInfrastructureEfficiency() {

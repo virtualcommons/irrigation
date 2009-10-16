@@ -1,7 +1,6 @@
 package edu.asu.commons.irrigation.client;
 
 import java.awt.Dimension;
-import java.awt.Frame;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -76,7 +75,8 @@ public class IrrigationClient {
     
     private void initialize(Dimension screenSize) {
         clientDataModel = new ClientDataModel(channel, this);
-        experimentGameWindow = new ExperimentGameWindow(screenSize, this);
+        experimentGameWindow = new ExperimentGameWindow(this);
+        experimentGameWindow.initialize(screenSize);
         // clientGameState.setMainIrrigationGameWindow(irrigationGameWindow1);
         initEventProcessors();
     }
@@ -103,10 +103,11 @@ public class IrrigationClient {
                 IrrigationClient client = new IrrigationClient();
                 client.initialize(defaultDimension);
                 client.connect();
-                frame.setTitle("Client Window: " + client.id);
+                frame.setTitle("Virtual Commons Experiment Client: " + client.id);
                 frame.setSize(1130, 600);
                 frame.getContentPane().add(client.getExperimentGameWindow());
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.pack();
                 frame.setVisible(true);
             }
         };
@@ -121,10 +122,9 @@ public class IrrigationClient {
         return channel;
     }
 
-    public void transmitTokenContributed(int tokens) {
-        InvestedTokensEvent transferTokenBandwidthEvent = new InvestedTokensEvent(
-                getId(), tokens);
-        transmit(transferTokenBandwidthEvent);
+    public void transmitInvestedTokensEvent(int tokens) {
+        InvestedTokensEvent investedTokensEvent = new InvestedTokensEvent(getId(), tokens);
+        transmit(investedTokensEvent);
     }
 
     /**

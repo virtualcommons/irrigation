@@ -41,10 +41,7 @@ public class IrrigationGamePanel extends JPanel {
 	private JPanel downloadScreenPanel = null;
 	
 	private ScoreBoxPanel scoreBoxPanel;
-	
-	/**
-	 * This is the default constructor
-	 */
+
 	public IrrigationClient client;
 
 	public Dimension screenSize;
@@ -70,17 +67,16 @@ public class IrrigationGamePanel extends JPanel {
 	private JLabel scoreBoardLabel = null;
 
 	public IrrigationGamePanel(Dimension screenSize, IrrigationClient client) {
-		super();
 		setName("Irrigation Game Panel");
 		this.screenSize = screenSize;
 		this.client = client;
-		initialize();
+		initGuiComponents();
 	}
 	/**
 	 * Initializes the main game window.
 	 * @return 
 	 */
-	private void initialize() {
+	private void initGuiComponents() {
 		timeRemainingLabel = new JLabel();
 		timeRemainingLabel.setBounds(new Rectangle(469, 39, 146, 23));
 		timeRemainingLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -96,7 +92,7 @@ public class IrrigationGamePanel extends JPanel {
 		timeRemainingTextField.setHorizontalAlignment(SwingConstants.CENTER);
 
 		this.setLayout(new BorderLayout(4,4));
-		this.setSize(1130, 558);
+		this.setPreferredSize(new Dimension(1130, 558));
 		this.add(getJPanelMain(),null);
 		
 	}
