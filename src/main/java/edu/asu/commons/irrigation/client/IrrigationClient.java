@@ -161,7 +161,7 @@ public class IrrigationClient {
         channel.add(this, new EventTypeProcessor<RegistrationEvent>(RegistrationEvent.class) {
             public void handle(RegistrationEvent event) {
                 RoundConfiguration configuration = event.getRoundConfiguration();
-                setRoundConfiguration(configuration);
+                clientDataModel.setRoundConfiguration(configuration);
                 experimentGameWindow.updateRoundInstructions(configuration);
             }
         });

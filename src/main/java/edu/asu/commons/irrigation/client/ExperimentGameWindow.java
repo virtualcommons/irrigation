@@ -140,7 +140,7 @@ public class ExperimentGameWindow extends JPanel {
         instructionsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         instructionsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         // create a quiz listener and then initialize the instructions.
-        instructionsEditorPane.setActionListener(createQuizListener(client.getServerConfiguration()));
+        instructionsEditorPane.setActionListener(createQuizListener(clientDataModel.getServerConfiguration()));
         instructionsEditorPane.setCaretPosition(0);
         setInstructions(getGeneralInstructions(0));
 
@@ -181,14 +181,14 @@ public class ExperimentGameWindow extends JPanel {
     }
 
     public void updateInfrastructureEfficiencyLabel() {
-        GroupDataModel group = client.getClientDataModel().getGroupDataModel();
-        RoundConfiguration roundConfiguration = client.getRoundConfiguration();
+        GroupDataModel group = clientDataModel.getGroupDataModel();
+        RoundConfiguration roundConfiguration = clientDataModel.getRoundConfiguration();
         int infrastructureEfficiency = 0;
         if (roundConfiguration.isPracticeRound() || roundConfiguration.isFirstRound()) {
             infrastructureEfficiency = roundConfiguration.getInitialInfrastructureEfficiency();
         }
         else {
-            System.err.println("group was not null, efficiency is: " + group.getInfrastructureEfficiency() + " degrading by " + client.getRoundConfiguration().getInfrastructureDegradationFactor());
+            System.err.println("group was not null, efficiency is: " + group.getInfrastructureEfficiency() + " degrading by " + clientDataModel.getRoundConfiguration().getInfrastructureDegradationFactor());
             infrastructureEfficiency = group.getInfrastructureEfficiency() - roundConfiguration.getInfrastructureDegradationFactor();
         }
         infrastructureEfficiencyLabel.setText("Current infrastructure efficiency: " + infrastructureEfficiency);
@@ -399,7 +399,7 @@ public class ExperimentGameWindow extends JPanel {
             animationPanel.add(canalAnimationPanel,BorderLayout.CENTER);
             animationInstructionsEditorPane = createInstructionsEditorPane();
             animationInstructionsScrollPane = new JScrollPane(animationInstructionsEditorPane);
-            animationInstructionsEditorPane.setActionListener(createQuizListener(client.getServerConfiguration()));
+            animationInstructionsEditorPane.setActionListener(createQuizListener(clientDataModel.getServerConfiguration()));
             animationInstructionsEditorPane.setCaretPosition(0);
             animationPanel.add(animationInstructionsScrollPane, BorderLayout.SOUTH);
             //setInstructions(getGeneralInstructions(11));
@@ -421,7 +421,8 @@ public class ExperimentGameWindow extends JPanel {
      * @return
      */
     private String getGeneralInstructions(int pageNumber, int pagesTraversed) {
-        return client.getServerConfiguration().getGeneralInstructions(pageNumber, pagesTraversed, client.getClientDataModel().getPriority());
+        
+        return clientDataModel.getServerConfiguration().getGeneralInstructions(pageNumber, pagesTraversed, client.getClientDataModel().getPriority());
     }
 
     private String getGeneralInstructions(int pageNumber) {
@@ -623,11 +624,11 @@ public class ExperimentGameWindow extends JPanel {
                 allClientData[3].getTotalTokensEarned(),
                 allClientData[4].getTotalTokensEarned(),
 
-                (float)allClientData[0].getRoundConfiguration().getDollarsPerToken()*allClientData[0].getTotalTokensEarned(),
-                (float)allClientData[1].getRoundConfiguration().getDollarsPerToken()*allClientData[1].getTotalTokensEarned(),
-                (float)allClientData[2].getRoundConfiguration().getDollarsPerToken()*allClientData[2].getTotalTokensEarned(),
-                (float)allClientData[3].getRoundConfiguration().getDollarsPerToken()*allClientData[3].getTotalTokensEarned(),
-                (float)allClientData[4].getRoundConfiguration().getDollarsPerToken()*allClientData[4].getTotalTokensEarned()
+                (float)dollarsPerToken*allClientData[0].getTotalTokensEarned(),
+                (float)dollarsPerToken*allClientData[1].getTotalTokensEarned(),
+                (float)dollarsPerToken*allClientData[2].getTotalTokensEarned(),
+                (float)dollarsPerToken*allClientData[3].getTotalTokensEarned(),
+                (float)dollarsPerToken*allClientData[4].getTotalTokensEarned()
 
                 /*	
         		event.getClientData().getContributedTokens(),otherClientData.getContributedTokens(),
@@ -647,12 +648,12 @@ public class ExperimentGameWindow extends JPanel {
                 (float)dollarsPerToken*clientData.getTotalTokens() + client.getServerConfiguration().getShowUpPayment()
         ));
         //append the added practice round instructions
-        if(client.getRoundConfiguration().isPracticeRound()) {
+        if(clientDataModel.getRoundConfiguration().isPracticeRound()) {
             instructionsBuilder.append(" However, this is a practice round and the earnings mentioned are only for illustrative purposes " +
             "and will not count towards your actual payments");
         }
         else if (event.isLastRound()) {
-            instructionsBuilder.append(client.getServerConfiguration().getFinalInstructions());
+            instructionsBuilder.append(clientDataModel.getServerConfiguration().getFinalInstructions());
         }
         setInstructions(instructionsBuilder.toString());
     }
@@ -668,7 +669,6 @@ public class ExperimentGameWindow extends JPanel {
             }
         });
     }
-
 
     private ActionListener createQuizListener(final ServerConfiguration configuration) {
         return new ActionListener() {
@@ -816,13 +816,13 @@ public class ExperimentGameWindow extends JPanel {
             + "\n\nActual total flow capacity: "
             + df.format(clientData.getGroupDataModel().getMaximumAvailableFlowCapacity()) + " cubic feet per second \n\n"
             + "\n\nMaximum tokens that could have been contributed: "
-            + client.getRoundConfiguration().getMaximumTotalInvestedTokens()
+            + clientDataModel.getRoundConfiguration().getMaximumTotalInvestedTokens()
             + "\n\nTotal tokens contributed: "
             + totalContributedTokensPerGroup
             + "\n\nYour token contribution: "
             + clientData.getInvestedTokens()
             + "\n\nTotal flow capacity that could have been generated: "
-            + client.getRoundConfiguration().getMaximumCanalFlowCapacity()
+            + clientDataModel.getRoundConfiguration().getMaximumCanalFlowCapacity()
             + " cubic feet per second";
 
 
@@ -853,7 +853,7 @@ public class ExperimentGameWindow extends JPanel {
 
     private JPanel getPieChartPanel() {
         if (pieChartPanel == null) {
-            ClientData clientData = client.getClientDataModel().getClientData();
+            ClientData clientData = clientDataModel.getClientData();
             pieChartPanel = new JPanel();
             xySeriesDemo = new ChartWindowPanelTokenBandwidth(client);
             xySeriesDemo.setVisible(true);

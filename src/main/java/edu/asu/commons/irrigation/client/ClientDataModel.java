@@ -10,6 +10,7 @@ import java.util.Map;
 import edu.asu.commons.event.EventChannel;
 import edu.asu.commons.experiment.DataModel;
 import edu.asu.commons.irrigation.conf.RoundConfiguration;
+import edu.asu.commons.irrigation.conf.ServerConfiguration;
 import edu.asu.commons.irrigation.events.ClientUpdateEvent;
 import edu.asu.commons.irrigation.events.RoundStartedEvent;
 import edu.asu.commons.irrigation.server.ClientData;
@@ -33,8 +34,6 @@ public class ClientDataModel implements DataModel<RoundConfiguration> {
     private IrrigationClient client;
     
     private RoundConfiguration roundConfiguration;
-
-    private int priority = 0;
 
     private int timeLeft = 0;
 
@@ -60,15 +59,8 @@ public class ClientDataModel implements DataModel<RoundConfiguration> {
         setTimeLeft( (int) (getRoundConfiguration().getRoundDuration().getDelta() / 1000L) );
     }
 
-    /**
-     * Setting priority for this client.
-     */
-    public void setPriority(int priority){
-        this.priority  = priority;
-    }
-
     public int getPriority(){
-        return priority;
+        return getClientData().getPriority();
     }
     
     public void update(ClientUpdateEvent clientUpdateEvent) {
@@ -90,6 +82,10 @@ public class ClientDataModel implements DataModel<RoundConfiguration> {
 
     public void setRoundConfiguration(RoundConfiguration roundConfiguration) {
         this.roundConfiguration = roundConfiguration;
+    }
+    
+    public ServerConfiguration getServerConfiguration() {
+        return roundConfiguration.getParentConfiguration();
     }
     
     public void setGroupDataModel(GroupDataModel groupDataModel) {
