@@ -69,7 +69,7 @@ public class IrrigationClient {
 
     public IrrigationClient(EventChannel channel, ServerConfiguration serverConfiguration) {
         this.channel = channel;
-        this.serverConfiguration = serverConfiguration;
+        setServerConfiguration(serverConfiguration);
         this.clientDispatcher = DispatcherFactory.getInstance().createClientDispatcher(channel);
     }
     
@@ -158,9 +158,12 @@ public class IrrigationClient {
     }
 
     private void initEventProcessors() {
+        // registration events are sent before the start of each round and contain the configuration
+        // for that round, including all instructions, parameters, for that round.
         channel.add(this, new EventTypeProcessor<RegistrationEvent>(RegistrationEvent.class) {
             public void handle(RegistrationEvent event) {
                 RoundConfiguration configuration = event.getRoundConfiguration();
+                clientDataModel.setGroupDataModel(event.getClientData().getGroupDataModel());
                 clientDataModel.setRoundConfiguration(configuration);
                 experimentGameWindow.updateRoundInstructions(configuration);
             }
@@ -224,7 +227,7 @@ public class IrrigationClient {
     public ServerConfiguration getServerConfiguration() {
         return serverConfiguration;
     }
-
+    
     public void setServerConfiguration(ServerConfiguration serverConfiguration) {
         this.serverConfiguration = serverConfiguration;
     }

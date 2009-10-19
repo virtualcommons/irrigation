@@ -186,13 +186,13 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
                     clients.put(identifier, clientData);
                     serverDataModel.addClient(clientData);
                 }
-                transmit(new RegistrationEvent(clientData.getId(), getRoundConfiguration(), clientData));
+                transmit(new RegistrationEvent(clientData, getRoundConfiguration()));
             }
         });
         addEventProcessor(new EventTypeProcessor<DisconnectionRequest>(DisconnectionRequest.class) {
             @Override
             public void handle(DisconnectionRequest request) {
-                getLogger().warning("irrigation server is disconnecting: " + request);
+                getLogger().warning("irrigation server handling disconnection request: " + request);
                 Identifier disconnectedClientId = request.getId();
                 synchronized (clients) {
                     clients.remove(disconnectedClientId);
@@ -239,8 +239,8 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
         addEventProcessor(new EventTypeProcessor<QuizCompletedEvent>(QuizCompletedEvent.class) {
             @Override
             public void handle(QuizCompletedEvent event) {
-                getLogger().info("Quiz Completed Event:"+event.getId()+" : instruction Number"+event.getInstructionNumber());
                 numberOfCompletedQuizzes++;
+                getLogger().info("Completed quizzes: " + numberOfCompletedQuizzes);
                 if(numberOfCompletedQuizzes == clients.size()*8){
                     getLogger().info("Everyone has finished reading the general instructions successfully");
                 }
@@ -392,9 +392,11 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
             // need to send instructions
             //Send the end round event to the facilitator
             //Send the end round event to all the clients
-            for (ClientData data : clients.values()) {
-                data.award();
-                transmit(new EndRoundEvent(data.getId(), data.getGroupDataModel(), getConfiguration().isLastRound()));
+            synchronized (clients) {
+                for (ClientData data : clients.values()) {
+                    data.award();
+                    transmit(new EndRoundEvent(data.getId(), data.getGroupDataModel(), getConfiguration().isLastRound()));
+                }
             }
             transmit(new FacilitatorEndRoundEvent(facilitatorId, serverDataModel));
 
@@ -406,12 +408,14 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
 
         private void cleanupRound() {            
             // reset client data values
-            for (ClientData clientData: clients.values()) {
-                if (getConfiguration().getCurrentParameters().isPracticeRound()) {
-                    clientData.resetAllTokens();
-                }
-                else {
-                    clientData.reset();
+            synchronized (clients) {
+                for (ClientData clientData: clients.values()) {
+                    if (getConfiguration().getCurrentParameters().isPracticeRound()) {
+                        clientData.resetAllTokens();
+                    }
+                    else {
+                        clientData.reset();
+                    }
                 }
             }
             submittedClients = 0;
@@ -425,19 +429,21 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
             RoundConfiguration nextRoundConfiguration = getConfiguration().nextRound();
             serverDataModel.setRoundConfiguration(nextRoundConfiguration);
             // set up the next round
-            if (nextRoundConfiguration.shouldRandomizeGroup()) {
-                serverDataModel.clear();
-                List<ClientData> clientDataList = new ArrayList<ClientData>(clients.values());
-                // randomize the client data list 
-                Collections.shuffle(clientDataList);
-                // re-add each the clients to the server data model 
-                for (ClientData data: clientDataList) {
-                    serverDataModel.addClient(data);
+            synchronized (clients) {
+                if (nextRoundConfiguration.shouldRandomizeGroup()) {
+                    serverDataModel.clear();
+                    List<ClientData> clientDataList = new ArrayList<ClientData>(clients.values());
+                    // randomize the client data list 
+                    Collections.shuffle(clientDataList);
+                    // re-add each the clients to the server data model 
+                    for (ClientData data: clientDataList) {
+                        serverDataModel.addClient(data);
+                    }
+                }      
+                // send registration events to all participants.
+                for (ClientData data: clients.values()) {
+                    transmit(new RegistrationEvent(data, nextRoundConfiguration));
                 }
-            }      
-            // send registration events to all participants.
-            for (ClientData data: clients.values()) {
-                transmit(new RegistrationEvent(data.getId(), nextRoundConfiguration, data));
             }
             // send new round configuration to the facilitator
             transmit(new RegistrationEvent(facilitatorId, nextRoundConfiguration));

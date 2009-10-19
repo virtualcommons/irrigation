@@ -41,6 +41,8 @@ import edu.asu.commons.util.HtmlEditorPane.FormActionEvent;
  * $Id$
  * 
  * The root experiment window placed in the client's JFrame.  
+ * 
+ * FIXME: refactor this class.
  *
  * @author <a href='mailto:Allen.Lee@asu.edu'>Allen Lee</a>
  * @version $Rev$
@@ -50,6 +52,8 @@ public class ExperimentGameWindow extends JPanel {
     private static final long serialVersionUID = -5636795631355367711L;
 
     private ClientDataModel clientDataModel;
+    
+    private ChatPanel chatPanel;
 
     private JScrollPane instructionsScrollPane;
 
@@ -249,7 +253,7 @@ public class ExperimentGameWindow extends JPanel {
                     // FIXME: get rid of hardcoded animation on page 5.  Should instead
                     // just be an animated gif or something like that.
                     // should be more like "if instructions.hasAnimation()"
-                    if(instructionNumber == 5) {
+                    if (instructionNumber == 5) {
                         getInstructionsPanel().add(getCanalAnimationPanel(), BorderLayout.PAGE_START);
                     }
                     else {
@@ -421,12 +425,11 @@ public class ExperimentGameWindow extends JPanel {
      * @return
      */
     private String getGeneralInstructions(int pageNumber, int pagesTraversed) {
-        
         return clientDataModel.getServerConfiguration().getGeneralInstructions(pageNumber, pagesTraversed, client.getClientDataModel().getPriority());
     }
 
     private String getGeneralInstructions(int pageNumber) {
-        return client.getServerConfiguration().getGeneralInstructions(pageNumber);
+        return clientDataModel.getServerConfiguration().getGeneralInstructions(pageNumber);
     }
 
     private JTextField getInvestedTokensTextField() {
@@ -645,7 +648,7 @@ public class ExperimentGameWindow extends JPanel {
                 "showup fee, for a grand total of $%3.2f",
                 (float)dollarsPerToken*clientData.getTotalTokensEarned(),
                 (float)dollarsPerToken*clientData.getTotalTokens(),
-                (float)dollarsPerToken*clientData.getTotalTokens() + client.getServerConfiguration().getShowUpPayment()
+                (float)dollarsPerToken*clientData.getTotalTokens() + clientDataModel.getServerConfiguration().getShowUpPayment()
         ));
         //append the added practice round instructions
         if(clientDataModel.getRoundConfiguration().isPracticeRound()) {
@@ -665,7 +668,8 @@ public class ExperimentGameWindow extends JPanel {
             public void run() {
                 instructionsEditorPane.setText(instructions);
                 instructionsEditorPane.setCaretPosition(0);
-                instructionsScrollPane.requestFocusInWindow();        
+                instructionsScrollPane.requestFocusInWindow();
+                ExperimentGameWindow.this.repaint();
             }
         });
     }
@@ -900,7 +904,6 @@ public class ExperimentGameWindow extends JPanel {
         addCenterComponent(getInstructionsPanel());
     }
 
-    private ChatPanel chatPanel;
     private ChatPanel getChatPanel() {
         if (chatPanel == null) {
             chatPanel = new ChatPanel();

@@ -17,14 +17,24 @@ public class RegistrationEvent extends AbstractEvent implements ExperimentUpdate
     private RoundConfiguration roundConfiguration;
     private final ClientData clientData;
 
-    public RegistrationEvent(Identifier target, RoundConfiguration configuration) {
-        this(target, configuration, null);
+    /**
+     * Constructor used by the facilitator, which doesn't need any ClientData objects.
+     * 
+     * @param id
+     * @param roundConfiguration
+     */
+    public RegistrationEvent(Identifier id, RoundConfiguration roundConfiguration) {
+        this(id, roundConfiguration, null);
     }
     
-    public RegistrationEvent(Identifier target, RoundConfiguration roundConfiguration, ClientData clientData) {
-        super(target, roundConfiguration.getInstructions());
-        this.roundConfiguration = roundConfiguration;
+    public RegistrationEvent(Identifier id, RoundConfiguration roundConfiguration, ClientData clientData) {
+        super(id, roundConfiguration.getInstructions());
         this.clientData = clientData;
+    }
+    
+    public RegistrationEvent(ClientData clientData, RoundConfiguration roundConfiguration) {
+        this(clientData.getId(), roundConfiguration, clientData);
+        this.roundConfiguration = roundConfiguration;
     }
  
     public RoundConfiguration getRoundConfiguration() {

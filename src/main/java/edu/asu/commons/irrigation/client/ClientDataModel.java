@@ -1,6 +1,3 @@
-/**
- *
- */
 package edu.asu.commons.irrigation.client;
 
 import java.util.ArrayList;
@@ -32,13 +29,15 @@ public class ClientDataModel implements DataModel<RoundConfiguration> {
     private GroupDataModel groupDataModel;
     
     private IrrigationClient client;
-    
+   
+    private ServerConfiguration serverConfiguration;
     private RoundConfiguration roundConfiguration;
 
     private int timeLeft = 0;
 
     public ClientDataModel(EventChannel channel, IrrigationClient client) {
         this.client = client;
+        this.serverConfiguration = client.getServerConfiguration();
     }
 
     public ClientData getClientData() {
@@ -85,12 +84,11 @@ public class ClientDataModel implements DataModel<RoundConfiguration> {
     }
     
     public ServerConfiguration getServerConfiguration() {
-        return roundConfiguration.getParentConfiguration();
+        return serverConfiguration;
     }
     
     public void setGroupDataModel(GroupDataModel groupDataModel) {
         this.groupDataModel = groupDataModel;
-        setRoundConfiguration(groupDataModel.getRoundConfiguration());
     }
 
     public GroupDataModel getGroupDataModel() {

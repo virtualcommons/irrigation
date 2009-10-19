@@ -65,9 +65,8 @@ extends ExperimentConfiguration.Base<RoundConfiguration> {
     }
     
     /**
-     * getting the general welcome instructions
-     * 
-     * FIXME: Refactor this method.
+     * Returns the appropriate general instructions text, performing logic for adding
+     * positions and quizzes.   
      * 
      * @param instructionPageNumber
      * @param pagesTraversed
@@ -149,6 +148,10 @@ extends ExperimentConfiguration.Base<RoundConfiguration> {
 
     public String getFinalInstructions() {
         return assistant.getProperty("final-instructions", "<b>The experiment is now over.  Thanks for participating!</b>");
+    }
+    
+    public String getInvestmentInstructions() {
+        return assistant.getProperty("investment-instructions");
     }
 
 }

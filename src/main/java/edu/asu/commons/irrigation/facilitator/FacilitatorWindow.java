@@ -1,6 +1,3 @@
-/**
- * 
- */
 package edu.asu.commons.irrigation.facilitator;
 
 import java.awt.BorderLayout;
@@ -33,12 +30,11 @@ import edu.asu.commons.util.HtmlEditorPane;
  */
 public class FacilitatorWindow extends JPanel {
 
+    private static final long serialVersionUID = 3607885359444962888L;
+
     private Facilitator facilitator;
 
     private Dimension windowDimension;
-
-    private static final long serialVersionUID = 1L;
-
 
     private JButton startRoundButton = null;
 
@@ -47,7 +43,7 @@ public class FacilitatorWindow extends JPanel {
     private HtmlEditorPane editorPane;
     private JScrollPane scrollPane;
 
-    private JButton enableInstructionButton;
+    private JButton showInstructionsButton;
     /**
      * This is the default constructor
      */
@@ -58,15 +54,7 @@ public class FacilitatorWindow extends JPanel {
         initialize();
     }
 
-    /*
-	public IrrigationFacilitatorWindow(){
-	super();
-	initialize();
-	}
-     */
-
     /**
-     * This method initializes this
      * 
      * @return void
      */
@@ -77,7 +65,7 @@ public class FacilitatorWindow extends JPanel {
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
         buttonPanel.add(getStartRoundButton());
         buttonPanel.add(getBeginChatButton());
-        buttonPanel.add(getEnableInstructionButton());
+        buttonPanel.add(getShowInstructionsButton());
         add(buttonPanel, BorderLayout.NORTH);
         JPanel informationPanel = new JPanel();
         editorPane = new HtmlEditorPane();
@@ -86,18 +74,17 @@ public class FacilitatorWindow extends JPanel {
         add(informationPanel, BorderLayout.CENTER);
     }
 
-    private JButton getEnableInstructionButton() {
-        // TODO Auto-generated method stub
-        if (enableInstructionButton == null) {
-            enableInstructionButton = new JButton("Enable Instruction");
-            enableInstructionButton.addActionListener(new ActionListener() {
+    private JButton getShowInstructionsButton() {
+        if (showInstructionsButton == null) {
+            showInstructionsButton = new JButton("Show Instructions");
+            showInstructionsButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent event) {
-                    enableInstructionButton.setEnabled(false);
+//                    enableInstructionButton.setEnabled(false);
                     facilitator.transmit(new ShowInstructionsRequest(facilitator.getId()));
                 }
             });
         }
-        return enableInstructionButton;
+        return showInstructionsButton;
     }
 
     /**
@@ -124,7 +111,7 @@ public class FacilitatorWindow extends JPanel {
         return beginChatButton;
     }
 
-    public Facilitator getFacilitator(){
+    public Facilitator getFacilitator() {
         return facilitator;
     }
 
@@ -143,9 +130,8 @@ public class FacilitatorWindow extends JPanel {
             startRoundButton = new JButton();
             startRoundButton.setBounds(new Rectangle(180, 16, 136, 24));
             startRoundButton.setText("Start Round");
-            startRoundButton.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    System.out.println("actionPerformed()"); // TODO Auto-generated Event stub actionPerformed()
+            startRoundButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
                     facilitator.sendBeginRoundRequest();
                 }
             });
