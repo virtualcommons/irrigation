@@ -59,7 +59,7 @@ public class ExperimentGameWindow extends JPanel {
 
     private HtmlEditorPane instructionsEditorPane;
 
-    private JPanel tokenScreenPanel = null;
+    private JPanel investTokensPanel = null;
 
     private JPanel graphPanel;
 
@@ -99,23 +99,7 @@ public class ExperimentGameWindow extends JPanel {
 
     private JLabel quizMessageLabel;
 
-    private JLabel quizAnimationLabel = new JLabel();
-
     private int pagesTraversed = 0;
-
-    private JPanel animationInstructionPanel;
-
-    private JPanel animationPanel;
-
-    private JPanel navigationAnimationPanel;
-
-    private JButton nextAnimationButton;
-
-    private JButton previousAnimationButton;
-
-    private HtmlEditorPane animationInstructionsEditorPane;
-
-    private JScrollPane animationInstructionsScrollPane;
 
     private JPanel pieChartPanel;
 
@@ -141,7 +125,7 @@ public class ExperimentGameWindow extends JPanel {
         setLayout(cardLayout);
 
         instructionsScrollPane = new JScrollPane(getInstructionsEditorPane());
-        instructionsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        instructionsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         instructionsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         // create a quiz listener and then initialize the instructions.
         instructionsEditorPane.setActionListener(createQuizListener(clientDataModel.getServerConfiguration()));
@@ -151,37 +135,30 @@ public class ExperimentGameWindow extends JPanel {
         addToCardLayout(getInstructionsPanel());
         irrigationGamePanel = new IrrigationGamePanel(screenSize, client);
         addToCardLayout(irrigationGamePanel);
-        // add any other panels that need to be switched to..
-        // FIXME: see if we can simplify the number of instructions panes that Sanket has created.
-//        addToCardLayout(getInstructionsEditorPane());
+        addToCardLayout(getInvestTokensPanel());
     }
     
     private void addToCardLayout(Component component) {
         add(component, component.getName());
     }
 
-    private JPanel getTokenScreenPanel() {
-        if (tokenScreenPanel == null) {
-            tokenScreenPanel = new JPanel();
-            tokenScreenPanel.setLayout(new BorderLayout());
+    private JPanel getInvestTokensPanel() {
+        if (investTokensPanel == null) {
+            investTokensPanel = new JPanel();
+            investTokensPanel.setName("Invest tokens panel");
+            investTokensPanel.setLayout(new BorderLayout());
             tokenInstructionsEditorPane = createInstructionsEditorPane();
             tokenInstructionsScrollPane = new JScrollPane(tokenInstructionsEditorPane);
-            tokenScreenPanel.add(tokenInstructionsScrollPane, BorderLayout.CENTER);
-            //setInstructions(getGeneralInstructions(11));
-            //            StringBuilder tokenSubmissionInstructionsBuilder = new StringBuilder("<h3>The current infrastructure efficiency is: ");
-            //            
-            //            tokenSubmissionInstructionsBuilder.append("% </h3>");
-            //            tokenSubmissionInstructionsBuilder.append(
-            StringBuilder tokenSubmissionInstructionsBuilder = new StringBuilder(getGeneralInstructions(11, pagesTraversed));
-            tokenInstructionsEditorPane.setText(tokenSubmissionInstructionsBuilder.toString());
+            investTokensPanel.add(tokenInstructionsScrollPane, BorderLayout.CENTER);
+            tokenInstructionsEditorPane.setText(clientDataModel.getServerConfiguration().getInvestmentInstructions());
             tokenInstructionsEditorPane.setCaretPosition(0);
             tokenInstructionsEditorPane.repaint();
-            tokenScreenPanel.add(getSubmitTokenPanel(), BorderLayout.SOUTH);
-            tokenScreenPanel.add(infrastructureEfficiencyLabel, BorderLayout.NORTH);
-            tokenScreenPanel.setBackground(Color.WHITE);
+            investTokensPanel.add(getSubmitTokenPanel(), BorderLayout.SOUTH);
+            investTokensPanel.add(infrastructureEfficiencyLabel, BorderLayout.NORTH);
+            investTokensPanel.setBackground(Color.WHITE);
         }
         updateInfrastructureEfficiencyLabel();
-        return tokenScreenPanel;
+        return investTokensPanel;
     }
 
     public void updateInfrastructureEfficiencyLabel() {
@@ -299,123 +276,12 @@ public class ExperimentGameWindow extends JPanel {
         return nextButton;
     }
 
-    private JPanel getAnimationInstructionPanel() {
-        if (animationInstructionPanel == null) {
-            animationInstructionPanel = new JPanel();
-            animationInstructionPanel.setName("Animated instruction panel");
-            animationInstructionPanel.setLayout(new BorderLayout());
-            animationInstructionPanel.add(getAnimationPanel(), BorderLayout.CENTER);
-
-            animationInstructionPanel.add(getNavigationAnimationPanel(), BorderLayout.PAGE_END);
-            animationInstructionPanel.setBackground(Color.WHITE);
-            return animationInstructionPanel;
-        }
-        //System.out.println("instruction number : "+instructionNumber+" pages traversed"+pagesTraversed);
-        animationInstructionsEditorPane.setText(getGeneralInstructions(instructionNumber,pagesTraversed));
-        return animationInstructionPanel;
-    }
-
-
-    private JPanel getNavigationAnimationPanel() {
-        if (navigationAnimationPanel == null) {
-            navigationAnimationPanel = new JPanel();
-            navigationAnimationPanel.setName("Navigation animation panel");
-            navigationAnimationPanel.setLayout(new BorderLayout());
-            navigationAnimationPanel.add(getNextAnimationButton(), BorderLayout.EAST);
-            navigationAnimationPanel.add(getPreviousAnimationButton(), BorderLayout.WEST);
-
-            quizAnimationLabel.setText("");
-            navigationAnimationPanel.add(quizAnimationLabel, BorderLayout.CENTER);
-        }
-        return navigationAnimationPanel;
-    }
-
-    private JButton getPreviousAnimationButton() {
-        if (previousAnimationButton == null) {
-            previousAnimationButton = new JButton();
-            previousAnimationButton.setText("Previous");
-            previousAnimationButton.setEnabled(true);
-            previousAnimationButton.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    quizMessageLabel.setText("");
-                    // getting the next instruction Number
-                    nextButton.setEnabled(true);
-                    if (instructionNumber > 1) {
-                        instructionNumber--;
-                    }
-                    previousButton.setEnabled( instructionNumber > 1 );
-                    setInstructions(getGeneralInstructions(instructionNumber,pagesTraversed));
-                    addCenterComponent(getInstructionsPanel());
-                }
-            });
-        }
-        return previousAnimationButton;
-    }
-
-    private JButton getNextAnimationButton() {
-        if (nextAnimationButton == null) {
-            nextAnimationButton = new JButton();
-            nextAnimationButton.setText("Next");
-            nextAnimationButton.setEnabled(false);
-            nextAnimationButton.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    quizMessageLabel.setText("");
-                    previousButton.setEnabled(true);
-                    if(instructionNumber >= pagesTraversed)
-                        nextButton.setEnabled(false);
-                    // getting the next instruction Number
-                    if (instructionNumber != NUMBER_INSTRUCTIONS) {
-                        instructionNumber++;
-                    }
-                    System.out.println("instruction number : "+instructionNumber+" pages traversed"+pagesTraversed);	
-                    setInstructions(getGeneralInstructions(instructionNumber,pagesTraversed));
-                    // FIXME: horrifyingly hard coded
-                    if(instructionNumber == 5) {
-                        //addCenterComponent(getTokenScreenPanel());
-                        getInstructionsPanel().add(getCanalAnimationPanel(), BorderLayout.PAGE_START);
-                    }
-                    else {
-                        getInstructionsPanel().remove(getCanalAnimationPanel());
-//                        addCenterComponent(getInstructionsPanel());
-                    }
-                    validate();
-                }
-            });
-        }
-        return nextAnimationButton;
-
-    }
-    
     private JPanel getCanalAnimationPanel() {
         if (canalAnimationPanel == null) {
             canalAnimationPanel = new CanalAnimationPanel(40);
         }
         return canalAnimationPanel;
     }
-
-    private JPanel getAnimationPanel() {
-        if (animationPanel == null) {
-            animationPanel = new JPanel();
-            animationPanel.setName("Animation panel");
-            animationPanel.setLayout(new BorderLayout());
-            //FIXME: Here the animation panel needs to be decided on fly
-            canalAnimationPanel = new CanalAnimationPanel(40);
-            animationPanel.add(canalAnimationPanel,BorderLayout.CENTER);
-            animationInstructionsEditorPane = createInstructionsEditorPane();
-            animationInstructionsScrollPane = new JScrollPane(animationInstructionsEditorPane);
-            animationInstructionsEditorPane.setActionListener(createQuizListener(clientDataModel.getServerConfiguration()));
-            animationInstructionsEditorPane.setCaretPosition(0);
-            animationPanel.add(animationInstructionsScrollPane, BorderLayout.SOUTH);
-            //setInstructions(getGeneralInstructions(11));
-            //System.out.println("instruction number : "+instructionNumber+" pages traversed"+pagesTraversed);
-            animationInstructionsEditorPane.setText(getGeneralInstructions(instructionNumber,pagesTraversed));
-            animationInstructionsEditorPane.setCaretPosition(0);
-            animationInstructionsEditorPane.repaint();
-            animationPanel.setBackground(Color.WHITE);
-        }
-        return animationPanel;
-    }
-
 
     /**
      * This returns the string of general instructions from the irrigation.xml file
@@ -425,7 +291,7 @@ public class ExperimentGameWindow extends JPanel {
      * @return
      */
     private String getGeneralInstructions(int pageNumber, int pagesTraversed) {
-        return clientDataModel.getServerConfiguration().getGeneralInstructions(pageNumber, pagesTraversed, client.getClientDataModel().getPriority());
+        return clientDataModel.getServerConfiguration().getGeneralInstructions(pageNumber, pagesTraversed, clientDataModel.getPriority());
     }
 
     private String getGeneralInstructions(int pageNumber) {
@@ -476,7 +342,7 @@ public class ExperimentGameWindow extends JPanel {
                 investedTokensTextField.setText("");
                 instructionsBuilder.delete(0, instructionsBuilder.length());
                 instructionsBuilder.append("\nPlease enter your tokens within the range 0 - 10");
-                instructionsBuilder.append(getGeneralInstructions(11,pagesTraversed));
+                instructionsBuilder.append(clientDataModel.getServerConfiguration().getInvestmentInstructions());
                 tokenInstructionsEditorPane.setText(instructionsBuilder.toString());
             }
         }
@@ -484,8 +350,7 @@ public class ExperimentGameWindow extends JPanel {
             investedTokensTextField.setText("");
             instructionsBuilder.delete(0, instructionsBuilder.length());
             instructionsBuilder.append("\nYou only have between 0 and 10 to invest.  Please choose a number between 0 and 10 and try again.");
-            instructionsBuilder.append(getGeneralInstructions(11,pagesTraversed));
-//            setInstructions(instructionsBuilder.toString());
+            instructionsBuilder.append(clientDataModel.getServerConfiguration().getInvestmentInstructions());
             tokenInstructionsEditorPane.setText(instructionsBuilder.toString());
         }
     }
@@ -502,7 +367,6 @@ public class ExperimentGameWindow extends JPanel {
     
     private HtmlEditorPane createInstructionsEditorPane() {
         HtmlEditorPane htmlEditorPane = new HtmlEditorPane();
-        htmlEditorPane.setPreferredSize(new Dimension(400, 400));
         htmlEditorPane.setEditable(false);
         htmlEditorPane.setFont(new Font("serif", Font.PLAIN, 12));
         return htmlEditorPane;
@@ -522,6 +386,7 @@ public class ExperimentGameWindow extends JPanel {
         //            repaint();
         //        }
         //        currentCenterComponent = newCenterComponent;
+        revalidate();
         repaint();
     }
 
@@ -561,7 +426,9 @@ public class ExperimentGameWindow extends JPanel {
                 investedTokensTextField.setText("");
                 addDebriefingText(event);
                 // generate debriefing text from data culled from the Event
-                addCenterComponent(instructionsEditorPane);
+//                addCenterComponent(instructionsEditorPane);
+                // FIXME: this is probably wrong.
+                addCenterComponent(getInstructionsPanel());
             }
         };
         try {
@@ -668,135 +535,110 @@ public class ExperimentGameWindow extends JPanel {
             public void run() {
                 instructionsEditorPane.setText(instructions);
                 instructionsEditorPane.setCaretPosition(0);
-                instructionsScrollPane.requestFocusInWindow();
-                ExperimentGameWindow.this.repaint();
+                instructionsScrollPane.revalidate();
             }
         });
     }
 
     private ActionListener createQuizListener(final ServerConfiguration configuration) {
         return new ActionListener() {
+            private Map<String, String> quizAnswers = configuration.getQuizAnswers();
             public void actionPerformed(ActionEvent e){
                 // System.err.println("In action performed with event: " + e);
                 FormActionEvent formEvent = (FormActionEvent) e;
-                Properties actualAnswers = formEvent.getData();
-                System.out.println("Form data"+formEvent.getData().toString());
-                //                actualAnswers.list(System.err);
+                Properties responses = formEvent.getData();
                 List<String> incorrectAnswers = new ArrayList<String>();
-                // iterate through expected answers
-                for (Map.Entry<String, String> entry : configuration.getQuizAnswers().entrySet()) {
-                    //here just check those questions that come in those instructions
-
-                    String questionNumber = entry.getKey();
-                    String expectedAnswer = entry.getValue();
-
-                    //System.out.println("Actual answer"+actualAnswers.getProperty(questionNumber));
-                    switch(instructionNumber){
-                    case 1:
-                        if(questionNumber.equalsIgnoreCase("q1")){
-                        //System.out.println("Entering the string equal");
-                        incorrectAnswers = addIncorrectAnswerList(expectedAnswer,actualAnswers,questionNumber, incorrectAnswers);
+                responses.list(System.err);
+                for (Map.Entry<Object, Object> entry : responses.entrySet()) {
+                    String questionNumber = (String) entry.getKey();
+                    if (questionNumber.charAt(0) == 'q') {
+                        String response = (String) entry.getValue();
+                        String correctAnswer = quizAnswers.get(questionNumber);
+                        if (! response.equals(correctAnswer)) {
+                            incorrectAnswers.add(questionNumber);
+                        }
                     }
-                    break;
-
-                    case 2: if(questionNumber.equalsIgnoreCase("q2")){
-                        //System.out.println("Entering the string equal");
-                        incorrectAnswers = addIncorrectAnswerList(expectedAnswer,actualAnswers,questionNumber, incorrectAnswers);
-                    }
-                    break;
-
-                    case 3: if(questionNumber.equalsIgnoreCase("q3") || questionNumber.equalsIgnoreCase("q4") ){
-                        //System.out.println("Entering the string equal");
-                        incorrectAnswers = addIncorrectAnswerList(expectedAnswer,actualAnswers,questionNumber, incorrectAnswers);
-                    }
-                    break;
-
-                    case 4: if(questionNumber.equalsIgnoreCase("q5")){
-                        //System.out.println("Entering the string equal");
-                        incorrectAnswers = addIncorrectAnswerList(expectedAnswer,actualAnswers,questionNumber, incorrectAnswers);
-                    }
-                    break;
-
-                    case 5: if(questionNumber.equalsIgnoreCase("q6") || questionNumber.equalsIgnoreCase("q7") ){
-                        //System.out.println("Entering the string equal");
-                        incorrectAnswers = addIncorrectAnswerList(expectedAnswer,actualAnswers,questionNumber, incorrectAnswers);
-                    }
-                    break;
-
-                    case 6: if(questionNumber.equalsIgnoreCase("q8")){
-                        //System.out.println("Entering the string equal");
-                        incorrectAnswers = addIncorrectAnswerList(expectedAnswer,actualAnswers,questionNumber, incorrectAnswers);
-                    }
-                    break;
-                    case 7: if(questionNumber.equalsIgnoreCase("q9") || questionNumber.equalsIgnoreCase("q10") ){
-                        //System.out.println("Entering the string equal");
-                        incorrectAnswers = addIncorrectAnswerList(expectedAnswer,actualAnswers,questionNumber, incorrectAnswers);
-                    }
-                    break;
-
-                    case 8: if(questionNumber.equalsIgnoreCase("q11")){
-                        //System.out.println("Entering the string equal");
-                        incorrectAnswers = addIncorrectAnswerList(expectedAnswer,actualAnswers,questionNumber, incorrectAnswers);
-                        System.out.println("Expected question"+questionNumber);
-                        System.out.println("Expected Answer"+expectedAnswer);
-                    }
-                    break;
-                    }
-
                 }
+//                
+//                
+//                // iterate through expected answers
+//                for (Map.Entry<String, String> entry : configuration.getQuizAnswers().entrySet()) {
+//                    // just check those questions that come in those instructions
+//                    String questionNumber = entry.getKey();
+//                    String expectedAnswer = entry.getValue();
+//
+//                    switch(instructionNumber){
+//                    case 1:
+//                        if(questionNumber.equalsIgnoreCase("q1")) {
+//                            incorrectAnswers = addIncorrectAnswerList(expectedAnswer,responses,questionNumber, incorrectAnswers);
+//                        }
+//                        break;
+//                    case 2: 
+//                        if(questionNumber.equalsIgnoreCase("q2")){
+//                            incorrectAnswers = addIncorrectAnswerList(expectedAnswer,responses,questionNumber, incorrectAnswers);
+//                        }
+//                        break;
+//                    case 3: 
+//                        if(questionNumber.equalsIgnoreCase("q3") || questionNumber.equalsIgnoreCase("q4") ) {
+//                            incorrectAnswers = addIncorrectAnswerList(expectedAnswer,responses,questionNumber, incorrectAnswers);
+//                        }
+//                        break;
+//                    case 4: 
+//                        if(questionNumber.equalsIgnoreCase("q5")) {
+//                            incorrectAnswers = addIncorrectAnswerList(expectedAnswer,responses,questionNumber, incorrectAnswers);
+//                        }
+//                        break;
+//
+//                    case 5: if(questionNumber.equalsIgnoreCase("q6") || questionNumber.equalsIgnoreCase("q7") ){
+//                        //System.out.println("Entering the string equal");
+//                        incorrectAnswers = addIncorrectAnswerList(expectedAnswer,responses,questionNumber, incorrectAnswers);
+//                    }
+//                    break;
+//
+//                    case 6: if(questionNumber.equalsIgnoreCase("q8")){
+//                        //System.out.println("Entering the string equal");
+//                        incorrectAnswers = addIncorrectAnswerList(expectedAnswer,responses,questionNumber, incorrectAnswers);
+//                    }
+//                    break;
+//                    case 7: if(questionNumber.equalsIgnoreCase("q9") || questionNumber.equalsIgnoreCase("q10") ){
+//                        //System.out.println("Entering the string equal");
+//                        incorrectAnswers = addIncorrectAnswerList(expectedAnswer,responses,questionNumber, incorrectAnswers);
+//                    }
+//                    break;
+//
+//                    case 8: if(questionNumber.equalsIgnoreCase("q10")){
+//                        //System.out.println("Entering the string equal");
+//                        incorrectAnswers = addIncorrectAnswerList(expectedAnswer,responses,questionNumber, incorrectAnswers);
+//                        System.out.println("Expected question"+questionNumber);
+//                        System.out.println("Expected Answer"+expectedAnswer);
+//                    }
+//                    break;
+//                    }
+//
+//                }
                 printIncorrectAnswerList(incorrectAnswers);
                 if (incorrectAnswers.isEmpty()) {
                     nextButton.setEnabled(true);
-                    if(instructionNumber == 5){
-                        nextAnimationButton.setEnabled(true);
-                        quizAnimationLabel.setForeground(Color.BLUE);
-                        quizAnimationLabel.setText("  Congratulations, your answer is correct.  You may go to the next instructions page by clicking 'Next'");
-                    }
-
                     pagesTraversed++;
                     //System.out.println("quiz :instruction number : "+instructionNumber+" pages traversed"+pagesTraversed);	
                     setInstructions(getGeneralInstructions(instructionNumber,pagesTraversed));
-                    if(instructionNumber == 5) {
-                        addCenterComponent(getAnimationInstructionPanel());
-                    }
-                    else {
-                        addCenterComponent(getInstructionsPanel());
-                    }
+                    addCenterComponent(getInstructionsPanel());
                     quizMessageLabel.setForeground(Color.BLUE);
-                    quizMessageLabel.setText("  Congratulations, your answer is correct.  You may go to the next page by clicking 'Next'");
+                    quizMessageLabel.setText("You answered the question(s) correctly.  Please continue to the next page by clicking 'Next'");
                     // notify the server and also notify the participant.
                     //StringBuilder builder = new StringBuilder(configuration.getInstructions());
                     //builder.append("<br><b>Congratulations!</b> You have answered all questions correctly.");
                     //setInstructions(builder.toString());
                     client.transmit(new QuizCompletedEvent(client.getId(),instructionNumber));
-
                 }
                 else {
-                    if(instructionNumber == 5) {
-                        quizAnimationLabel.setForeground(Color.RED);
-                        quizAnimationLabel.setText(" Sorry, your answer is incorrect. Please try again.");
-                    }
                     nextButton.setEnabled(false);
                     quizMessageLabel.setForeground(Color.RED);
-                    quizMessageLabel.setText(" Sorry, your answer is incorrect. Please try again.");
-                    // FIXME: highlight the incorrect answers?
-                    //StringBuilder builder = new StringBuilder().append(instructionsBuilder);
-                    //builder.append("<br><b><font color='red'>You have answered some questions incorrectly.  Please try again and resubmit.</font></b>");
-                    //setInstructions(builder.toString());
+                    quizMessageLabel.setText("You did not answer the question(s) correctly. Please try again.");
                 }
-            }
-
-            private List<String> addIncorrectAnswerList(String expectedAnswer, Properties actualAnswers, String questionNumber, List<String> incorrectAnswers) {
-                // TODO Auto-generated method stub
-                if (! expectedAnswer.equals(actualAnswers.getProperty(questionNumber)) ) {
-                    // flag the incorrect response
-                    incorrectAnswers.add(questionNumber);
-                }
-                return incorrectAnswers;
             }
 
             private void printIncorrectAnswerList(List<String> incorrectAnswers) {
-                // TODO Auto-generated method stub
                 System.out.println("Size of the incorrect answers is :"+incorrectAnswers.size());
                 for(int i=0;i<incorrectAnswers.size();i++){
                     System.out.println("Incorrect Answers :"+incorrectAnswers.get(i));
@@ -810,10 +652,8 @@ public class ExperimentGameWindow extends JPanel {
         totalContributedTokensPerGroup = clientData.getGroupDataModel().getTotalContributedTokens();
         contributionInformationTextArea = new JTextArea();
         contributionInformationTextArea.setEditable(false);
-
-        // adding the Contribution Status Information to the Text Area
         DecimalFormat df = new DecimalFormat("#.##");
-        String contributionInformation = 
+        final String contributionInformation = 
             "Initial infrastructure efficiency: " + clientData.getGroupDataModel().getInitialInfrastructureEfficiency() + "%"
             + "\n\nInitial flow capacity: " + clientData.getGroupDataModel().getInitialFlowCapacity() + " cubic feet per second "
             + "\n\nActual infrastructure efficiency: " + clientData.getGroupDataModel().getInfrastructureEfficiency() + "%"
@@ -830,11 +670,10 @@ public class ExperimentGameWindow extends JPanel {
             + " cubic feet per second";
 
 
-        contributionInformationTextArea.setText(contributionInformation);
         
         Runnable runnable = new Runnable() {
             public void run() {
-                
+                contributionInformationTextArea.setText(contributionInformation);
             }
         };
 
@@ -884,7 +723,7 @@ public class ExperimentGameWindow extends JPanel {
                 // has begun.
                 /*roundEndsOn = (configuration.getRoundTime() * 1000L) + System.currentTimeMillis();
                     update();*/
-                addCenterComponent(getTokenScreenPanel());
+                addCenterComponent(getInvestTokensPanel());
                 getInvestedTokensTextField().requestFocusInWindow();
             }
         };
@@ -937,7 +776,7 @@ public class ExperimentGameWindow extends JPanel {
                     final long timeRemaining = endTime - System.currentTimeMillis();
                     if (timeRemaining < 0) {
                         sleep();
-                        addCenterComponent(getTokenScreenPanel());
+                        addCenterComponent(getInvestTokensPanel());
                         getInvestedTokensTextField().requestFocusInWindow();
                         timer.stop();
                         timer = null;
