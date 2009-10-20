@@ -130,14 +130,11 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
 
     /**
      * Returns true if the current round should have a communication session for
-     * getCommunicationDuration() seconds before the round begins.
+     * getChatDuration() seconds before the round begins.
      * 
      * @return
      */
     public boolean isChatEnabledBeforeRound() {
-        if (isPracticeRound()) {
-            return false;
-        }
         return getBooleanProperty("chat-enabled-before-round", true);
     }
 

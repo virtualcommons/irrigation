@@ -71,14 +71,14 @@ public class IrrigationClient {
         this.channel = channel;
         setServerConfiguration(serverConfiguration);
         this.clientDispatcher = DispatcherFactory.getInstance().createClientDispatcher(channel);
+        initEventProcessors();
     }
     
     private void initialize(Dimension screenSize) {
         clientDataModel = new ClientDataModel(channel, this);
         experimentGameWindow = new ExperimentGameWindow(this);
         experimentGameWindow.initialize(screenSize);
-        // clientGameState.setMainIrrigationGameWindow(irrigationGameWindow1);
-        initEventProcessors();
+        connect();
     }
 
     public void connect() {
@@ -86,8 +86,8 @@ public class IrrigationClient {
                 + " state: " + state);
         if (state != ClientState.UNCONNECTED)
             return;
+        
         id = clientDispatcher.connect(serverConfiguration.getServerAddress());
-        System.err.println("Received id from server: " + id);
         if (id == null) {
             throw new RuntimeException("Null ID from Dispatcher.  Server: <"
                     + serverConfiguration.getServerAddress() + "> is probably down.");
@@ -102,7 +102,6 @@ public class IrrigationClient {
                 JFrame frame = new JFrame();
                 IrrigationClient client = new IrrigationClient();
                 client.initialize(defaultDimension);
-                client.connect();
                 frame.setTitle("Virtual Commons Experiment Client: " + client.id);
                 frame.setSize(1130, 600);
                 frame.getContentPane().add(client.getExperimentGameWindow());

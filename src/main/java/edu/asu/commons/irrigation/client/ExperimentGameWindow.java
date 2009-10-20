@@ -67,7 +67,7 @@ public class ExperimentGameWindow extends JPanel {
 
     private JButton submitTokensButton;
 
-    private ChartWindowPanelTokenBandwidth xySeriesDemo = null;
+    private InfrastructureEfficiencyChartPanel xySeriesDemo = null;
 
     private IrrigationClient client;
 
@@ -625,7 +625,7 @@ public class ExperimentGameWindow extends JPanel {
     private JPanel getPieChartPanel() {
         if (pieChartPanel == null) {
             pieChartPanel = new JPanel();
-            xySeriesDemo = new ChartWindowPanelTokenBandwidth(client);
+            xySeriesDemo = new InfrastructureEfficiencyChartPanel(client);
             xySeriesDemo.setVisible(true);
             pieChart = new PieChart();
             GridLayout gridLayout = new GridLayout();
@@ -654,7 +654,7 @@ public class ExperimentGameWindow extends JPanel {
         System.err.println("Updating round instructions: " + roundConfiguration.getInstructions());
         // if this is the first round, show the general instructions.
         if (roundConfiguration.isFirstRound()) {
-//            setInstructions(roundConfiguration.getParentConfiguration().getInitialInstructions());
+
         }
         else {
             instructionsBuilder.append(roundConfiguration.getInstructions());

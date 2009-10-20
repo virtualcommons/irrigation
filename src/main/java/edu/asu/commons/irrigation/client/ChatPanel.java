@@ -52,7 +52,6 @@ public class ChatPanel extends JPanel {
 
     private IrrigationClient irrigationClient;
 
-
     private Identifier clientId;
 
     private JScrollPane messageScrollPane;
@@ -109,18 +108,13 @@ public class ChatPanel extends JPanel {
 
         private void sendMessage() {
             String message = chatField.getText();
-            // System.err.println("message: " + message);
-            if (message == null || "".equals(message)) {
-                return;
+            if (message != null && ! message.isEmpty() && targetIdentifier != null) {
+            	chatField.setText("");
+            	irrigationClient.transmit(new ChatRequest(getClientId(), message, targetIdentifier));
+            	displayMessage(
+            			String.format("%s -> %s", getChatHandle(getClientId()), getChatHandle(targetIdentifier)), 
+            			message);
             }
-            if (targetIdentifier == null) {
-                return;
-            }
-            chatField.setText("");
-            irrigationClient.transmit(new ChatRequest(clientId, message, targetIdentifier));
-            System.err.println("Sending a new chat request");
-            displayMessage(getChatHandle(clientId) + " -> "
-                    + getChatHandle(targetIdentifier), message);
             chatField.requestFocusInWindow();
         }
 
@@ -147,7 +141,7 @@ public class ChatPanel extends JPanel {
         JFrame frame = new JFrame();
         ChatPanel chatPanel = new ChatPanel();
         Identifier selfId = new Identifier(){};
-        chatPanel.setClientId(selfId);
+        chatPanel.clientId = selfId;
         chatPanel.initialize(Arrays.asList(new Identifier[] {
                 new Identifier(){}, new Identifier(){}, 
                 new Identifier(){}, selfId }));
@@ -229,13 +223,15 @@ public class ChatPanel extends JPanel {
             chatHandles.put(participants.get(i), HANDLES[i]);
         }
     }
-
-    public void setClientId(Identifier clientId) {
-        this.clientId = clientId;
+    
+    public Identifier getClientId() {
+    	if (clientId == null) {
+    		clientId = irrigationClient.getId();
+    	}
+    	return clientId;
     }
 
     public void setIrrigationClient(IrrigationClient client) {
-        setClientId(client.getId());
         this.irrigationClient = client;
         client.getEventChannel().add(this, new EventTypeProcessor<ChatEvent>(ChatEvent.class) {
             public void handle(final ChatEvent chatEvent) {
