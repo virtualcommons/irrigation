@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -67,7 +68,7 @@ public class ExperimentGameWindow extends JPanel {
 
     private JButton submitTokensButton;
 
-    private InfrastructureEfficiencyChartPanel xySeriesDemo = null;
+    private InfrastructureEfficiencyChartPanel infrastructureEfficiencyChartPanel = null;
 
     private IrrigationClient client;
 
@@ -101,7 +102,7 @@ public class ExperimentGameWindow extends JPanel {
 
     private JPanel pieChartPanel;
 
-    private PieChart pieChart;
+    private TokenInvestmentPieChartPanel pieChart;
 
     private CanalAnimationPanel canalAnimationPanel;
 
@@ -356,8 +357,6 @@ public class ExperimentGameWindow extends JPanel {
         }
     }
 
-    // ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     private HtmlEditorPane getInstructionsEditorPane() {
         if (instructionsEditorPane == null) {
             instructionsEditorPane = createInstructionsEditorPane();
@@ -595,15 +594,14 @@ public class ExperimentGameWindow extends JPanel {
 
 
         
-        Runnable runnable = new Runnable() {
+        SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 contributionInformationTextArea.setText(contributionInformation);
+                infrastructureEfficiencyChartPanel.initialize();
                 pieChart.setClientData(clientData);
                 addCenterComponent(getGraphPanel());
             }
-        };
-
-        SwingUtilities.invokeLater(runnable);
+        });
         irrigationGamePanel.updateContributions(clientDataModel);
     }
     
@@ -611,13 +609,11 @@ public class ExperimentGameWindow extends JPanel {
         if (graphPanel == null) {
             graphPanel = new JPanel();
             graphPanel.setName("Graph panel");
-            GridLayout gridLayout = new GridLayout();
-            gridLayout.setColumns(2);
-            graphPanel.setLayout(gridLayout);
-            graphPanel.add(getPieChartPanel(), null);
+            graphPanel.setLayout(new BoxLayout(graphPanel, BoxLayout.X_AXIS));
+            graphPanel.add(getPieChartPanel());
             contributionInformationTextArea = new JTextArea();
             contributionInformationTextArea.setEditable(false);
-            graphPanel.add(contributionInformationTextArea,null);
+            graphPanel.add(contributionInformationTextArea);
         }
         return graphPanel;
     }
@@ -625,14 +621,13 @@ public class ExperimentGameWindow extends JPanel {
     private JPanel getPieChartPanel() {
         if (pieChartPanel == null) {
             pieChartPanel = new JPanel();
-            xySeriesDemo = new InfrastructureEfficiencyChartPanel(client);
-            xySeriesDemo.setVisible(true);
-            pieChart = new PieChart();
+            infrastructureEfficiencyChartPanel = new InfrastructureEfficiencyChartPanel(client);
+            pieChart = new TokenInvestmentPieChartPanel();
             GridLayout gridLayout = new GridLayout();
             gridLayout.setRows(2);
             gridLayout.setColumns(1);
             pieChartPanel.setLayout(gridLayout);
-            pieChartPanel.add(xySeriesDemo);
+            pieChartPanel.add(infrastructureEfficiencyChartPanel);
             pieChartPanel.add(pieChart);
         }
         return pieChartPanel;

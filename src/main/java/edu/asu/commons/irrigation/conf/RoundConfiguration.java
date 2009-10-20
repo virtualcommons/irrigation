@@ -139,7 +139,7 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
     }
 
     public int getChatDuration() {
-        return getIntProperty("communication-duration", 40);
+        return getIntProperty("chat-duration", 40);
     }
 
     /**

@@ -27,10 +27,9 @@ public class InfrastructureEfficiencyChartPanel extends JPanel {
     private static final long serialVersionUID = 5555080117985336199L;
 
     private IrrigationClient client;
-    /**
-     * 
-     * @param title  the frame title.
-     */
+    
+    private ChartPanel chartPanel;
+    
     public InfrastructureEfficiencyChartPanel(IrrigationClient client) {
         this.client = client;
     	setPreferredSize(new Dimension(530/2, 326/2));
@@ -40,7 +39,11 @@ public class InfrastructureEfficiencyChartPanel extends JPanel {
     }
 
     public void initialize() {
-    	add(createChartPanel(), BorderLayout.CENTER);
+    	if (chartPanel != null) {
+    		remove(chartPanel);
+    	}
+    	chartPanel = createChartPanel();
+    	add(chartPanel, BorderLayout.CENTER);
     }
 
     private ChartPanel createChartPanel() {

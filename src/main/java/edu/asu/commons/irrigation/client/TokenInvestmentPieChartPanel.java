@@ -1,12 +1,10 @@
 package edu.asu.commons.irrigation.client;
 
-import java.awt.Dimension;
+import java.awt.BorderLayout;
 import java.awt.Font;
-import java.awt.Rectangle;
 import java.util.Map;
 
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -22,31 +20,32 @@ import edu.asu.commons.net.Identifier;
 /**
  * Presents the group contributions as a pie chart.
  */
-public class PieChart extends JPanel {
+public class TokenInvestmentPieChartPanel extends JPanel {
 
 	private static final long serialVersionUID = -5382293105043214105L;
 
 	private ChartPanel chartPanel;
 	
+	public TokenInvestmentPieChartPanel() {
+		setLayout(new BorderLayout());
+	}
+	
     public void setClientData(final ClientData clientData) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                final PieDataset dataset = createDataset(clientData);
-                final JFreeChart chart = createChart(dataset);
-                remove(chartPanel);
-                chartPanel = new ChartPanel(chart);
-                chartPanel.setPreferredSize(new Dimension(500, 270));
-                add(chartPanel);
-                setBounds(new Rectangle(0,0,500,270));
-            }
-        });
+    	final PieDataset dataset = createPieDataset(clientData);
+    	final JFreeChart chart = createChart(dataset);
+    	if (chartPanel != null) {
+    		remove(chartPanel);
+    	}
+    	chartPanel = new ChartPanel(chart);
+    	add(chartPanel, BorderLayout.CENTER);
+    	revalidate();
     }
 
     /**
      * Creates a pie dataset out of the client 
      * @return a sample dataset.
      */
-    private PieDataset createDataset(ClientData clientData) {
+    private PieDataset createPieDataset(ClientData clientData) {
         final DefaultPieDataset defaultPieDataset = new DefaultPieDataset();
         GroupDataModel groupDataModel = clientData.getGroupDataModel();
         Map<Identifier,ClientData>clientDataMap = groupDataModel.getClientDataMap();

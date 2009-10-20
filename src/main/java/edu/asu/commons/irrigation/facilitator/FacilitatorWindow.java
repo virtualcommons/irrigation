@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.TreeSet;
 
 import javax.swing.BoxLayout;
-import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
