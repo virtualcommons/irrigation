@@ -8,7 +8,6 @@ import javax.swing.SwingUtilities;
 
 import edu.asu.commons.event.BeginExperimentRequest;
 import edu.asu.commons.event.BeginRoundRequest;
-import edu.asu.commons.event.ConfigurationEvent;
 import edu.asu.commons.event.EndRoundRequest;
 import edu.asu.commons.event.Event;
 import edu.asu.commons.event.EventChannel;
@@ -18,6 +17,7 @@ import edu.asu.commons.event.FacilitatorRegistrationRequest;
 import edu.asu.commons.irrigation.conf.RoundConfiguration;
 import edu.asu.commons.irrigation.conf.ServerConfiguration;
 import edu.asu.commons.irrigation.events.FacilitatorEndRoundEvent;
+import edu.asu.commons.irrigation.events.RegistrationEvent;
 import edu.asu.commons.irrigation.server.ServerDataModel;
 import edu.asu.commons.net.ClientDispatcher;
 import edu.asu.commons.net.DispatcherFactory;
@@ -42,7 +42,7 @@ public class Facilitator {
 
     private ServerDataModel serverGameState;  //  @jve:decl-index=0:
 
-    private FacilitatorWindow irrigationFacilitatorWindow;
+    private FacilitatorWindow facilitatorWindow;
 
     private boolean experimentRunning = false;
 
@@ -55,19 +55,17 @@ public class Facilitator {
     public Facilitator(ServerConfiguration configuration) {
         dispatcher = DispatcherFactory.getInstance().createClientDispatcher(channel);
         setConfiguration(configuration);
-        initializeEventProcessors();
     }
-
-    @SuppressWarnings("unchecked")
+    
     private void initializeEventProcessors() {
-        channel.add(this, new EventTypeProcessor<ConfigurationEvent>(ConfigurationEvent.class) {
-            public void handle(ConfigurationEvent configurationEvent) {
-                setConfiguration((ServerConfiguration) configurationEvent.getConfiguration());
+        channel.add(this, new EventTypeProcessor<RegistrationEvent>(RegistrationEvent.class) {
+            public void handle(RegistrationEvent registrationEvent) {
+                facilitatorWindow.setText(registrationEvent.getRoundConfiguration().getInstructions());
             }
         });
         channel.add(this, new EventTypeProcessor<FacilitatorEndRoundEvent>(FacilitatorEndRoundEvent.class) {
             public void handle(FacilitatorEndRoundEvent event) {
-                irrigationFacilitatorWindow.endRound(event);
+                facilitatorWindow.endRound(event);
                 configuration.nextRound();
             }
         });
@@ -107,8 +105,10 @@ public class Facilitator {
         transmit(new FacilitatorRegistrationRequest(id));
     }
 
-    void createFacilitatorWindow(Dimension dimension) {
-        irrigationFacilitatorWindow = new FacilitatorWindow(dimension, this);
+    void initialize() {
+        facilitatorWindow = new FacilitatorWindow(this);
+        facilitatorWindow.setText(configuration.getFacilitatorInstructions());
+        initializeEventProcessors();
     }
 
     /*
@@ -121,24 +121,23 @@ public class Facilitator {
     public static void main(String[] args) {
         Runnable createGuiRunnable = new Runnable() {
             public void run() {
-                Dimension dimension = new Dimension(500, 600);
+                Dimension dimension = new Dimension(600, 600);
                 Facilitator facilitator = Facilitator.getInstance();
+                facilitator.initialize();
                 facilitator.connect();
                 JFrame frame = new JFrame();
                 frame.setTitle("Facilitator window: " + facilitator.id);
-                frame.setSize((int) dimension.getWidth(), (int) dimension.getHeight());
-                facilitator.createFacilitatorWindow(dimension);
+                frame.setPreferredSize(dimension);
+
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.getContentPane().add(facilitator.getFacilitatorWindow());
+                frame.pack();
                 frame.setVisible(true);
             }
         };
         SwingUtilities.invokeLater(createGuiRunnable);
     }
 
-    /*
-     * Send a request to server to start an experiment 
-     */
     void sendBeginExperimentRequest(){
         transmit(new BeginExperimentRequest(id));
     }
@@ -155,7 +154,7 @@ public class Facilitator {
     }
 
     public FacilitatorWindow getFacilitatorWindow() {
-        return irrigationFacilitatorWindow;
+        return facilitatorWindow;
     }
 
     public Identifier getId(){

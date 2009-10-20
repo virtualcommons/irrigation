@@ -24,7 +24,7 @@ import edu.asu.commons.irrigation.events.CloseGateEvent;
 import edu.asu.commons.irrigation.events.DisplaySubmitTokenRequest;
 import edu.asu.commons.irrigation.events.EndRoundEvent;
 import edu.asu.commons.irrigation.events.FacilitatorEndRoundEvent;
-import edu.asu.commons.irrigation.events.GroupUpdateEvent;
+import edu.asu.commons.irrigation.events.InfrastructureUpdateEvent;
 import edu.asu.commons.irrigation.events.InvestedTokensEvent;
 import edu.asu.commons.irrigation.events.OpenGateEvent;
 import edu.asu.commons.irrigation.events.PauseRequest;
@@ -276,8 +276,8 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
             group.calculateTotalFlowCapacity();            
             // iterate through all groups and send back their contribution status
             for (Identifier id : group.getClientDataMap().keySet()) {
-                GroupUpdateEvent groupUpdateEvent = new GroupUpdateEvent(id, group);
-                transmit(groupUpdateEvent);
+                InfrastructureUpdateEvent infrastructureUpdateEvent = new InfrastructureUpdateEvent(id, group);
+                transmit(infrastructureUpdateEvent);
             }
         }
     }       

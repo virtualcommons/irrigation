@@ -18,7 +18,7 @@ import edu.asu.commons.irrigation.events.ClientUpdateEvent;
 import edu.asu.commons.irrigation.events.CloseGateEvent;
 import edu.asu.commons.irrigation.events.DisplaySubmitTokenRequest;
 import edu.asu.commons.irrigation.events.EndRoundEvent;
-import edu.asu.commons.irrigation.events.GroupUpdateEvent;
+import edu.asu.commons.irrigation.events.InfrastructureUpdateEvent;
 import edu.asu.commons.irrigation.events.InvestedTokensEvent;
 import edu.asu.commons.irrigation.events.OpenGateEvent;
 import edu.asu.commons.irrigation.events.PauseRequest;
@@ -168,12 +168,11 @@ public class IrrigationClient {
                 experimentGameWindow.updateRoundInstructions(configuration);
             }
         });
-        channel.add(this, new EventTypeProcessor<GroupUpdateEvent>(GroupUpdateEvent.class) {
-            public void handle(GroupUpdateEvent event) {
+        channel.add(this, new EventTypeProcessor<InfrastructureUpdateEvent>(InfrastructureUpdateEvent.class) {
+            public void handle(InfrastructureUpdateEvent event) {
                 System.err.println("Received group update event: " + event);
                 clientDataModel.setGroupDataModel(event.getGroupDataModel());
-                experimentGameWindow.updateGraphDisplay(event.getClientDataMap().get(event.getId()));
-                experimentGameWindow.updateContributions();
+                experimentGameWindow.updateGraphDisplay(event.getClientData());
             }
         });
         channel.add(this, new EventTypeProcessor<RoundStartedEvent>(RoundStartedEvent.class) {

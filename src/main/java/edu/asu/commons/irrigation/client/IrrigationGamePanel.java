@@ -339,9 +339,9 @@ public class IrrigationGamePanel extends JPanel {
 	/**
 	 * fills in the panels depending on the priority of the client
 	 */
-	public void fillPanels(ClientDataModel clientGameState) {
+	public void fillPanels(ClientDataModel clientDataModel) {
 		// TODO Auto-generated method stub
-		jPanelUpperWindow.add(getUpperPanel(clientGameState));
+		jPanelUpperWindow.add(getUpperPanel(clientDataModel));
 		//switch(clientGameState.getPriority()){
 		
 		downloadScreenPanel.add(getJPanelUpStreamWindow(),null);

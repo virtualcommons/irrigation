@@ -16,13 +16,13 @@ import edu.asu.commons.net.Identifier;
  * @author <a href='mailto:Allen.Lee@asu.edu'>Allen Lee</a>
  * @version $Rev$
  */
-public class GroupUpdateEvent extends AbstractEvent implements ExperimentUpdateEvent {
+public class InfrastructureUpdateEvent extends AbstractEvent implements ExperimentUpdateEvent {
 
     private static final long serialVersionUID = -8522536860601018690L;
 
     private final GroupDataModel groupDataModel;
     
-	public GroupUpdateEvent(Identifier id, GroupDataModel groupDataModel) {
+	public InfrastructureUpdateEvent(Identifier id, GroupDataModel groupDataModel) {
 	    super(id);
         this.groupDataModel = groupDataModel;
 	}
@@ -33,6 +33,10 @@ public class GroupUpdateEvent extends AbstractEvent implements ExperimentUpdateE
 	
 	public Map<Identifier,ClientData> getClientDataMap(){
 		return groupDataModel.getClientDataMap();
+	}
+	
+	public ClientData getClientData() {
+	    return groupDataModel.getClientData(id);
 	}
 
 }

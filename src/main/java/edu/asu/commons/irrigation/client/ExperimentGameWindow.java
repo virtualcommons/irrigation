@@ -95,8 +95,6 @@ public class ExperimentGameWindow extends JPanel {
 
     private JScrollPane tokenInstructionsScrollPane;
 
-    private int NUMBER_INSTRUCTIONS = 9;
-
     private JLabel quizMessageLabel;
 
     private int pagesTraversed = 0;
@@ -108,12 +106,15 @@ public class ExperimentGameWindow extends JPanel {
     private CanalAnimationPanel canalAnimationPanel;
 
     private CardLayout cardLayout;
+    
+    private int numberOfGeneralInstructionPages;
 
     private JLabel infrastructureEfficiencyLabel = new JLabel("Current infrastructure efficiency: ");
 
     public ExperimentGameWindow(IrrigationClient client) {
         this.client = client;
         this.clientDataModel = client.getClientDataModel();
+        this.numberOfGeneralInstructionPages = getServerConfiguration().getNumberOfGeneralInstructionPages();
     }
     
     void initialize(Dimension screenSize) {
@@ -128,7 +129,7 @@ public class ExperimentGameWindow extends JPanel {
         instructionsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         instructionsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         // create a quiz listener and then initialize the instructions.
-        instructionsEditorPane.setActionListener(createQuizListener(clientDataModel.getServerConfiguration()));
+        instructionsEditorPane.setActionListener(createQuizListener(getServerConfiguration()));
         instructionsEditorPane.setCaretPosition(0);
         setInstructions(getGeneralInstructions(0));
 
@@ -136,6 +137,8 @@ public class ExperimentGameWindow extends JPanel {
         irrigationGamePanel = new IrrigationGamePanel(screenSize, client);
         addToCardLayout(irrigationGamePanel);
         addToCardLayout(getInvestTokensPanel());
+        addToCardLayout(getChatPanel());
+        addToCardLayout(getGraphPanel());
     }
     
     private void addToCardLayout(Component component) {
@@ -150,14 +153,13 @@ public class ExperimentGameWindow extends JPanel {
             tokenInstructionsEditorPane = createInstructionsEditorPane();
             tokenInstructionsScrollPane = new JScrollPane(tokenInstructionsEditorPane);
             investTokensPanel.add(tokenInstructionsScrollPane, BorderLayout.CENTER);
-            tokenInstructionsEditorPane.setText(clientDataModel.getServerConfiguration().getInvestmentInstructions());
+            tokenInstructionsEditorPane.setText(getServerConfiguration().getInvestmentInstructions());
             tokenInstructionsEditorPane.setCaretPosition(0);
             tokenInstructionsEditorPane.repaint();
             investTokensPanel.add(getSubmitTokenPanel(), BorderLayout.SOUTH);
             investTokensPanel.add(infrastructureEfficiencyLabel, BorderLayout.NORTH);
             investTokensPanel.setBackground(Color.WHITE);
         }
-        updateInfrastructureEfficiencyLabel();
         return investTokensPanel;
     }
 
@@ -173,7 +175,6 @@ public class ExperimentGameWindow extends JPanel {
             infrastructureEfficiency = group.getInfrastructureEfficiency() - roundConfiguration.getInfrastructureDegradationFactor();
         }
         infrastructureEfficiencyLabel.setText("Current infrastructure efficiency: " + infrastructureEfficiency);
-        infrastructureEfficiencyLabel.repaint();
     }
 
     private JPanel getSubmitTokenPanel() {
@@ -206,6 +207,7 @@ public class ExperimentGameWindow extends JPanel {
             instructionsNavigationPanel.add(getNextButton(), BorderLayout.LINE_END);
             // displays quiz messages (correct/incorrect answer).
             quizMessageLabel = new JLabel();
+            quizMessageLabel.setHorizontalAlignment(JLabel.CENTER);
             instructionsNavigationPanel.add(quizMessageLabel, BorderLayout.CENTER);
         }
         return instructionsNavigationPanel;
@@ -225,7 +227,6 @@ public class ExperimentGameWindow extends JPanel {
                     }
                     previousButton.setEnabled(instructionNumber > 1);
                     nextButton.setEnabled(true);
-                    System.out.println("instruction number : "+instructionNumber+" pages traversed"+pagesTraversed);
                     setInstructions(getGeneralInstructions(instructionNumber,pagesTraversed));
                     // FIXME: get rid of hardcoded animation on page 5.  Should instead
                     // just be an animated gif or something like that.
@@ -236,7 +237,7 @@ public class ExperimentGameWindow extends JPanel {
                     else {
                         getInstructionsPanel().remove(getCanalAnimationPanel());
                     }
-                    validate();
+                    getInstructionsPanel().revalidate();
                 }
             });
         }
@@ -255,21 +256,21 @@ public class ExperimentGameWindow extends JPanel {
                     if (instructionNumber >= pagesTraversed){
                         nextButton.setEnabled(false);
                     }
-
-                    // getting the next instruction Number
-                    if (instructionNumber < NUMBER_INSTRUCTIONS) {
+                    if (instructionNumber < numberOfGeneralInstructionPages) {
                         instructionNumber++;
+                        setInstructions(getGeneralInstructions(instructionNumber,pagesTraversed));
                     }
-                    setInstructions(getGeneralInstructions(instructionNumber,pagesTraversed));
+//                    else {
+//                        setInstructions(clientDataModel.getRoundConfiguration().getInstructions());
+//                    }
                     if(instructionNumber == 5) {
                         getInstructionsPanel().add(getCanalAnimationPanel(), BorderLayout.PAGE_START);
                     }
                     else {
                         getInstructionsPanel().remove(getCanalAnimationPanel());
                     }
-                    validate();
+                    getInstructionsPanel().revalidate();
                 }
-
             });
 
         }
@@ -291,11 +292,15 @@ public class ExperimentGameWindow extends JPanel {
      * @return
      */
     private String getGeneralInstructions(int pageNumber, int pagesTraversed) {
-        return clientDataModel.getServerConfiguration().getGeneralInstructions(pageNumber, pagesTraversed, clientDataModel.getPriority());
+        return getServerConfiguration().getGeneralInstructions(pageNumber, pagesTraversed, clientDataModel.getPriority());
     }
 
     private String getGeneralInstructions(int pageNumber) {
-        return clientDataModel.getServerConfiguration().getGeneralInstructions(pageNumber);
+        return getServerConfiguration().getGeneralInstructions(pageNumber);
+    }
+    
+    private ServerConfiguration getServerConfiguration() {
+        return clientDataModel.getServerConfiguration();
     }
 
     private JTextField getInvestedTokensTextField() {
@@ -303,9 +308,6 @@ public class ExperimentGameWindow extends JPanel {
             investedTokensTextField = new JTextField();
             investedTokensTextField.addKeyListener(new KeyAdapter() {
                 public void keyPressed(KeyEvent event) {
-                    // System.err.println("event keycode is: " +
-                    // event.getKeyCode());
-                    // System.err.println("vk_enter: " + KeyEvent.VK_ENTER);
                     if (event.getKeyCode() == KeyEvent.VK_ENTER) {
                         submitInvestedTokens();
                     }
@@ -322,7 +324,6 @@ public class ExperimentGameWindow extends JPanel {
             submitTokensButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     submitInvestedTokens();
-
                 }
             });
         }
@@ -342,7 +343,7 @@ public class ExperimentGameWindow extends JPanel {
                 investedTokensTextField.setText("");
                 instructionsBuilder.delete(0, instructionsBuilder.length());
                 instructionsBuilder.append("\nPlease enter your tokens within the range 0 - 10");
-                instructionsBuilder.append(clientDataModel.getServerConfiguration().getInvestmentInstructions());
+                instructionsBuilder.append(getServerConfiguration().getInvestmentInstructions());
                 tokenInstructionsEditorPane.setText(instructionsBuilder.toString());
             }
         }
@@ -350,7 +351,7 @@ public class ExperimentGameWindow extends JPanel {
             investedTokensTextField.setText("");
             instructionsBuilder.delete(0, instructionsBuilder.length());
             instructionsBuilder.append("\nYou only have between 0 and 10 to invest.  Please choose a number between 0 and 10 and try again.");
-            instructionsBuilder.append(clientDataModel.getServerConfiguration().getInvestmentInstructions());
+            instructionsBuilder.append(getServerConfiguration().getInvestmentInstructions());
             tokenInstructionsEditorPane.setText(instructionsBuilder.toString());
         }
     }
@@ -375,40 +376,18 @@ public class ExperimentGameWindow extends JPanel {
 
     private void addCenterComponent(Component newCenterComponent) {
         cardLayout.show(this, newCenterComponent.getName());
-        //        if (currentCenterComponent != null) {
-        //            currentCenterComponent.setVisible(false);
-        //            remove(currentCenterComponent);
-        //            add(newCenterComponent, BorderLayout.CENTER);
-        //            newCenterComponent.setVisible(true);
-        //            invalidate();
-        //            validate();
-        //            newCenterComponent.repaint();
-        //            repaint();
-        //        }
-        //        currentCenterComponent = newCenterComponent;
         revalidate();
         repaint();
     }
 
     public void startRound(final RoundConfiguration configuration) {
-
-        // currentExperimentConfiguration = configuration;
         Runnable runnable = new Runnable() {
             public void run() {
-//                addCenterComponent(subjectWindow);
+                addCenterComponent(irrigationGamePanel);
                 requestFocusInWindow();
-
             }
         };
         SwingUtilities.invokeLater(runnable);
-    }
-
-    /*
-     * This method could be merged somehow with the startRoundEvent. We can get
-     * rid of the sendContributionStatus then
-     */
-    public void updateContributions() {
-        irrigationGamePanel.updateContributions(clientDataModel);
     }
 
     public void update() {
@@ -447,6 +426,10 @@ public class ExperimentGameWindow extends JPanel {
         System.err.println(message);
     }
 
+    /**
+     * FIXME: needs serious refactoring
+     * @param event
+     */
     private void addDebriefingText(EndRoundEvent event) {
         instructionsBuilder.delete(0, instructionsBuilder.length());
 
@@ -515,7 +498,7 @@ public class ExperimentGameWindow extends JPanel {
                 "showup fee, for a grand total of $%3.2f",
                 (float)dollarsPerToken*clientData.getTotalTokensEarned(),
                 (float)dollarsPerToken*clientData.getTotalTokens(),
-                (float)dollarsPerToken*clientData.getTotalTokens() + clientDataModel.getServerConfiguration().getShowUpPayment()
+                (float)dollarsPerToken*clientData.getTotalTokens() + getServerConfiguration().getShowUpPayment()
         ));
         //append the added practice round instructions
         if(clientDataModel.getRoundConfiguration().isPracticeRound()) {
@@ -523,7 +506,7 @@ public class ExperimentGameWindow extends JPanel {
             "and will not count towards your actual payments");
         }
         else if (event.isLastRound()) {
-            instructionsBuilder.append(clientDataModel.getServerConfiguration().getFinalInstructions());
+            instructionsBuilder.append(getServerConfiguration().getFinalInstructions());
         }
         setInstructions(instructionsBuilder.toString());
     }
@@ -559,63 +542,6 @@ public class ExperimentGameWindow extends JPanel {
                         }
                     }
                 }
-//                
-//                
-//                // iterate through expected answers
-//                for (Map.Entry<String, String> entry : configuration.getQuizAnswers().entrySet()) {
-//                    // just check those questions that come in those instructions
-//                    String questionNumber = entry.getKey();
-//                    String expectedAnswer = entry.getValue();
-//
-//                    switch(instructionNumber){
-//                    case 1:
-//                        if(questionNumber.equalsIgnoreCase("q1")) {
-//                            incorrectAnswers = addIncorrectAnswerList(expectedAnswer,responses,questionNumber, incorrectAnswers);
-//                        }
-//                        break;
-//                    case 2: 
-//                        if(questionNumber.equalsIgnoreCase("q2")){
-//                            incorrectAnswers = addIncorrectAnswerList(expectedAnswer,responses,questionNumber, incorrectAnswers);
-//                        }
-//                        break;
-//                    case 3: 
-//                        if(questionNumber.equalsIgnoreCase("q3") || questionNumber.equalsIgnoreCase("q4") ) {
-//                            incorrectAnswers = addIncorrectAnswerList(expectedAnswer,responses,questionNumber, incorrectAnswers);
-//                        }
-//                        break;
-//                    case 4: 
-//                        if(questionNumber.equalsIgnoreCase("q5")) {
-//                            incorrectAnswers = addIncorrectAnswerList(expectedAnswer,responses,questionNumber, incorrectAnswers);
-//                        }
-//                        break;
-//
-//                    case 5: if(questionNumber.equalsIgnoreCase("q6") || questionNumber.equalsIgnoreCase("q7") ){
-//                        //System.out.println("Entering the string equal");
-//                        incorrectAnswers = addIncorrectAnswerList(expectedAnswer,responses,questionNumber, incorrectAnswers);
-//                    }
-//                    break;
-//
-//                    case 6: if(questionNumber.equalsIgnoreCase("q8")){
-//                        //System.out.println("Entering the string equal");
-//                        incorrectAnswers = addIncorrectAnswerList(expectedAnswer,responses,questionNumber, incorrectAnswers);
-//                    }
-//                    break;
-//                    case 7: if(questionNumber.equalsIgnoreCase("q9") || questionNumber.equalsIgnoreCase("q10") ){
-//                        //System.out.println("Entering the string equal");
-//                        incorrectAnswers = addIncorrectAnswerList(expectedAnswer,responses,questionNumber, incorrectAnswers);
-//                    }
-//                    break;
-//
-//                    case 8: if(questionNumber.equalsIgnoreCase("q10")){
-//                        //System.out.println("Entering the string equal");
-//                        incorrectAnswers = addIncorrectAnswerList(expectedAnswer,responses,questionNumber, incorrectAnswers);
-//                        System.out.println("Expected question"+questionNumber);
-//                        System.out.println("Expected Answer"+expectedAnswer);
-//                    }
-//                    break;
-//                    }
-//
-//                }
                 printIncorrectAnswerList(incorrectAnswers);
                 if (incorrectAnswers.isEmpty()) {
                     nextButton.setEnabled(true);
@@ -650,8 +576,6 @@ public class ExperimentGameWindow extends JPanel {
 
     public void updateGraphDisplay(final ClientData clientData) {
         totalContributedTokensPerGroup = clientData.getGroupDataModel().getTotalContributedTokens();
-        contributionInformationTextArea = new JTextArea();
-        contributionInformationTextArea.setEditable(false);
         DecimalFormat df = new DecimalFormat("#.##");
         final String contributionInformation = 
             "Initial infrastructure efficiency: " + clientData.getGroupDataModel().getInitialInfrastructureEfficiency() + "%"
@@ -674,33 +598,36 @@ public class ExperimentGameWindow extends JPanel {
         Runnable runnable = new Runnable() {
             public void run() {
                 contributionInformationTextArea.setText(contributionInformation);
+                pieChart.setClientData(clientData);
+                addCenterComponent(getGraphPanel());
             }
         };
 
         SwingUtilities.invokeLater(runnable);
+        irrigationGamePanel.updateContributions(clientDataModel);
     }
     
     public JPanel getGraphPanel() {
         if (graphPanel == null) {
             graphPanel = new JPanel();
+            graphPanel.setName("Graph panel");
             GridLayout gridLayout = new GridLayout();
             gridLayout.setColumns(2);
             graphPanel.setLayout(gridLayout);
             graphPanel.add(getPieChartPanel(), null);
+            contributionInformationTextArea = new JTextArea();
+            contributionInformationTextArea.setEditable(false);
             graphPanel.add(contributionInformationTextArea,null);
-            addCenterComponent(graphPanel);
-            requestFocusInWindow();
         }
         return graphPanel;
     }
 
     private JPanel getPieChartPanel() {
         if (pieChartPanel == null) {
-            ClientData clientData = clientDataModel.getClientData();
             pieChartPanel = new JPanel();
             xySeriesDemo = new ChartWindowPanelTokenBandwidth(client);
             xySeriesDemo.setVisible(true);
-            pieChart = new PieChart(clientData.getGroupDataModel(),client);
+            pieChart = new PieChart();
             GridLayout gridLayout = new GridLayout();
             gridLayout.setRows(2);
             gridLayout.setColumns(1);
@@ -715,15 +642,8 @@ public class ExperimentGameWindow extends JPanel {
     public void updateSubmitTokenScreenDisplay() {
         Runnable runnable = new Runnable() {
             public void run() {
-                //mainIrrigationWindow.setup(configuration);
-                // reset the amount of time left in the round on food eaten
-                // label to the value from the configuration file.
-                // this is NOT dynamic; once the StartRoundEvent is fired off
-                // by the server no new clients can connect because the round
-                // has begun.
-                /*roundEndsOn = (configuration.getRoundTime() * 1000L) + System.currentTimeMillis();
-                    update();*/
                 addCenterComponent(getInvestTokensPanel());
+                updateInfrastructureEfficiencyLabel();
                 getInvestedTokensTextField().requestFocusInWindow();
             }
         };
@@ -745,8 +665,8 @@ public class ExperimentGameWindow extends JPanel {
 
     private ChatPanel getChatPanel() {
         if (chatPanel == null) {
-            chatPanel = new ChatPanel();
-            chatPanel.setClient(client);
+            chatPanel = new ChatPanel(client);
+            chatPanel.setName("Chat panel");
         }
         return chatPanel;
     }
@@ -759,10 +679,6 @@ public class ExperimentGameWindow extends JPanel {
                 ChatPanel chatPanel = getChatPanel();
                 chatPanel.initialize(clientDataModel.getAllClientIdentifiers());
                 addCenterComponent( chatPanel );
-                chatPanel.getJTextField().requestFocus();
-                System.err.println("Done adding chat panel...");
-                //stop the animation in the instructions
-
             }
         });
     }

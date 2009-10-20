@@ -73,7 +73,7 @@
   <property name='server.class' value='edu.asu.commons.irrigation.server.IrrigationServer'/>
   <property name='framework.jar' value='csidex.jar'/>
 
-  <property name='dist.dir' value='dist' />
+  <property name='dist.dir' value='.' />
 
   <property name='resources.dir' value='src/main/resources'/>
   <property name='conf.dir' value='${resources.dir}/configuration'/>
@@ -136,7 +136,7 @@
         <include name='facilitator.jar'/>
       </fileset>
       <fileset dir='${lib.dir}'>
-        <include name='${framework.jar}'/>
+        <include name='*.jar'/>
       </fileset>
       <fileset dir='${resources.dir}/web'>
         <include name='index.html'/>
@@ -195,7 +195,6 @@
       <param name='main.class' value='${server.class}'/>
       <param name='jar.name' value='server.jar'/>
     </antcall>
-    <move file='${dist.dir}/server.jar' tofile='server.jar'/>
   </target>
 
   <target name='build-jar'>
@@ -229,10 +228,10 @@
   <target name="clean">
     <delete dir="${build.dir}"/>
     <delete dir="${test.build.dir}"/>
-    <delete dir='${dist.dir}'/>
     <delete dir='${lib.dir}'/>
     <delete file='server.jar'/>
-
+    <delete file='client.jar'/>
+    <delete file='facilitator.jar'/>
   </target>
 
   <!-- Compile project source files -->

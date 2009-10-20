@@ -153,5 +153,9 @@ extends ExperimentConfiguration.Base<RoundConfiguration> {
     public String getInvestmentInstructions() {
         return assistant.getProperty("investment-instructions");
     }
+    
+    public int getNumberOfGeneralInstructionPages() {
+        return assistant.getIntProperty("general-instruction-pages", 8);
+    }
 
 }

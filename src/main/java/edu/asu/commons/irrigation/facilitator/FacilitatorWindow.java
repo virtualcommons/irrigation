@@ -1,8 +1,6 @@
 package edu.asu.commons.irrigation.facilitator;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
@@ -10,9 +8,11 @@ import java.util.Map;
 import java.util.TreeSet;
 
 import javax.swing.BoxLayout;
+import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 
 import edu.asu.commons.irrigation.events.BeginChatRoundRequest;
 import edu.asu.commons.irrigation.events.DisplaySubmitTokenRequest;
@@ -25,16 +25,18 @@ import edu.asu.commons.net.Identifier;
 import edu.asu.commons.util.HtmlEditorPane;
 
 /**
- * @author Sanket
+ * $Id$
+ * 
+ * Basic facilitator interface for driving the experiment.
  *
+ * @author <a href='mailto:Allen.Lee@asu.edu'>Allen Lee</a>
+ * @version $Rev$
  */
 public class FacilitatorWindow extends JPanel {
 
     private static final long serialVersionUID = 3607885359444962888L;
 
     private Facilitator facilitator;
-
-    private Dimension windowDimension;
 
     private JButton startRoundButton = null;
 
@@ -44,34 +46,36 @@ public class FacilitatorWindow extends JPanel {
     private JScrollPane scrollPane;
 
     private JButton showInstructionsButton;
+    
+    private JButton displayInvestmentButton;
     /**
      * This is the default constructor
      */
 
-    public FacilitatorWindow(Dimension dimension, Facilitator facilitator) {
-        windowDimension = dimension;
+    public FacilitatorWindow(Facilitator facilitator) {
         this.facilitator = facilitator;
-        initialize();
+        initGuiComponents();
     }
 
     /**
      * 
      * @return void
      */
-    private void initialize() {
-        setSize(windowDimension);
+    private void initGuiComponents() {
         setLayout(new BorderLayout());
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
-        buttonPanel.add(getStartRoundButton());
-        buttonPanel.add(getBeginChatButton());
         buttonPanel.add(getShowInstructionsButton());
+        buttonPanel.add(getBeginChatButton());
+        buttonPanel.add(getDisplayInvestmentButton());
+        buttonPanel.add(getStartRoundButton());
         add(buttonPanel, BorderLayout.NORTH);
-        JPanel informationPanel = new JPanel();
         editorPane = new HtmlEditorPane();
+        editorPane.setEditable(false);
         scrollPane = new JScrollPane(editorPane);
-        informationPanel.add(scrollPane);
-        add(informationPanel, BorderLayout.CENTER);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        add(scrollPane, BorderLayout.CENTER);
     }
 
     private JButton getShowInstructionsButton() {
@@ -102,13 +106,22 @@ public class FacilitatorWindow extends JPanel {
                     if (facilitator.getCurrentRoundConfiguration().isChatEnabledBeforeRound()) {
                         facilitator.transmit(new BeginChatRoundRequest(facilitator.getId()));
                     }
-                    else {
-                        facilitator.transmit(new DisplaySubmitTokenRequest(facilitator.getId()));
-                    }
                 }
             });
         }
         return beginChatButton;
+    }
+    
+    private JButton getDisplayInvestmentButton() {
+        if (displayInvestmentButton == null) {
+            displayInvestmentButton = new JButton("Show Investment Screen");
+            displayInvestmentButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent event) {
+                    facilitator.transmit(new DisplaySubmitTokenRequest(facilitator.getId()));
+                }
+            });
+        }
+        return displayInvestmentButton;
     }
 
     public Facilitator getFacilitator() {
@@ -128,7 +141,6 @@ public class FacilitatorWindow extends JPanel {
     private JButton getStartRoundButton() {
         if (startRoundButton == null) {
             startRoundButton = new JButton();
-            startRoundButton.setBounds(new Rectangle(180, 16, 136, 24));
             startRoundButton.setText("Start Round");
             startRoundButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
@@ -138,14 +150,21 @@ public class FacilitatorWindow extends JPanel {
         }
         return startRoundButton;
     }
+    
+    public void setText(final String text) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                editorPane.setText(text);
+                scrollPane.revalidate();
+            }
+        });
+    }
 
     /**
      * This method initializes Stop_Round_Button1	
      * 	
      * @return javax.swing.JButton	
      */
-
-
     public void endRound(FacilitatorEndRoundEvent event) {
         ServerDataModel model = event.getServerDataModel();
         StringBuilder builder = new StringBuilder();
@@ -175,8 +194,7 @@ public class FacilitatorWindow extends JPanel {
         if (event.isLastRound()) {
             builder.append("<h2><font color='blue'>The experiment is over.  Please prepare payments.</font></h2>");
         }
-        editorPane.setText(builder.toString());
-        repaint();
+        setText(builder.toString());
     }
 
-}  //  @jve:decl-index=0:visual-constraint="48,19"
+}

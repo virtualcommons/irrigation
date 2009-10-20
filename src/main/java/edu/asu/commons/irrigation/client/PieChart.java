@@ -1,20 +1,16 @@
-/**
- * 
- */
 package edu.asu.commons.irrigation.client;
 
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Rectangle;
-import java.text.AttributedString;
 import java.util.Map;
 
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.labels.PieSectionLabelGenerator;
 import org.jfree.chart.plot.PiePlot;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.general.PieDataset;
@@ -24,67 +20,48 @@ import edu.asu.commons.irrigation.server.GroupDataModel;
 import edu.asu.commons.net.Identifier;
 
 /**
- * A pie chart with a custom label generator.
+ * Presents the group contributions as a pie chart.
  */
 public class PieChart extends JPanel {
 
 	private static final long serialVersionUID = -5382293105043214105L;
 
-	private GroupDataModel groupDataModel;
-
-	private IrrigationClient client;
+	private ChartPanel chartPanel;
 	
-    public PieChart(GroupDataModel groupDataModel,IrrigationClient client) {
-        this.groupDataModel = groupDataModel;
-        this.client = client;
-        final PieDataset dataset = createDataset();
-        final JFreeChart chart = createChart(dataset);
-        final ChartPanel chartPanel = new ChartPanel(chart);
-        chartPanel.setPreferredSize(new Dimension(500, 270));
-        this.add(chartPanel);
-        this.setBounds(new Rectangle(0,0,500,270));
+    public void setClientData(final ClientData clientData) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                final PieDataset dataset = createDataset(clientData);
+                final JFreeChart chart = createChart(dataset);
+                remove(chartPanel);
+                chartPanel = new ChartPanel(chart);
+                chartPanel.setPreferredSize(new Dimension(500, 270));
+                add(chartPanel);
+                setBounds(new Rectangle(0,0,500,270));
+            }
+        });
     }
 
     /**
-     * Creates a sample dataset.
-     * 
+     * Creates a pie dataset out of the client 
      * @return a sample dataset.
      */
-    private PieDataset createDataset() {
-        final DefaultPieDataset dataset = new DefaultPieDataset();
+    private PieDataset createDataset(ClientData clientData) {
+        final DefaultPieDataset defaultPieDataset = new DefaultPieDataset();
+        GroupDataModel groupDataModel = clientData.getGroupDataModel();
         Map<Identifier,ClientData>clientDataMap = groupDataModel.getClientDataMap();
-        for(ClientData clientData : clientDataMap.values()){
-        	String clientPieLabel =null;
-        	switch(clientData.getPriority()){
-        	case 0 : clientPieLabel = "A = ";
-        			 break;
-        			 
-        	case 1 : clientPieLabel = "B = ";
-        			 break;
-        			 
-        	case 2 : clientPieLabel = "C = ";
-        			 break;
-        			 
-        	case 3 : clientPieLabel = "D =  ";	
-        			 break;
-        			 
-        	case 4 : clientPieLabel = "E = ";
-        			 break;
-        	}
-        	if(client.getClientDataModel().getPriority() == clientData.getPriority()){
-        		clientPieLabel = "YOU = ";
-        	}
-        	clientPieLabel = clientPieLabel+new Integer(clientData.getInvestedTokens()).toString();
-        	dataset.setValue(clientPieLabel,new Double(clientData.getInvestedTokens()));
+        for (ClientData currentClientData : clientDataMap.values()) {
+            StringBuilder labelBuilder = new StringBuilder();
+            if (currentClientData.getId().equals(clientData.getId())) {
+                labelBuilder.append("You");
+            }
+            else {
+                labelBuilder.append(currentClientData.getPriorityAsString());
+            }
+            labelBuilder.append(" invested ").append(currentClientData.getInvestedTokens()).append(" token(s)");
+            defaultPieDataset.setValue(labelBuilder.toString(), currentClientData.getInvestedTokens());
         }
-        /*dataset.setValue("One", new Double(43.2));
-        dataset.setValue("Two", new Double(10.0));
-        dataset.setValue("Three", new Double(27.5));
-        dataset.setValue("Four", new Double(17.5));
-        dataset.setValue("Five", new Double(11.0));
-        dataset.setValue("Six", new Double(19.4));
-        */
-        return dataset;        
+        return defaultPieDataset;        
     }
     
     // ****************************************************************************
@@ -125,40 +102,4 @@ public class PieChart extends JPanel {
         
     }
     
-    /**
-     * Starting point for the demonstration application.
-     *
-     * @param args  ignored.
-     */
-   
-    
-    /**
-     * A custom label generator (returns null for one item as a test).
-     */
-    static class CustomLabelGenerator implements PieSectionLabelGenerator {
-        
-        /**
-         * Generates a label for a pie section.
-         * 
-         * @param dataset  the dataset (<code>null</code> not permitted).
-         * @param key  the section key (<code>null</code> not permitted).
-         * 
-         * @return the label (possibly <code>null</code>).
-         */
-        public String generateSectionLabel(final PieDataset dataset, final Comparable key) {
-            String result = null;    
-            if (dataset != null) {
-                if (!key.equals("Two")) {
-                    result = key.toString();   
-                }
-            }
-            return result;
-        }
-
-		public AttributedString generateAttributedSectionLabel(PieDataset arg0, Comparable arg1) {
-			return null;
-		}
-   
-    }
-
 }
