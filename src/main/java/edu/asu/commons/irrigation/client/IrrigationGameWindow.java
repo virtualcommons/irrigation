@@ -21,8 +21,8 @@ import edu.asu.commons.irrigation.server.ClientData;
 /**
  * $Id$
  * 
- * Primary JPanel used to display the active interface for the experiment.
- * Organizes and contains all other components.
+ * Contains the primary open gate button, etc.
+ *  
  *
  * @author <a href='mailto:Allen.Lee@asu.edu'>Allen Lee</a>
  * @version $Rev$
@@ -72,7 +72,7 @@ public class IrrigationGameWindow extends JPanel {
 
 	private JLabel profitEarned = null;
 
-	public JTextField profitEarnedtxt = null;
+	public JTextField moneyEarnedTextField = null;
 
 	private JLabel fileDownloadedtxt = null;
 
@@ -125,7 +125,7 @@ public class IrrigationGameWindow extends JPanel {
 		 * here the end code and debreifing logic should be written
 		 */
 		refreshButtons();
-		profitEarnedtxt.setText("0");
+		moneyEarnedTextField.setText("0");
 	}
 
 	/**
@@ -169,7 +169,7 @@ public class IrrigationGameWindow extends JPanel {
 	}
 
 	public void updateProfitEarned(final int award) {
-		profitEarnedtxt.setText(new Integer(award).toString());
+		moneyEarnedTextField.setText(new Integer(award).toString());
 
 	}
 
@@ -541,16 +541,16 @@ public class IrrigationGameWindow extends JPanel {
 	 * @return javax.swing.JTextField
 	 */
 	private JTextField getProfitEarnedTextField() {
-		if (profitEarnedtxt == null) {
-			profitEarnedtxt = new JTextField();
-			profitEarnedtxt.setText(new Integer(mainIrrigationWindow
+		if (moneyEarnedTextField == null) {
+			moneyEarnedTextField = new JTextField();
+			moneyEarnedTextField.setText(new Integer(mainIrrigationWindow
 					.getClientGameState().getClientData().getTotalTokensEarned())
 					.toString());
-			profitEarnedtxt.setBounds(new Rectangle(161, 17, 86, 21));
-			profitEarnedtxt.setFont(new Font("Dialog", Font.PLAIN, 14));
-			profitEarnedtxt.setEditable(false);
+			moneyEarnedTextField.setBounds(new Rectangle(161, 17, 86, 21));
+			moneyEarnedTextField.setFont(new Font("Dialog", Font.PLAIN, 14));
+			moneyEarnedTextField.setEditable(false);
 		}
-		return profitEarnedtxt;
+		return moneyEarnedTextField;
 	}
 
 	/**
@@ -639,7 +639,7 @@ public class IrrigationGameWindow extends JPanel {
 				// checks whether the file has been downlaoded
 				if (clientData.isFileDownloaded()) {
 
-					profitEarnedtxt.setText(new Integer(clientData.getTotalTokensEarned())
+					moneyEarnedTextField.setText(new Integer(clientData.getTotalTokensEarned())
 							.toString());
 					// StopDownload.setEnabled(false);
 					pauseDownload.setEnabled(false);

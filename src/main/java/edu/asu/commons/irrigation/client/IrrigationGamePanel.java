@@ -19,27 +19,28 @@ import edu.asu.commons.irrigation.server.ClientData;
 /**
  * $Id$
  * 
- * Displays the canal animation and so on.
+ * The game interface screen shown during the round.
+ * 
+ * FIXME: needs refactoring, should merge IrrigationGameWindow functionality into this panel as well.
  * 
  * @author <a href='mailto:Allen.Lee@asu.edu'>Allen Lee</a>
  * @version $Rev$
  */
 public class IrrigationGamePanel extends JPanel {
 
-    private static final long serialVersionUID = -3878952269498777014L;
+	private static final long serialVersionUID = -3878952269498777014L;
 
-    public IrrigationGameWindow controlPanel;
-	
-	public CanalPanel upperPanel;
-	
-	private JPanel jPanelMain = null;
+	public IrrigationGameWindow irrigationGameWindow;
+
+	public CanalPanel canalPanel;
+
 	//this contains the CanalPanel
-	private JPanel jPanelUpperWindow = null;
+	private JPanel upperPanel = null;
 	//this contains the upstream and downstream Panel
 	private JPanel jPanelUpStreamWindow = null;
 	private JPanel jPanelDownStreamWindow = null;
 	private JPanel downloadScreenPanel = null;
-	
+
 	private ScoreBoxPanel scoreBoxPanel;
 
 	public IrrigationClient client;
@@ -58,7 +59,7 @@ public class IrrigationGamePanel extends JPanel {
 
 	private JLabel maximumAvailableFlowCapacityLabel = null;
 
-	private ClientDataModel clientGameState;  //  @jve:decl-index=0:
+	private ClientDataModel clientDataModel;  //  @jve:decl-index=0:
 
 	private MiddleWindowPanel middleWindowPanel;
 
@@ -84,29 +85,15 @@ public class IrrigationGamePanel extends JPanel {
 		timeRemainingLabel.setText("Time Left");
 		timeRemainingTextField = new JTextField();
 		timeRemainingTextField.setEditable(false);
-//		timeRemainingTextField.setBounds(new Rectangle(620, 39, 61);
+		//		timeRemainingTextField.setBounds(new Rectangle(620, 39, 61);
 		timeRemainingTextField.setText("50 sec");
 		timeRemainingTextField.setBackground(Color.white);
 		timeRemainingTextField.setFont(new Font("serif", Font.BOLD, 14));
 		timeRemainingTextField.setForeground(new Color(102, 204, 255));
 		timeRemainingTextField.setHorizontalAlignment(SwingConstants.CENTER);
 
-		this.setLayout(new BorderLayout(4,4));
-		this.setPreferredSize(new Dimension(1130, 558));
-		this.add(getJPanelMain(),null);
-		
-	}
-
-	private JPanel getJPanelMain() {
-		if(jPanelMain == null){
-			jPanelMain = new JPanel();
-			jPanelMain.setLayout(new BorderLayout(4,4));
-			jPanelMain.setBackground(Color.WHITE);
-	        jPanelMain.setForeground(Color.BLACK);
-	        jPanelMain.add(getDownloadScreenPanel(), BorderLayout.CENTER);
-	        return jPanelMain;
-			}
-		return jPanelMain;
+		setLayout(new BorderLayout());
+		add(getDownloadScreenPanel(), BorderLayout.CENTER);
 	}
 
 	private JPanel getDownloadScreenPanel() {
@@ -132,7 +119,7 @@ public class IrrigationGamePanel extends JPanel {
 			downloadScreenPanel.setLayout(null);
 			downloadScreenPanel.setName("downloadScreenPanel");
 			downloadScreenPanel.setBackground(Color.white);
-			downloadScreenPanel.add(getJPanelUpperWindow(),null);
+			downloadScreenPanel.add(getUpperPanel(),null);
 			downloadScreenPanel.add(getTimeRemainingProgressBar(), null);
 			downloadScreenPanel.add(timeRemainingLabel, null);
 			downloadScreenPanel.add(timeRemainingTextField,null);
@@ -145,26 +132,17 @@ public class IrrigationGamePanel extends JPanel {
 		return downloadScreenPanel;
 	}
 
-	/**
-	 * This method initializes jPanel
-	 *
-	 * @return javax.swing.JPanel
-	 */
-	private JPanel getJPanelUpperWindow() {
-		if (jPanelUpperWindow == null) {
-			jPanelUpperWindow = new JPanel();
-			jPanelUpperWindow.setLayout(null);
-			jPanelUpperWindow.setBounds(new Rectangle(13, 64, 1098, 123));
+	private JPanel getUpperPanel() {
+		if (upperPanel == null) {
+			upperPanel = new JPanel();
+			upperPanel.setLayout(new BorderLayout());
 		}
-		return jPanelUpperWindow;
+		return upperPanel;
 	}
 
-	private JPanel getUpperPanel(ClientDataModel clientGameState) {
-		// TODO Auto-generated method stub
-			upperPanel = new CanalPanel(clientGameState);
-			upperPanel.setSize(new Dimension(1098, 123));
-		
-		return upperPanel;
+	private JPanel getCanalPanel() {
+		canalPanel = new CanalPanel(clientDataModel);
+		return canalPanel;
 	}
 
 	/**
@@ -184,12 +162,10 @@ public class IrrigationGamePanel extends JPanel {
 	}
 
 	private IrrigationGameWindow getControlPanel() {
-		// TODO Auto-generated method stub
-		if(controlPanel == null){
-			controlPanel = new IrrigationGameWindow(screenSize,client,this);
-			return controlPanel;
+		if(irrigationGameWindow == null) {
+			irrigationGameWindow = new IrrigationGameWindow(screenSize,client,this);
 		}
-		return controlPanel;
+		return irrigationGameWindow;
 	}
 	/**
 	 * This method initializes jPanel3
@@ -202,22 +178,21 @@ public class IrrigationGamePanel extends JPanel {
 			jPanelDownStreamWindow.setLayout(null);
 			jPanelDownStreamWindow.setBackground(new Color(186, 226, 237));
 			jPanelDownStreamWindow.setBounds(new Rectangle(582, 225 + 100+50, 530, 326));
-		    jPanelDownStreamWindow.add(getScoreBoxPanel(),null);
+			jPanelDownStreamWindow.add(getScoreBoxPanel(),null);
 		}
 		return jPanelDownStreamWindow;
 	}
 
 	private ScoreBoxPanel getScoreBoxPanel() {
-		// TODO Auto-generated method stub
 		if(scoreBoxPanel == null){
 			scoreBoxPanel = new ScoreBoxPanel(client);
-			
+
 			return scoreBoxPanel;
 		}
 		return scoreBoxPanel;
 	}
-	
-	
+
+
 	/**
 	 * This method initializes TimeRemainingjProgressBar
 	 *
@@ -236,48 +211,46 @@ public class IrrigationGamePanel extends JPanel {
 	/**
 	 * Shoudl be invoked every second throughout the experiment, from a ClientUpdateEvent sent by the server.
 	 */
-	public void updateClientStatus(final ClientDataModel clientGameState) {
-	    ////////////new code////////////////////////////////////////////////////////////
-	    Runnable createGuiRunnable = new Runnable(){
-	        public void run() {
-	            for(final ClientData clientData : clientGameState.getClientDataMap().values()){
-	                timeRemainingTextField.setText( clientGameState.getTimeLeft() +" second(s)" );
-	                timeRemainingProgressBar.setValue( (clientGameState.getTimeLeft() / 1000) );
-	                maximumAvailableFlowCapacityLabel.setText(
-	                        clientData.getGroupDataModel().getMaximumAvailableFlowCapacity() +" cubic feet per second (cfps)"
-	                        );
-	                middleWindowPanel.update(clientData);
-	                if (clientGameState.getPriority() == clientData.getPriority()) {
-	                    controlPanel.update(clientData);
-	                    //per parameter score panel
-	                    scoreBoxPanel.update(clientData);
-	                }
-	                else{
-	                    scoreBoxPanel.update(clientData);
-	                }
-	                if(clientData.isGateOpen()){
-	                    upperPanel.openGates(clientData.getPriority());
+	public void updateClientStatus(final ClientDataModel clientDataModel) {
+		////////////new code////////////////////////////////////////////////////////////
+		Runnable createGuiRunnable = new Runnable(){
+			public void run() {
+				for(final ClientData clientData : clientDataModel.getClientDataMap().values()){
+					timeRemainingTextField.setText( clientDataModel.getTimeLeft() +" second(s)" );
+					timeRemainingProgressBar.setValue( (clientDataModel.getTimeLeft() / 1000) );
+					maximumAvailableFlowCapacityLabel.setText(
+							clientData.getGroupDataModel().getMaximumAvailableFlowCapacity() +" cubic feet per second (cfps)"
+					);
+					middleWindowPanel.update(clientData);
+					if (clientDataModel.getPriority() == clientData.getPriority()) {
+						irrigationGameWindow.update(clientData);
+						//per parameter score panel
+						scoreBoxPanel.update(clientData);
+					}
+					else{
+						scoreBoxPanel.update(clientData);
+					}
+					if(clientData.isGateOpen()){
+						canalPanel.openGates(clientData.getPriority());
 
-	                }
-	                else if(clientData.isPaused()){
-	                    upperPanel.closeGates(clientData.getPriority());
-	                }
-	                if(clientData.isGateClosed()){
-	                    upperPanel.closeGates(clientData.getPriority());
-	                }
-	            }
-	        }
+					}
+					else if(clientData.isPaused()){
+						canalPanel.closeGates(clientData.getPriority());
+					}
+					if(clientData.isGateClosed()){
+						canalPanel.closeGates(clientData.getPriority());
+					}
+				}
+			}
 
-	    };
+		};
 		try {
 			SwingUtilities.invokeAndWait(createGuiRunnable);
 		} 
 		catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 		catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}		
 	}
@@ -293,87 +266,63 @@ public class IrrigationGamePanel extends JPanel {
 	public void endRound() {
 		Runnable createGuiRunnable = new Runnable(){
 			public void run() {
-				 //TODO Auto-generated method stub
-				 //Refreshing the screen and preparing the main Irrigation Window for the next round
-				 //provided we have already got the updatedClientDataMap
-				controlPanel.endRound();
-				jPanelUpperWindow.removeAll();
-				upperPanel.endRound();
+				//Refreshing the screen and preparing the main Irrigation Window for the next round
+				//provided we have already got the updatedClientDataMap
+				irrigationGameWindow.endRound();
+				upperPanel.removeAll();
+				canalPanel.endRound();
 			}
 		};
-		
-			try {
-				SwingUtilities.invokeAndWait(createGuiRunnable);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		
+
+		try {
+			SwingUtilities.invokeAndWait(createGuiRunnable);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	/**
 	 * assigns the priority to the window and prepares the irrigationWindowMap
 	 */
-	public void updateContributions(final ClientDataModel clientGameState) {
-	    this.clientGameState = clientGameState;
+	public void updateContributions(final ClientDataModel clientDataModel) {
+		this.clientDataModel = clientDataModel;
 		//Here a map is created with the map consisting of the
-	    //irrigation window as the value and the priority value as the key. This is handled here , because
-	    //the event contains the priority for every client, and the priority can act as a unique key for the
-	    //game window.
-		
-		//checking the client priority and assigning the activity summary and client panel to the 
-		//doownloadScreenPanel
-		fillPanels(clientGameState);
-		
-	       //This is helpful, if we need to scale the game to more than two users. We can declare
-	        //more panels like middleStream Window, etc and add them in this switch case statement
+		//irrigation window as the value and the priority value as the key. This is handled here , because
+		//the event contains the priority for every client, and the priority can act as a unique key for the
+		//game window.
+		fillPanels();
 
-	        //case 2 : irrigationWindowMap.put(new Integer(clientData.getPriority()), middleStreamWindow);
-	 }
-    
-	
-	
+	}
+
+
+
 	/**
 	 * fills in the panels depending on the priority of the client
 	 */
-	public void fillPanels(ClientDataModel clientDataModel) {
-		// TODO Auto-generated method stub
-		jPanelUpperWindow.add(getUpperPanel(clientDataModel));
-		//switch(clientGameState.getPriority()){
-		
+	private void fillPanels() {
+		upperPanel.add(getCanalPanel(), BorderLayout.CENTER);
 		downloadScreenPanel.add(getJPanelUpStreamWindow(),null);
-	 	downloadScreenPanel.add(getJPanelDownStreamWindow(),null);
+		downloadScreenPanel.add(getJPanelDownStreamWindow(),null);
 		//adding the in between Panel
-	 	downloadScreenPanel.add(getJPanelMiddleWindow(),null);
-		 /*case 0 : downloadScreenPanel.add(getJPanelUpStreamWindow(0),null);
-    		 	  downloadScreenPanel.add(getJPanelDownStreamWindow(0),null);
-    		 	 //Assigning the Priorities on the Priority Label
-    		 	 break;
+		downloadScreenPanel.add(getJPanelMiddleWindow(),null);
+	}
 
-		 case 1 : downloadScreenPanel.add(getJPanelUpStreamWindow(1),null);
-    	 		  downloadScreenPanel.add(getJPanelDownStreamWindow(1),null);
-    	 		 //Assigning the Priorities on the Priority Label
-    	 		 break;
-*/		}
-       
 	private JPanel getJPanelMiddleWindow() {
-		// TODO Auto-generated method stub
 		if(middleWindowPanel == null){
-			if(clientGameState != null){
+			if(clientDataModel != null){
 				System.out.println("Main Irrigation Window clientGameState is not null");
 			}
-			middleWindowPanel = new MiddleWindowPanel(clientGameState);
+			middleWindowPanel = new MiddleWindowPanel(clientDataModel);
 		}
 		return middleWindowPanel;
 	}
-	
+
 	public ClientDataModel getClientGameState() {
-		// TODO Auto-generated method stub
-		return clientGameState;
+		return clientDataModel;
 	}
 }
 
-  //  @jve:decl-index=0:visual-constraint="10,-43"
+//  @jve:decl-index=0:visual-constraint="10,-43"

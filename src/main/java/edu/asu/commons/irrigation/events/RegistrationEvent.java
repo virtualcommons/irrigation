@@ -30,11 +30,11 @@ public class RegistrationEvent extends AbstractEvent implements ExperimentUpdate
     public RegistrationEvent(Identifier id, RoundConfiguration roundConfiguration, ClientData clientData) {
         super(id, roundConfiguration.getInstructions());
         this.clientData = clientData;
+        this.roundConfiguration = roundConfiguration;
     }
     
     public RegistrationEvent(ClientData clientData, RoundConfiguration roundConfiguration) {
         this(clientData.getId(), roundConfiguration, clientData);
-        this.roundConfiguration = roundConfiguration;
     }
  
     public RoundConfiguration getRoundConfiguration() {

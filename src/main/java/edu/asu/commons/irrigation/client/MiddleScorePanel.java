@@ -131,7 +131,6 @@ public class MiddleScorePanel extends JPanel {
 	
 
 	private JLabel getFilesDownLoadedText(int priority) {
-		// TODO Auto-generated method stub
 		if(filesDownloadedText == null){
 			filesDownloadedText = new JLabel();
 			filesDownloadedText.setBounds(new Rectangle(5,50+32+10+20+10+20+10,30,20));
@@ -141,8 +140,6 @@ public class MiddleScorePanel extends JPanel {
 	}
 
 	public void update(ClientData clientData) {
-		// TODO Auto-generated method stub
-
 		this.clientData = clientData;
 		
 		if(clientData.getAvailableFlowCapacity() > 25){
@@ -154,9 +151,8 @@ public class MiddleScorePanel extends JPanel {
 		filesDownloadedText.setText(new Integer(clientData.getCropsGrown()).toString());
 		tokensText.setText(new Integer(clientData.getTotalTokensEarned()).toString());
 		
-		if(clientData.isGateOpen() == true && clientData.getAvailableFlowCapacity() > 0)
-			fileLabel.setVisible(true);
-		else
-			fileLabel.setVisible(false);
+		if(clientData.isGateOpen() && clientData.getAvailableFlowCapacity() > 0) {
+			// show that client is actively irrigating
+		}
 	}
 }
