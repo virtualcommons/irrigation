@@ -4,9 +4,14 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.lang.reflect.InvocationTargetException;
 
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
@@ -39,7 +44,7 @@ public class IrrigationGamePanel extends JPanel {
 	//this contains the upstream and downstream Panel
 	private JPanel jPanelUpStreamWindow = null;
 	private JPanel jPanelDownStreamWindow = null;
-	private JPanel downloadScreenPanel = null;
+	private JPanel mainIrrigationPanel = null;
 
 	private ScoreBoxPanel scoreBoxPanel;
 
@@ -47,25 +52,43 @@ public class IrrigationGamePanel extends JPanel {
 
 	public Dimension screenSize;
 
-	public JProgressBar timeRemainingProgressBar = null;
+	public JProgressBar timeRemainingProgressBar;
 
-	private JLabel timeRemainingLabel = null; 
+	private JLabel timeRemainingLabel;
 
 	private JTextField timeRemainingTextField;
 
-	private JLabel priorityjLabel = null;
+	private JButton gateSwitchButton;
 
-	private JLabel totalAvailableFlowCapacityLabel = null;
+	private JLabel irrigationCapacityLabel;
 
-	private JLabel maximumAvailableFlowCapacityLabel = null;
+	//	private JLabel maximumAvailableFlowCapacityLabel = null;
 
 	private ClientDataModel clientDataModel;  //  @jve:decl-index=0:
 
 	private MiddleWindowPanel middleWindowPanel;
 
-	private JLabel dashBoardLabel = null;
+	//	private JLabel dashBoardLabel = null;
 
-	private JLabel scoreBoardLabel = null;
+	//	private JLabel scoreBoardLabel = null;
+
+	private JLabel totalTokensEarnedLabel;
+
+	private JLabel tokensEarnedLabel;
+
+	private JLabel tokensNotInvestedLabel;
+
+	private JLabel waterUsedLabel;
+
+	private JTextField waterUsedTextField;
+
+	private JTextField tokensNotInvestedTextField;
+
+	private JTextField tokensEarnedTextField;
+
+	private JTextField totalTokensEarnedTextField;
+
+	private boolean open;
 
 	public IrrigationGamePanel(Dimension screenSize, IrrigationClient client) {
 		setName("Irrigation Game Panel");
@@ -78,66 +101,179 @@ public class IrrigationGamePanel extends JPanel {
 	 * @return 
 	 */
 	private void initGuiComponents() {
-		timeRemainingLabel = new JLabel();
-		timeRemainingLabel.setBounds(new Rectangle(469, 39, 146, 23));
+
+
+		JPanel topmostPanel = new JPanel();
+		topmostPanel.setLayout(new BoxLayout(topmostPanel, BoxLayout.X_AXIS));
+		topmostPanel.add(getIrrigationCapacityLabel());
+
+		JPanel timeRemainingPanel = new JPanel();
+		timeRemainingPanel.setLayout(new BoxLayout(timeRemainingPanel, BoxLayout.Y_AXIS));
+		timeRemainingPanel.add(getTimeRemainingProgressBar());
+		timeRemainingPanel.add(getTimeRemainingPanel());
+
+		topmostPanel.add(timeRemainingPanel);
+
+
+		setLayout(new BorderLayout());
+		add(topmostPanel, BorderLayout.PAGE_START);
+		add(getUpperPanel(), BorderLayout.CENTER);
+		add(getBottomPanel(), BorderLayout.PAGE_END);
+	}
+
+	private JPanel getBottomPanel() {
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		panel.add(getGateSwitchButton());
+
+		JPanel bottomPanel = new JPanel();
+		bottomPanel.setLayout(new GridLayout(4, 2));
+		bottomPanel.add(getWaterUsedLabel());
+		bottomPanel.add(getWaterUsedTextField());
+		bottomPanel.add(getTokensNotInvestedLabel());
+		bottomPanel.add(getTokensNotInvestedTextField());
+		bottomPanel.add(getTokensEarnedLabel());
+		bottomPanel.add(getTokensEarnedTextField());
+		bottomPanel.add(getTotalTokensEarnedLabel());
+		bottomPanel.add(getTotalTokensEarnedTextField());
+
+		panel.add(bottomPanel);
+		return panel;
+	}
+
+	private JTextField getWaterUsedTextField() {
+		if (waterUsedTextField == null) {
+			waterUsedTextField = new JTextField();
+			waterUsedTextField.setEditable(false);
+		}
+		return waterUsedTextField;
+	}
+
+	private JLabel getWaterUsedLabel() {
+		if (waterUsedLabel == null) {
+			waterUsedLabel = new JLabel("Water units used: ");
+		}
+		return waterUsedLabel;
+	}
+
+	private JTextField getTokensNotInvestedTextField() {
+		if (tokensNotInvestedTextField == null) {
+			tokensNotInvestedTextField = new JTextField();
+			tokensNotInvestedTextField.setEditable(false);
+		}
+		return tokensNotInvestedTextField;
+	}
+	private JLabel getTokensNotInvestedLabel() {
+		if (tokensNotInvestedLabel == null) {
+			tokensNotInvestedLabel = new JLabel("Tokens not invested: ");
+		}
+		return tokensNotInvestedLabel;
+	}
+
+	private JTextField getTokensEarnedTextField() {
+		if (tokensEarnedTextField == null) {
+			tokensEarnedTextField = new JTextField();
+			tokensEarnedTextField.setEditable(false);
+		}
+		return tokensEarnedTextField;
+	}
+	private JLabel getTokensEarnedLabel() {
+		if (tokensEarnedLabel == null) {
+			tokensEarnedLabel = new JLabel("Tokens earned by crop production: ");
+		}
+		return tokensEarnedLabel;
+	}
+
+	private JTextField getTotalTokensEarnedTextField() {
+		if (totalTokensEarnedTextField == null) {
+			totalTokensEarnedTextField = new JTextField();
+			totalTokensEarnedTextField.setEditable(false);
+		}
+		return totalTokensEarnedTextField;
+
+	}
+
+	private JLabel getTotalTokensEarnedLabel() {
+		if (totalTokensEarnedLabel == null) {
+			totalTokensEarnedLabel = new JLabel("Total tokens earned this round: ");
+		}
+		return totalTokensEarnedLabel;
+	}
+
+	private JPanel getTimeRemainingPanel() {
+		timeRemainingLabel = new JLabel("Time left: ");
 		timeRemainingLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		timeRemainingLabel.setHorizontalTextPosition(SwingConstants.CENTER);
-		timeRemainingLabel.setText("Time Left");
-		timeRemainingTextField = new JTextField();
+		timeRemainingTextField = new JTextField("50 sec");
 		timeRemainingTextField.setEditable(false);
-		//		timeRemainingTextField.setBounds(new Rectangle(620, 39, 61);
-		timeRemainingTextField.setText("50 sec");
 		timeRemainingTextField.setBackground(Color.white);
 		timeRemainingTextField.setFont(new Font("serif", Font.BOLD, 14));
 		timeRemainingTextField.setForeground(new Color(102, 204, 255));
 		timeRemainingTextField.setHorizontalAlignment(SwingConstants.CENTER);
 
-		setLayout(new BorderLayout());
-		add(getDownloadScreenPanel(), BorderLayout.CENTER);
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+		panel.add(timeRemainingLabel);
+		panel.add(timeRemainingTextField);
+		return panel;
 	}
 
-	private JPanel getDownloadScreenPanel() {
-		if(downloadScreenPanel == null){
-			scoreBoardLabel = new JLabel();
-			scoreBoardLabel.setBounds(new Rectangle(582,225+100+35,530,20));
-			scoreBoardLabel.setHorizontalAlignment(SwingConstants.CENTER);
-			scoreBoardLabel.setText("SUMMARY SCOREBOARD FOR YOU AND OTHER PLAYERS");
-			dashBoardLabel = new JLabel();
-			dashBoardLabel.setBounds(new Rectangle(13,225+100+35,530,20));
-			dashBoardLabel.setHorizontalAlignment(SwingConstants.CENTER);
-			dashBoardLabel.setText("YOUR DASHBOARD");
-			maximumAvailableFlowCapacityLabel = new JLabel();
-			maximumAvailableFlowCapacityLabel.setBounds(new Rectangle(200, 18, 55, 17));
-			maximumAvailableFlowCapacityLabel.setText("");
-			totalAvailableFlowCapacityLabel = new JLabel();
-			totalAvailableFlowCapacityLabel.setBounds(new Rectangle(19, 17, 170, 16));
-			totalAvailableFlowCapacityLabel.setText("Irrigation capacity: ");
-			priorityjLabel = new JLabel();
-			priorityjLabel.setBounds(new Rectangle(780, 16, 44, 16));
-			priorityjLabel.setText("");
-			downloadScreenPanel = new JPanel();
-			downloadScreenPanel.setLayout(null);
-			downloadScreenPanel.setName("downloadScreenPanel");
-			downloadScreenPanel.setBackground(Color.white);
-			downloadScreenPanel.add(getUpperPanel(),null);
-			downloadScreenPanel.add(getTimeRemainingProgressBar(), null);
-			downloadScreenPanel.add(timeRemainingLabel, null);
-			downloadScreenPanel.add(timeRemainingTextField,null);
-
-			downloadScreenPanel.add(totalAvailableFlowCapacityLabel, null);
-			downloadScreenPanel.add(maximumAvailableFlowCapacityLabel, null);
-			downloadScreenPanel.add(dashBoardLabel, null);
-			downloadScreenPanel.add(scoreBoardLabel, null);
+	private JLabel getIrrigationCapacityLabel() {
+		if (irrigationCapacityLabel == null) {
+			irrigationCapacityLabel = new JLabel("Irrigation capacity: ");
 		}
-		return downloadScreenPanel;
+		return irrigationCapacityLabel;
 	}
+
+	//	private JPanel getMainIrrigationPanel() {
+	//		if (mainIrrigationPanel == null) {
+	//			irrigationCapacityLabel = new JLabel();
+	//			irrigationCapacityLabel.setText("Irrigation capacity: ");
+	//			mainIrrigationPanel = new JPanel();
+	//
+	//
+	//			mainIrrigationPanel.setName("downloadScreenPanel");
+	//			mainIrrigationPanel.setBackground(Color.white);
+	//			mainIrrigationPanel.add(getUpperPanel(),null);
+	//			mainIrrigationPanel.add(timeRemainingLabel, null);
+	//			mainIrrigationPanel.add(timeRemainingTextField,null);
+	//
+	//			mainIrrigationPanel.add(irrigationCapacityLabel, null);
+	//			mainIrrigationPanel.add(maximumAvailableFlowCapacityLabel, null);
+	//			mainIrrigationPanel.add(dashBoardLabel, null);
+	//			mainIrrigationPanel.add(scoreBoardLabel, null);
+	//		}
+	//		return mainIrrigationPanel;
+	//	}
 
 	private JPanel getUpperPanel() {
 		if (upperPanel == null) {
 			upperPanel = new JPanel();
 			upperPanel.setLayout(new BorderLayout());
+			upperPanel.add(getScoreBoxPanel(), BorderLayout.PAGE_END);
 		}
 		return upperPanel;
+	}
+
+
+	private JButton getGateSwitchButton() {
+		if (gateSwitchButton == null) {
+			gateSwitchButton = new JButton("Open Gate");
+			gateSwitchButton.setPreferredSize(new Dimension(60, 60));
+			gateSwitchButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent event) {
+					open = !open;
+					gateSwitchButton.setText( open ? "Close gate" : "Open gate");
+					if (open) {
+						client.openGate();
+					}
+					else {
+						client.closeGate();
+					}
+				}
+			});
+		}
+		return gateSwitchButton;
 	}
 
 	private JPanel getCanalPanel() {
@@ -185,9 +321,7 @@ public class IrrigationGamePanel extends JPanel {
 
 	private ScoreBoxPanel getScoreBoxPanel() {
 		if(scoreBoxPanel == null){
-			scoreBoxPanel = new ScoreBoxPanel(client);
-
-			return scoreBoxPanel;
+			scoreBoxPanel = new ScoreBoxPanel();
 		}
 		return scoreBoxPanel;
 	}
@@ -201,7 +335,6 @@ public class IrrigationGamePanel extends JPanel {
 	private JProgressBar getTimeRemainingProgressBar() {
 		if (timeRemainingProgressBar == null) {
 			timeRemainingProgressBar = new JProgressBar(0, 50);
-			timeRemainingProgressBar.setBounds(new Rectangle(360, 15, 370, 17));
 			timeRemainingProgressBar.setBackground(Color.white);
 			timeRemainingProgressBar.setForeground(new Color(51, 153, 255));
 		}
@@ -212,35 +345,32 @@ public class IrrigationGamePanel extends JPanel {
 	 * Shoudl be invoked every second throughout the experiment, from a ClientUpdateEvent sent by the server.
 	 */
 	public void updateClientStatus(final ClientDataModel clientDataModel) {
-		////////////new code////////////////////////////////////////////////////////////
 		Runnable createGuiRunnable = new Runnable(){
 			public void run() {
+				int timeLeft = clientDataModel.getTimeLeft();
+				int irrigationCapacity = clientDataModel.getGroupDataModel().getMaximumAvailableFlowCapacity();
+				timeRemainingTextField.setText( timeLeft + " sec");
+				timeRemainingProgressBar.setValue( timeLeft );
+				irrigationCapacityLabel.setText(
+						String.format("Irrigation capacity: %d cubic feet per second (cfps)",
+								irrigationCapacity));
 				for(final ClientData clientData : clientDataModel.getClientDataMap().values()){
-					timeRemainingTextField.setText( clientDataModel.getTimeLeft() +" second(s)" );
-					timeRemainingProgressBar.setValue( (clientDataModel.getTimeLeft() / 1000) );
-					maximumAvailableFlowCapacityLabel.setText(
-							clientData.getGroupDataModel().getMaximumAvailableFlowCapacity() +" cubic feet per second (cfps)"
-					);
-					middleWindowPanel.update(clientData);
-					if (clientDataModel.getPriority() == clientData.getPriority()) {
-						irrigationGameWindow.update(clientData);
-						//per parameter score panel
-						scoreBoxPanel.update(clientData);
-					}
-					else{
-						scoreBoxPanel.update(clientData);
-					}
-					if(clientData.isGateOpen()){
+					if (clientData.isGateOpen()) {
 						canalPanel.openGates(clientData.getPriority());
-
 					}
 					else if(clientData.isPaused()){
 						canalPanel.closeGates(clientData.getPriority());
 					}
-					if(clientData.isGateClosed()){
+					else if(clientData.isGateClosed()){
 						canalPanel.closeGates(clientData.getPriority());
 					}
 				}
+				ClientData clientData = clientDataModel.getClientData();
+				waterUsedTextField.setText("" + clientData.getWaterUsed());
+				tokensNotInvestedTextField.setText("" + clientData.getUninvestedTokens());
+				tokensEarnedTextField.setText("" + clientData.waterToTokenFunction());
+				totalTokensEarnedTextField.setText("" + clientData.getTotalTokensEarned());
+				scoreBoxPanel.update(clientDataModel);
 			}
 
 		};
@@ -293,21 +423,21 @@ public class IrrigationGamePanel extends JPanel {
 		//irrigation window as the value and the priority value as the key. This is handled here , because
 		//the event contains the priority for every client, and the priority can act as a unique key for the
 		//game window.
-		fillPanels();
-
 	}
-
 
 
 	/**
 	 * fills in the panels depending on the priority of the client
 	 */
-	private void fillPanels() {
+	public void startRound() {
 		upperPanel.add(getCanalPanel(), BorderLayout.CENTER);
-		downloadScreenPanel.add(getJPanelUpStreamWindow(),null);
-		downloadScreenPanel.add(getJPanelDownStreamWindow(),null);
+		open = false;
+		scoreBoxPanel.initialize(clientDataModel);
+		revalidate();
+		//		mainIrrigationPanel.add(getJPanelUpStreamWindow(),null);
+		//		mainIrrigationPanel.add(getJPanelDownStreamWindow(),null);
 		//adding the in between Panel
-		downloadScreenPanel.add(getJPanelMiddleWindow(),null);
+		//		mainIrrigationPanel.add(getJPanelMiddleWindow(),null);
 	}
 
 	private JPanel getJPanelMiddleWindow() {
@@ -320,9 +450,8 @@ public class IrrigationGamePanel extends JPanel {
 		return middleWindowPanel;
 	}
 
-	public ClientDataModel getClientGameState() {
+	public ClientDataModel getClientDataModel() {
 		return clientDataModel;
 	}
 }
 
-//  @jve:decl-index=0:visual-constraint="10,-43"

@@ -383,7 +383,7 @@ public class ExperimentGameWindow extends JPanel {
         Runnable runnable = new Runnable() {
             public void run() {
                 addCenterComponent(irrigationGamePanel);
-                requestFocusInWindow();
+                irrigationGamePanel.startRound();
             }
         };
         SwingUtilities.invokeLater(runnable);

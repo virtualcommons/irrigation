@@ -63,10 +63,6 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
         return getIntProperty("max-infrastructure-efficiency", 100);
     }
 
-    public double getMaximumIndividualFlowCapacity() {
-        return getDoubleProperty("max-individual-flow-capacity", 20.0d);
-    }
-
     public boolean isPracticeRound() {
         return getBooleanProperty("practice-round");
     }

@@ -70,6 +70,10 @@ public class GroupDataModel implements DataModel<RoundConfiguration> {
         clients.put(clientData.getId(), clientData);
         clientData.setAssignedNumber(clients.size());
     }
+    
+    public int size() {
+    	return clients.size();
+    }
 
     public void removeClient(Identifier id) {
         clients.remove(id);
@@ -99,14 +103,13 @@ public class GroupDataModel implements DataModel<RoundConfiguration> {
         return serverDataModel.getRoundConfiguration();
     }
 
-    //get totalContributed tokens for this round
     public int getTotalContributedTokens() {
         return totalContributedTokens;
     }
     
     public void calculateTotalFlowCapacity() {
         // for practice round and first round, initialize to initial infrastructure efficiency
-    	//setting the total contributed Bandwidth = 0 , so thatfor every round,
+    	//setting the total contributed Bandwidth = 0 , so that for every round,
     	// fresh totalContributed tokens are calculated
     	totalContributedTokens = 0;
         for(ClientData clientData : getClientDataMap().values()) {
@@ -194,16 +197,17 @@ public class GroupDataModel implements DataModel<RoundConfiguration> {
     }
 
     public void allocateFlowCapacity(ClientData clientData) {
-        if (currentlyAvailableFlowCapacity >= clientData.getMaximumIndividualFlowCapacity()) {
-            currentlyAvailableFlowCapacity -= clientData.getMaximumIndividualFlowCapacity();
-//            setAvailableBandwidth(clientData.getTotalContributedBandwidth() - clientData.getDeliveryBandwidth());
-            clientData.setAvailableFlowCapacity(clientData.getMaximumIndividualFlowCapacity());
+    	RoundConfiguration roundConfiguration = getRoundConfiguration();
+    	int maximumClientFlowCapacity = roundConfiguration.getMaximumClientFlowCapacity();
+        if (currentlyAvailableFlowCapacity >= maximumClientFlowCapacity) {
+            currentlyAvailableFlowCapacity -= maximumClientFlowCapacity;
+            clientData.setAvailableFlowCapacity(maximumClientFlowCapacity);
         } 
         else {
             clientData.setAvailableFlowCapacity(currentlyAvailableFlowCapacity);
             currentlyAvailableFlowCapacity = 0;
         }
-        clientData.allocateFlowCapacity(currentlyAvailableFlowCapacity);        
+        clientData.collectWater();        
     }
 
 

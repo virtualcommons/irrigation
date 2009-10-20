@@ -148,7 +148,7 @@ public class MiddleScorePanel extends JPanel {
 		else
 			currentBandwidthText.setText(new Double(clientData.getAvailableFlowCapacity()).toString());
 		
-		filesDownloadedText.setText(new Integer(clientData.getCropsGrown()).toString());
+		filesDownloadedText.setText(new Integer(clientData.getWaterUsed()).toString());
 		tokensText.setText(new Integer(clientData.getTotalTokensEarned()).toString());
 		
 		if(clientData.isGateOpen() && clientData.getAvailableFlowCapacity() > 0) {

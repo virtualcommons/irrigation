@@ -137,9 +137,8 @@ public class IrrigationClient {
         transmit(openGateEvent);
     }
 
-    public void closeGate(String fileNo) {
+    public void closeGate() {
         CloseGateEvent closeGateEvent = new CloseGateEvent(getId());
-        closeGateEvent.setFileNumber(fileNo);
         transmit(closeGateEvent);
     }
 

@@ -1,9 +1,9 @@
 package edu.asu.commons.irrigation.client;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;
@@ -73,8 +73,7 @@ public class CanalPanel extends JPanel {
 	 * @return void
 	 */
 	private void initialize() {
-		this.setSize(1098,150);
-		this.setLayout(new GridBagLayout());
+		this.setPreferredSize(new Dimension(1098,150));
 		this.setBackground(Color.white);
 		//initializing the constructor for Gates
 		for(int i=0;i<numberofGates ;i++){

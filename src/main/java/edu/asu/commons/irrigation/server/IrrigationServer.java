@@ -259,7 +259,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
         });
         addEventProcessor(new EventTypeProcessor<PauseRequest>(PauseRequest.class) {
             public void handle(PauseRequest event) {
-                clients.get(event.getId()).setPaused();
+                clients.get(event.getId()).pause();
             }
         });
     }
@@ -414,7 +414,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
                         clientData.resetAllTokens();
                     }
                     else {
-                        clientData.reset();
+                        clientData.endRound();
                     }
                 }
             }

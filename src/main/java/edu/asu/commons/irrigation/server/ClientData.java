@@ -30,26 +30,9 @@ public class ClientData implements Serializable {
     
     private GroupDataModel groupDataModel;
 
-    private String fileNumber;
-    
-    private List<String> filesDownloadedList = new ArrayList<String>();
-    
-    private boolean fileDownloaded = false;
+    private int waterUsed = 0;
 
-    private int fileSize;
-
-    private double percentFileDownloaded = 0;
-
-    private double downloadedFileSize = 0;
-
-    private int cropsGrown = 0;
-
-    // maximum available bandwidth
-    private double maximumIndividualFlowCapacity;
-    /**
-     * current download speed
-     */
-    private double availableFlowCapacity = 25.0d;
+    private int availableFlowCapacity;
 
     private int investedTokens;
 
@@ -58,8 +41,6 @@ public class ClientData implements Serializable {
     private RoundConfiguration roundConfiguration;
 
     private int totalTokens;
-
-    private int tokensCollectedLastRound;
 
     private boolean paused = false;
 
@@ -80,29 +61,15 @@ public class ClientData implements Serializable {
     public boolean isGateOpen(){
         return gateOpen;
     }
-    
-    // cap on the size of the entire stream (e.g,. 50 kbps)
-    public double getMaximumAvailableBandwidth(){
-        return groupDataModel.getMaximumAvailableFlowCapacity();
-    }
-
-    // cap on the size of the stream that can be delivered to the client (e.g., 25 kbps)
-    public void setMaximumIndividualFlowCapacity(double deliveryBandwidth){
-        this.maximumIndividualFlowCapacity = deliveryBandwidth;
-    }
-
-    public double getMaximumIndividualFlowCapacity(){
-        return maximumIndividualFlowCapacity;
-    }
 
     /**
      * The actual bandwidth allocated to this client.
      */
-    public void setAvailableFlowCapacity(double availableFlowCapacity){
+    public void setAvailableFlowCapacity(int availableFlowCapacity) {
         this.availableFlowCapacity = availableFlowCapacity;
     }
 
-    public double getAvailableFlowCapacity(){
+    public int getAvailableFlowCapacity(){
         return availableFlowCapacity;
     }
 
@@ -120,23 +87,7 @@ public class ClientData implements Serializable {
         }
         return "Position not found";
     }
-    
-    /**
-     * set and get the current file_no from the client.The corresponding file sizes and their numbers 
-     * are listed down in the configuration file. Thus I can get their sizes.
-     * 
-     */
-    public void setFileNumber(String fileNumber){
-        this.fileNumber = fileNumber;
-    }
 
-    public String getFileNumber() {
-        return fileNumber;
-    }
-
-    public double getPercentFileDownload(){
-        return percentFileDownloaded;
-    }
     /**
      * here the parameters isPaused, isStopped and isStartDownload would change.
      * The server every time would check the clients queue. It would be a queue of clients requests.
@@ -149,7 +100,7 @@ public class ClientData implements Serializable {
         paused = false;
     }
 
-    public void setPaused(){
+    public void pause(){
         paused = true;
         gateOpen = false;
     }
@@ -197,17 +148,15 @@ public class ClientData implements Serializable {
  * clearing the clientData at the end of each round
  *
  */
-    public void reset() {
-        resetFileInformation();
+    public void endRound() {
         closeGate();
         investedTokens = 0;
         //adding number of files to be downloaded = 0 per round
-        cropsGrown = 0;
-        filesDownloadedList.clear();
+        waterUsed = 0;
     }
 
     public void resetAllTokens() {
-        reset();
+        endRound();
         totalTokens = 0;
     }
 
@@ -223,9 +172,6 @@ public class ClientData implements Serializable {
         return totalTokens;
     }
 
-    public int getTokensCollectedLastRound() {
-        return tokensCollectedLastRound;
-    }
 
     public RoundConfiguration getRoundConfiguration(){
         return roundConfiguration;
@@ -234,19 +180,9 @@ public class ClientData implements Serializable {
      * This would initialize the clientData before the start of each download.
      *
      */
-    public void init(double availableFlowCapacity) {
-        resetFileInformation();
-        maximumIndividualFlowCapacity = getRoundConfiguration().getMaximumIndividualFlowCapacity();
-        //currentBandwidth = totalContributedBandwidth;
-        this.availableFlowCapacity = availableFlowCapacity;
-    }
-    
-    private void resetFileInformation() {
-        fileSize = 0;
-        fileNumber = "";
-        downloadedFileSize = 0;
-        percentFileDownloaded = 0;
-        closeGate();
+    public void init(int availableFlowCapacity) {
+    	closeGate();
+    	setAvailableFlowCapacity(availableFlowCapacity);
     }
     
     public void award() {
@@ -258,101 +194,70 @@ public class ClientData implements Serializable {
      * @return
      */
     public int getTotalTokensEarned(){
-        return calculateTokensEarned() + (getRoundConfiguration().getMaximumInvestedTokens() - investedTokens);
+        return waterToTokenFunction() + getUninvestedTokens();
     }
 
     /**
-     * complex functions can be defined here
+     * Reward function table correlating water usage to tokens earned.
+     * 
      * @param value
      * @return
      */
-
-    private int calculateTokensEarned() {
-    	switch (cropsGrown) {
-    	case 0: case 1: 
+    public int waterToTokenFunction() {
+    	if (waterUsed < 150) {
     		return 0;
-    	case 2:
-    		return 6;
-    	case 3:
-    		return 22;
-    	case 4:
-    		return 28;
-    	case 5:
-    		return 30;
-    	default:
-    		throw new IllegalStateException("Should be a number between 0-5, was " + cropsGrown + " instead.");
     	}
-//        double alpha,b,a,num,deno;
-//        /**
-//         * This would be taken by a proper configuration file
-//         */
-//        alpha = getRoundConfiguration().getAlphaAward();
-//        a = getRoundConfiguration().getA_award();
-//        b = getRoundConfiguration().getB_award();
-//        num = alpha * Math.pow((double)filesDownloaded,b);
-//        deno = Math.pow(a,b)+Math.pow(filesDownloaded,b);
-//
-//        /**
-//         * until u get the final equation, you can go ahead with
-//         * these values..
-//         */
-//        return (int)(Math.round(num/deno));
-        //return no_fileDownloaded;
-    }
-    /**
-     * calculates the percent of the file downloaded
-     *
-     */
-    /**
-     *Here check whether the percentageFile > 100, then init the file download
-     *else simply increment the filesize. If we increment the file size and then
-     *check whether the filesize > 100 and then invoke completedownload, that information 
-     *is not send to the client, as the sending file progress events are in the same loop
-     *as processDownload function
-     */
-    public void allocateFlowCapacity(double availableBandwidth) {
-        assert gateOpen;
-        fileDownloaded = false;
-        incrementFileDownloadSize();
-    }
-    
-    private void completeFileDownload() {
-        cropsGrown++;
-        fileDownloaded = true;
-        filesDownloadedList.add(fileNumber);
-        groupDataModel.getEventChannel().handle(new FileDownloadedEvent(id, fileNumber));
-        resetFileInformation();
-        //init(availableBandwidth);
-    }
-    
-    /**
-     * This would increament the percentage of the file downloaded
-     * by Bi
-     *  
-     */
-    public void incrementFileDownloadSize(){
-        downloadedFileSize += availableFlowCapacity;
-        percentFileDownloaded = (downloadedFileSize/fileSize)*100;
-        if (percentFileDownloaded >= 100) {
-        	//filesDownloaded++;
-        	percentFileDownloaded = 100;
-            completeFileDownload();
-        }
-    
+    	else if (waterUsed < 200) {
+    		return 1;
+    	}
+    	else if (waterUsed < 250) {
+    		return 4;
+    	}
+    	else if (waterUsed < 300) {
+    		return 10;
+    	}
+    	else if (waterUsed < 350) {
+    		return 15;
+    	}
+    	else if (waterUsed < 400) {
+    		return 18;
+    	}
+    	else if (waterUsed < 500) {
+    		return 19;
+    	}
+    	else if (waterUsed < 550) {
+    		return 20;
+    	}
+    	else if (waterUsed < 650) {
+    		return 19;
+    	}
+    	else if (waterUsed < 700) {
+    		return 18;
+    	}
+    	else if (waterUsed < 750) {
+    		return 15;
+    	}
+    	else if (waterUsed < 800) {
+    		return 10;
+    	}
+    	else if (waterUsed < 850) {
+    		return 4;
+    	}
+    	else if (waterUsed < 900) {
+    		return 1;
+    	}
+    	else {
+    		return 0;
+    	}
     }
 
-    public int getCropsGrown(){
-        return cropsGrown;
+    public void collectWater() {
+    	waterUsed += availableFlowCapacity;
     }
-
-	public boolean isFileDownloaded() {
-		return fileDownloaded;
-	}
-
-	public List<String> getDownloadListArray() {
-		return filesDownloadedList;
-	}
-	
+    
+    public int getWaterUsed(){
+        return waterUsed;
+    }
 
 }
 

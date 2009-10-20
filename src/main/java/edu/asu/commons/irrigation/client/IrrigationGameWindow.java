@@ -544,7 +544,7 @@ public class IrrigationGameWindow extends JPanel {
 		if (moneyEarnedTextField == null) {
 			moneyEarnedTextField = new JTextField();
 			moneyEarnedTextField.setText(new Integer(mainIrrigationWindow
-					.getClientGameState().getClientData().getTotalTokensEarned())
+					.getClientDataModel().getClientData().getTotalTokensEarned())
 					.toString());
 			moneyEarnedTextField.setBounds(new Rectangle(161, 17, 86, 21));
 			moneyEarnedTextField.setFont(new Font("Dialog", Font.PLAIN, 14));
@@ -635,8 +635,9 @@ public class IrrigationGameWindow extends JPanel {
 				 * clientData.getAvailableBandwidth()).toString()); }
 				 */
 
-				fileDownloadedProgressBar.setValue((int) clientData.getPercentFileDownload());
+//				fileDownloadedProgressBar.setValue((int) clientData.getPercentFileDownload());
 				// checks whether the file has been downlaoded
+				/*
 				if (clientData.isFileDownloaded()) {
 
 					moneyEarnedTextField.setText(new Integer(clientData.getTotalTokensEarned())

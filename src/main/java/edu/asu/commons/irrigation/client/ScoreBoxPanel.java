@@ -1,17 +1,19 @@
 package edu.asu.commons.irrigation.client;
 
-import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import edu.asu.commons.irrigation.server.ClientData;
+import edu.asu.commons.irrigation.server.GroupDataModel;
 
 /**
  * $Id$
- * 
+ *  
+ * Panel displaying data for all participants.
  *
  * @author <a href='mailto:Allen.Lee@asu.edu'>Allen Lee</a>
  * @version $Rev$
@@ -19,42 +21,54 @@ import edu.asu.commons.irrigation.server.ClientData;
 public class ScoreBoxPanel extends JPanel {
 
 	private static final long serialVersionUID = 4724679308719540371L;
-	//creating a Linked Hash Map for the activity Panel Screens
-	//Map<Integer, ActivitySummaryPanel>activitySummaryPanelMap = new LinkedHashMap<Integer, ActivitySummaryPanel>();
-	Map<Integer, SummaryPanel>activitySummaryPanelMap = new LinkedHashMap<Integer, SummaryPanel>();
-
-	IrrigationClient client;
 	
-	int NUMBER_PARAMETERS = 3;
+	private List<JLabel> availableWaterLabels = new ArrayList<JLabel>();
 	
-	public ScoreBoxPanel(IrrigationClient client){
-		super();
-		this.client = client;
-		initialize();
+	private List<JLabel> waterUsedLabels = new ArrayList<JLabel>();
+	
+	private void clear() {
+		availableWaterLabels.clear();
+		waterUsedLabels.clear();
 	}
-
-	private void initialize() {
-		// TODO Auto-generated method stub
-		GridLayout gridLayout = new GridLayout();
-		gridLayout.setColumns(2);
-		gridLayout.setRows(2);
-		this.setSize(new Dimension(530,326));
-		this.setLayout(gridLayout);
-
-		//add the new activity panel that gives information per Parameter
-		for(int i=0;i<NUMBER_PARAMETERS;i++){
-			//get the activity panels per parameter
-			SummaryPanel activitySummaryPanelNew = new SummaryPanel(i,client);
-			activitySummaryPanelMap.put(new Integer(i), activitySummaryPanelNew);
-			this.add(activitySummaryPanelNew);
+	
+	public void initialize(ClientDataModel clientDataModel) {
+		clear();
+		// number of clients + 1 for the labels
+		GroupDataModel groupDataModel = clientDataModel.getGroupDataModel();
+		int columns = groupDataModel.size() + 1;
+		GridLayout gridLayout = new GridLayout(3, columns);
+		setLayout(gridLayout);
+		
+		add(new JLabel("Position"));
+		List<ClientData> clientDataList = clientDataModel.getClientDataSortedByPriority();
+		for (ClientData clientData : clientDataList) {
+			add(new JLabel(clientData.getPriorityAsString()));
+		}
+		// available water per second
+		add(new JLabel("Available water per second"));
+		for (ClientData clientData: clientDataList) {
+			JLabel availableWaterLabel = new JLabel("" + clientData.getAvailableFlowCapacity());
+			availableWaterLabels.add(availableWaterLabel);
+			add(availableWaterLabel);			
+		}
+		// water used
+		add(new JLabel("Water used"));
+		for (ClientData clientData : clientDataList) {
+			JLabel waterUsedLabel = new JLabel("" + clientData.getWaterUsed());
+			waterUsedLabels.add(waterUsedLabel);
+			add(waterUsedLabel);
 		}
 	}
 
-	public void update(ClientData clientData){
-		//update specific panel if activity Summary panel is being used, else update all the panels.
-		//activitySummaryPanelMap.get(new Integer(clientData.getPriority())).update(clientData);
-		for(int i=0;i<NUMBER_PARAMETERS;i++){
-			activitySummaryPanelMap.get(new Integer(i)).update(clientData);
+	public void update(ClientDataModel clientDataModel) {
+		List<ClientData> clientDataList = clientDataModel.getClientDataSortedByPriority();
+		for (int index = 0; index < clientDataList.size(); index++) {
+			ClientData clientData = clientDataList.get(index);
+			JLabel availableWaterLabel = availableWaterLabels.get(index);
+			availableWaterLabel.setText("" + clientData.getAvailableFlowCapacity());
+			JLabel waterUsedLabel = waterUsedLabels.get(index);
+			waterUsedLabel.setText("" + clientData.getWaterUsed());
 		}
+
 	}
 }
