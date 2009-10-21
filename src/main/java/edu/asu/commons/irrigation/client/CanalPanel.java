@@ -1,7 +1,6 @@
 package edu.asu.commons.irrigation.client;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
@@ -10,6 +9,8 @@ import java.util.Random;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
+
+import edu.asu.commons.irrigation.server.ClientData;
 
 /**
  * $Id$
@@ -35,15 +36,15 @@ public class CanalPanel extends JPanel {
 
 	private int gateHeight = 20;
 
-	Random generator = new Random();
+	private Random generator = new Random();
 
 	private boolean enableBallAnimation = true;
 
-	private double totalContributedBandwidth;
+	private int maximumIrrigationCapacity;
 
-	private ClientDataModel clientGameState;
+	private ClientDataModel clientDataModel;
 
-	private int numberofGates = 6;
+	private int numberOfGates = 6;
 
 	private int serverHeight = 100;
 
@@ -55,15 +56,11 @@ public class CanalPanel extends JPanel {
 
 	////////////////////////////////////////////////////////////////////////////
 
-	public CanalPanel(ClientDataModel clientGameState) {
+	public CanalPanel(ClientDataModel clientDataModel) {
 		super();
 		//when totalContributed bandwidth = 1.0, you dont see the canal line
-		this.totalContributedBandwidth = clientGameState.getGroupDataModel().getMaximumAvailableFlowCapacity();
-		this.clientGameState = clientGameState;
-		if(totalContributedBandwidth == 1.0){
-			totalContributedBandwidth = 2.0;
-		}
-
+		this.maximumIrrigationCapacity = clientDataModel.getGroupDataModel().getMaximumAvailableFlowCapacity();
+		this.clientDataModel = clientDataModel;
 		initialize();
 	}
 
@@ -73,12 +70,11 @@ public class CanalPanel extends JPanel {
 	 * @return void
 	 */
 	private void initialize() {
-		this.setPreferredSize(new Dimension(1098,150));
-		this.setBackground(Color.white);
+//		this.setPreferredSize(new Dimension(1098,150));
+		this.setBackground(Color.WHITE);
 		//initializing the constructor for Gates
-		for(int i=0;i<numberofGates ;i++){
-			gate[i] = new Gate(totalContributedBandwidth,i);
-			//System.out.println("Gate "+i+"x : "+gate[i].getX()+"y : "+gate[i].getY());
+		for(int i=0;i<numberOfGates ;i++){
+			gate[i] = new Gate(maximumIrrigationCapacity,i);
 		}
 
 		initializeBalls();
@@ -96,12 +92,12 @@ public class CanalPanel extends JPanel {
 		graphics2D.setColor(Color.BLUE);
 		graphics2D.fillRect(0,0,serverHeight,serverWidth);
 		//draw the other gates
-		for(int i=0;i<numberofGates-1;i++){
+		for(int i=0;i<numberOfGates-1;i++){
 			graphics2D.setColor(Color.BLUE);
 			graphics2D.fillRect(gate[i].getX(), gate[i].getY(), gate[i].getWidth(),gate[i].getHeight());
 		}
 
-		int numClients = clientGameState.getAllClientIdentifiers().size();
+		int numClients = clientDataModel.getAllClientIdentifiers().size();
 		for(int i=0;i<numClients;i++) {
 			graphics2D.setColor(Color.BLUE);
 			graphics2D.fillRect(gate[i].getOpeningsX(), gate[i].getOpeningsY(),gate[i].getOpeningsWidth(),
@@ -157,7 +153,7 @@ public class CanalPanel extends JPanel {
 			}
 			//order matters here
 			if(!(i == 5)){
-				gate[i].setOpeningsHeight((totalContributedBandwidth*bandWidthCanalHeightMapping)
+				gate[i].setOpeningsHeight((maximumIrrigationCapacity*bandWidthCanalHeightMapping)
 						- gate[i].getHeight());
 				gate[i].setOpeningsY(gate[i].getOpeningsHeight() - 50);
 
@@ -195,13 +191,8 @@ public class CanalPanel extends JPanel {
 	 */
 	private void initializeBalls() {
 		balls = new Ball[BALLCOUNT];
-		if(balls == null){
-			System.out.println("Ball is null");
-		}
-
 		for(int i=0;i<BALLCOUNT;i++){
 			balls[i] = new Ball(generator);
-
 		}
 	}
 
@@ -222,11 +213,9 @@ public class CanalPanel extends JPanel {
 	 * This will process the balls according to their position
 	 */
 	private void process(int i){
-		// TODO Auto-generated method stub
-
 		switch(balls[i].getPosition()){
 
-		case 0: if((balls[i].x >= (serverWidth - gateBuffer ) && balls[i].x <= serverWidth) && (balls[i].y >= serverHeight-(int)(totalContributedBandwidth*bandWidthCanalHeightMapping) &&
+		case 0: if((balls[i].x >= (serverWidth - gateBuffer ) && balls[i].x <= serverWidth) && (balls[i].y >= serverHeight-(int)(maximumIrrigationCapacity*bandWidthCanalHeightMapping) &&
 				balls[i].y <= serverHeight)){
 			balls[i].setPosition(1);
 			setBounds(i);
@@ -337,7 +326,7 @@ public class CanalPanel extends JPanel {
 
 		case 6: setBounds(i);
 		if(balls[i].getX() > balls[i].xBOUNDSUPPER){
-			setBallinServer(i);
+			setBallInServer(i);
 		}
 
 		if(balls[i].getY() >= balls[i].yBOUNDSUPPER - balls[i].getBallSize() || balls[i].getY() <= balls[i].yBOUNDSLOWER){
@@ -350,7 +339,7 @@ public class CanalPanel extends JPanel {
 		if((balls[i].getPosition() == 11) || (balls[i].getPosition() == 7) || (balls[i].getPosition() == 8)
 				|| (balls[i].getPosition() == 9) || (balls[i].getPosition() == 10)){
 			if(balls[i].getY() >= 150){
-				setBallinServer(i);
+				setBallInServer(i);
 			}
 			else{
 				setBounds(i);
@@ -359,8 +348,7 @@ public class CanalPanel extends JPanel {
 	}
 
 
-	private void setBallinServer(int i) {
-		// TODO Auto-generated method stub
+	private void setBallInServer(int i) {
 		generator.setSeed(i*(i+1));
 		balls[i].setX(generator.nextInt(serverWidth));
 		balls[i].setY(generator.nextInt(serverHeight));
@@ -406,14 +394,14 @@ public class CanalPanel extends JPanel {
 		}
 	}
 
-	public void openGates(int priority) {
+	public void openGate(int priority) {
 		gate[priority].setGateOpen(true);
 //		paintComponent(graphics2D);
 		repaint();
 		
 	}
 
-	public void closeGates(int priority) {
+	public void closeGate(int priority) {
 		gate[priority].setGateOpen(false);
 		gate[priority].setx1(gate[priority].getdefaultx1());
 		gate[priority].sety1(gate[priority].getdefaulty1());
@@ -424,6 +412,13 @@ public class CanalPanel extends JPanel {
 
 	public void endRound() {
 		initializeBalls();
+		closeAllGates();
+	}
+	
+	private void closeAllGates() {
+	    for (ClientData clientData: clientDataModel.getClientDataMap().values()) {
+	        closeGate(clientData.getPriority());
+	    }
 	}
 }
 

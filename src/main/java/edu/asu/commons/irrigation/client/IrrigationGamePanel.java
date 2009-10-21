@@ -4,13 +4,13 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.BoxLayout;
+import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -18,6 +18,8 @@ import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.GroupLayout.ParallelGroup;
 
 import edu.asu.commons.irrigation.server.ClientData;
 
@@ -127,15 +129,47 @@ public class IrrigationGamePanel extends JPanel {
 		panel.add(getGateSwitchButton());
 
 		JPanel bottomPanel = new JPanel();
-		bottomPanel.setLayout(new GridLayout(4, 2));
-		bottomPanel.add(getWaterUsedLabel());
-		bottomPanel.add(getWaterUsedTextField());
-		bottomPanel.add(getTokensNotInvestedLabel());
-		bottomPanel.add(getTokensNotInvestedTextField());
-		bottomPanel.add(getTokensEarnedLabel());
-		bottomPanel.add(getTokensEarnedTextField());
-		bottomPanel.add(getTotalTokensEarnedLabel());
-		bottomPanel.add(getTotalTokensEarnedTextField());
+		GroupLayout layout = new GroupLayout(bottomPanel);
+		bottomPanel.setLayout(layout);
+		layout.setAutoCreateContainerGaps(true);
+		layout.setAutoCreateGaps(true);
+		
+		GroupLayout.SequentialGroup horizontalGroup = layout.createSequentialGroup();
+		ParallelGroup labelsGroup = layout.createParallelGroup();
+		labelsGroup.addComponent(getWaterUsedLabel()).addComponent(getTokensNotInvestedLabel()).addComponent(getTokensEarnedLabel()).addComponent(getTotalTokensEarnedLabel());
+		
+		horizontalGroup.addGroup(labelsGroup);
+
+		ParallelGroup textFieldGroup = layout.createParallelGroup();
+		textFieldGroup.addComponent(getWaterUsedTextField());
+		textFieldGroup.addComponent(getTokensNotInvestedTextField());
+		textFieldGroup.addComponent(getTokensEarnedTextField());
+		textFieldGroup.addComponent(getTotalTokensEarnedTextField());
+		horizontalGroup.addGroup(textFieldGroup);
+		layout.setHorizontalGroup(horizontalGroup);
+		
+		GroupLayout.SequentialGroup verticalGroup = layout.createSequentialGroup();
+		verticalGroup.addGroup(layout.createParallelGroup(Alignment.BASELINE)
+		        .addComponent(getWaterUsedLabel()).addComponent(getWaterUsedTextField()));
+		
+		verticalGroup.addGroup(layout.createParallelGroup(Alignment.BASELINE)
+		        .addComponent(getTokensNotInvestedLabel()).addComponent(getTokensNotInvestedTextField()));
+		
+		verticalGroup.addGroup(layout.createParallelGroup(Alignment.BASELINE)
+		        .addComponent(getTokensEarnedLabel()).addComponent(getTokensEarnedTextField()));
+		
+		verticalGroup.addGroup(layout.createParallelGroup(Alignment.BASELINE)
+		        .addComponent(getTotalTokensEarnedLabel()).addComponent(getTotalTokensEarnedTextField()));
+		
+		layout.setVerticalGroup(verticalGroup);
+//		bottomPanel.add(getWaterUsedLabel());
+//		bottomPanel.add(getWaterUsedTextField());
+//		bottomPanel.add(getTokensNotInvestedLabel());
+//		bottomPanel.add(getTokensNotInvestedTextField());
+//		bottomPanel.add(getTokensEarnedLabel());
+//		bottomPanel.add(getTokensEarnedTextField());
+//		bottomPanel.add(getTotalTokensEarnedLabel());
+//		bottomPanel.add(getTotalTokensEarnedTextField());
 
 		panel.add(bottomPanel);
 		return panel;
@@ -145,6 +179,7 @@ public class IrrigationGamePanel extends JPanel {
 		if (waterUsedTextField == null) {
 			waterUsedTextField = new JTextField();
 			waterUsedTextField.setEditable(false);
+			waterUsedTextField.setBackground(Color.GRAY);
 		}
 		return waterUsedTextField;
 	}
@@ -354,15 +389,16 @@ public class IrrigationGamePanel extends JPanel {
 				irrigationCapacityLabel.setText(
 						String.format("Irrigation capacity: %d cubic feet per second (cfps)",
 								irrigationCapacity));
-				for(final ClientData clientData : clientDataModel.getClientDataMap().values()){
+				for (final ClientData clientData : clientDataModel.getClientDataMap().values()) {
+				    System.err.println("changing canal gate for client: " + clientData.getPriority() + ":" + clientData.isGateOpen());
 					if (clientData.isGateOpen()) {
-						canalPanel.openGates(clientData.getPriority());
+						canalPanel.openGate(clientData.getPriority());
 					}
 					else if(clientData.isPaused()){
-						canalPanel.closeGates(clientData.getPriority());
+						canalPanel.closeGate(clientData.getPriority());
 					}
 					else if(clientData.isGateClosed()){
-						canalPanel.closeGates(clientData.getPriority());
+						canalPanel.closeGate(clientData.getPriority());
 					}
 				}
 				ClientData clientData = clientDataModel.getClientData();
@@ -370,7 +406,9 @@ public class IrrigationGamePanel extends JPanel {
 				tokensNotInvestedTextField.setText("" + clientData.getUninvestedTokens());
 				tokensEarnedTextField.setText("" + clientData.waterToTokenFunction());
 				totalTokensEarnedTextField.setText("" + clientData.getTotalTokensEarned());
-				scoreBoxPanel.update(clientDataModel);
+				getScoreBoxPanel().update(clientDataModel);
+//				getMiddleWindowPanel().update(clientDataModel);
+
 			}
 
 		};
@@ -396,10 +434,11 @@ public class IrrigationGamePanel extends JPanel {
 	public void endRound() {
 		Runnable createGuiRunnable = new Runnable(){
 			public void run() {
-				//Refreshing the screen and preparing the main Irrigation Window for the next round
-				//provided we have already got the updatedClientDataMap
-				irrigationGameWindow.endRound();
-				upperPanel.removeAll();
+				if (canalPanel != null) {
+				    System.err.println("Removing canal panel");
+				    upperPanel.remove(canalPanel);
+				}
+				System.err.println("ending round for canal panel");
 				canalPanel.endRound();
 			}
 		};
@@ -432,7 +471,8 @@ public class IrrigationGamePanel extends JPanel {
 	public void startRound() {
 		upperPanel.add(getCanalPanel(), BorderLayout.CENTER);
 		open = false;
-		scoreBoxPanel.initialize(clientDataModel);
+		getScoreBoxPanel().initialize(clientDataModel);
+		getMiddleWindowPanel().initialize(clientDataModel);
 		revalidate();
 		//		mainIrrigationPanel.add(getJPanelUpStreamWindow(),null);
 		//		mainIrrigationPanel.add(getJPanelDownStreamWindow(),null);
@@ -440,12 +480,9 @@ public class IrrigationGamePanel extends JPanel {
 		//		mainIrrigationPanel.add(getJPanelMiddleWindow(),null);
 	}
 
-	private JPanel getJPanelMiddleWindow() {
+	private MiddleWindowPanel getMiddleWindowPanel() {
 		if(middleWindowPanel == null){
-			if(clientDataModel != null){
-				System.out.println("Main Irrigation Window clientGameState is not null");
-			}
-			middleWindowPanel = new MiddleWindowPanel(clientDataModel);
+			middleWindowPanel = new MiddleWindowPanel();
 		}
 		return middleWindowPanel;
 	}

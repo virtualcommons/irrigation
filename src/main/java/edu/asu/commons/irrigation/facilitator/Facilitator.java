@@ -60,7 +60,7 @@ public class Facilitator {
     private void initializeEventProcessors() {
         channel.add(this, new EventTypeProcessor<RegistrationEvent>(RegistrationEvent.class) {
             public void handle(RegistrationEvent registrationEvent) {
-                facilitatorWindow.setText(registrationEvent.getRoundConfiguration().getInstructions());
+                facilitatorWindow.addInstructions(registrationEvent.getRoundConfiguration().getInstructions());
             }
         });
         channel.add(this, new EventTypeProcessor<FacilitatorEndRoundEvent>(FacilitatorEndRoundEvent.class) {

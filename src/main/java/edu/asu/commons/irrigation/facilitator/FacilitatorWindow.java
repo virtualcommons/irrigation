@@ -47,6 +47,8 @@ public class FacilitatorWindow extends JPanel {
     private JButton showInstructionsButton;
     
     private JButton displayInvestmentButton;
+    
+    private StringBuilder builder = new StringBuilder();
     /**
      * This is the default constructor
      */
@@ -165,8 +167,8 @@ public class FacilitatorWindow extends JPanel {
      * @return javax.swing.JButton	
      */
     public void endRound(FacilitatorEndRoundEvent event) {
+        builder = new StringBuilder();
         ServerDataModel model = event.getServerDataModel();
-        StringBuilder builder = new StringBuilder();
         builder.append("<h3>Facilitator Debriefing:</h3>");
         builder.append("<table><thead><th>Participant</th><th>Current tokens</th><th>Current Income</th><th>Total Income</th></thead><tbody>");
         Map<Identifier, ClientData> clientDataMap = new HashMap<Identifier, ClientData>();
@@ -193,6 +195,11 @@ public class FacilitatorWindow extends JPanel {
         if (event.isLastRound()) {
             builder.append("<h2><font color='blue'>The experiment is over.  Please prepare payments.</font></h2>");
         }
+        setText(builder.toString());
+    }
+    
+    public void addInstructions(String instructions) {
+        builder.append(instructions);
         setText(builder.toString());
     }
 

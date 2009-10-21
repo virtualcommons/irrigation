@@ -125,7 +125,6 @@ public class ExperimentGameWindow extends JPanel {
     private void initGuiComponents(Dimension screenSize) {
         cardLayout = new CardLayout();
         setLayout(cardLayout);
-
         instructionsScrollPane = new JScrollPane(getInstructionsEditorPane());
         instructionsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         instructionsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -230,8 +229,8 @@ public class ExperimentGameWindow extends JPanel {
                     nextButton.setEnabled(true);
                     setInstructions(getGeneralInstructions(instructionNumber,pagesTraversed));
                     // FIXME: get rid of hardcoded animation on page 5.  Should instead
-                    // just be an animated gif or something like that.
-                    // should be more like "if instructions.hasAnimation()"
+                    // just be an animated gif or something more like 
+                    // if instructions.hasAnimation()
                     if (instructionNumber == 5) {
                         getInstructionsPanel().add(getCanalAnimationPanel(), BorderLayout.PAGE_START);
                     }
@@ -261,9 +260,6 @@ public class ExperimentGameWindow extends JPanel {
                         instructionNumber++;
                         setInstructions(getGeneralInstructions(instructionNumber,pagesTraversed));
                     }
-//                    else {
-//                        setInstructions(clientDataModel.getRoundConfiguration().getInstructions());
-//                    }
                     if(instructionNumber == 5) {
                         getInstructionsPanel().add(getCanalAnimationPanel(), BorderLayout.PAGE_START);
                     }
@@ -382,6 +378,7 @@ public class ExperimentGameWindow extends JPanel {
     public void startRound(final RoundConfiguration configuration) {
         Runnable runnable = new Runnable() {
             public void run() {
+                disableInstructions();
                 addCenterComponent(irrigationGamePanel);
                 irrigationGamePanel.startRound();
             }
@@ -397,15 +394,12 @@ public class ExperimentGameWindow extends JPanel {
      * updates the mainIrrigationGameWindow Panel and adds
      * instructionsScrollPane with the debreifing information
      */
-    public void updateEndRoundEvent(final EndRoundEvent event) {
+    public void endRound(final EndRoundEvent event) {
         irrigationGamePanel.endRound();
         Runnable runnable = new Runnable() {
             public void run() {
                 investedTokensTextField.setText("");
                 addDebriefingText(event);
-                // generate debriefing text from data culled from the Event
-//                addCenterComponent(instructionsEditorPane);
-                // FIXME: this is probably wrong.
                 addCenterComponent(getInstructionsPanel());
             }
         };
@@ -710,10 +704,14 @@ public class ExperimentGameWindow extends JPanel {
             timer.start();
         }
     }
+    
+    private void disableInstructions() {
+        quizMessageLabel.setText("");
+        getInstructionsPanel().remove(getInstructionsNavigationPanel());
+    }
 
     public void enableInstructions() {
         setInstructions(getGeneralInstructions(1,pagesTraversed));
         addCenterComponent(getInstructionsPanel());
-
     }
 }

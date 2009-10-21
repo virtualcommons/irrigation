@@ -51,7 +51,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
 
     private final Map<Identifier, ClientData> clients = new LinkedHashMap<Identifier, ClientData>();
 
-    private final static int SERVER_SLEEP_INTERVAL = 333;
+    private final static int SERVER_SLEEP_INTERVAL = 100;
 
     private final Object roundSignal = new Object();
 
@@ -194,6 +194,11 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
             public void handle(DisconnectionRequest request) {
                 getLogger().warning("irrigation server handling disconnection request: " + request);
                 Identifier disconnectedClientId = request.getId();
+                if (disconnectedClientId.equals(facilitatorId)) {
+                    getLogger().warning("Disconnecting facilitator.");
+                    facilitatorId = null;
+                    return;
+                }
                 synchronized (clients) {
                     clients.remove(disconnectedClientId);
                     serverDataModel.removeClient(disconnectedClientId);
@@ -303,14 +308,11 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
         int timeLeft = (int) (currentRoundDuration.getTimeLeft() / 1000);
         // allocate bandwidth to each client
         for (ClientData clientData : group.getClientDataMap().values()) {
-            /**
-             * undisrupted bandwith extensions
-             */
-            if(clientData.getAvailableFlowCapacity() <= 0 && getConfiguration().isUndisruptedFlowRequired()){
-                clientData.init(group.getCurrentlyAvailableFlowCapacity());
-            }
+            // for undisrupted flow extensions, disabled for the time being.
+//            if (clientData.getAvailableFlowCapacity() <= 0 && getConfiguration().isUndisruptedFlowRequired()){
+//                clientData.init(group.getCurrentlyAvailableFlowCapacity());
+//            }
             if (clientData.isGateOpen()) {
-                //System.out.println("Downloading file"+clientData.getFileNumber()+"Current time"+System.currentTimeMillis()/1000);
                 group.allocateFlowCapacity(clientData);
             }
             else if (clientData.isGateClosed()) {
@@ -338,8 +340,10 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
     private class IrrigationServerStateMachine implements StateMachine {
 
         private IrrigationServerState state;
-
-        private final Duration secondTick = Duration.create(1000L);
+        
+        private long lastTime;
+        
+        private Duration secondTick = Duration.create(1000L);
 
         public void initialize() {
             // FIXME: may want to change this as we add more states.
@@ -357,11 +361,13 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
             // start timers
             currentRoundDuration = getRoundConfiguration().getRoundDuration();
             currentRoundDuration.start();
-            secondTick.start();
             state = IrrigationServerState.ROUND_IN_PROGRESS;
+            secondTick.start();
+//            lastTime = System.currentTimeMillis();
         }
 
         private void processRound() {
+//            if ((System.currentTimeMillis() - lastTime) / 1000 > 1) {
             if (secondTick.hasExpired()) {
                 for (GroupDataModel group: serverDataModel.getAllGroupDataModels()) {
                     // reset available bandwidth for this group to calculate new allocations for the group
@@ -374,6 +380,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
                         getLogger().throwing(IrrigationServerStateMachine.class.getName(), "processRound", exception);
                     }
                 }
+//                lastTime = System.currentTimeMillis();
                 secondTick.restart();
             }
         }

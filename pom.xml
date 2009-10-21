@@ -56,6 +56,16 @@ vim:sts=2:sw=2
       <artifactId>jfreechart</artifactId>
       <version>1.0.13</version>
     </dependency>
+    <dependency>
+      <groupId>jgoodies</groupId>
+      <artifactId>looks</artifactId>
+      <version>1.2.2</version>
+    </dependency>
+    <dependency>
+      <groupId>jgoodies</groupId>
+      <artifactId>forms</artifactId>
+      <version>1.0.5</version>
+    </dependency>
   </dependencies>
   <build>
     <finalName>irrigation</finalName>
