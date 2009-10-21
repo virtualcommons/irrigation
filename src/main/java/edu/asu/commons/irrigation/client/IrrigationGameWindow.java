@@ -544,7 +544,7 @@ public class IrrigationGameWindow extends JPanel {
 		if (moneyEarnedTextField == null) {
 			moneyEarnedTextField = new JTextField();
 			moneyEarnedTextField.setText(new Integer(mainIrrigationWindow
-					.getClientDataModel().getClientData().getTotalTokensEarned())
+					.getClientDataModel().getClientData().getAllTokensEarnedThisRound())
 					.toString());
 			moneyEarnedTextField.setBounds(new Rectangle(161, 17, 86, 21));
 			moneyEarnedTextField.setFont(new Font("Dialog", Font.PLAIN, 14));

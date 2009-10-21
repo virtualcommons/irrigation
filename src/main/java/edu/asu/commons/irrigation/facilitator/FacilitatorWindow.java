@@ -186,8 +186,8 @@ public class FacilitatorWindow extends JPanel {
                     "<td align='center'>$%3.2f</td>" +
                     "<td align='center'>$%3.2f</td></tr>",
                     clientId.toString(), 
-                    data.getTotalTokensEarned(), 
-                    data.getTotalTokensEarned() * model.getRoundConfiguration().getDollarsPerToken(),
+                    data.getAllTokensEarnedThisRound(), 
+                    data.getAllTokensEarnedThisRound() * model.getRoundConfiguration().getDollarsPerToken(),
                     data.getTotalTokens() * model.getRoundConfiguration().getDollarsPerToken()+ facilitator.getConfiguration().getShowUpPayment()));
         }
         builder.append("</tbody></table><hr>");

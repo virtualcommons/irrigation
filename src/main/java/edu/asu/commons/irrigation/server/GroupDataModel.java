@@ -63,7 +63,7 @@ public class GroupDataModel implements DataModel<RoundConfiguration> {
             throw new IllegalArgumentException(
                     "no client state available for: " + id);
         }
-        return state.getTotalTokensEarned();
+        return state.getAllTokensEarnedThisRound();
     }
 
     public void addClient(ClientData clientData) {

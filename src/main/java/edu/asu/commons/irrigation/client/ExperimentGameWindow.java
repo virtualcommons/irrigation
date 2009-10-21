@@ -402,14 +402,14 @@ public class ExperimentGameWindow extends JPanel {
         };
         try {
             SwingUtilities.invokeAndWait(runnable);
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
+        } 
+        catch (InterruptedException e) {
             e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            // TODO Auto-generated catch block
+        } 
+        catch (InvocationTargetException e) {
             e.printStackTrace();
         }
-        info("IrrigationGameWindow finished cleanup, ending round completed.");
+        info("ExperimentGameWindow finished cleanup, ending round completed.");
     }
 
     private void info(String message) {
@@ -422,74 +422,85 @@ public class ExperimentGameWindow extends JPanel {
      */
     private void addDebriefingText(EndRoundEvent event) {
         instructionsBuilder.delete(0, instructionsBuilder.length());
-
-        Map<Identifier,ClientData> clientDataMap = event.getClientDataMap();
-
-        String positionString = "Your position is: " + event.getClientData().getPriorityAsString();
-        ClientData[] allClientData = new ClientData[clientDataMap.size()];
-        for(ClientData clientData : clientDataMap.values()) {
-            allClientData[clientData.getPriority()] = clientData;
+        instructionsBuilder.append("<b>You were in position " + clientDataModel.getPriorityString());
+        instructionsBuilder.append(
+                "<table><thead><th>Position</th><th>Initial token endowment</th><th>Tokens invested</th><th>Tokens not invested</th>" +
+                "<th>Tokens earned from growing crops</th><th>Total tokens earned during this round</th>" +
+                "<th>Dollars earned during this round</th><th>Total dollars earned (including show-up bonus)</th></thead>" +
+                "<tbody>");
+        double showUpBonus = clientDataModel.getServerConfiguration().getShowUpPayment();
+        for(ClientData clientData : clientDataModel.getClientDataSortedByPriority()) {
+        	instructionsBuilder.append(
+        			String.format("<tr><td>%s</td><td>%d</td><td>%d</td><td>%d</td><td>%d</td><td>%d</td><td>%d</td><td>$%3.2f</td><td>$%3.2f</td></tr>",
+        					clientData.getPriorityString(),
+        					clientData.getMaximumTokenInvestment(),
+        					clientData.getInvestedTokens(),
+        					clientData.getUninvestedTokens(),
+        					clientData.getAllTokensEarnedThisRound(),
+        					clientData.getTokensEarnedFromWaterCollected(),
+        					clientData.getAllTokensEarnedThisRound(),
+        					clientData.getTotalDollarsEarnedThisRound(),
+        					clientData.getTotalDollarsEarned() + showUpBonus
+        					));
         }
-        ClientData clientData = event.getClientData();
-        RoundConfiguration roundConfiguration = clientData.getRoundConfiguration();
-        double dollarsPerToken = roundConfiguration.getDollarsPerToken();
-        // FIXME: wow
-        instructionsBuilder.append(String.format(
-                positionString +
-                "<table><thead><th></th><th></th><th>A</th><th></th><th>B</th><th></th><th>C</th><th></th><th>D</th><th></th><th>E</th></thead><tbody>"+
-                "<tr><td>A Initial endowment</td><td></td><td>10</td><td></td><td>10</td><td></td><td>10</td><td></td><td>10</td><td></td><td>10</td></tr>"+
-                "<tr><td>B Infrastructure investment</td><td></td><td>%d</td><td></td><td>%d</td><td></td><td>%d</td><td></td><td>%d</td><td></td><td>%d</td></tr>"+
-                "<tr><td>C Kept endowment (A - B)</td><td></td><td>%d</td><td></td><td>%d</td><td></td><td>%d</td><td></td><td>%d</td><td></td><td>%d</td></tr>"+
-                "<tr><td>D Return from growing crops</td><td></td><td>%d</td><td></td><td>%d</td><td></td><td>%d</td><td></td><td>%d</td><td></td><td>%d</td></tr>"+
-                "<tr><td>E Total tokens earned in last round(D+C)</td><td></td><td>%d</td><td></td><td>%d</td><td></td><td>%d</td><td></td><td>%d</td><td></td><td>%d</td></tr>"+
-                "<tr><td>F Total dollars earned in this round (E*0.1$)</td><td></td><td>%3.2f</td><td></td><td>%3.2f</td><td></td><td>%3.2f</td><td></td><td>%3.2f</td><td></td><td>%3.2f</td></tr>",
-                allClientData[0].getInvestedTokens(),
-                allClientData[1].getInvestedTokens(),
-                allClientData[2].getInvestedTokens(),
-                allClientData[3].getInvestedTokens(),
-                allClientData[4].getInvestedTokens(),
-                
-                allClientData[0].getUninvestedTokens(),
-                allClientData[1].getUninvestedTokens(),
-                allClientData[2].getUninvestedTokens(),
-                allClientData[3].getUninvestedTokens(),
-                allClientData[4].getUninvestedTokens(),
+        
+        ClientData clientData = clientDataModel.getClientData();
+        RoundConfiguration configuration = clientDataModel.getRoundConfiguration();   
 
-                allClientData[0].getTotalTokensEarned() - allClientData[0].getUninvestedTokens(),
-                allClientData[1].getTotalTokensEarned() - allClientData[1].getUninvestedTokens(),
-                allClientData[2].getTotalTokensEarned() - allClientData[2].getUninvestedTokens(),
-                allClientData[3].getTotalTokensEarned() - allClientData[3].getUninvestedTokens(),
-                allClientData[4].getTotalTokensEarned() - allClientData[4].getUninvestedTokens(),
-
-                allClientData[0].getTotalTokensEarned(),
-                allClientData[1].getTotalTokensEarned(),
-                allClientData[2].getTotalTokensEarned(),
-                allClientData[3].getTotalTokensEarned(),
-                allClientData[4].getTotalTokensEarned(),
-
-                (float)dollarsPerToken*allClientData[0].getTotalTokensEarned(),
-                (float)dollarsPerToken*allClientData[1].getTotalTokensEarned(),
-                (float)dollarsPerToken*allClientData[2].getTotalTokensEarned(),
-                (float)dollarsPerToken*allClientData[3].getTotalTokensEarned(),
-                (float)dollarsPerToken*allClientData[4].getTotalTokensEarned()
-
-                /*	
-        		event.getClientData().getContributedTokens(),otherClientData.getContributedTokens(),
-        		10 - event.getClientData().getContributedTokens(),10 - otherClientData.getContributedTokens(),
-        		event.getClientData().getAward()-(10 - event.getClientData().getContributedTokens()),
-        		otherClientData.getAward()-(10 - otherClientData.getContributedTokens()),
-        		event.getClientData().getAward(),otherClientData.getAward(),
-        		(float)event.getClientData().getRoundConfiguration().getDollarsPerToken()*event.getClientData().getAward(),
-        		(float)otherClientData.getRoundConfiguration().getDollarsPerToken()*otherClientData.getAward()*/
-        ));
-        instructionsBuilder.append("</tbody></table><hr>");
-        instructionsBuilder.append(String.format("Summary: You received $1.00 at the beginning of the round and had " +
-                "$%3.2f at the end of the round. Your earnings in the experiments so far are $%3.2f plus the $5.00 " +
-                "showup fee, for a grand total of $%3.2f",
-                (float)dollarsPerToken*clientData.getTotalTokensEarned(),
-                (float)dollarsPerToken*clientData.getTotalTokens(),
-                (float)dollarsPerToken*clientData.getTotalTokens() + getServerConfiguration().getShowUpPayment()
-        ));
+        instructionsBuilder.append("</tbody></table><hr/>");
+        instructionsBuilder.append(String.format("<h3>You received $%3.2f this past round.  Your total earnings are $%3.2f, including the $%3.2f show up bonus.</h3>",
+        		clientData.getTotalDollarsEarnedThisRound(), clientData.getTotalDollarsEarned()+showUpBonus, showUpBonus));
+        // FIXME: wow.  change this.
+//        instructionsBuilder.append(String.format(
+//                positionString +
+//
+//                allClientData[0].getInvestedTokens(),
+//                allClientData[1].getInvestedTokens(),
+//                allClientData[2].getInvestedTokens(),
+//                allClientData[3].getInvestedTokens(),
+//                allClientData[4].getInvestedTokens(),
+//                
+//                allClientData[0].getUninvestedTokens(),
+//                allClientData[1].getUninvestedTokens(),
+//                allClientData[2].getUninvestedTokens(),
+//                allClientData[3].getUninvestedTokens(),
+//                allClientData[4].getUninvestedTokens(),
+//
+//                allClientData[0].getTotalTokensEarned() - allClientData[0].getUninvestedTokens(),
+//                allClientData[1].getTotalTokensEarned() - allClientData[1].getUninvestedTokens(),
+//                allClientData[2].getTotalTokensEarned() - allClientData[2].getUninvestedTokens(),
+//                allClientData[3].getTotalTokensEarned() - allClientData[3].getUninvestedTokens(),
+//                allClientData[4].getTotalTokensEarned() - allClientData[4].getUninvestedTokens(),
+//
+//                allClientData[0].getTotalTokensEarned(),
+//                allClientData[1].getTotalTokensEarned(),
+//                allClientData[2].getTotalTokensEarned(),
+//                allClientData[3].getTotalTokensEarned(),
+//                allClientData[4].getTotalTokensEarned(),
+//
+//                (float)dollarsPerToken*allClientData[0].getTotalTokensEarned(),
+//                (float)dollarsPerToken*allClientData[1].getTotalTokensEarned(),
+//                (float)dollarsPerToken*allClientData[2].getTotalTokensEarned(),
+//                (float)dollarsPerToken*allClientData[3].getTotalTokensEarned(),
+//                (float)dollarsPerToken*allClientData[4].getTotalTokensEarned()
+//
+//                /*	
+//        		event.getClientData().getContributedTokens(),otherClientData.getContributedTokens(),
+//        		10 - event.getClientData().getContributedTokens(),10 - otherClientData.getContributedTokens(),
+//        		event.getClientData().getAward()-(10 - event.getClientData().getContributedTokens()),
+//        		otherClientData.getAward()-(10 - otherClientData.getContributedTokens()),
+//        		event.getClientData().getAward(),otherClientData.getAward(),
+//        		(float)event.getClientData().getRoundConfiguration().getDollarsPerToken()*event.getClientData().getAward(),
+//        		(float)otherClientData.getRoundConfiguration().getDollarsPerToken()*otherClientData.getAward()*/
+//        ));
+//        instructionsBuilder.append("</tbody></table><hr>");
+//        instructionsBuilder.append(String.format("Summary: You received $1.00 at the beginning of the round and had " +
+//                "$%3.2f at the end of the round. Your earnings in the experiments so far are $%3.2f plus the $5.00 " +
+//                "showup fee, for a grand total of $%3.2f",
+//                (float)dollarsPerToken*clientData.getAllTokensEarnedThisRound(),
+//                (float)dollarsPerToken*clientData.getTotalTokens(),
+//                (float)dollarsPerToken*clientData.getTotalTokens() + getServerConfiguration().getShowUpPayment()
+//        ));
         //append the added practice round instructions
         if(clientDataModel.getRoundConfiguration().isPracticeRound()) {
             instructionsBuilder.append(" However, this is a practice round and the earnings mentioned are only for illustrative purposes " +

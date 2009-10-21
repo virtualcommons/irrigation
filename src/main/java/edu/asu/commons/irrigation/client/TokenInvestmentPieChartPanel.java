@@ -55,7 +55,7 @@ public class TokenInvestmentPieChartPanel extends JPanel {
                 labelBuilder.append("You");
             }
             else {
-                labelBuilder.append(currentClientData.getPriorityAsString());
+                labelBuilder.append(currentClientData.getPriorityString());
             }
             labelBuilder.append(" invested ").append(currentClientData.getInvestedTokens()).append(" token(s)");
             defaultPieDataset.setValue(labelBuilder.toString(), currentClientData.getInvestedTokens());

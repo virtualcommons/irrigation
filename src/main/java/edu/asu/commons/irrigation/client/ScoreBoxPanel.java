@@ -43,7 +43,7 @@ public class ScoreBoxPanel extends JPanel {
 		add(new JLabel("Position:"));
 		List<ClientData> clientDataList = clientDataModel.getClientDataSortedByPriority();
 		for (ClientData clientData : clientDataList) {
-			add(new JLabel(clientData.getPriorityAsString()));
+			add(new JLabel(clientData.getPriorityString()));
 		}
 		// available water per second
 		add(new JLabel("Available water per second:"));

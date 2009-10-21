@@ -72,7 +72,7 @@ public class MiddleScorePanel extends JPanel {
 
     private JLabel getPositionText() {
         if (positionText == null){
-            positionText = new JLabel(clientData.getPriorityAsString());
+            positionText = new JLabel(clientData.getPriorityString());
             positionText.setBounds(new Rectangle(5,50+32+10,30,20));
         }
         return positionText;
@@ -91,7 +91,7 @@ public class MiddleScorePanel extends JPanel {
         this.clientData = clientData;
         currentBandwidthText.setText("" + clientData.getAvailableFlowCapacity());
         waterUsedTextField.setText("" + clientData.getWaterUsed());
-        totalTokensEarnedTextField.setText("" + clientData.getTotalTokensEarned());
+        totalTokensEarnedTextField.setText("" + clientData.getAllTokensEarnedThisRound());
 
         if(clientData.isGateOpen() && clientData.getAvailableFlowCapacity() > 0) {
             // show that client is actively irrigating

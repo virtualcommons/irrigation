@@ -47,8 +47,8 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
         return getIntProperty("max-canal-flow-capacity", 40);
     }
 
-    public int getMaximumInvestedTokens() {
-        return getIntProperty("max-invested-tokens", 10);
+    public int getMaximumTokenInvestment() {
+        return getIntProperty("max-token-investment", 10);
     }
 
     /**
@@ -56,7 +56,7 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
      * @return
      */
     public int getMaximumTotalInvestedTokens() {
-        return getMaximumInvestedTokens() * getClientsPerGroup();
+        return getMaximumTokenInvestment() * getClientsPerGroup();
     }
 
     public int getMaximumInfrastructureEfficiency() {
@@ -79,6 +79,8 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
     /**
      * Returns the dollars/token exchange rate.  $1 = 1, 50 cents = $.50, 1 penny per token = .01, etc.
      * 
+     * FIXME: this should be a ServerConfiguration parameter unless we change it so
+     * the client keeps track of total dollars earned per round instead of total tokens earned per round. 
      * 
      * @return
      */

@@ -401,7 +401,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
             //Send the end round event to all the clients
             synchronized (clients) {
                 for (ClientData data : clients.values()) {
-                    data.award();
+                    data.addTokensEarnedThisRoundToTotal();
                     transmit(new EndRoundEvent(data.getId(), data.getGroupDataModel(), getConfiguration().isLastRound()));
                 }
             }

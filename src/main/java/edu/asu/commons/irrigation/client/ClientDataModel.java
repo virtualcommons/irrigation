@@ -45,6 +45,11 @@ public class ClientDataModel implements DataModel<RoundConfiguration> {
     public ClientData getClientData() {
         return groupDataModel.getClientData( getId() );
     }
+    
+    public String getPriorityString() {
+    	return getClientData().getPriorityString();
+    }
+    
 
     public Identifier getId() {
         return client.getId();

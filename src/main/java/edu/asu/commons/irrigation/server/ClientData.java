@@ -27,7 +27,7 @@ public class ClientData implements Serializable {
     
     private GroupDataModel groupDataModel;
 
-    private int waterUsed = 0;
+    private int waterCollected = 0;
 
     private int availableFlowCapacity;
 
@@ -76,7 +76,7 @@ public class ClientData implements Serializable {
     
     private final static String[] PRIORITY_STRINGS = { "A", "B", "C", "D", "E" };
 
-    public String getPriorityAsString() {
+    public String getPriorityString() {
         // bounds check
         int priority = getPriority();
         if (priority >= 0 && priority < PRIORITY_STRINGS.length) {
@@ -125,7 +125,7 @@ public class ClientData implements Serializable {
     }
     
     public int getUninvestedTokens() {
-        return roundConfiguration.getMaximumInvestedTokens() - investedTokens;
+        return roundConfiguration.getMaximumTokenInvestment() - investedTokens;
     }
 
     public GroupDataModel getGroupDataModel() {
@@ -149,7 +149,7 @@ public class ClientData implements Serializable {
         closeGate();
         investedTokens = 0;
         //adding number of files to be downloaded = 0 per round
-        waterUsed = 0;
+        waterCollected = 0;
     }
 
     public void resetAllTokens() {
@@ -182,16 +182,20 @@ public class ClientData implements Serializable {
     	setAvailableFlowCapacity(availableFlowCapacity);
     }
     
-    public void award() {
-        totalTokens += getTotalTokensEarned();
+    public void addTokensEarnedThisRoundToTotal() {
+        totalTokens += getAllTokensEarnedThisRound();
     }
 
     /**
      * Returns the current number of tokens given to this participant. 
      * @return
      */
-    public int getTotalTokensEarned(){
-        return waterToTokenFunction() + getUninvestedTokens();
+    public int getAllTokensEarnedThisRound(){
+        return getTokensEarnedFromWaterCollected() + getUninvestedTokens();
+    }
+    
+    public double getTotalDollarsEarnedThisRound() {
+    	return roundConfiguration.getDollarsPerToken() * getAllTokensEarnedThisRound();
     }
 
     /**
@@ -200,47 +204,47 @@ public class ClientData implements Serializable {
      * @param value
      * @return
      */
-    public int waterToTokenFunction() {
-    	if (waterUsed < 150) {
+    public int getTokensEarnedFromWaterCollected() {
+    	if (waterCollected < 150) {
     		return 0;
     	}
-    	else if (waterUsed < 200) {
+    	else if (waterCollected < 200) {
     		return 1;
     	}
-    	else if (waterUsed < 250) {
+    	else if (waterCollected < 250) {
     		return 4;
     	}
-    	else if (waterUsed < 300) {
+    	else if (waterCollected < 300) {
     		return 10;
     	}
-    	else if (waterUsed < 350) {
+    	else if (waterCollected < 350) {
     		return 15;
     	}
-    	else if (waterUsed < 400) {
+    	else if (waterCollected < 400) {
     		return 18;
     	}
-    	else if (waterUsed < 500) {
+    	else if (waterCollected < 500) {
     		return 19;
     	}
-    	else if (waterUsed < 550) {
+    	else if (waterCollected < 550) {
     		return 20;
     	}
-    	else if (waterUsed < 650) {
+    	else if (waterCollected < 650) {
     		return 19;
     	}
-    	else if (waterUsed < 700) {
+    	else if (waterCollected < 700) {
     		return 18;
     	}
-    	else if (waterUsed < 750) {
+    	else if (waterCollected < 750) {
     		return 15;
     	}
-    	else if (waterUsed < 800) {
+    	else if (waterCollected < 800) {
     		return 10;
     	}
-    	else if (waterUsed < 850) {
+    	else if (waterCollected < 850) {
     		return 4;
     	}
-    	else if (waterUsed < 900) {
+    	else if (waterCollected < 900) {
     		return 1;
     	}
     	else {
@@ -249,12 +253,20 @@ public class ClientData implements Serializable {
     }
 
     public void collectWater() {
-    	waterUsed += availableFlowCapacity;
+    	waterCollected += availableFlowCapacity;
     }
     
     public int getWaterUsed(){
-        return waterUsed;
+        return waterCollected;
     }
+
+	public int getMaximumTokenInvestment() {
+		return getRoundConfiguration().getMaximumTokenInvestment();
+	}
+
+	public double getTotalDollarsEarned() {
+		return roundConfiguration.getDollarsPerToken() * totalTokens;
+	}
 
 }
 

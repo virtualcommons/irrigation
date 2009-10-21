@@ -177,11 +177,16 @@ public class IrrigationGamePanel extends JPanel {
 
 	private JTextField getWaterUsedTextField() {
 		if (waterUsedTextField == null) {
-			waterUsedTextField = new JTextField();
-			waterUsedTextField.setEditable(false);
-			waterUsedTextField.setBackground(Color.GRAY);
+			waterUsedTextField = createTextField();
 		}
 		return waterUsedTextField;
+	}
+	
+	private JTextField createTextField() {
+		JTextField textField = new JTextField();
+		textField.setEditable(false);
+		textField.setBackground(Color.LIGHT_GRAY);
+		return textField;
 	}
 
 	private JLabel getWaterUsedLabel() {
@@ -193,8 +198,7 @@ public class IrrigationGamePanel extends JPanel {
 
 	private JTextField getTokensNotInvestedTextField() {
 		if (tokensNotInvestedTextField == null) {
-			tokensNotInvestedTextField = new JTextField();
-			tokensNotInvestedTextField.setEditable(false);
+			tokensNotInvestedTextField = createTextField();
 		}
 		return tokensNotInvestedTextField;
 	}
@@ -207,8 +211,7 @@ public class IrrigationGamePanel extends JPanel {
 
 	private JTextField getTokensEarnedTextField() {
 		if (tokensEarnedTextField == null) {
-			tokensEarnedTextField = new JTextField();
-			tokensEarnedTextField.setEditable(false);
+			tokensEarnedTextField = createTextField();
 		}
 		return tokensEarnedTextField;
 	}
@@ -221,8 +224,7 @@ public class IrrigationGamePanel extends JPanel {
 
 	private JTextField getTotalTokensEarnedTextField() {
 		if (totalTokensEarnedTextField == null) {
-			totalTokensEarnedTextField = new JTextField();
-			totalTokensEarnedTextField.setEditable(false);
+			totalTokensEarnedTextField = createTextField();
 		}
 		return totalTokensEarnedTextField;
 
@@ -404,8 +406,8 @@ public class IrrigationGamePanel extends JPanel {
 				ClientData clientData = clientDataModel.getClientData();
 				waterUsedTextField.setText("" + clientData.getWaterUsed());
 				tokensNotInvestedTextField.setText("" + clientData.getUninvestedTokens());
-				tokensEarnedTextField.setText("" + clientData.waterToTokenFunction());
-				totalTokensEarnedTextField.setText("" + clientData.getTotalTokensEarned());
+				tokensEarnedTextField.setText("" + clientData.getTokensEarnedFromWaterCollected());
+				totalTokensEarnedTextField.setText("" + clientData.getAllTokensEarnedThisRound());
 				getScoreBoxPanel().update(clientDataModel);
 //				getMiddleWindowPanel().update(clientDataModel);
 
@@ -434,22 +436,24 @@ public class IrrigationGamePanel extends JPanel {
 	public void endRound() {
 		Runnable createGuiRunnable = new Runnable(){
 			public void run() {
+				gateSwitchButton.setText("Open gate");
 				if (canalPanel != null) {
 				    System.err.println("Removing canal panel");
 				    upperPanel.remove(canalPanel);
+					canalPanel.endRound();
 				}
 				System.err.println("ending round for canal panel");
-				canalPanel.endRound();
+			    canalPanel = null;
 			}
 		};
 		open = false;
-		gateSwitchButton.setText("Open gate");
-
 		try {
 			SwingUtilities.invokeAndWait(createGuiRunnable);
-		} catch (InterruptedException e) {
+		}
+		catch (InterruptedException e) {
 			e.printStackTrace();
-		} catch (InvocationTargetException e) {
+		}
+		catch (InvocationTargetException e) {
 			e.printStackTrace();
 		}
 

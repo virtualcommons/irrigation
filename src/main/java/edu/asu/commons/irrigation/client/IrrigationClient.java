@@ -181,6 +181,7 @@ public class IrrigationClient {
         });
         channel.add(this, new EventTypeProcessor<EndRoundEvent>(EndRoundEvent.class) {
             public void handle(EndRoundEvent event) {
+            	clientDataModel.setGroupDataModel(event.getClientData().getGroupDataModel());
                 experimentGameWindow.endRound(event);
             }
         });
