@@ -95,8 +95,8 @@ public class GroupDataModel implements DataModel<RoundConfiguration> {
         return Collections.unmodifiableMap(clients);
     }
 
-    public int getCurrentlyAvailableFlowCapacity(){
-        return currentlyAvailableFlowCapacity;
+    public int getAvailableClientFlowCapacity(){
+        return Math.min(currentlyAvailableFlowCapacity, getRoundConfiguration().getMaximumClientFlowCapacity());
     }
 
     public RoundConfiguration getRoundConfiguration() {
@@ -197,8 +197,7 @@ public class GroupDataModel implements DataModel<RoundConfiguration> {
     }
 
     public void allocateFlowCapacity(ClientData clientData) {
-    	RoundConfiguration roundConfiguration = getRoundConfiguration();
-    	int maximumClientFlowCapacity = roundConfiguration.getMaximumClientFlowCapacity();
+    	int maximumClientFlowCapacity = getRoundConfiguration().getMaximumClientFlowCapacity();
         if (currentlyAvailableFlowCapacity >= maximumClientFlowCapacity) {
             currentlyAvailableFlowCapacity -= maximumClientFlowCapacity;
             clientData.setAvailableFlowCapacity(maximumClientFlowCapacity);

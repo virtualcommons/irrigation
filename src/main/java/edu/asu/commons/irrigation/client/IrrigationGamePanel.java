@@ -46,7 +46,7 @@ public class IrrigationGamePanel extends JPanel {
 	//this contains the upstream and downstream Panel
 	private JPanel jPanelUpStreamWindow = null;
 	private JPanel jPanelDownStreamWindow = null;
-	private JPanel mainIrrigationPanel = null;
+//	private JPanel mainIrrigationPanel = null;
 
 	private ScoreBoxPanel scoreBoxPanel;
 
@@ -186,7 +186,7 @@ public class IrrigationGamePanel extends JPanel {
 
 	private JLabel getWaterUsedLabel() {
 		if (waterUsedLabel == null) {
-			waterUsedLabel = new JLabel("Water units used: ");
+			waterUsedLabel = new JLabel("Water units collected: ");
 		}
 		return waterUsedLabel;
 	}
@@ -293,8 +293,8 @@ public class IrrigationGamePanel extends JPanel {
 
 	private JButton getGateSwitchButton() {
 		if (gateSwitchButton == null) {
-			gateSwitchButton = new JButton("Open Gate");
-			gateSwitchButton.setPreferredSize(new Dimension(60, 60));
+			gateSwitchButton = new JButton("Open gate");
+			gateSwitchButton.setPreferredSize(new Dimension(100, 100));
 			gateSwitchButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent event) {
 					open = !open;
@@ -375,9 +375,9 @@ public class IrrigationGamePanel extends JPanel {
 		}
 		return timeRemainingProgressBar;
 	}
-	//this event gets called every second in the experiment.
+
 	/**
-	 * Shoudl be invoked every second throughout the experiment, from a ClientUpdateEvent sent by the server.
+	 * Should be invoked every second throughout the experiment, from a ClientUpdateEvent sent by the server.
 	 */
 	public void updateClientStatus(final ClientDataModel clientDataModel) {
 		Runnable createGuiRunnable = new Runnable(){
@@ -442,6 +442,8 @@ public class IrrigationGamePanel extends JPanel {
 				canalPanel.endRound();
 			}
 		};
+		open = false;
+		gateSwitchButton.setText("Open gate");
 
 		try {
 			SwingUtilities.invokeAndWait(createGuiRunnable);
@@ -453,15 +455,8 @@ public class IrrigationGamePanel extends JPanel {
 
 	}
 
-	/**
-	 * assigns the priority to the window and prepares the irrigationWindowMap
-	 */
-	public void updateContributions(final ClientDataModel clientDataModel) {
+	public void setClientDataModel(final ClientDataModel clientDataModel) {
 		this.clientDataModel = clientDataModel;
-		//Here a map is created with the map consisting of the
-		//irrigation window as the value and the priority value as the key. This is handled here , because
-		//the event contains the priority for every client, and the priority can act as a unique key for the
-		//game window.
 	}
 
 
@@ -469,8 +464,8 @@ public class IrrigationGamePanel extends JPanel {
 	 * fills in the panels depending on the priority of the client
 	 */
 	public void startRound() {
-		upperPanel.add(getCanalPanel(), BorderLayout.CENTER);
 		open = false;
+		upperPanel.add(getCanalPanel(), BorderLayout.CENTER);
 		getScoreBoxPanel().initialize(clientDataModel);
 		getMiddleWindowPanel().initialize(clientDataModel);
 		revalidate();

@@ -264,10 +264,10 @@ public class CanalAnimationPanel extends JPanel {
             //still in server
             else {
                 setBounds(i);
-                if(balls[i].x <= balls[i].xBOUNDSLOWER || balls[i].x >= balls[i].xBOUNDSUPPER-balls[i].getBallSize()){
+                if(balls[i].x <= balls[i].xUpperBound || balls[i].x >= balls[i].xUpperBound-balls[i].getBallSize()){
                     balls[i].moveX = balls[i].moveX * -1;
                 }
-                if(balls[i].y <= balls[i].yBOUNDSLOWER || balls[i].y >= balls[i].yBOUNDSUPPER-balls[i].getBallSize())
+                if(balls[i].y <= balls[i].yLowerBound || balls[i].y >= balls[i].yUpperBound-balls[i].getBallSize())
                     balls[i].moveY = balls[i].moveY * -1;
             }
             break;
@@ -280,9 +280,9 @@ public class CanalAnimationPanel extends JPanel {
              //directly pass in the information
              setBounds(i);
              /*System.out.println("X upper :"+balls[i].xBOUNDSUPPER+" Y Upper :"+balls[i].yBOUNDSUPPER
-							+" X Lower"+balls[i].xBOUNDSLOWER+" X Upper"+balls[i].xBOUNDSUPPER);*/
+							+" X Lower"+balls[i].xLowerBound+" X Upper"+balls[i].xBOUNDSUPPER);*/
              /*	balls[i].xBOUNDSUPPER = 420;
-					balls[i].xBOUNDSLOWER = 400;
+					balls[i].xLowerBound = 400;
 					balls[i].yBOUNDSUPPER = 150;
 					balls[i].yBOUNDSLOWER = 80;
 					balls[i].moveX = 0;
@@ -291,12 +291,12 @@ public class CanalAnimationPanel extends JPanel {
          else{
              setBounds(i);
              /*System.out.println("X upper :"+balls[i].xBOUNDSUPPER+" Y Upper :"+balls[i].yBOUNDSUPPER
-								+" X Lower"+balls[i].xBOUNDSLOWER+" X Upper"+balls[i].xBOUNDSUPPER);
+								+" X Lower"+balls[i].xLowerBound+" X Upper"+balls[i].xBOUNDSUPPER);
               */
-             if(balls[i].getX() > balls[i].xBOUNDSUPPER){
+             if(balls[i].getX() > balls[i].xUpperBound){
                  balls[i].setPosition(2);
              }
-             if(balls[i].getY() >= balls[i].yBOUNDSUPPER - balls[i].getBallSize() || balls[i].getY() <= balls[i].yBOUNDSLOWER){
+             if(balls[i].getY() >= balls[i].yUpperBound - balls[i].getBallSize() || balls[i].getY() <= balls[i].yLowerBound){
                  balls[i].moveY = balls[i].moveY*-1;
              }
          }
@@ -309,7 +309,7 @@ public class CanalAnimationPanel extends JPanel {
             //directly pass in the information
             setBounds(i);
             /*	balls[i].xBOUNDSUPPER = 420;
-				balls[i].xBOUNDSLOWER = 400;
+				balls[i].xLowerBound = 400;
 				balls[i].yBOUNDSUPPER = 150;
 				balls[i].yBOUNDSLOWER = 80;
 				balls[i].moveX = 0;
@@ -317,10 +317,10 @@ public class CanalAnimationPanel extends JPanel {
         }
         else{
             setBounds(i);
-            if(balls[i].getX() > balls[i].xBOUNDSUPPER){
+            if(balls[i].getX() > balls[i].xUpperBound){
                 balls[i].setPosition(3);
             }
-            if(balls[i].getY() >= balls[i].yBOUNDSUPPER - balls[i].getBallSize() || balls[i].getY() <= balls[i].yBOUNDSLOWER){
+            if(balls[i].getY() >= balls[i].yUpperBound - balls[i].getBallSize() || balls[i].getY() <= balls[i].yLowerBound){
                 balls[i].moveY = balls[i].moveY*-1;
             }
         }
@@ -333,7 +333,7 @@ public class CanalAnimationPanel extends JPanel {
             //directly pass in the information
             setBounds(i);
             /*	balls[i].xBOUNDSUPPER = 420;
-				balls[i].xBOUNDSLOWER = 400;
+				balls[i].xLowerBound = 400;
 				balls[i].yBOUNDSUPPER = 150;
 				balls[i].yBOUNDSLOWER = 80;
 				balls[i].moveX = 0;
@@ -341,10 +341,10 @@ public class CanalAnimationPanel extends JPanel {
         }
         else{
             setBounds(i);
-            if(balls[i].getX() > balls[i].xBOUNDSUPPER){
+            if(balls[i].getX() > balls[i].xUpperBound){
                 balls[i].setPosition(4);
             }
-            if(balls[i].getY() >= balls[i].yBOUNDSUPPER - balls[i].getBallSize() || balls[i].getY() <= balls[i].yBOUNDSLOWER){
+            if(balls[i].getY() >= balls[i].yUpperBound - balls[i].getBallSize() || balls[i].getY() <= balls[i].yLowerBound){
                 balls[i].moveY = balls[i].moveY*-1;
             }
         }
@@ -356,7 +356,7 @@ public class CanalAnimationPanel extends JPanel {
             //directly pass in the information
             setBounds(i);
             /*	balls[i].xBOUNDSUPPER = 420;
-				balls[i].xBOUNDSLOWER = 400;
+				balls[i].xLowerBound = 400;
 				balls[i].yBOUNDSUPPER = 150;
 				balls[i].yBOUNDSLOWER = 80;
 				balls[i].moveX = 0;
@@ -364,10 +364,10 @@ public class CanalAnimationPanel extends JPanel {
         }
         else{
             setBounds(i);
-            if(balls[i].getX() > balls[i].xBOUNDSUPPER){
+            if(balls[i].getX() > balls[i].xUpperBound){
                 balls[i].setPosition(5);
             }
-            if(balls[i].getY() >= balls[i].yBOUNDSUPPER - balls[i].getBallSize() || balls[i].getY() <= balls[i].yBOUNDSLOWER){
+            if(balls[i].getY() >= balls[i].yUpperBound - balls[i].getBallSize() || balls[i].getY() <= balls[i].yLowerBound){
                 balls[i].moveY = balls[i].moveY*-1;
             }
         }
@@ -379,7 +379,7 @@ public class CanalAnimationPanel extends JPanel {
             //directly pass in the information
             setBounds(i);
             /*	balls[i].xBOUNDSUPPER = 420;
-				balls[i].xBOUNDSLOWER = 400;
+				balls[i].xLowerBound = 400;
 				balls[i].yBOUNDSUPPER = 150;
 				balls[i].yBOUNDSLOWER = 80;
 				balls[i].moveX = 0;
@@ -387,17 +387,17 @@ public class CanalAnimationPanel extends JPanel {
         }
         else{
             setBounds(i);
-            if(balls[i].getX() > balls[i].xBOUNDSUPPER){
+            if(balls[i].getX() > balls[i].xUpperBound){
                 balls[i].setPosition(6);
             }
-            if(balls[i].getY() >= balls[i].yBOUNDSUPPER - balls[i].getBallSize() || balls[i].getY() <= balls[i].yBOUNDSLOWER){
+            if(balls[i].getY() >= balls[i].yUpperBound - balls[i].getBallSize() || balls[i].getY() <= balls[i].yLowerBound){
                 balls[i].moveY = balls[i].moveY*-1;
             }
         }
         break;
 
         case 6: setBounds(i);
-        if(balls[i].getX() > balls[i].xBOUNDSUPPER){
+        if(balls[i].getX() > balls[i].xUpperBound){
             /*balls[i].setX(generator.nextInt(100));
    					balls[i].setY(100 - gate[0].getHeight()+ generator.nextInt(gate[0].getHeight()));
    					balls[i].setPosition(0);
@@ -405,7 +405,7 @@ public class CanalAnimationPanel extends JPanel {
             setBallInTank(i);
         }
 
-        if(balls[i].getY() >= balls[i].yBOUNDSUPPER - balls[i].getBallSize() || balls[i].getY() <= balls[i].yBOUNDSLOWER){
+        if(balls[i].getY() >= balls[i].yUpperBound - balls[i].getBallSize() || balls[i].getY() <= balls[i].yLowerBound){
             balls[i].moveY = balls[i].moveY*-1;
         }
         break;
@@ -425,7 +425,7 @@ public class CanalAnimationPanel extends JPanel {
             else{
                 setBounds(i);
                 //System.out.println("X upper :"+balls[i].xBOUNDSUPPER+" Y Upper :"+balls[i].yBOUNDSUPPER
-                //+" X Lower"+balls[i].xBOUNDSLOWER+" X Upper"+balls[i].xBOUNDSUPPER);
+                //+" X Lower"+balls[i].xLowerBound+" X Upper"+balls[i].xBOUNDSUPPER);
             }
         }
     }
@@ -448,10 +448,10 @@ public class CanalAnimationPanel extends JPanel {
     private void setBounds(int ballIndex) {
         // ball is in the server
         if(balls[ballIndex].getPosition() == 0){
-            balls[ballIndex].xBOUNDSUPPER = 100;
-            balls[ballIndex].xBOUNDSLOWER = 0;
-            balls[ballIndex].yBOUNDSUPPER = 100;
-            balls[ballIndex].yBOUNDSLOWER = 0;
+            balls[ballIndex].xUpperBound = 100;
+            balls[ballIndex].xLowerBound = 0;
+            balls[ballIndex].yUpperBound = 100;
+            balls[ballIndex].yLowerBound = 0;
             //balls[ballIndex].moveX = generator.nextInt(6);
             //balls[ballIndex].moveY = generator.nextInt(6);
             //balls[ballIndex].moveX = 3;
@@ -461,20 +461,20 @@ public class CanalAnimationPanel extends JPanel {
             if((balls[ballIndex].getPosition() == 1)||(balls[ballIndex].getPosition() == 2) || (balls[ballIndex].getPosition()==3)
                     || (balls[ballIndex].getPosition() == 4) || (balls[ballIndex].getPosition() == 5)||(balls[ballIndex].getPosition() == 6)){
 
-                balls[ballIndex].xBOUNDSUPPER = gate[balls[ballIndex].getPosition() - 1].getX()+gate[balls[ballIndex].getPosition() - 1].getWidth();
-                balls[ballIndex].xBOUNDSLOWER = gate[balls[ballIndex].getPosition() - 1].getX();
-                balls[ballIndex].yBOUNDSUPPER = gate[balls[ballIndex].getPosition() - 1].getY()/*+gate[balls[ballIndex].getPosition() - 1].getHeight()*/;
-                balls[ballIndex].yBOUNDSLOWER = gate[balls[ballIndex].getPosition() - 1].getY();
+                balls[ballIndex].xUpperBound = gate[balls[ballIndex].getPosition() - 1].getX()+gate[balls[ballIndex].getPosition() - 1].getWidth();
+                balls[ballIndex].xLowerBound = gate[balls[ballIndex].getPosition() - 1].getX();
+                balls[ballIndex].yUpperBound = gate[balls[ballIndex].getPosition() - 1].getY()/*+gate[balls[ballIndex].getPosition() - 1].getHeight()*/;
+                balls[ballIndex].yLowerBound = gate[balls[ballIndex].getPosition() - 1].getY();
                 //balls[ballIndex].moveX = 3;
                 //balls[ballIndex].moveY = 3;
 
             }
             //the ball is in one of the openings
             else{
-                balls[ballIndex].xBOUNDSUPPER = gate[balls[ballIndex].getPosition() - 7].getOpeningsX()+gate[balls[ballIndex].getPosition() - 7].getGateWidth();
-                balls[ballIndex].xBOUNDSLOWER = gate[balls[ballIndex].getPosition() - 7].getOpeningsX();
-                balls[ballIndex].yBOUNDSUPPER = gate[balls[ballIndex].getPosition() - 7].getOpeningsY()+gate[balls[ballIndex].getPosition() - 7].getOpeningsHeight();
-                balls[ballIndex].yBOUNDSLOWER = gate[balls[ballIndex].getPosition() - 7].getOpeningsY();
+                balls[ballIndex].xUpperBound = gate[balls[ballIndex].getPosition() - 7].getOpeningsX()+gate[balls[ballIndex].getPosition() - 7].getGateWidth();
+                balls[ballIndex].xLowerBound = gate[balls[ballIndex].getPosition() - 7].getOpeningsX();
+                balls[ballIndex].yUpperBound = gate[balls[ballIndex].getPosition() - 7].getOpeningsY()+gate[balls[ballIndex].getPosition() - 7].getOpeningsHeight();
+                balls[ballIndex].yLowerBound = gate[balls[ballIndex].getPosition() - 7].getOpeningsY();
                 balls[ballIndex].moveX = 0;
                 balls[ballIndex].moveY = 3;
             }

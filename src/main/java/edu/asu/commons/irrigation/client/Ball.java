@@ -2,13 +2,7 @@ package edu.asu.commons.irrigation.client;
 
 import java.util.Random;
 
-public class Ball{
-	
-	public boolean isInServer;
-	
-	public boolean isInFirstCanal;
-	
-	public boolean isInSecondCanal;
+public class Ball {
 	
 	private int size = 2;
 	
@@ -19,10 +13,10 @@ public class Ball{
   	public int moveX;
    	public int moveY;
    	
-	public int xBOUNDSUPPER;
-	public int xBOUNDSLOWER;
-	public int yBOUNDSUPPER;
-	public int yBOUNDSLOWER;
+	public int xUpperBound;
+	public int xLowerBound;
+	public int yUpperBound;
+	public int yLowerBound;
 	
 	//just one global variable speciying the ten potential positions of the balls
 	private int position;
@@ -31,10 +25,10 @@ public class Ball{
 		
 		this.x = generator.nextInt(100);
 		this.y = generator.nextInt(100);
-		this.xBOUNDSUPPER = 100;
-		this.yBOUNDSUPPER = 100;
-		this.xBOUNDSLOWER = 0;
-		this.yBOUNDSLOWER = 0;
+		this.xUpperBound = 100;
+		this.yUpperBound = 100;
+		this.xLowerBound = 0;
+		this.yLowerBound = 0;
 		this.moveX = generator.nextInt(15);
 		this.moveY = generator.nextInt(10);
 		/*this.moveX = 3;
@@ -44,28 +38,11 @@ public class Ball{
 	}
 	
 	public void setPosition(int position) {
-		// TODO Auto-generated method stub
-		
-			//System.out.println("Setting the position :"+position);
-		
 		this.position = position;
-		
 	}
 
 	public int getBallSize(){
 		return size;
-	}
-	
-	public boolean getIsInServer(){
-		return isInServer;
-	}
-	
-	public boolean getIsInFirstCanal(){
-		return isInFirstCanal;
-	}
-	
-	public boolean getIsInSecondCanal(){
-		return isInSecondCanal;
 	}
 	
 	public void setX(int x){
@@ -77,25 +54,14 @@ public class Ball{
 	}
 
 	public int getPosition() {
-		// TODO Auto-generated method stub
 		return position;
 	}
 
 	public int  getX() {
-		// TODO Auto-generated method stub
 		return x;
 	}
 
-	/*
-	 * will set the upper and the lower bounds for a ball depending on its position
-	 */
-	/*public void setBounds(int position) {
-		// TODO Auto-generated method stub
-		
-	}*/
-
 	public int getY() {
-		// TODO Auto-generated method stub
 		return y;
 	}
 	

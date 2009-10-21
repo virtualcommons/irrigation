@@ -29,6 +29,7 @@ public class ScoreBoxPanel extends JPanel {
 	private void clear() {
 		availableWaterLabels.clear();
 		waterUsedLabels.clear();
+		removeAll();
 	}
 	
 	public void initialize(ClientDataModel clientDataModel) {
@@ -39,20 +40,20 @@ public class ScoreBoxPanel extends JPanel {
 		GridLayout gridLayout = new GridLayout(3, columns);
 		setLayout(gridLayout);
 		
-		add(new JLabel("Position"));
+		add(new JLabel("Position:"));
 		List<ClientData> clientDataList = clientDataModel.getClientDataSortedByPriority();
 		for (ClientData clientData : clientDataList) {
 			add(new JLabel(clientData.getPriorityAsString()));
 		}
 		// available water per second
-		add(new JLabel("Available water per second"));
+		add(new JLabel("Available water per second:"));
 		for (ClientData clientData: clientDataList) {
 			JLabel availableWaterLabel = new JLabel("" + clientData.getAvailableFlowCapacity());
 			availableWaterLabels.add(availableWaterLabel);
 			add(availableWaterLabel);			
 		}
 		// water used
-		add(new JLabel("Water used"));
+		add(new JLabel("Water collected:"));
 		for (ClientData clientData : clientDataList) {
 			JLabel waterUsedLabel = new JLabel("" + clientData.getWaterUsed());
 			waterUsedLabels.add(waterUsedLabel);

@@ -1,11 +1,8 @@
 package edu.asu.commons.irrigation.server;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 import edu.asu.commons.irrigation.conf.RoundConfiguration;
-import edu.asu.commons.irrigation.events.FileDownloadedEvent;
 import edu.asu.commons.net.Identifier;
 
 /**
@@ -18,7 +15,7 @@ import edu.asu.commons.net.Identifier;
  * minus tokens subtracted by others
  * minus tokens subtracted by sanctioning others
  * 
- * @author <a href='anonymouslee@gmail.com'>Allen Lee</a>, Deepali Bhagvat
+ * @author <a href='mailto:allen.lee@asu.edu'>Allen Lee</a>, Deepali Bhagvat
  * @version $Revision$
  */
 

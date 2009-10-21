@@ -316,7 +316,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
                 group.allocateFlowCapacity(clientData);
             }
             else if (clientData.isGateClosed()) {
-                clientData.init(group.getCurrentlyAvailableFlowCapacity());
+                clientData.init(group.getAvailableClientFlowCapacity());
             }
             // right now the clients cannot be paused.
             else if (clientData.isPaused()) {
@@ -341,7 +341,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
 
         private IrrigationServerState state;
         
-        private long lastTime;
+//        private long lastTime;
         
         private Duration secondTick = Duration.create(1000L);
 

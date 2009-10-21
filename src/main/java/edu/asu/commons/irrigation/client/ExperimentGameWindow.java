@@ -12,7 +12,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.lang.reflect.InvocationTargetException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -75,8 +74,6 @@ public class ExperimentGameWindow extends JPanel {
     private IrrigationGamePanel irrigationGamePanel;
 
     private StringBuilder instructionsBuilder = new StringBuilder();
-
-    private int totalContributedTokensPerGroup;
 
     private JTextArea contributionInformationTextArea;
 
@@ -567,36 +564,34 @@ public class ExperimentGameWindow extends JPanel {
 
     }
 
-    public void updateGraphDisplay(final ClientData clientData) {
-        totalContributedTokensPerGroup = clientData.getGroupDataModel().getTotalContributedTokens();
-        DecimalFormat df = new DecimalFormat("#.##");
-        final String contributionInformation = 
-            "Initial infrastructure efficiency: " + clientData.getGroupDataModel().getInitialInfrastructureEfficiency() + "%"
-            + "\n\nInitial flow capacity: " + clientData.getGroupDataModel().getInitialFlowCapacity() + " cubic feet per second "
-            + "\n\nActual infrastructure efficiency: " + clientData.getGroupDataModel().getInfrastructureEfficiency() + "%"
-            + "\n\nActual total flow capacity: "
-            + df.format(clientData.getGroupDataModel().getMaximumAvailableFlowCapacity()) + " cubic feet per second \n\n"
-            + "\n\nMaximum tokens that could have been contributed: "
-            + clientDataModel.getRoundConfiguration().getMaximumTotalInvestedTokens()
-            + "\n\nTotal tokens contributed: "
-            + totalContributedTokensPerGroup
-            + "\n\nYour token contribution: "
-            + clientData.getInvestedTokens()
-            + "\n\nTotal flow capacity that could have been generated: "
-            + clientDataModel.getRoundConfiguration().getMaximumCanalFlowCapacity()
-            + " cubic feet per second";
-
-
-        
+    public void displayTokenContributions(final ClientData clientData) {
+    	GroupDataModel groupDataModel = clientData.getGroupDataModel();
+        int totalContributedTokensPerGroup = groupDataModel.getTotalContributedTokens();
+        final StringBuilder builder = new StringBuilder();
+        builder.append("Infrastructure efficiency before investment: ")
+        	.append(groupDataModel.getInitialInfrastructureEfficiency())
+        	.append("%\n");
+        builder.append("Irrigation capacity before investment: ").append(groupDataModel.getInitialFlowCapacity()).append(" cubic feet per second\n\n");
+        builder.append(
+        		String.format(
+        				"Your group invested a total of %d tokens, increasing the infrastructure efficiency to %d%%.\n", 
+        				groupDataModel.getTotalContributedTokens(), groupDataModel.getInfrastructureEfficiency()));
+        if (groupDataModel.getFlowCapacity() > groupDataModel.getInitialFlowCapacity()) {
+        	builder.append("Your group's investment has increased the irrigation capacity to ");
+        }
+        else {
+        	builder.append("Your group's irrigation capacity after investment is ");
+        }
+        builder.append(groupDataModel.getFlowCapacity()).append('.');
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                contributionInformationTextArea.setText(contributionInformation);
+                contributionInformationTextArea.setText(builder.toString());
                 infrastructureEfficiencyChartPanel.initialize();
                 pieChart.setClientData(clientData);
                 addCenterComponent(getGraphPanel());
             }
         });
-        irrigationGamePanel.updateContributions(clientDataModel);
+        irrigationGamePanel.setClientDataModel(clientDataModel);
     }
     
     public JPanel getGraphPanel() {
@@ -607,6 +602,7 @@ public class ExperimentGameWindow extends JPanel {
             graphPanel.add(getPieChartPanel());
             contributionInformationTextArea = new JTextArea();
             contributionInformationTextArea.setEditable(false);
+
             graphPanel.add(contributionInformationTextArea);
         }
         return graphPanel;

@@ -170,7 +170,7 @@ public class IrrigationClient {
             public void handle(InfrastructureUpdateEvent event) {
                 System.err.println("Received group update event: " + event);
                 clientDataModel.setGroupDataModel(event.getGroupDataModel());
-                experimentGameWindow.updateGraphDisplay(event.getClientData());
+                experimentGameWindow.displayTokenContributions(event.getClientData());
             }
         });
         channel.add(this, new EventTypeProcessor<RoundStartedEvent>(RoundStartedEvent.class) {
