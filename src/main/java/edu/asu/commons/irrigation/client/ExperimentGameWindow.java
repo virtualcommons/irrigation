@@ -33,7 +33,6 @@ import edu.asu.commons.irrigation.events.EndRoundEvent;
 import edu.asu.commons.irrigation.events.QuizCompletedEvent;
 import edu.asu.commons.irrigation.server.ClientData;
 import edu.asu.commons.irrigation.server.GroupDataModel;
-import edu.asu.commons.net.Identifier;
 import edu.asu.commons.util.HtmlEditorPane;
 import edu.asu.commons.util.HtmlEditorPane.FormActionEvent;
 
@@ -417,7 +416,7 @@ public class ExperimentGameWindow extends JPanel {
     }
 
     /**
-     * FIXME: needs serious refactoring
+     * 
      * @param event
      */
     private void addDebriefingText(EndRoundEvent event) {
@@ -431,14 +430,13 @@ public class ExperimentGameWindow extends JPanel {
         double showUpBonus = clientDataModel.getServerConfiguration().getShowUpPayment();
         for(ClientData clientData : clientDataModel.getClientDataSortedByPriority()) {
         	instructionsBuilder.append(
-        			String.format("<tr><td>%s</td><td>%d</td><td>%d</td><td>%d</td><td>%d</td><td>%d</td><td>%d</td><td>$%3.2f</td><td>$%3.2f</td></tr>",
+        			String.format("<tr><td>%s</td><td>%d</td><td>%d</td><td>%d</td><td>%d</td><td>%d</td><td>$%3.2f</td><td>$%3.2f</td></tr>",
         					clientData.getPriorityString(),
         					clientData.getMaximumTokenInvestment(),
         					clientData.getInvestedTokens(),
         					clientData.getUninvestedTokens(),
         					clientData.getAllTokensEarnedThisRound(),
         					clientData.getTokensEarnedFromWaterCollected(),
-        					clientData.getAllTokensEarnedThisRound(),
         					clientData.getTotalDollarsEarnedThisRound(),
         					clientData.getTotalDollarsEarned() + showUpBonus
         					));
