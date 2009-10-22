@@ -555,7 +555,7 @@ public class ExperimentGameWindow extends JPanel {
             graphPanel.setName("Graph panel");
             graphPanel.setLayout(new BoxLayout(graphPanel, BoxLayout.Y_AXIS));
             graphPanel.add(getPieChartPanel());
-            graphPanel.add(Box.createVerticalStrut(10));
+            graphPanel.add(Box.createVerticalStrut(15));
             contributionInformationTextArea = new JTextArea();
             contributionInformationTextArea.setEditable(false);
 

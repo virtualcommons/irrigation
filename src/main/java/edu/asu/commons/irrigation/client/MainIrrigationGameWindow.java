@@ -231,15 +231,17 @@ public class MainIrrigationGameWindow extends JPanel {
 		}
 		return jPanelUpStreamWindow;
 	}
-	
+	private final static String OPEN_GATE_LABEL = "Click here to open your gate";
+	private final static String CLOSE_GATE_LABEL = "Click here to close your gate";
 	private JButton getGateSwitchButton() {
 		if (gateSwitchButton == null) {
-			gateSwitchButton = new JButton("Open gate");
+			gateSwitchButton = new JButton(OPEN_GATE_LABEL);
+			gateSwitchButton.setFont(new Font("sansserif", Font.TRUETYPE_FONT, 18));
 			//			gateSwitchButton.setPreferredSize(new Dimension(100, 100));
 			gateSwitchButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent event) {
 					open = !open;
-					gateSwitchButton.setText( open ? "Close gate" : "Open gate");
+					gateSwitchButton.setText( open ? CLOSE_GATE_LABEL : OPEN_GATE_LABEL );
 					if (open) {
 						client.openGate();
 					}
@@ -499,7 +501,7 @@ public class MainIrrigationGameWindow extends JPanel {
 				//				controlPanel.endRound();
 				centerPanel.removeAll();
 				canalPanel.endRound();
-				gateSwitchButton.setText("Open gate");
+				gateSwitchButton.setText(OPEN_GATE_LABEL);
 			}
 
 		});

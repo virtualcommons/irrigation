@@ -109,7 +109,7 @@ public class IrrigationClient {
                 IrrigationClient client = new IrrigationClient();
                 client.initialize();
                 frame.setTitle("Virtual Commons Experiment Client: " + client.id);
-                frame.setPreferredSize(new Dimension(1024, 768));
+                frame.setPreferredSize(new Dimension(1100, 800));
 //                frame.setResizable(false);
                 frame.getContentPane().add(client.getExperimentGameWindow());
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

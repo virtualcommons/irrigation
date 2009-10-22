@@ -128,7 +128,7 @@ public class GroupDataModel implements DataModel<RoundConfiguration> {
         // initialize infrastructure efficiency
         System.err.println("current round number: " + currentRoundNumber);
     	System.err.println("initial infrastructure efficiency: " + infrastructureEfficiency);
-        if (roundConfiguration.isPracticeRound() || roundConfiguration.isFirstRound()) {
+        if ( roundConfiguration.shouldResetInfrastructureEfficiency() ) {
             System.err.println("initializing infrastructure efficiency to default initial value: " + roundConfiguration.getInitialInfrastructureEfficiency());
             infrastructureEfficiency = roundConfiguration.getInitialInfrastructureEfficiency();
         }

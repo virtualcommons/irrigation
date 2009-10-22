@@ -23,11 +23,14 @@ public class MiddleScorePanel extends JPanel {
 
     private JLabel positionText;
 
-    private JLabel availableFlowCapacityLabel;
+    private JLabel availableWaterLabel;
 
     private JLabel waterCollectedLabel;
 
-    private JLabel tokensCollectedLabel;
+    private JLabel tokensEarnedLabel;
+    
+    private JLabel tokensNotInvestedLabel;
+    private JLabel totalTokensEarnedLabel;
 
     private int priority;
 
@@ -46,34 +49,48 @@ public class MiddleScorePanel extends JPanel {
         this.setPreferredSize(new Dimension(60,200));
         this.add(getPositionLabel(),null);
         this.add(getWaterCollectedLabel(),null);
-        this.add(getAvailableFlowCapacityLabel(),null);
-        this.add(getTokensCollectedLabel(),null);
-
-
+        this.add(getAvailableWaterLabel(),null);
+        this.add(getTokensEarnedLabel(),null);
+//        this.add(getTokensNotInvestedLabel(),null);
+//        this.add(getTotalTokensEarnedLabel(),null);
+    }
+    
+    private JLabel getTotalTokensEarnedLabel() {
+    	if (totalTokensEarnedLabel == null) {
+    		totalTokensEarnedLabel = new JLabel();
+    		totalTokensEarnedLabel.setBounds(new Rectangle(5,10+32+10+20+10+20+10+20+10+30+30,30,20));
+    	}
+    	return totalTokensEarnedLabel;
+    }
+    
+    private JLabel getTokensNotInvestedLabel() {
+    	if (tokensNotInvestedLabel == null) {
+    		tokensNotInvestedLabel = new JLabel(String.valueOf(clientData.getUninvestedTokens()));
+    		tokensNotInvestedLabel.setBounds(new Rectangle(5,10+32+10+20+10+20+10+20+10+30,30,20));
+    	}
+    	return tokensNotInvestedLabel;
     }
 
-    private JLabel getTokensCollectedLabel() {
-        if(tokensCollectedLabel == null){
-            tokensCollectedLabel = new JLabel();
-            tokensCollectedLabel.setBounds(new Rectangle(5,50+32+10+20+10+20+10+20+10,30,20));
-            tokensCollectedLabel.setText("");
+    private JLabel getTokensEarnedLabel() {
+        if(tokensEarnedLabel == null){
+            tokensEarnedLabel = new JLabel();
+            tokensEarnedLabel.setBounds(new Rectangle(5,10+32+10+20+10+20+10+20+10,30,20));
         }
-        return tokensCollectedLabel;
+        return tokensEarnedLabel;
     }
 
-    private JLabel getAvailableFlowCapacityLabel() {
-        if(availableFlowCapacityLabel == null){
-            availableFlowCapacityLabel = new JLabel();
-            availableFlowCapacityLabel.setBounds(new Rectangle(5,50+32+10+20+10,30,20));
-            availableFlowCapacityLabel.setText("");
+    private JLabel getAvailableWaterLabel() {
+        if(availableWaterLabel == null){
+            availableWaterLabel = new JLabel();
+            availableWaterLabel.setBounds(new Rectangle(5,10+32+10+20+10,30,20));
         }
-        return availableFlowCapacityLabel;
+        return availableWaterLabel;
     }
 
     private JLabel getPositionLabel() {
         if (positionText == null){
             positionText = new JLabel(clientData.getPriorityString());
-            positionText.setBounds(new Rectangle(5,50+32+10,30,20));
+            positionText.setBounds(new Rectangle(5,10+32+10,30,20));
         }
         return positionText;
     }
@@ -82,16 +99,16 @@ public class MiddleScorePanel extends JPanel {
     private JLabel getWaterCollectedLabel() {
         if(waterCollectedLabel == null){
             waterCollectedLabel = new JLabel("0");
-            waterCollectedLabel.setBounds(new Rectangle(5,50+32+10+20+10+20+10,30,20));
+            waterCollectedLabel.setBounds(new Rectangle(5,10+32+10+20+10+20+10,30,20));
         }
         return waterCollectedLabel;
     }
 
     public void update(ClientData clientData) {
         this.clientData = clientData;
-        availableFlowCapacityLabel.setText("" + clientData.getAvailableFlowCapacity());
+        availableWaterLabel.setText("" + clientData.getAvailableFlowCapacity());
         waterCollectedLabel.setText("" + clientData.getWaterCollected());
-        tokensCollectedLabel.setText("" + clientData.getAllTokensEarnedThisRound());
+        tokensEarnedLabel.setText("" + clientData.getTokensEarnedFromWaterCollected());
 
         if(clientData.isGateOpen() && clientData.getAvailableFlowCapacity() > 0) {
             // show that client is actively irrigating

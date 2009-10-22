@@ -36,21 +36,21 @@ public class MiddleWindowPanel extends JPanel {
         this.setBounds(new Rectangle(13,100 + 100 - 50,1093,100+50+50));
         this.setSize(new Dimension(1093,200));
 
-        positionLabel = new JLabel();
-        positionLabel.setBounds(new Rectangle(30,50+32+10,150,20));
+        positionLabel = new JLabel("Position");
+        positionLabel.setBounds(new Rectangle(30,10+32+10,200,20));
         positionLabel.setText("Position");
 
-        availableWaterLabel = new JLabel();
-        availableWaterLabel.setBounds(new Rectangle(30,50+32+10+20+10,200,20));
-        availableWaterLabel.setText("Available water per second");
+        availableWaterLabel = new JLabel("Available water per second");
+        availableWaterLabel.setBounds(new Rectangle(30,10+32+10+20+10,200,20));
 
-        waterCollectedLabel = new JLabel();
-        waterCollectedLabel.setBounds(new Rectangle(30,50+32+10+20+10+20+10, 150,20));
-        waterCollectedLabel.setText("Water collected");
+        waterCollectedLabel = new JLabel("Water collected");
+        waterCollectedLabel.setBounds(new Rectangle(30,10+32+10+20+10+20+10, 150,20));
 
-        tokensEarnedLabel = new JLabel();
-        tokensEarnedLabel.setBounds(new Rectangle(30,50+32+10+20+10+20+10+20+10, 200,20));
-        tokensEarnedLabel.setText("Tokens earned ");
+        tokensEarnedLabel = new JLabel("Tokens earned");
+        tokensEarnedLabel.setBounds(new Rectangle(30,10+32+10+20+10+20+10+20+10, 200,20));
+        
+        totalTokensEarnedLabel = new JLabel("Total tokens earned");
+        totalTokensEarnedLabel.setBounds(new Rectangle(30,10+32+10+20+10+20+10+20+10+30, 200,20));
 
         this.add(positionLabel, null);
         this.add(availableWaterLabel, null);

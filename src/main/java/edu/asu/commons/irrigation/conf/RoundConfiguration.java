@@ -99,6 +99,10 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
     public void report() {
         getProperties().list(System.err);
     }
+    
+    public boolean shouldResetInfrastructureEfficiency() {
+    	return getBooleanProperty("reset-infrastructure-efficiency", false);
+    }
 
     public String getInstructions() {
         return getStringProperty("instructions", 
