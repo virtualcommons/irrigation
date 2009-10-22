@@ -9,7 +9,7 @@ vim:sts=2:sw=2
   <artifactId>irrigation</artifactId>
   <packaging>jar</packaging>
   <version>1.0-SNAPSHOT</version>
-  <name>foraging</name>
+  <name>irrigation</name>
   <url>http://commons.asu.edu/irrigation</url>
   <repositories>
     <repository>
