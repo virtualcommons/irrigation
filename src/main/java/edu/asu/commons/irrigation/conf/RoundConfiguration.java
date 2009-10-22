@@ -66,6 +66,11 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
     public boolean isPracticeRound() {
         return getBooleanProperty("practice-round");
     }
+    
+    public String getPracticeRoundPaymentInstructions() {
+        return getProperty("practice-round-payment-instructions", 
+                "This is a practice round so the earnings mentioned are only for illustrative purposes and <b>will not count towards your actual earnings</b>.");
+    }
 
     // FIXME: horrible hack.. figure out why this is here again.
     public boolean isSecondPracticeRound(){

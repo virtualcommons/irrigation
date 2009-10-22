@@ -256,7 +256,7 @@ public class ClientData implements Serializable {
     	waterCollected += availableFlowCapacity;
     }
     
-    public int getWaterUsed(){
+    public int getWaterCollected(){
         return waterCollected;
     }
 

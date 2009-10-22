@@ -52,10 +52,10 @@ public class ScoreBoxPanel extends JPanel {
 			availableWaterLabels.add(availableWaterLabel);
 			add(availableWaterLabel);			
 		}
-		// water used
+		// water collected
 		add(new JLabel("Water collected:"));
 		for (ClientData clientData : clientDataList) {
-			JLabel waterUsedLabel = new JLabel("" + clientData.getWaterUsed());
+			JLabel waterUsedLabel = new JLabel("" + clientData.getWaterCollected());
 			waterUsedLabels.add(waterUsedLabel);
 			add(waterUsedLabel);
 		}
@@ -68,7 +68,7 @@ public class ScoreBoxPanel extends JPanel {
 			JLabel availableWaterLabel = availableWaterLabels.get(index);
 			availableWaterLabel.setText("" + clientData.getAvailableFlowCapacity());
 			JLabel waterUsedLabel = waterUsedLabels.get(index);
-			waterUsedLabel.setText("" + clientData.getWaterUsed());
+			waterUsedLabel.setText("" + clientData.getWaterCollected());
 		}
 
 	}

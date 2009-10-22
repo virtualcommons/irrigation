@@ -4,14 +4,12 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -114,23 +112,14 @@ public class ExperimentGameWindow extends JPanel {
         this.numberOfGeneralInstructionPages = getServerConfiguration().getNumberOfGeneralInstructionPages();
     }
     
-    void initialize(Dimension screenSize) {
-        initGuiComponents(screenSize);
-    }
-
-    private void initGuiComponents(Dimension screenSize) {
+    void initialize() {
         cardLayout = new CardLayout();
         setLayout(cardLayout);
-        instructionsScrollPane = new JScrollPane(getInstructionsEditorPane());
-        instructionsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        instructionsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        // create a quiz listener and then initialize the instructions.
-        instructionsEditorPane.setActionListener(createQuizListener(getServerConfiguration()));
-        instructionsEditorPane.setCaretPosition(0);
+
         setInstructions(getGeneralInstructions(0));
 
         addToCardLayout(getInstructionsPanel());
-        irrigationGamePanel = new IrrigationGamePanel(screenSize, client);
+        irrigationGamePanel = new IrrigationGamePanel(client);
         addToCardLayout(irrigationGamePanel);
         addToCardLayout(getInvestTokensPanel());
         addToCardLayout(getChatPanel());
@@ -183,13 +172,22 @@ public class ExperimentGameWindow extends JPanel {
         }
         return submitTokenPanel;
     }
+    
+    private JScrollPane getInstructionsScrollPane() {
+        if (instructionsScrollPane == null) {
+            instructionsScrollPane = new JScrollPane(getInstructionsEditorPane());
+            instructionsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+            instructionsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        }
+        return instructionsScrollPane;
+    }
 
     private JPanel getInstructionsPanel() {
         if (instructionsPanel == null) {
             instructionsPanel = new JPanel();
-            instructionsPanel.setName("General instructions panel");
+            instructionsPanel.setName("Instructions panel");
             instructionsPanel.setLayout(new BorderLayout());
-            instructionsPanel.add(instructionsScrollPane, BorderLayout.CENTER);
+            instructionsPanel.add(getInstructionsScrollPane(), BorderLayout.CENTER);
             instructionsPanel.add(getInstructionsNavigationPanel(), BorderLayout.PAGE_END);
         }
         return instructionsPanel;
@@ -353,6 +351,10 @@ public class ExperimentGameWindow extends JPanel {
         if (instructionsEditorPane == null) {
             instructionsEditorPane = createInstructionsEditorPane();
             instructionsEditorPane.setName("Instructions editor pane");
+            // create a quiz listener and then initialize the instructions.
+            instructionsEditorPane.setActionListener(createQuizListener(getServerConfiguration()));
+            instructionsEditorPane.setCaretPosition(0);
+            instructionsEditorPane.setBackground(Color.WHITE);
         }
         return instructionsEditorPane;
     }
@@ -360,7 +362,7 @@ public class ExperimentGameWindow extends JPanel {
     private HtmlEditorPane createInstructionsEditorPane() {
         HtmlEditorPane htmlEditorPane = new HtmlEditorPane();
         htmlEditorPane.setEditable(false);
-        htmlEditorPane.setFont(new Font("serif", Font.PLAIN, 12));
+        htmlEditorPane.setFont(new Font("sansserif", Font.TRUETYPE_FONT, 14));
         return htmlEditorPane;
 
     }
@@ -392,22 +394,13 @@ public class ExperimentGameWindow extends JPanel {
      */
     public void endRound(final EndRoundEvent event) {
         irrigationGamePanel.endRound();
-        Runnable runnable = new Runnable() {
+        SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 investedTokensTextField.setText("");
                 addDebriefingText(event);
                 addCenterComponent(getInstructionsPanel());
             }
-        };
-        try {
-            SwingUtilities.invokeAndWait(runnable);
-        } 
-        catch (InterruptedException e) {
-            e.printStackTrace();
-        } 
-        catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
+        });
         info("ExperimentGameWindow finished cleanup, ending round completed.");
     }
 
@@ -421,17 +414,20 @@ public class ExperimentGameWindow extends JPanel {
      */
     private void addDebriefingText(EndRoundEvent event) {
         instructionsBuilder.delete(0, instructionsBuilder.length());
-        instructionsBuilder.append("<b>You were in position " + clientDataModel.getPriorityString());
+        instructionsBuilder.append("<b>You are at position " + clientDataModel.getPriorityString());
         instructionsBuilder.append(
-                "<table><thead><th>Position</th><th>Initial token endowment</th><th>Tokens invested</th><th>Tokens not invested</th>" +
+                "<table border='3' cellpadding='5'><thead><th>Position</th><th>Initial token endowment</th><th>Tokens invested</th><th>Tokens not invested</th>" +
                 "<th>Tokens earned from growing crops</th><th>Total tokens earned during this round</th>" +
                 "<th>Dollars earned during this round</th><th>Total dollars earned (including show-up bonus)</th></thead>" +
                 "<tbody>");
         double showUpBonus = clientDataModel.getServerConfiguration().getShowUpPayment();
+        RoundConfiguration roundConfiguration = clientDataModel.getRoundConfiguration();
         for(ClientData clientData : clientDataModel.getClientDataSortedByPriority()) {
+            String backgroundColor = clientData.getPriority() == clientDataModel.getPriority() ? "#FFFFCC" : "CCCCCC"; 
         	instructionsBuilder.append(
-        			String.format("<tr><td>%s</td><td>%d</td><td>%d</td><td>%d</td><td>%d</td><td>%d</td><td>$%3.2f</td><td>$%3.2f</td></tr>",
-        					clientData.getPriorityString(),
+        			String.format("<tr align='center' bgcolor='%s'><td>%s</td><td>%d</td><td>%d</td><td>%d</td><td>%d</td><td>%d</td><td>$%3.2f</td><td>$%3.2f</td></tr>",
+        			        backgroundColor,
+        			        clientData.getPriorityString(),
         					clientData.getMaximumTokenInvestment(),
         					clientData.getInvestedTokens(),
         					clientData.getUninvestedTokens(),
@@ -443,81 +439,28 @@ public class ExperimentGameWindow extends JPanel {
         }
         
         ClientData clientData = clientDataModel.getClientData();
-        RoundConfiguration configuration = clientDataModel.getRoundConfiguration();   
-
         instructionsBuilder.append("</tbody></table><hr/>");
         instructionsBuilder.append(String.format("<h3>You received $%3.2f this past round.  Your total earnings are $%3.2f, including the $%3.2f show up bonus.</h3>",
         		clientData.getTotalDollarsEarnedThisRound(), clientData.getTotalDollarsEarned()+showUpBonus, showUpBonus));
-        // FIXME: wow.  change this.
-//        instructionsBuilder.append(String.format(
-//                positionString +
-//
-//                allClientData[0].getInvestedTokens(),
-//                allClientData[1].getInvestedTokens(),
-//                allClientData[2].getInvestedTokens(),
-//                allClientData[3].getInvestedTokens(),
-//                allClientData[4].getInvestedTokens(),
-//                
-//                allClientData[0].getUninvestedTokens(),
-//                allClientData[1].getUninvestedTokens(),
-//                allClientData[2].getUninvestedTokens(),
-//                allClientData[3].getUninvestedTokens(),
-//                allClientData[4].getUninvestedTokens(),
-//
-//                allClientData[0].getTotalTokensEarned() - allClientData[0].getUninvestedTokens(),
-//                allClientData[1].getTotalTokensEarned() - allClientData[1].getUninvestedTokens(),
-//                allClientData[2].getTotalTokensEarned() - allClientData[2].getUninvestedTokens(),
-//                allClientData[3].getTotalTokensEarned() - allClientData[3].getUninvestedTokens(),
-//                allClientData[4].getTotalTokensEarned() - allClientData[4].getUninvestedTokens(),
-//
-//                allClientData[0].getTotalTokensEarned(),
-//                allClientData[1].getTotalTokensEarned(),
-//                allClientData[2].getTotalTokensEarned(),
-//                allClientData[3].getTotalTokensEarned(),
-//                allClientData[4].getTotalTokensEarned(),
-//
-//                (float)dollarsPerToken*allClientData[0].getTotalTokensEarned(),
-//                (float)dollarsPerToken*allClientData[1].getTotalTokensEarned(),
-//                (float)dollarsPerToken*allClientData[2].getTotalTokensEarned(),
-//                (float)dollarsPerToken*allClientData[3].getTotalTokensEarned(),
-//                (float)dollarsPerToken*allClientData[4].getTotalTokensEarned()
-//
-//                /*	
-//        		event.getClientData().getContributedTokens(),otherClientData.getContributedTokens(),
-//        		10 - event.getClientData().getContributedTokens(),10 - otherClientData.getContributedTokens(),
-//        		event.getClientData().getAward()-(10 - event.getClientData().getContributedTokens()),
-//        		otherClientData.getAward()-(10 - otherClientData.getContributedTokens()),
-//        		event.getClientData().getAward(),otherClientData.getAward(),
-//        		(float)event.getClientData().getRoundConfiguration().getDollarsPerToken()*event.getClientData().getAward(),
-//        		(float)otherClientData.getRoundConfiguration().getDollarsPerToken()*otherClientData.getAward()*/
-//        ));
-//        instructionsBuilder.append("</tbody></table><hr>");
-//        instructionsBuilder.append(String.format("Summary: You received $1.00 at the beginning of the round and had " +
-//                "$%3.2f at the end of the round. Your earnings in the experiments so far are $%3.2f plus the $5.00 " +
-//                "showup fee, for a grand total of $%3.2f",
-//                (float)dollarsPerToken*clientData.getAllTokensEarnedThisRound(),
-//                (float)dollarsPerToken*clientData.getTotalTokens(),
-//                (float)dollarsPerToken*clientData.getTotalTokens() + getServerConfiguration().getShowUpPayment()
-//        ));
         //append the added practice round instructions
-        if(clientDataModel.getRoundConfiguration().isPracticeRound()) {
-            instructionsBuilder.append(" However, this is a practice round and the earnings mentioned are only for illustrative purposes " +
-            "and will not count towards your actual payments");
+        
+        if (roundConfiguration.isPracticeRound() || roundConfiguration.isSecondPracticeRound()) {
+            instructionsBuilder.append(roundConfiguration.getPracticeRoundPaymentInstructions());
         }
         else if (event.isLastRound()) {
             instructionsBuilder.append(getServerConfiguration().getFinalInstructions());
         }
+        instructionsBuilder.append("<hr/>");
         setInstructions(instructionsBuilder.toString());
     }
 
     // adding the instructions into the instruction Panel
     private void setInstructions(final String instructions) {
-//        System.err.println("Setting instructions: " + instructions);
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                instructionsEditorPane.setText(instructions);
-                instructionsEditorPane.setCaretPosition(0);
-                instructionsScrollPane.revalidate();
+                getInstructionsEditorPane().setText(instructions);
+                getInstructionsEditorPane().setCaretPosition(0);
+                getInstructionsScrollPane().revalidate();
             }
         });
     }
@@ -526,7 +469,6 @@ public class ExperimentGameWindow extends JPanel {
         return new ActionListener() {
             private Map<String, String> quizAnswers = configuration.getQuizAnswers();
             public void actionPerformed(ActionEvent e){
-                // System.err.println("In action performed with event: " + e);
                 FormActionEvent formEvent = (FormActionEvent) e;
                 Properties responses = formEvent.getData();
                 List<String> incorrectAnswers = new ArrayList<String>();
@@ -575,7 +517,7 @@ public class ExperimentGameWindow extends JPanel {
 
     public void displayTokenContributions(final ClientData clientData) {
     	GroupDataModel groupDataModel = clientData.getGroupDataModel();
-        int totalContributedTokensPerGroup = groupDataModel.getTotalContributedTokens();
+        int totalContributedTokens = groupDataModel.getTotalContributedTokens();
         final StringBuilder builder = new StringBuilder();
         builder.append("Infrastructure efficiency before investment: ")
         	.append(groupDataModel.getInitialInfrastructureEfficiency())
@@ -584,14 +526,14 @@ public class ExperimentGameWindow extends JPanel {
         builder.append(
         		String.format(
         				"Your group invested a total of %d tokens, increasing the infrastructure efficiency to %d%%.\n", 
-        				groupDataModel.getTotalContributedTokens(), groupDataModel.getInfrastructureEfficiency()));
+        				totalContributedTokens, groupDataModel.getInfrastructureEfficiency()));
         if (groupDataModel.getFlowCapacity() > groupDataModel.getInitialFlowCapacity()) {
         	builder.append("Your group's investment has increased the irrigation capacity to ");
         }
         else {
-        	builder.append("Your group's irrigation capacity after investment is ");
+        	builder.append("Your group's investment was not enough to increase the irrigation capacity.  Your group's irrigation capacity is still ");
         }
-        builder.append(groupDataModel.getFlowCapacity()).append('.');
+        builder.append(groupDataModel.getFlowCapacity()).append(" cubic feet of water per second.");
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 contributionInformationTextArea.setText(builder.toString());
@@ -645,7 +587,7 @@ public class ExperimentGameWindow extends JPanel {
     }
 
     public void updateRoundInstructions(RoundConfiguration roundConfiguration) {
-        System.err.println("Updating round instructions: " + roundConfiguration.getInstructions());
+        info("Updating round instructions: " + roundConfiguration.getInstructions());
         // if this is the first round, show the general instructions.
         if (roundConfiguration.isFirstRound()) {
 
@@ -685,7 +627,6 @@ public class ExperimentGameWindow extends JPanel {
                 public void actionPerformed(ActionEvent event) {
                     final long timeRemaining = endTime - System.currentTimeMillis();
                     if (timeRemaining < 0) {
-                        sleep();
                         addCenterComponent(getInvestTokensPanel());
                         getInvestedTokensTextField().requestFocusInWindow();
                         timer.stop();
@@ -699,8 +640,7 @@ public class ExperimentGameWindow extends JPanel {
                 private void sleep() {
                     long prevTime = System.currentTimeMillis();
                     while((System.currentTimeMillis() - prevTime) < 5000) { 
-                        //System.out.println("Prev "+prevTime);
-                        //System.out.println("Current "+System.currentTimeMillis());
+
                         chatPanel.setEnabled(false);
                     }
 

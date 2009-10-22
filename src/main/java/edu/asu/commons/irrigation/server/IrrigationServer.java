@@ -390,8 +390,8 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
             sendEndRoundEvents();
             persistRound();
             cleanupRound();
-            // FIXME: have to wait for .... some reason.
-            try { Thread.sleep(2000); } catch (InterruptedException ignored) {}
+            // FIXME: have to wait for .... some reason?
+            Utils.sleep(2000);
             advanceToNextRound();
         }
 

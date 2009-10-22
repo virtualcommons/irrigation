@@ -90,7 +90,7 @@ public class MiddleScorePanel extends JPanel {
     public void update(ClientData clientData) {
         this.clientData = clientData;
         currentBandwidthText.setText("" + clientData.getAvailableFlowCapacity());
-        waterUsedTextField.setText("" + clientData.getWaterUsed());
+        waterUsedTextField.setText("" + clientData.getWaterCollected());
         totalTokensEarnedTextField.setText("" + clientData.getAllTokensEarnedThisRound());
 
         if(clientData.isGateOpen() && clientData.getAvailableFlowCapacity() > 0) {

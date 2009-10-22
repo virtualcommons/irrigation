@@ -1,11 +1,11 @@
 package edu.asu.commons.irrigation.client;
 
-import java.awt.Dimension;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
 import edu.asu.commons.event.Event;
 import edu.asu.commons.event.EventChannel;
@@ -74,10 +74,10 @@ public class IrrigationClient {
         initEventProcessors();
     }
     
-    private void initialize(Dimension screenSize) {
+    private void initialize() {
         clientDataModel = new ClientDataModel(channel, this);
         experimentGameWindow = new ExperimentGameWindow(this);
-        experimentGameWindow.initialize(screenSize);
+        experimentGameWindow.initialize();
         connect();
     }
 
@@ -96,14 +96,19 @@ public class IrrigationClient {
     }
 
     public static void main(String[] args) {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        }
+        catch (Exception exception) {
+            exception.printStackTrace();
+        }
         Runnable createGuiRunnable = new Runnable() {
             public void run() {
-                Dimension defaultDimension = new Dimension(500, 500);
                 JFrame frame = new JFrame();
                 IrrigationClient client = new IrrigationClient();
-                client.initialize(defaultDimension);
+                client.initialize();
                 frame.setTitle("Virtual Commons Experiment Client: " + client.id);
-                frame.setSize(1130, 600);
+//                frame.setSize(1130, 600);
                 frame.getContentPane().add(client.getExperimentGameWindow());
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.pack();
