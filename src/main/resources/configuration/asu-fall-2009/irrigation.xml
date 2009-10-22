@@ -312,6 +312,7 @@ Question 1:<br>
 Given an existing infrastructure efficiency of 20%, if the five participants invest
 a <b>total of 29 additional tokens</b>, what is the new irrigation infrastructure
 efficiency?
+<br>
 <input type="text" name="q3" value = "">
 <br><br>
 
@@ -533,6 +534,63 @@ initial endowment (10 - 6) plus the tokens you earned from your crop (15 tokens 
 ]]>
 </entry>
 
+<entry key='water-collected-to-tokens-table'>
+<![CDATA[
+<table border="1" cellspacing="2" cellpadding="2">
+<thead>
+<th>Water units received (cubic feet)</th>
+<th>Tokens earned</th>
+</thead>
+<tr>
+<td>&lt; 150</td><td>0</td>
+</tr>
+<tr>
+<td>150-199</td><td>1</td>
+</tr>
+<tr>
+<td>200-249</td><td>4</td>
+</tr>
+<tr>
+<td>250-299</td><td>10</td>
+</tr>
+<tr>
+<td>300-349</td><td>15</td>
+</tr>
+<tr>
+<td>350-399</td><td>18</td>
+</tr>
+<tr>
+<td>400-499</td><td>19</td>
+</tr>
+<tr>
+<td>500-549</td><td>20</td>
+</tr>
+<tr>
+<td>550-649</td><td>19</td>
+</tr>
+<tr>
+<td>650-699</td><td>18</td>
+</tr>
+<tr>
+<td>700-749</td><td>15</td>
+</tr>
+<tr>
+<td>750-799</td><td>10</td>
+</tr>
+<tr>
+<td>800-849</td><td>4</td>
+</tr>
+<tr>
+<td>850-899</td><td>1</td>
+</tr>
+<tr>
+<td>&gt; 899</td><td>0</td>
+</tr>
+</table>
+]]>
+</entry>
+
+
 <entry key="general-instructionsq6">
 <![CDATA[
 <br><br>
@@ -540,6 +598,7 @@ To continue to the next page, please answer the following question:<br>
 <form>
 If you invest 7 of the 10 tokens you started with, and you put 202 cf of water on
 your field, what is the total number of tokens you will have earned for that round?
+<br>
 <input type="radio" name="q8" value="3">3<br>
 <input type="radio" name="q8" value="4">4<br>
 <input type="radio" name="q8" value="7">7<br>
@@ -547,6 +606,7 @@ your field, what is the total number of tokens you will have earned for that rou
 <br><br>
 If you invest all 10 tokens you start with, and you put 555 cf of water on your
 field, what is the total number of tokens your will have earned for that round?
+<br>
 <input type="radio" name="q9" value="10">10<br>
 <input type="radio" name="q9" value="19">19<br>
 <input type="radio" name="q9" value="20">20<br>

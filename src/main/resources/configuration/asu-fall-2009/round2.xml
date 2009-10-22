@@ -3,12 +3,14 @@
 <properties>
 <comment>Irrigation experiment round configuration</comment>
 
+<entry key='reset-infrastructure-efficiency'>true</entry>
+
 <entry key="instructions">
 <![CDATA[
 <h3>Round 1 Instructions</h3>
 <p>
 This is the first round of twenty.  Before this round begins you will have the
-opportunity to text chat with the other participant for fifty seconds, then
+opportunity to text chat with the other participant for forty seconds, then
 decide on your level of investment in the irrigation infrastructure.  After
 the total irrigation infrastructure investment has been determined you will
 begin the experiment and make decisions on when to open your irrigation gates
