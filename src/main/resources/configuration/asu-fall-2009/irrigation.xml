@@ -38,7 +38,7 @@
 <entry key="q2">identity</entry>
 <entry key="q3">49</entry>
 <entry key="q4">76</entry>
-<entry key="q5">4</entry>
+<entry key="q5">20</entry>
 <entry key="q6">5</entry>
 <entry key="q7">25</entry>
 <entry key="q8">7</entry>
@@ -366,10 +366,13 @@ through the shared canal.
 <![CDATA[
 <br><br>
 To continue to the next page, please answer the following question:<br>
+Question 3:<br>
 <form>
-What is the minimum time to grow a crop when maximum water flow capacity is available?<br>
-<input type="radio" name="q5" value="4">4 seconds<br>
-<input type="radio" name="q5" value="10">10 seconds<br>
+What is the minimum time to deliver 500 cubic feet of water to your field when
+your maximum water flow capacity is available?
+<br>
+<input type="radio" name="q5" value="12.5">12.5 seconds<br>
+<input type="radio" name="q5" value="20">20 seconds<br>
 <input type="radio" name="q5" value="25">25 seconds<br>
 <input type="radio" name="q5" value="50">50 seconds<br>
 <br><br>
