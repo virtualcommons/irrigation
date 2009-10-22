@@ -30,7 +30,7 @@
 
 
 <entry key="wait-for-participants">true</entry>
-<entry key="number-of-rounds">22</entry>
+<entry key="number-of-rounds">12</entry>
 
 <entry key="undisrupted-flow-required">true</entry>
 
@@ -689,15 +689,16 @@ will be halted.
 <![CDATA[
 <h3>Invest tokens in the irrigation infrastructure</h3>
 <p>
-You have 10 tokens to invest. You must make a decision about how much you wish to
-invest [0,10] in the irrigation infrastructure.  As a reminder we have included the
-table relating irrigation infrastructure and the total available flow capacity in
-the figure below. After you have entered the number of tokens you'd like to invest,
-hit the enter key or click the submit button to confirm your investment. When
-everybody has made their decision, the total investment will be calculated and the
-overall irrigation infrastructure will be displayed.  Each token you invest
-corresponds to one percent of infrastructure efficiency, so if you invest 10 tokens
-you are contributing 10% to the overall infrastructure efficiency.
+You have been endowed with 10 tokens to invest. You must make a decision about
+how much you wish to invest [0,10] in the irrigation infrastructure.  You can
+see the relationship between total investment and irrigation infrastructure in
+the table below.  After you have entered the number of tokens you'd like to
+invest, hit the enter key or click the submit button to confirm your
+investment. When everybody has made their decision, the total investment will
+be calculated and the overall irrigation infrastructure will be displayed.
+Each token you invest corresponds to one percent of infrastructure efficiency,
+so if you invest 10 tokens you are contributing 10% to the overall
+infrastructure efficiency.
 </p>
 <table border="1" cellspacing="2" cellpadding="2">
 <thead>

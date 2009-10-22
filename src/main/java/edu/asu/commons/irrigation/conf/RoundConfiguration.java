@@ -101,7 +101,7 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
     }
     
     public boolean shouldResetInfrastructureEfficiency() {
-    	return getBooleanProperty("reset-infrastructure-efficiency", false);
+    	return isPracticeRound() || getBooleanProperty("reset-infrastructure-efficiency", false);
     }
 
     public String getInstructions() {

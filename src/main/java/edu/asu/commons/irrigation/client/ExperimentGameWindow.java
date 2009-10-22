@@ -599,6 +599,15 @@ public class ExperimentGameWindow extends JPanel {
         }
         else {
             instructionsBuilder.append(roundConfiguration.getInstructions());
+            instructionsBuilder.append("<hr/>");
+            int irrigationCapacity = clientDataModel.getGroupDataModel().getFlowCapacity();
+            int clientCapacity = roundConfiguration.getMaximumClientFlowCapacity();
+
+            instructionsBuilder.append(
+            		String.format("<p><b>The irrigation capacity is %d and the maximum available water to you is %d cfps.</b></p>",
+            				irrigationCapacity,
+            				Math.min(irrigationCapacity, clientCapacity)
+            				));
             setInstructions(instructionsBuilder.toString());
         }
         addCenterComponent(getInstructionsPanel());

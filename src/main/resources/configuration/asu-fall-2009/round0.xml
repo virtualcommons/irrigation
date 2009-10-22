@@ -4,9 +4,7 @@
 <comment>Irrigation experiment round configuration</comment>
 <entry key='max-canal-flow-capacity'>40</entry>
 <entry key='max-client-flow-capacity'>25</entry>
-<entry key="max-total-token-contribution">50</entry>
 <entry key="practice-round">true</entry>
-<entry key="clients-per-group">5</entry>
 
 <entry key="instructions">
 <![CDATA[

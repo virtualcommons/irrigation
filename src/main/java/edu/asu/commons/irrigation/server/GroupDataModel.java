@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import edu.asu.commons.event.EventChannel;
 import edu.asu.commons.experiment.DataModel;
 import edu.asu.commons.irrigation.conf.RoundConfiguration;
 import edu.asu.commons.net.Identifier;
@@ -28,7 +27,10 @@ public class GroupDataModel implements DataModel<RoundConfiguration> {
 
     private transient ServerDataModel serverDataModel;
     
-    private transient Logger logger = Logger.getLogger(GroupDataModel.class.getName());
+    private RoundConfiguration roundConfiguration;
+
+
+	private transient Logger logger = Logger.getLogger(GroupDataModel.class.getName());
 
     private int currentlyAvailableFlowCapacity = 0;
     private int maximumAvailableFlowCapacity = 0;
@@ -41,6 +43,7 @@ public class GroupDataModel implements DataModel<RoundConfiguration> {
     
     public GroupDataModel(ServerDataModel serverDataModel) {
         this.serverDataModel = serverDataModel;
+        setRoundConfiguration(serverDataModel.getRoundConfiguration());
     }
 
     public ClientData getClientData(Identifier id) {
@@ -80,27 +83,27 @@ public class GroupDataModel implements DataModel<RoundConfiguration> {
     }
 
     public boolean isFull() {
-        return clients.size() == serverDataModel.getRoundConfiguration().getClientsPerGroup();
+        return clients.size() == getRoundConfiguration().getClientsPerGroup();
     }
 
     public void clear() {
         clients.clear();
     }
 
-    public void setServerDataModel(ServerDataModel state) {
-        this.serverDataModel = state;
+    public void setServerDataModel(ServerDataModel serverDataModel) {
+        this.serverDataModel = serverDataModel;
     }
 
     public Map<Identifier, ClientData> getClientDataMap() {
         return Collections.unmodifiableMap(clients);
     }
 
-    public int getAvailableClientFlowCapacity(){
+    public int getAvailableClientFlowCapacity() {
         return Math.min(currentlyAvailableFlowCapacity, getRoundConfiguration().getMaximumClientFlowCapacity());
     }
 
     public RoundConfiguration getRoundConfiguration() {
-        return serverDataModel.getRoundConfiguration();
+        return roundConfiguration;
     }
 
     public int getTotalContributedTokens() {
@@ -213,10 +216,6 @@ public class GroupDataModel implements DataModel<RoundConfiguration> {
     public int getMaximumAvailableFlowCapacity() {
         return maximumAvailableFlowCapacity;
     }
-    
-    public EventChannel getEventChannel() {
-        return serverDataModel.getEventChannel();
-    }
 
 	public int getInfrastructureEfficiency() {
 		return infrastructureEfficiency;
@@ -231,6 +230,11 @@ public class GroupDataModel implements DataModel<RoundConfiguration> {
 	        logger = Logger.getLogger(getClass().getName());
 	    }
 	    return logger;
+	}
+	
+    
+    public void setRoundConfiguration(RoundConfiguration roundConfiguration) {
+		this.roundConfiguration = roundConfiguration;
 	}
 
 }

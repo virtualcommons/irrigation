@@ -36,6 +36,9 @@ public class ServerDataModel implements DataModel<RoundConfiguration>, Serializa
 
     public void setRoundConfiguration(RoundConfiguration roundConfiguration) {
         this.roundConfiguration = roundConfiguration;
+        for (GroupDataModel group: clientsToGroups.values()) {
+        	group.setRoundConfiguration(roundConfiguration);
+        }
     }
 
     public synchronized void addClient(ClientData clientData) {
