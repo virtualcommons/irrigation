@@ -84,9 +84,9 @@ extends ExperimentConfiguration.Base<RoundConfiguration> {
                 builder.append("Your position: ").append(toPriorityString(clientPosition));
             }
             builder.append(getGeneralInstructions(instructionPageNumber));
-            if (isUndisruptedFlowRequired()) {
-                builder.append(getUndisruptedFlowInstructions());
-            }
+//            if (isUndisruptedFlowRequired()) {
+//                builder.append(getUndisruptedFlowInstructions());
+//            }
             // if the current instruction page number is greater than the number of pages traversed, then 
             // we need to render the quizzes.  Otherwise, we don't. 
             if (instructionPageNumber > pagesTraversed) {
