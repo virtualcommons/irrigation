@@ -402,11 +402,15 @@ public class MainIrrigationGameWindow extends JPanel {
 		return waterCollectedToTokensScrollPane;
 	}
 
-	private Color getProgressBarColor(int timeLeft) {
+	private void setProgressBarColor(int timeLeft) {
 		if (timeLeft < 10) {
-			return Color.RED;
+//			timeLeftProgressBar.setForeground( Color.RED );
+			timeLeftProgressBar.setBackground( Color.RED );
+//			return Color.RED;
 		}
-		return Color.BLACK;
+		else {
+			timeLeftProgressBar.setBackground( Color.GREEN );
+		}
 	}
 	/**
 	 * Should be invoked every second throughout the experiment, from a ClientUpdateEvent sent by the server.
@@ -418,7 +422,7 @@ public class MainIrrigationGameWindow extends JPanel {
 				String timeLeftString = String.format("%d sec", timeLeft);
 				timeLeftProgressBar.setValue( timeLeft );
 				timeLeftProgressBar.setString(timeLeftString);
-				timeLeftProgressBar.setForeground( getProgressBarColor(timeLeft) );
+				setProgressBarColor(timeLeft);
 				for (final ClientData clientData : clientDataModel.getClientDataMap().values()) {
 					if (clientData.isGateOpen()) {
 						canalPanel.openGate(clientData.getPriority());

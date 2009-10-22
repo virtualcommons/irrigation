@@ -332,35 +332,32 @@ irrigation infrastructure efficiency?
 <entry key="general-instructions4">
 <![CDATA[
 <h3>Growing crops</h3>
-<p>There are FIVE participants in each group, each of which is randomly assigned to
-one of the five positions, A, B, C, D or E. Below is a schematic representing the
-irrigation system.  Water comes from the box to the left and the five players
-are located from upstream (leftmost) to downstream (rightmost) accordingly. To
-illustrate the game, assume you are in position B. The black lines represent "gates"
-that you control (i.e, open and close). 	 
-<p>
-<img src="http://dev.commons.asu.edu/irrigation/images/irrigation-example-screenshot.jpg"><br><br>
+<p>There are <b>five</b> participants in each group, each of which is randomly assigned to
+one of the five positions, A, B, C, D or E. Below is a screenshot of the
+graphical interface representation of the irrigation system.  Water comes from
+the box to the left and the five players are located from upstream (leftmost)
+to downstream (rightmost) accordingly.  To illustrate, assume you are in
+position C. The black lines represent "gates" that you open and close by
+clicking on the large button on the lower left corner of the screen.
+Each round consists of 50 seconds and the amount of time left in the
+experiment is indicated by a bar at the top of the screen. 
 </p>
-Each round will take 50 seconds and the amount of time left in the experiment
-is indicated at the top of the screen. 
+<img src="http://dev.commons.asu.edu/irrigation/images/game-interface-screenshot.jpg">
+<br><br>
 <p>
-<img src = "http://dev.commons.asu.edu/irrigation/images/time-remaining-screenshot.jpg"><br>
-</p>
-<p>
-During this round you can irrigate your field.  Your earnings depend on the amount
-of water you can draw onto your fields and will be explained in more detail in the
-next screen.  The speed at which you can grow a crop depends on the amount of water
-available to you <b>at the time that you open your gate</b>.  The maximum flow
-capacity of the main canal shared by A, B, C, D, and E is forty cubic feet per second.
-</p>
-<p>
-The maximum capacity that can flow through your gate when it is opened is
-twenty-five cubic feet per second. If other people are using the canal, the water
-flow available to you might be less, and it may take longer to get water to your
-field (you are limited by the flow capacity of the shared canal).
+You can irrigate your field during the round by opening your gate.  Your
+earnings depend on the amount of water you can draw onto your fields and will
+be explained in more detail on the next page.  The speed at which you can grow
+a crop depends on the amount of water available to you <b>at the time that you
+open your gate</b>.  The maximum flow capacity of the main canal shared by A,
+B, C, D, and E is forty cubic feet per second.
 </p>
 <p>
-The water flow capacity available for your field is shown as a number.
+The maximum amount of water that can flow through your gate when it is opened
+is 25 cubic feet per second. If other people are using the canal, the water
+flow available to you might be less, and it may take longer to get water to
+your field since you are also limited by the amount of water that is flowing
+through the shared canal.
 </p>
 ]]>
 </entry>

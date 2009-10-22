@@ -67,7 +67,7 @@ public class CanalAnimationPanel extends JPanel {
     private void initialize() {
         this.setPreferredSize(new Dimension(1098,150));
         this.setLayout(new GridBagLayout());
-        this.setBackground(Color.white);
+        this.setBackground(Color.WHITE);
         //initializing the constructor for Gates
         for(int i=0;i<6;i++){
             gate[i] = new Gate(totalContributedBandwidth,i);
@@ -113,8 +113,8 @@ public class CanalAnimationPanel extends JPanel {
 
 
     protected void paintComponent(Graphics graphics){
-        updateGUI();
         super.paintComponent(graphics); // needed!
+        updateGUI();
         Graphics2D graphics2D = (Graphics2D)graphics;
         graphics2D.setColor(Color.BLUE);
         graphics2D.fillRect(0,0,100,100);

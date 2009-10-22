@@ -435,8 +435,8 @@ public class ExperimentGameWindow extends JPanel {
         					clientData.getMaximumTokenInvestment(),
         					clientData.getInvestedTokens(),
         					clientData.getUninvestedTokens(),
-        					clientData.getAllTokensEarnedThisRound(),
         					clientData.getTokensEarnedFromWaterCollected(),
+        					clientData.getAllTokensEarnedThisRound(),
         					clientData.getTotalDollarsEarnedThisRound(),
         					clientData.getTotalDollarsEarned() + showUpBonus
         					));
@@ -604,7 +604,7 @@ public class ExperimentGameWindow extends JPanel {
             int clientCapacity = roundConfiguration.getMaximumClientFlowCapacity();
 
             instructionsBuilder.append(
-            		String.format("<p><b>The irrigation capacity is %d and the maximum available water to you is %d cfps.</b></p>",
+            		String.format("<p><b>The irrigation capacity is %d cfps and the maximum amount of water you can collect per second is %d cfps.</b></p>",
             				irrigationCapacity,
             				Math.min(irrigationCapacity, clientCapacity)
             				));
