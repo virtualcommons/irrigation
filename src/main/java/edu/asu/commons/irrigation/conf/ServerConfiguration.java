@@ -145,6 +145,10 @@ extends ExperimentConfiguration.Base<RoundConfiguration> {
                 "general-instructions"+pageNumber, 
                 "<b>No instructions available for this round</b>");
     }
+    
+    public String getWaterCollectedToTokensTable() {
+    	return assistant.getProperty("water-collected-to-tokens-table");
+    }
 
     public String getFinalInstructions() {
         return assistant.getProperty("final-instructions", "<b>The experiment is now over.  Thanks for participating!</b>");

@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -67,8 +68,10 @@ public class ExperimentGameWindow extends JPanel {
     private InfrastructureEfficiencyChartPanel infrastructureEfficiencyChartPanel = null;
 
     private IrrigationClient client;
+    
+//    private MainIrrigationGameWindow mainIrrigationGameWindow;
 
-    private IrrigationGamePanel irrigationGamePanel;
+    private MainIrrigationGameWindow irrigationGamePanel;
 
     private StringBuilder instructionsBuilder = new StringBuilder();
 
@@ -119,7 +122,8 @@ public class ExperimentGameWindow extends JPanel {
         setInstructions(getGeneralInstructions(0));
 
         addToCardLayout(getInstructionsPanel());
-        irrigationGamePanel = new IrrigationGamePanel(client);
+//        irrigationGamePanel = new IrrigationGamePanel(client);
+        irrigationGamePanel = new MainIrrigationGameWindow(client);
         addToCardLayout(irrigationGamePanel);
         addToCardLayout(getInvestTokensPanel());
         addToCardLayout(getChatPanel());
@@ -549,8 +553,9 @@ public class ExperimentGameWindow extends JPanel {
         if (graphPanel == null) {
             graphPanel = new JPanel();
             graphPanel.setName("Graph panel");
-            graphPanel.setLayout(new BoxLayout(graphPanel, BoxLayout.X_AXIS));
+            graphPanel.setLayout(new BoxLayout(graphPanel, BoxLayout.Y_AXIS));
             graphPanel.add(getPieChartPanel());
+            graphPanel.add(Box.createVerticalStrut(10));
             contributionInformationTextArea = new JTextArea();
             contributionInformationTextArea.setEditable(false);
 
@@ -565,8 +570,8 @@ public class ExperimentGameWindow extends JPanel {
             infrastructureEfficiencyChartPanel = new InfrastructureEfficiencyChartPanel(client);
             pieChart = new TokenInvestmentPieChartPanel();
             GridLayout gridLayout = new GridLayout();
-            gridLayout.setRows(2);
-            gridLayout.setColumns(1);
+            gridLayout.setRows(1);
+            gridLayout.setColumns(2);
             pieChartPanel.setLayout(gridLayout);
             pieChartPanel.add(infrastructureEfficiencyChartPanel);
             pieChartPanel.add(pieChart);

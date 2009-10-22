@@ -116,7 +116,6 @@ public class CanalAnimationPanel extends JPanel {
         updateGUI();
         super.paintComponent(graphics); // needed!
         Graphics2D graphics2D = (Graphics2D)graphics;
-        graphics2D = graphics2D;
         graphics2D.setColor(Color.BLUE);
         graphics2D.fillRect(0,0,100,100);
         //draw the other gates

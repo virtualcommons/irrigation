@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class Ball {
 	
-	private int size = 2;
+	private int size = 3;
 	
 	public int x;
 	

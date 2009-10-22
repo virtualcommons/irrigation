@@ -1,5 +1,6 @@
 package edu.asu.commons.irrigation.client;
 
+import java.awt.Dimension;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -108,7 +109,8 @@ public class IrrigationClient {
                 IrrigationClient client = new IrrigationClient();
                 client.initialize();
                 frame.setTitle("Virtual Commons Experiment Client: " + client.id);
-//                frame.setSize(1130, 600);
+                frame.setPreferredSize(new Dimension(1024, 768));
+//                frame.setResizable(false);
                 frame.getContentPane().add(client.getExperimentGameWindow());
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.pack();

@@ -1,8 +1,10 @@
 package edu.asu.commons.irrigation.client;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;
@@ -69,9 +71,10 @@ public class CanalPanel extends JPanel {
 	 * @return void
 	 */
 	private void initialize() {
-//		this.setPreferredSize(new Dimension(1098,150));
+		this.setSize(new Dimension(1098,150));
+		setLayout(new GridBagLayout());
 		this.setBackground(Color.WHITE);
-		//initializing the constructor for Gates
+		//initialize each gate
 		for(int i=0;i<numberOfGates ;i++){
 			gate[i] = new Gate(maximumIrrigationCapacity,i);
 		}
@@ -109,8 +112,7 @@ public class CanalPanel extends JPanel {
 		graphics2D.fillRect(gate[5].getX(), gate[5].getY(),10,gate[5].getHeight());
 
 		//////////////////////Animation Logic////////////////////////////
-		if(enableBallAnimation  == true)
-		{
+		if (enableBallAnimation) {
 			graphics.setColor(Color.white);
 			//		int ballCounter = 0;
 			for(int i=0;i<BALLCOUNT;i++){

@@ -4,8 +4,12 @@ import edu.asu.commons.event.AbstractPersistableEvent;
 import edu.asu.commons.net.Identifier;
 
 /**
- *  
+ * $Id$
+ * 
+ * Signifies that a client opened a gate.
  *
+ * @author Allen Lee
+ * @revision $Rev$
  */
 public class OpenGateEvent extends AbstractPersistableEvent {
     
