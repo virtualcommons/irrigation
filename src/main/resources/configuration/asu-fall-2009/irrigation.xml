@@ -16,21 +16,9 @@
 <entry key="round8">round8.xml</entry>
 <entry key="round9">round9.xml</entry>
 <entry key="round10">round10.xml</entry>
-<entry key="round11">round11.xml</entry>
-<entry key="round12">round12.xml</entry>
-<entry key="round13">round13.xml</entry>
-<entry key="round14">round14.xml</entry>
-<entry key="round15">round15.xml</entry>
-<entry key="round16">round16.xml</entry>
-<entry key="round17">round17.xml</entry>
-<entry key="round18">round18.xml</entry>
-<entry key="round19">round19.xml</entry>
-<entry key="round20">round20.xml</entry>
-<entry key="round21">round21.xml</entry>
-
 
 <entry key="wait-for-participants">true</entry>
-<entry key="number-of-rounds">12</entry>
+<entry key="number-of-rounds">11</entry>
 
 <entry key="undisrupted-flow-required">true</entry>
 
@@ -538,7 +526,7 @@ initial endowment (10 - 6) plus the tokens you earned from your crop (15 tokens 
 <![CDATA[
 <table border="1" cellspacing="2" cellpadding="2">
 <thead>
-<th>Water units received (cubic feet)</th>
+<th>Water applied to your field</th>
 <th>Tokens earned</th>
 </thead>
 <tr>
@@ -658,15 +646,16 @@ Each token is worth 5 cents, thus if you collected 30 tokens in a round you earn
 <entry key="general-instructions8">
 <![CDATA[
 <p>
-We will now start with two practice rounds. This practice round will not contribute to your earnings – 
-it is intended to acquaint you with the functioning of the exercise environment.
+We will now start with two practice rounds. This practice round will not
+contribute to your earnings – it is intended to acquaint you with the
+functioning of the exercise environment.
 </p>
 <p>
-You will first chat via text with other participants in your group for 40 seconds,
-then decide how much you wish to invest in irrigation infrastructure
-maintenance.  After all investment decisions have been made you will begin the
-actual round and make real-time decisions on when to open your gates and irrigate
-your fields.
+You will first chat via text with other participants in your group and then
+decide how much you wish to invest in irrigation infrastructure maintenance.
+After all investment decisions have been made you will begin the actual round
+and make real-time decisions on when to open your gates and irrigate your
+fields.
 </p>
 <p>
 If you have any questions feel free to raise your hand and to ask your question.

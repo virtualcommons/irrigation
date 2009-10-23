@@ -563,7 +563,7 @@ public class ExperimentGameWindow extends JPanel {
     }
 
 
-    public void updateSubmitTokenScreenDisplay() {
+    public void updateTokenInstructionsPanel() {
         Runnable runnable = new Runnable() {
             public void run() {
                 GroupDataModel group = clientDataModel.getGroupDataModel();
@@ -573,7 +573,6 @@ public class ExperimentGameWindow extends JPanel {
                     infrastructureEfficiency = roundConfiguration.getInitialInfrastructureEfficiency();
                 }
                 else {
-                    System.err.println("group was not null, efficiency is: " + group.getInfrastructureEfficiency() + " degrading by " + clientDataModel.getRoundConfiguration().getInfrastructureDegradationFactor());
                     infrastructureEfficiency = group.getInfrastructureEfficiency() - roundConfiguration.getInfrastructureDegradationFactor();
                 }
                 addCenterComponent(getInvestTokensPanel());
@@ -602,12 +601,19 @@ public class ExperimentGameWindow extends JPanel {
             instructionsBuilder.append("<hr/>");
             int irrigationCapacity = clientDataModel.getGroupDataModel().getFlowCapacity();
             int clientCapacity = roundConfiguration.getMaximumClientFlowCapacity();
-
-            instructionsBuilder.append(
-            		String.format("<p><b>The irrigation capacity is %d cfps and the maximum amount of water you can collect per second is %d cfps.</b></p>",
-            				irrigationCapacity,
-            				Math.min(irrigationCapacity, clientCapacity)
-            				));
+            if (roundConfiguration.shouldResetInfrastructureEfficiency()) {
+            	instructionsBuilder.append("The irrigation infrastructure efficiency is currently 75%.");
+            }
+            else {
+            	instructionsBuilder.append(
+            			String.format("<p>The current infrastructure efficiency is %d%% but will be degraded by %d%% during this round." +
+            					"The current irrigation capacity is %d cfps with a maximum canal capacity is %d cfps.</p><hr/>",
+            					clientDataModel.getGroupDataModel().getInfrastructureEfficiency(),
+            					roundConfiguration.getInfrastructureDegradationFactor(),
+            					irrigationCapacity,
+            					roundConfiguration.getMaximumCanalFlowCapacity()
+            					));
+            }
             setInstructions(instructionsBuilder.toString());
         }
         addCenterComponent(getInstructionsPanel());
@@ -624,11 +630,11 @@ public class ExperimentGameWindow extends JPanel {
     public void initializeChatWindow() {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                //canalPanelAnimation.stopTimer();
-                startTimer(clientDataModel.getRoundConfiguration().getChatDuration() * 1000L);
+                startTimer(getServerConfiguration().getChatDuration() * 1000L);
                 ChatPanel chatPanel = getChatPanel();
                 chatPanel.initialize(clientDataModel.getAllClientIdentifiers());
                 addCenterComponent( chatPanel );
+                chatPanel.setFocusInChatField();
             }
         });
     }
@@ -641,7 +647,7 @@ public class ExperimentGameWindow extends JPanel {
                 public void actionPerformed(ActionEvent event) {
                     final long timeRemaining = endTime - System.currentTimeMillis();
                     if (timeRemaining < 0) {
-                        addCenterComponent(getInvestTokensPanel());
+                    	updateTokenInstructionsPanel();
                         getInvestedTokensTextField().requestFocusInWindow();
                         timer.stop();
                         timer = null;

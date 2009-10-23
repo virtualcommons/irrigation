@@ -14,7 +14,6 @@ import java.util.Map;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
@@ -60,6 +59,9 @@ public class ChatPanel extends JPanel {
 
     private JEditorPane chatInstructionsPane;
     
+    private JTextField chatField;
+
+    
     public ChatPanel() {
         initGuiComponents();
     }
@@ -71,8 +73,6 @@ public class ChatPanel extends JPanel {
 
     private class TextEntryPanel extends JPanel {
         private JProgressBar timeLeftProgressBar;
-        private JLabel timeLeftLabel;
-        private JTextField chatField;
         private Identifier targetIdentifier = Identifier.ALL;
 
         public TextEntryPanel() {
@@ -93,13 +93,6 @@ public class ChatPanel extends JPanel {
                 }
             });
             JPanel timeLeftPanel = new JPanel();
-//            timeLeftPanel.setLayout(new BoxLayout(timeLeftPanel, BoxLayout.LINE_AXIS));
-            
-//            timeLeftLabel = new JLabel("40");
-//            timeLeftLabel.setFont(new Font("Arial", Font.BOLD, 14));
-//            timeLeftLabel.setForeground(new Color(0x0000dd));
-//            timeLeftPanel.add(new JLabel(" Time left: "));
-//            timeLeftPanel.add(timeLeftLabel);
             timeLeftProgressBar = new JProgressBar(0, 60);
             timeLeftProgressBar.setStringPainted(true);
             timeLeftPanel.setLayout(new BorderLayout());
@@ -131,13 +124,6 @@ public class ChatPanel extends JPanel {
     }
 
     private final static String HANDLE_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-    private final static String CHAT_INSTRUCTIONS = "<h3>Chat Instructions</h3><p>You now have the opportunity to chat for 40 seconds." +
-    "  You can discuss whatever you want related to the experiment with some restrictions.  You may not promise the other participant(s) side " +
-    "payments or threaten them with any consequence (e.g., physical violence) after the experiment is finished.  Also, you may not reveal your real identity." +
-    "We are monitoring chat traffic - if we notice a violation of the rules we will remove the group from the room until the other groups are finished with the experiment.</p>" +
-    "<p>You can send messages by typing in the text field at the bottom of the screen and then hit return or click send.  " +
-    "The time left for the discussion is displayed above the text field at the bottom of the screen.</p>";
 
     private static String[] HANDLES;
     
@@ -195,7 +181,6 @@ public class ChatPanel extends JPanel {
         chatInstructionsPane.setEditorKit(new HTMLEditorKit());
         chatInstructionsPane.setEditable(false);
         JScrollPane chatInstructionsScrollPane = new JScrollPane(chatInstructionsPane);
-        chatInstructionsPane.setText(CHAT_INSTRUCTIONS);
         add(chatInstructionsScrollPane, BorderLayout.PAGE_START);
         add(messageScrollPane, BorderLayout.CENTER);
 //        add(participantButtonPanel, BorderLayout.EAST);
@@ -239,6 +224,7 @@ public class ChatPanel extends JPanel {
 
     public void setIrrigationClient(IrrigationClient client) {
         this.irrigationClient = client;
+        chatInstructionsPane.setText(irrigationClient.getServerConfiguration().getChatInstructions());
         client.getEventChannel().add(this, new EventTypeProcessor<ChatEvent>(ChatEvent.class) {
             public void handle(final ChatEvent chatEvent) {
                 SwingUtilities.invokeLater(new Runnable() {
@@ -251,5 +237,9 @@ public class ChatPanel extends JPanel {
 
         });
     }
+
+	public void setFocusInChatField() {
+		chatField.requestFocusInWindow();
+	}
 
 }

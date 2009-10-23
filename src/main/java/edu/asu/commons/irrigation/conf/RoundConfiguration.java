@@ -145,9 +145,6 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
         return getBooleanProperty("chat-enabled-before-round", true);
     }
 
-    public int getChatDuration() {
-        return getIntProperty("chat-duration", 40);
-    }
 
     /**
      * Returns the duration of the round in seconds.  Set to default of 50 seconds per round.

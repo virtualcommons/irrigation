@@ -3,14 +3,13 @@
 <properties>
 <comment>Irrigation experiment round configuration</comment>
 
-<entry key='infrastructure-degradation-factor'>85</entry>
+<entry key='infrastructure-degradation-factor'>10</entry>
 
 <entry key="instructions">
 <![CDATA[
 <h3>Round 6 Instructions</h3>
 <p>
-This round is the same as the previous round, but the irrigation
-infrastructure efficiency has experienced a severe decline of 85%.  
+This round is the same as the previous round.  
 </p>
 
 ]]>

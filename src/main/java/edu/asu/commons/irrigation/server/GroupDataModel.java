@@ -25,10 +25,7 @@ public class GroupDataModel implements DataModel<RoundConfiguration> {
 
     private final Map<Identifier, ClientData> clients = new LinkedHashMap<Identifier, ClientData>();
 
-    private transient ServerDataModel serverDataModel;
-    
     private RoundConfiguration roundConfiguration;
-
 
 	private transient Logger logger = Logger.getLogger(GroupDataModel.class.getName());
 
@@ -42,7 +39,6 @@ public class GroupDataModel implements DataModel<RoundConfiguration> {
     private int totalContributedTokens = 0;
     
     public GroupDataModel(ServerDataModel serverDataModel) {
-        this.serverDataModel = serverDataModel;
         setRoundConfiguration(serverDataModel.getRoundConfiguration());
     }
 
@@ -52,21 +48,6 @@ public class GroupDataModel implements DataModel<RoundConfiguration> {
 
     public Set<Identifier> getClientIdentifiers() {
         return Collections.unmodifiableSet(clients.keySet());
-    }
-    /** Here instead of tokens there would be get in general tokens, or the profit earned
-     * but at present it would be just currentTokens
-     *  
-     * @param id
-     * @return
-     */
-    public int getAward(Identifier id) {
-        ClientData state = (ClientData) clients.get(id);
-        if (state == null) {
-            // FIXME: perhaps we should just return 0 instead.
-            throw new IllegalArgumentException(
-                    "no client state available for: " + id);
-        }
-        return state.getAllTokensEarnedThisRound();
     }
 
     public void addClient(ClientData clientData) {
@@ -88,10 +69,6 @@ public class GroupDataModel implements DataModel<RoundConfiguration> {
 
     public void clear() {
         clients.clear();
-    }
-
-    public void setServerDataModel(ServerDataModel serverDataModel) {
-        this.serverDataModel = serverDataModel;
     }
 
     public Map<Identifier, ClientData> getClientDataMap() {
@@ -118,35 +95,26 @@ public class GroupDataModel implements DataModel<RoundConfiguration> {
         for(ClientData clientData : getClientDataMap().values()) {
             totalContributedTokens += clientData.getInvestedTokens();
         }
-        getLogger().info("total contributed tokens: " + totalContributedTokens);
     	updateInfrastructureEfficiency(totalContributedTokens);
-        
         currentlyAvailableFlowCapacity = maximumAvailableFlowCapacity = getFlowCapacity();
-        getLogger().info("maximum available flow capacity = "+ maximumAvailableFlowCapacity);
     }
     
     private void updateInfrastructureEfficiency(int totalContributedTokens) {
     	RoundConfiguration roundConfiguration = getRoundConfiguration();
-        int currentRoundNumber = roundConfiguration.getRoundNumber();
         // initialize infrastructure efficiency
-        System.err.println("current round number: " + currentRoundNumber);
-    	System.err.println("initial infrastructure efficiency: " + infrastructureEfficiency);
         if ( roundConfiguration.shouldResetInfrastructureEfficiency() ) {
-            System.err.println("initializing infrastructure efficiency to default initial value: " + roundConfiguration.getInitialInfrastructureEfficiency());
             infrastructureEfficiency = roundConfiguration.getInitialInfrastructureEfficiency();
         }
         else {
             // degrade by infrastructure-degradation-factor, clamp at 0
-            getLogger().info("degrading infrastructure efficiency: " + infrastructureEfficiency);
             infrastructureEfficiency = Math.max(infrastructureEfficiency - roundConfiguration.getInfrastructureDegradationFactor(), 0);
-            getLogger().info("New infrastructure efficiency: " + infrastructureEfficiency);
         }
         // set original infrastructure efficiency before token contributions
+        getLogger().info("initial infrastructure efficiency: " + infrastructureEfficiency);
         initialInfrastructureEfficiency = infrastructureEfficiency;
         // add total invested tokens to infrastructure efficiency, clamp at
         // 100
         infrastructureEfficiency = Math.min(100, totalContributedTokens + infrastructureEfficiency);
-        System.err.println("total infrastructure efficiency: " + infrastructureEfficiency);
     }
     
     /**

@@ -109,7 +109,7 @@ public class IrrigationClient {
                 IrrigationClient client = new IrrigationClient();
                 client.initialize();
                 frame.setTitle("Virtual Commons Experiment Client: " + client.id);
-                frame.setPreferredSize(new Dimension(1100, 800));
+                frame.setPreferredSize(new Dimension(1200, 800));
 //                frame.setResizable(false);
                 frame.getContentPane().add(client.getExperimentGameWindow());
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -201,7 +201,7 @@ public class IrrigationClient {
         });
         channel.add(this, new EventTypeProcessor<DisplaySubmitTokenRequest>(DisplaySubmitTokenRequest.class) {
             public void handle(DisplaySubmitTokenRequest request) {
-                experimentGameWindow.updateSubmitTokenScreenDisplay();
+                experimentGameWindow.updateTokenInstructionsPanel();
             }
         });
         channel.add(this, new EventTypeProcessor<BeginChatRoundRequest>(BeginChatRoundRequest.class) {
