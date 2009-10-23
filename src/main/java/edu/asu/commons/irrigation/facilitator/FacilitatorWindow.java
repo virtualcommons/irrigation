@@ -49,6 +49,8 @@ public class FacilitatorWindow extends JPanel {
     private JButton displayInvestmentButton;
     
     private StringBuilder builder = new StringBuilder();
+
+	private JButton beginExperimentButton;
     /**
      * This is the default constructor
      */
@@ -70,6 +72,7 @@ public class FacilitatorWindow extends JPanel {
         buttonPanel.add(getBeginChatButton());
         buttonPanel.add(getDisplayInvestmentButton());
         buttonPanel.add(getStartRoundButton());
+        buttonPanel.add(getBeginExperimentButton());
         add(buttonPanel, BorderLayout.NORTH);
         editorPane = new HtmlEditorPane();
         editorPane.setEditable(false);
@@ -111,6 +114,19 @@ public class FacilitatorWindow extends JPanel {
             });
         }
         return beginChatButton;
+    }
+    
+    private JButton getBeginExperimentButton() {
+    	if (beginExperimentButton == null) {
+    		beginExperimentButton = new JButton("Begin experiment");
+    		beginExperimentButton.addActionListener(new ActionListener() {
+    			public void actionPerformed(ActionEvent event) {
+    				facilitator.sendBeginExperimentRequest();
+    			}
+    			
+    		});
+    	}
+    	return beginExperimentButton;
     }
     
     private JButton getDisplayInvestmentButton() {
