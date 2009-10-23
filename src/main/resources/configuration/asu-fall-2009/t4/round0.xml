@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Irrigation experiment round configuration</comment>
+<entry key='max-canal-flow-capacity'>40</entry>
+<entry key='max-client-flow-capacity'>25</entry>
+<entry key="practice-round">true</entry>
+
+<entry key="instructions">
+<![CDATA[
+<p>
+We will now start with two practice rounds. This practice round will not contribute
+to your earnings.  If you have any questions feel free to raise your hand and to ask
+your question.
+<br> 
+<b>Do you have any questions?</b>
+</p>
+]]>
+</entry>
+</properties>

@@ -33,7 +33,7 @@ public class GroupDataModel implements DataModel<RoundConfiguration> {
     private int maximumAvailableFlowCapacity = 0;
     
     private int infrastructureEfficiency;
-    
+    // infrastructure efficiency before investment (but post decline)
     private int initialInfrastructureEfficiency;
     
     private int totalContributedTokens = 0;
@@ -156,11 +156,11 @@ public class GroupDataModel implements DataModel<RoundConfiguration> {
     }
     
     public int getInitialFlowCapacity() {
-    	return calculateFlowCapacity(initialInfrastructureEfficiency);
+    	return Math.min(calculateFlowCapacity(initialInfrastructureEfficiency), getRoundConfiguration().getMaximumCanalFlowCapacity());
     }
     
     public int getFlowCapacity() {
-    	return calculateFlowCapacity(infrastructureEfficiency);
+    	return Math.min(calculateFlowCapacity(infrastructureEfficiency), getRoundConfiguration().getMaximumCanalFlowCapacity());
     }
     
     public void resetCurrentlyAvailableFlowCapacity() {

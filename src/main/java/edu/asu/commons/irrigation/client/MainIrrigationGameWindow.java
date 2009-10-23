@@ -293,7 +293,8 @@ public class MainIrrigationGameWindow extends JPanel {
 	private JTextField createTextField() {
 		JTextField textField = new JTextField();
 		textField.setEditable(false);
-		textField.setBackground(Color.LIGHT_GRAY);
+//		textField.setBackground(Color.LIGHT_GRAY);
+		textField.setBackground(Color.YELLOW);
 		return textField;
 	}
 
@@ -424,7 +425,6 @@ public class MainIrrigationGameWindow extends JPanel {
 				getTokensNotInvestedTextField().setText("" + clientData.getUninvestedTokens());
 				getTokensEarnedTextField().setText("" + clientData.getTokensEarnedFromWaterCollected());
 				getTotalTokensEarnedTextField().setText("" + clientData.getAllTokensEarnedThisRound());
-				//				getScoreBoxPanel().update(clientDataModel);
 				getMiddleWindowPanel().update(clientDataModel);
 
 			}
