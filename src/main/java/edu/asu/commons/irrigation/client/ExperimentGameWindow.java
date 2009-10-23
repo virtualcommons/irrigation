@@ -578,9 +578,11 @@ public class ExperimentGameWindow extends JPanel {
                 addCenterComponent(getInvestTokensPanel());
                 StringBuilder builder = new StringBuilder();
                 builder.append(
-                        String.format("<h2>The current infrastructure efficiency is %d%%, with an irrigation flow capacity of %d cubic feet per second.</h2>",
+                        String.format(
+                        		"<h2>The current infrastructure efficiency is %d%%.  The irrigation capacity is %d cubic feet per second and the water supply is %d cubic feet per second.</h2>",
                                 infrastructureEfficiency,
-                                group.calculateFlowCapacity(infrastructureEfficiency)
+                                group.calculateFlowCapacity(infrastructureEfficiency),
+                                roundConfiguration.getWaterSupplyCapacity()
                         ));
                 builder.append(getServerConfiguration().getInvestmentInstructions());
                 tokenInstructionsEditorPane.setText(builder.toString());
@@ -607,11 +609,11 @@ public class ExperimentGameWindow extends JPanel {
             else {
             	instructionsBuilder.append(
             			String.format("<p>The current infrastructure efficiency is %d%% but will be degraded by %d%% during this round." +
-            					"The current irrigation capacity is %d cfps with a maximum canal capacity is %d cfps.</p><hr/>",
+            					"The current irrigation capacity is %d cfps and the available water supply is %d cfps.</p><hr/>",
             					clientDataModel.getGroupDataModel().getInfrastructureEfficiency(),
             					roundConfiguration.getInfrastructureDegradationFactor(),
             					irrigationCapacity,
-            					roundConfiguration.getMaximumCanalFlowCapacity()
+            					roundConfiguration.getWaterSupplyCapacity()
             					));
             }
             setInstructions(instructionsBuilder.toString());

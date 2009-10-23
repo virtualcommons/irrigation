@@ -43,7 +43,7 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
         return getIntProperty("infrastructure-degradation-factor", 25);
     }
 
-    public int getMaximumCanalFlowCapacity() {
+    public int getWaterSupplyCapacity() {
         return getIntProperty("max-canal-flow-capacity", 30);
     }
 

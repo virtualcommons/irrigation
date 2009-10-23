@@ -156,11 +156,11 @@ public class GroupDataModel implements DataModel<RoundConfiguration> {
     }
     
     public int getInitialFlowCapacity() {
-    	return Math.min(calculateFlowCapacity(initialInfrastructureEfficiency), getRoundConfiguration().getMaximumCanalFlowCapacity());
+    	return Math.min(calculateFlowCapacity(initialInfrastructureEfficiency), getRoundConfiguration().getWaterSupplyCapacity());
     }
     
     public int getFlowCapacity() {
-    	return Math.min(calculateFlowCapacity(infrastructureEfficiency), getRoundConfiguration().getMaximumCanalFlowCapacity());
+    	return Math.min(calculateFlowCapacity(infrastructureEfficiency), getRoundConfiguration().getWaterSupplyCapacity());
     }
     
     public void resetCurrentlyAvailableFlowCapacity() {
