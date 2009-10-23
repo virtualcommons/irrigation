@@ -245,6 +245,13 @@ public class CanalAnimationPanel extends JPanel {
             repaint();
         }
     }
+    
+    public void stopTimer() {
+        if (timer != null) { 
+            timer.stop();
+            timer = null;
+        }
+    }
 
     /*
      * This will process the balls according to their position

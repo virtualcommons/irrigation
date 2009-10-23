@@ -312,7 +312,7 @@ Question 1:<br>
 Given an existing infrastructure efficiency of 20%, if the five participants invest
 a <b>total of 29 additional tokens</b>, what is the new irrigation infrastructure
 efficiency?
-<br>
+(<b>Note: only enter a number, you don't need to add the % sign</b>)<br>
 <input type="text" name="q3" value = "">
 <br><br>
 
@@ -320,7 +320,7 @@ Question 2:<br>
 Given an existing infrastructure efficiency of 50%, if <b>two participants invest 10 tokens each</b>
 while the <b>three other participants invest 2 tokens each</b>, what is the new
 irrigation infrastructure efficiency?
-<br>
+(<b>Note: only enter a number, you don't need to add the % sign</b>)<br>
 <input type="text" name="q4" value = "">
 <br><br>
 <input type="submit" name="submit" value="Submit"><br>

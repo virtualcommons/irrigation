@@ -40,7 +40,7 @@ public class CanalPanel extends JPanel {
 
 	private Random generator = new Random();
 
-	private boolean enableBallAnimation = true;
+	private final static boolean enableBallAnimation = true;
 
 	private int maximumIrrigationCapacity;
 
@@ -61,9 +61,16 @@ public class CanalPanel extends JPanel {
 	public CanalPanel(ClientDataModel clientDataModel) {
 		super();
 		//when totalContributed bandwidth = 1.0, you dont see the canal line
-		this.maximumIrrigationCapacity = clientDataModel.getGroupDataModel().getMaximumAvailableFlowCapacity();
-		this.clientDataModel = clientDataModel;
-		initialize();
+		setClientDataModel(clientDataModel);
+	}
+	
+	public void setClientDataModel(ClientDataModel clientDataModel) {
+	    if (timer != null) {
+	        timer.stop();
+	    }
+	    this.maximumIrrigationCapacity = clientDataModel.getGroupDataModel().getMaximumAvailableFlowCapacity();
+	    this.clientDataModel = clientDataModel;
+	    initialize();
 	}
 
 	/**
@@ -112,25 +119,23 @@ public class CanalPanel extends JPanel {
 		graphics2D.fillRect(gate[5].getX(), gate[5].getY(),10,gate[5].getHeight());
 
 		//////////////////////Animation Logic////////////////////////////
-		if (enableBallAnimation) {
-			graphics.setColor(Color.white);
-			//		int ballCounter = 0;
-			for(int i=0;i<BALLCOUNT;i++){
-				if((balls[i].getPosition() == 1)||(balls[i].getPosition() == 2) || (balls[i].getPosition()==3)
-						|| (balls[i].getPosition() == 4) || (balls[i].getPosition() == 5)){
-					if(!((!gate[balls[i].getPosition()-1].isOpenGate())&& balls[i].getY() >= (gate[balls[i].getPosition()-1].getY()+gate[balls[i].getPosition()-1].getHeight())))
-						graphics.fillOval(balls[i].x,balls[i].y,balls[i].getBallSize(), balls[i].getBallSize());
-				}
-				else{
-					if(balls[i].getPosition() != 0){
-						if(gate[balls[i].getPosition() - 6].getHeight() != 0)
-							graphics.fillOval(balls[i].x,balls[i].y,balls[i].getBallSize(), balls[i].getBallSize());
-					}
-					else{
-						graphics.fillOval(balls[i].x,balls[i].y,balls[i].getBallSize(), balls[i].getBallSize());
-					}
-				}
-			}
+		graphics.setColor(Color.white);
+		//		int ballCounter = 0;
+		for(int i=0;i<BALLCOUNT;i++){
+		    if((balls[i].getPosition() == 1)||(balls[i].getPosition() == 2) || (balls[i].getPosition()==3)
+		            || (balls[i].getPosition() == 4) || (balls[i].getPosition() == 5)){
+		        if(!((!gate[balls[i].getPosition()-1].isOpenGate())&& balls[i].getY() >= (gate[balls[i].getPosition()-1].getY()+gate[balls[i].getPosition()-1].getHeight())))
+		            graphics.fillOval(balls[i].x,balls[i].y,balls[i].getBallSize(), balls[i].getBallSize());
+		    }
+		    else{
+		        if(balls[i].getPosition() != 0){
+		            if(gate[balls[i].getPosition() - 6].getHeight() != 0)
+		                graphics.fillOval(balls[i].x,balls[i].y,balls[i].getBallSize(), balls[i].getBallSize());
+		        }
+		        else{
+		            graphics.fillOval(balls[i].x,balls[i].y,balls[i].getBallSize(), balls[i].getBallSize());
+		        }
+		    }
 		}
 
 	}
@@ -412,7 +417,10 @@ public class CanalPanel extends JPanel {
 	}
 
 	public void endRound() {
-		initializeBalls();
+	    if (timer != null) {
+	        timer.stop();
+	    }
+	    timer = null;
 		closeAllGates();
 	}
 	

@@ -8,7 +8,6 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -46,18 +45,9 @@ public class MainIrrigationGameWindow extends JPanel {
 	private JPanel jPanelDownStreamWindow = null;
 	private JPanel downloadScreenPanel = null;
 
-	private ScoreBoxPanel scoreBoxPanel;
+	private IrrigationClient client;
 
-	/**
-	 * This is the default constructor
-	 */
-	public IrrigationClient client;
-
-	public Dimension screenSize;
-
-	public JProgressBar timeLeftProgressBar;
-
-	public JProgressBar timeRemainingjProgressBar = null;
+	private JProgressBar timeLeftProgressBar;
 
 	private JLabel timeRemainingjLabel = null; 
 
@@ -73,7 +63,7 @@ public class MainIrrigationGameWindow extends JPanel {
 
 	private MiddleWindowPanel middleWindowPanel;
 
-	private JLabel dashBoardLabel = null;
+	private JLabel gateSwitchLabel = null;
 
 	private JLabel scoreBoardLabel = null;
 
@@ -158,10 +148,10 @@ public class MainIrrigationGameWindow extends JPanel {
 			scoreBoardLabel.setBounds(new Rectangle(582,225+100+35,530,20));
 			scoreBoardLabel.setHorizontalAlignment(SwingConstants.CENTER);
 			scoreBoardLabel.setText("WATER COLLECTED TO TOKENS EARNED TABLE");
-			dashBoardLabel = new JLabel();
-			dashBoardLabel.setBounds(new Rectangle(13,225+100+35,530,20));
-			dashBoardLabel.setHorizontalAlignment(SwingConstants.CENTER);
-			dashBoardLabel.setText("YOUR DASHBOARD");
+			gateSwitchLabel = new JLabel();
+			gateSwitchLabel.setBounds(new Rectangle(13,225+100+35,530,20));
+			gateSwitchLabel.setHorizontalAlignment(SwingConstants.CENTER);
+			gateSwitchLabel.setText("DASHBOARD");
 			totalContributedBandwidthTextjLabel = new JLabel();
 			totalContributedBandwidthTextjLabel.setBounds(new Rectangle(200, 18, 55, 17));
 			totalContributedBandwidthTextjLabel.setText("");
@@ -174,14 +164,10 @@ public class MainIrrigationGameWindow extends JPanel {
 			downloadScreenPanel = new JPanel();
 			downloadScreenPanel.setLayout(null);
 			downloadScreenPanel.setName("downloadScreenPanel");
-			downloadScreenPanel.setBackground(Color.white);
+			downloadScreenPanel.setBackground(Color.WHITE);
 			downloadScreenPanel.add(getCenterPanel(),null);
 			downloadScreenPanel.add(getTimeLeftProgressBar(), null);
-			//			downloadScreenPanel.add(timeRemainingjLabel, null);
-			//			downloadScreenPanel.add(timeRemainingjText,null);
-			//			downloadScreenPanel.add(totalContributedBandwidthjLabel, null);
-			//			downloadScreenPanel.add(totalContributedBandwidthTextjLabel, null);
-			downloadScreenPanel.add(dashBoardLabel, null);
+			downloadScreenPanel.add(gateSwitchLabel, null);
 			downloadScreenPanel.add(scoreBoardLabel, null);
 		}
 		return downloadScreenPanel;
@@ -209,10 +195,14 @@ public class MainIrrigationGameWindow extends JPanel {
 		return centerPanel;
 	}
 
-	private JPanel createCanalPanel(ClientDataModel clientDataModel) {
-		canalPanel = new CanalPanel(clientDataModel);
-		canalPanel.setSize(new Dimension(1098, 123));
-
+	private JPanel getCanalPanel(ClientDataModel clientDataModel) {
+	    if (canalPanel == null) {
+	        canalPanel = new CanalPanel(clientDataModel);
+	        canalPanel.setSize(new Dimension(1098, 123));
+	    }
+	    else {
+	        canalPanel.setClientDataModel(clientDataModel);
+	    }
 		return canalPanel;
 	}
 
@@ -227,26 +217,27 @@ public class MainIrrigationGameWindow extends JPanel {
 			jPanelUpStreamWindow.setLayout(new BorderLayout());
 			jPanelUpStreamWindow.setBackground(new Color(186, 226, 237));
 			jPanelUpStreamWindow.setBounds(new Rectangle(13, 225+100+50, 530, 326));
-			jPanelUpStreamWindow.add(getGateSwitchButton(), BorderLayout.CENTER);
+			jPanelUpStreamWindow.add(getGateSwitchButton(), BorderLayout.NORTH);
+			jPanelUpStreamWindow.add(getControlPanel(), BorderLayout.CENTER);
 		}
 		return jPanelUpStreamWindow;
 	}
-	private final static String OPEN_GATE_LABEL = "Click here to open your gate";
-	private final static String CLOSE_GATE_LABEL = "Click here to close your gate";
+	private final static String OPEN_GATE_LABEL = "OPEN YOUR GATE";
+	private final static String CLOSE_GATE_LABEL = "CLOSE YOUR GATE";
 	private JButton getGateSwitchButton() {
 		if (gateSwitchButton == null) {
 			gateSwitchButton = new JButton(OPEN_GATE_LABEL);
 			gateSwitchButton.setFont(new Font("sansserif", Font.TRUETYPE_FONT, 18));
-			//			gateSwitchButton.setPreferredSize(new Dimension(100, 100));
 			gateSwitchButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent event) {
 					open = !open;
-					gateSwitchButton.setText( open ? CLOSE_GATE_LABEL : OPEN_GATE_LABEL );
 					if (open) {
 						client.openGate();
+						gateSwitchButton.setText(CLOSE_GATE_LABEL);
 					}
 					else {
 						client.closeGate();
+						gateSwitchButton.setText(OPEN_GATE_LABEL);
 					}
 				}
 			});
@@ -255,11 +246,6 @@ public class MainIrrigationGameWindow extends JPanel {
 	}
 
 	private JPanel getControlPanel() {
-		JPanel panel = new JPanel();
-		panel.setPreferredSize(new Dimension(530, 326));
-		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-		panel.add(getGateSwitchButton());
-
 		JPanel bottomInformationPanel = new JPanel();
 		GroupLayout layout = new GroupLayout(bottomInformationPanel);
 		bottomInformationPanel.setLayout(layout);
@@ -294,8 +280,7 @@ public class MainIrrigationGameWindow extends JPanel {
 				.addComponent(getTotalTokensEarnedLabel()).addComponent(getTotalTokensEarnedTextField()));
 
 		layout.setVerticalGroup(verticalGroup);
-		panel.add(bottomInformationPanel);
-		return panel;
+		return bottomInformationPanel;
 	}
 
 	private JTextField getWaterCollectedTextField() {
@@ -405,11 +390,11 @@ public class MainIrrigationGameWindow extends JPanel {
 	private void setProgressBarColor(int timeLeft) {
 		if (timeLeft < 10) {
 //			timeLeftProgressBar.setForeground( Color.RED );
-			timeLeftProgressBar.setBackground( Color.RED );
+//			timeLeftProgressBar.setBackground( Color.RED );
 //			return Color.RED;
 		}
 		else {
-			timeLeftProgressBar.setBackground( Color.GREEN );
+//			timeLeftProgressBar.setBackground( Color.GREEN );
 		}
 	}
 	/**
@@ -422,7 +407,7 @@ public class MainIrrigationGameWindow extends JPanel {
 				String timeLeftString = String.format("%d sec", timeLeft);
 				timeLeftProgressBar.setValue( timeLeft );
 				timeLeftProgressBar.setString(timeLeftString);
-				setProgressBarColor(timeLeft);
+//				setProgressBarColor(timeLeft);
 				for (final ClientData clientData : clientDataModel.getClientDataMap().values()) {
 					if (clientData.isGateOpen()) {
 						canalPanel.openGate(clientData.getPriority());
@@ -555,8 +540,7 @@ public class MainIrrigationGameWindow extends JPanel {
 	 * fills in the panels depending on the priority of the client
 	 */
 	public void fillPanels(ClientDataModel clientDataModel) {
-		// TODO Auto-generated method stub
-		centerPanel.add(createCanalPanel(clientDataModel));
+		centerPanel.add(getCanalPanel(clientDataModel));
 		//switch(clientGameState.getPriority()){
 
 		downloadScreenPanel.add(getJPanelUpStreamWindow(),null);

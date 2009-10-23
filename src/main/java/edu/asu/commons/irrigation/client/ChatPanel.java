@@ -1,9 +1,7 @@
 package edu.asu.commons.irrigation.client;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -13,12 +11,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
@@ -72,6 +70,7 @@ public class ChatPanel extends JPanel {
     }
 
     private class TextEntryPanel extends JPanel {
+        private JProgressBar timeLeftProgressBar;
         private JLabel timeLeftLabel;
         private JTextField chatField;
         private Identifier targetIdentifier = Identifier.ALL;
@@ -94,12 +93,17 @@ public class ChatPanel extends JPanel {
                 }
             });
             JPanel timeLeftPanel = new JPanel();
-            timeLeftPanel.setLayout(new BoxLayout(timeLeftPanel, BoxLayout.LINE_AXIS));
-            timeLeftLabel = new JLabel("40");
-            timeLeftLabel.setFont(new Font("Arial", Font.BOLD, 14));
-            timeLeftLabel.setForeground(new Color(0x0000dd));
-            timeLeftPanel.add(new JLabel(" Time left: "));
-            timeLeftPanel.add(timeLeftLabel);
+//            timeLeftPanel.setLayout(new BoxLayout(timeLeftPanel, BoxLayout.LINE_AXIS));
+            
+//            timeLeftLabel = new JLabel("40");
+//            timeLeftLabel.setFont(new Font("Arial", Font.BOLD, 14));
+//            timeLeftLabel.setForeground(new Color(0x0000dd));
+//            timeLeftPanel.add(new JLabel(" Time left: "));
+//            timeLeftPanel.add(timeLeftLabel);
+            timeLeftProgressBar = new JProgressBar(0, 60);
+            timeLeftProgressBar.setStringPainted(true);
+            timeLeftPanel.setLayout(new BorderLayout());
+            timeLeftPanel.add(timeLeftProgressBar, BorderLayout.CENTER);
 
             add(timeLeftPanel, BorderLayout.PAGE_START);
             add(chatField, BorderLayout.CENTER);
@@ -118,8 +122,10 @@ public class ChatPanel extends JPanel {
             chatField.requestFocusInWindow();
         }
 
-        private void setTimeRemaining(long timeRemaining) {
-            timeLeftLabel.setText(String.format(" %d s", timeRemaining / 1000L));
+        private void setTimeLeft(long timeLeft) {
+            int timeLeftInSeconds = (int) (timeLeft / 1000L);
+            timeLeftProgressBar.setValue(timeLeftInSeconds);
+            timeLeftProgressBar.setString(String.format("%d sec", timeLeftInSeconds));
         }
 
     }
@@ -166,8 +172,8 @@ public class ChatPanel extends JPanel {
                 .addStyle("italic", defaultStyle), true);
     }
 
-    public void setTimeRemaining(long timeRemaining) {
-        textEntryPanel.setTimeRemaining(timeRemaining);
+    public void setTimeLeft(long timeLeft) {
+        textEntryPanel.setTimeLeft(timeLeft);
     }
 
     private String getChatHandle(Identifier identifier) {

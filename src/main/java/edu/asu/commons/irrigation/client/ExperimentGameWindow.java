@@ -40,7 +40,6 @@ import edu.asu.commons.util.HtmlEditorPane.FormActionEvent;
  * 
  * The root experiment window placed in the client's JFrame.  
  * 
- * FIXME: refactor this class.
  *
  * @author <a href='mailto:Allen.Lee@asu.edu'>Allen Lee</a>
  * @version $Rev$
@@ -107,8 +106,6 @@ public class ExperimentGameWindow extends JPanel {
     
     private int numberOfGeneralInstructionPages;
 
-    private JLabel infrastructureEfficiencyLabel = new JLabel("Current infrastructure efficiency: ");
-
     public ExperimentGameWindow(IrrigationClient client) {
         this.client = client;
         this.clientDataModel = client.getClientDataModel();
@@ -142,28 +139,12 @@ public class ExperimentGameWindow extends JPanel {
             tokenInstructionsEditorPane = createInstructionsEditorPane();
             tokenInstructionsScrollPane = new JScrollPane(tokenInstructionsEditorPane);
             investTokensPanel.add(tokenInstructionsScrollPane, BorderLayout.CENTER);
-            tokenInstructionsEditorPane.setText(getServerConfiguration().getInvestmentInstructions());
             tokenInstructionsEditorPane.setCaretPosition(0);
             tokenInstructionsEditorPane.repaint();
             investTokensPanel.add(getSubmitTokenPanel(), BorderLayout.SOUTH);
-            investTokensPanel.add(infrastructureEfficiencyLabel, BorderLayout.NORTH);
             investTokensPanel.setBackground(Color.WHITE);
         }
         return investTokensPanel;
-    }
-
-    public void updateInfrastructureEfficiencyLabel() {
-        GroupDataModel group = clientDataModel.getGroupDataModel();
-        RoundConfiguration roundConfiguration = clientDataModel.getRoundConfiguration();
-        int infrastructureEfficiency = 0;
-        if (roundConfiguration.isPracticeRound() || roundConfiguration.isFirstRound()) {
-            infrastructureEfficiency = roundConfiguration.getInitialInfrastructureEfficiency();
-        }
-        else {
-            System.err.println("group was not null, efficiency is: " + group.getInfrastructureEfficiency() + " degrading by " + clientDataModel.getRoundConfiguration().getInfrastructureDegradationFactor());
-            infrastructureEfficiency = group.getInfrastructureEfficiency() - roundConfiguration.getInfrastructureDegradationFactor();
-        }
-        infrastructureEfficiencyLabel.setText("Current infrastructure efficiency: " + infrastructureEfficiency);
     }
 
     private JPanel getSubmitTokenPanel() {
@@ -233,6 +214,7 @@ public class ExperimentGameWindow extends JPanel {
                         getInstructionsPanel().add(getCanalAnimationPanel(), BorderLayout.PAGE_START);
                     }
                     else {
+                        
                         getInstructionsPanel().remove(getCanalAnimationPanel());
                     }
                     getInstructionsPanel().revalidate();
@@ -272,7 +254,7 @@ public class ExperimentGameWindow extends JPanel {
         return nextButton;
     }
 
-    private JPanel getCanalAnimationPanel() {
+    private CanalAnimationPanel getCanalAnimationPanel() {
         if (canalAnimationPanel == null) {
             canalAnimationPanel = new CanalAnimationPanel(40);
         }
@@ -337,7 +319,7 @@ public class ExperimentGameWindow extends JPanel {
             else {
                 investedTokensTextField.setText("");
                 instructionsBuilder.delete(0, instructionsBuilder.length());
-                instructionsBuilder.append("\nPlease enter your tokens within the range 0 - 10");
+                instructionsBuilder.append("<h3>Please enter your tokens within the range 0 - 10</h3>");
                 instructionsBuilder.append(getServerConfiguration().getInvestmentInstructions());
                 tokenInstructionsEditorPane.setText(instructionsBuilder.toString());
             }
@@ -345,7 +327,7 @@ public class ExperimentGameWindow extends JPanel {
         catch(NumberFormatException e){
             investedTokensTextField.setText("");
             instructionsBuilder.delete(0, instructionsBuilder.length());
-            instructionsBuilder.append("\nYou only have between 0 and 10 to invest.  Please choose a number between 0 and 10 and try again.");
+            instructionsBuilder.append("<h3>You only have between 0 and 10 to invest.  Please choose a number between 0 and 10 and try again.</h3>");
             instructionsBuilder.append(getServerConfiguration().getInvestmentInstructions());
             tokenInstructionsEditorPane.setText(instructionsBuilder.toString());
         }
@@ -380,6 +362,7 @@ public class ExperimentGameWindow extends JPanel {
     public void startRound(final RoundConfiguration configuration) {
         Runnable runnable = new Runnable() {
             public void run() {
+                getCanalAnimationPanel().stopTimer();
                 disableInstructions();
                 addCenterComponent(irrigationGamePanel);
                 irrigationGamePanel.startRound();
@@ -394,7 +377,7 @@ public class ExperimentGameWindow extends JPanel {
 
     /*
      * updates the mainIrrigationGameWindow Panel and adds
-     * instructionsScrollPane with the debreifing information
+     * instructionsScrollPane with the debriefing information
      */
     public void endRound(final EndRoundEvent event) {
         irrigationGamePanel.endRound();
@@ -583,8 +566,25 @@ public class ExperimentGameWindow extends JPanel {
     public void updateSubmitTokenScreenDisplay() {
         Runnable runnable = new Runnable() {
             public void run() {
+                GroupDataModel group = clientDataModel.getGroupDataModel();
+                RoundConfiguration roundConfiguration = clientDataModel.getRoundConfiguration();
+                int infrastructureEfficiency = 0;
+                if (roundConfiguration.isPracticeRound() || roundConfiguration.isFirstRound()) {
+                    infrastructureEfficiency = roundConfiguration.getInitialInfrastructureEfficiency();
+                }
+                else {
+                    System.err.println("group was not null, efficiency is: " + group.getInfrastructureEfficiency() + " degrading by " + clientDataModel.getRoundConfiguration().getInfrastructureDegradationFactor());
+                    infrastructureEfficiency = group.getInfrastructureEfficiency() - roundConfiguration.getInfrastructureDegradationFactor();
+                }
                 addCenterComponent(getInvestTokensPanel());
-                updateInfrastructureEfficiencyLabel();
+                StringBuilder builder = new StringBuilder();
+                builder.append(
+                        String.format("<h2>The current infrastructure efficiency is %d%%, with an irrigation flow capacity of %d cubic feet per second.</h2>",
+                                infrastructureEfficiency,
+                                group.calculateFlowCapacity(infrastructureEfficiency)
+                        ));
+                builder.append(getServerConfiguration().getInvestmentInstructions());
+                tokenInstructionsEditorPane.setText(builder.toString());
                 getInvestedTokensTextField().requestFocusInWindow();
             }
         };
@@ -647,17 +647,8 @@ public class ExperimentGameWindow extends JPanel {
                         timer = null;
                     }
                     else {
-                        chatPanel.setTimeRemaining(timeRemaining);
+                        chatPanel.setTimeLeft(timeRemaining);
                     }
-                }
-
-                private void sleep() {
-                    long prevTime = System.currentTimeMillis();
-                    while((System.currentTimeMillis() - prevTime) < 5000) { 
-
-                        chatPanel.setEnabled(false);
-                    }
-
                 }
             });
             timer.start();
