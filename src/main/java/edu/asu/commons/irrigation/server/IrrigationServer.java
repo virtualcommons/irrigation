@@ -108,6 +108,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
         addEventProcessor(new EventTypeProcessor<BeginExperimentRequest>(BeginExperimentRequest.class) {
             @Override
             public void handle(BeginExperimentRequest event) {
+            	// sends override and immediately starts the round.
                 synchronized (roundSignal) {
                     roundSignal.notifyAll();
                 }
@@ -122,14 +123,9 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
                     return;
                 }
                 // ignore the request if not every group has submit their tokens.
-                if (submittedClients == clients.size()) {
-                    synchronized (roundSignal) {
-                        roundSignal.notifyAll();
-                    }                        
-                }
-                else {
-                    System.err.println("clients still haven't submitted their tokens: " + submittedClients + " - # clients: " + clients.size());
-                }
+                synchronized (roundSignal) {
+                	roundSignal.notifyAll();
+                }                        
             }
         });
         addEventProcessor(new EventTypeProcessor<EndRoundRequest>(EndRoundRequest.class) {
@@ -234,7 +230,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
                 ClientData clientData = clients.get(event.getId());
                 clientData.setInvestedTokens(event.getInvestedTokens());
                 submittedClients++;
-                if (submittedClients == clients.size()) {
+                if (submittedClients >= clients.size()) {
                     // everyone's submitted their tokens so we can calculate the available bandwidth and 
                     // notify each client
                     initializeInfrastructureEfficiency();

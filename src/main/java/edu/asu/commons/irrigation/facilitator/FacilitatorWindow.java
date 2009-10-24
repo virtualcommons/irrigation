@@ -72,7 +72,7 @@ public class FacilitatorWindow extends JPanel {
         buttonPanel.add(getBeginChatButton());
         buttonPanel.add(getDisplayInvestmentButton());
         buttonPanel.add(getStartRoundButton());
-        buttonPanel.add(getBeginExperimentButton());
+        buttonPanel.add(getStartRoundOverrideButton());
         add(buttonPanel, BorderLayout.NORTH);
         editorPane = new HtmlEditorPane();
         editorPane.setEditable(false);
@@ -116,14 +116,13 @@ public class FacilitatorWindow extends JPanel {
         return beginChatButton;
     }
     
-    private JButton getBeginExperimentButton() {
+    private JButton getStartRoundOverrideButton() {
     	if (beginExperimentButton == null) {
-    		beginExperimentButton = new JButton("Begin experiment");
+    		beginExperimentButton = new JButton("Override");
     		beginExperimentButton.addActionListener(new ActionListener() {
     			public void actionPerformed(ActionEvent event) {
-    				facilitator.sendBeginExperimentRequest();
+    				facilitator.sendStartRoundOverride();
     			}
-    			
     		});
     	}
     	return beginExperimentButton;

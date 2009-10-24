@@ -138,7 +138,7 @@ public class Facilitator {
         SwingUtilities.invokeLater(createGuiRunnable);
     }
 
-    void sendBeginExperimentRequest(){
+    void sendStartRoundOverride(){
         transmit(new BeginExperimentRequest(id));
     }
 
