@@ -306,7 +306,7 @@ Question 1:<br>
 Given an existing infrastructure efficiency of 20%, if the five participants invest
 a <b>total of 29 additional tokens</b>, what is the new irrigation infrastructure
 efficiency?
-(<b>Note: only enter a number, you don't need to add the % sign</b>)<br>
+(<small><b>Note: only enter a number, you don't need to add the % sign</b></small>)<br>
 <input type="text" name="q3" value = "">
 <br><br>
 
@@ -590,11 +590,12 @@ initial endowment (10 - 6) plus the tokens you earned from your crop (15 tokens 
 <br><br>
 To continue to the next page, please answer the following question:<br>
 <form>
-If you invest 7 of the 10 tokens you started with, and you put 202 cf of water on
-your field, what is the total number of tokens you will have earned for that round?
+If you invest 7 of the 10 tokens you started with, and you put 202 cf of water
+on your field, what is the <b>total number of tokens</b> you will have earned
+for that round?
 <br>
 <input type="radio" name="q8" value="3">3<br>
-<input type="radio" name="q8" value="4">4<br>
+<input type="radio" name="q8" value="5">5<br>
 <input type="radio" name="q8" value="7">7<br>
 <input type="radio" name="q8" value="13">13<br>
 <br><br>

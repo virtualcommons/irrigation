@@ -16,9 +16,15 @@
 <entry key="round8">round8.xml</entry>
 <entry key="round9">round9.xml</entry>
 <entry key="round10">round10.xml</entry>
+<entry key="round11">round11.xml</entry>
+<entry key="round12">round12.xml</entry>
+<entry key="round13">round13.xml</entry>
+<entry key="round14">round14.xml</entry>
+<entry key="round15">round15.xml</entry>
+<entry key="round16">round16.xml</entry>
 
 <entry key="wait-for-participants">true</entry>
-<entry key="number-of-rounds">11</entry>
+<entry key="number-of-rounds">17</entry>
 
 <entry key="undisrupted-flow-required">true</entry>
 
@@ -584,11 +590,12 @@ initial endowment (10 - 6) plus the tokens you earned from your crop (15 tokens 
 <br><br>
 To continue to the next page, please answer the following question:<br>
 <form>
-If you invest 7 of the 10 tokens you started with, and you put 202 cf of water on
-your field, what is the total number of tokens you will have earned for that round?
+If you invest 7 of the 10 tokens you started with, and you put 202 cf of water
+on your field, what is the <b>total number of tokens</b> you will have earned
+for that round?
 <br>
 <input type="radio" name="q8" value="3">3<br>
-<input type="radio" name="q8" value="4">4<br>
+<input type="radio" name="q8" value="5">5<br>
 <input type="radio" name="q8" value="7">7<br>
 <input type="radio" name="q8" value="13">13<br>
 <br><br>
