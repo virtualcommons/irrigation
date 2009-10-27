@@ -8,6 +8,7 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
@@ -45,7 +46,7 @@ public class MainIrrigationGameWindow extends JPanel {
 	//this contains the upstream and downstream Panel
 	private JPanel jPanelUpStreamWindow = null;
 	private JPanel jPanelDownStreamWindow = null;
-	private JPanel downloadScreenPanel = null;
+	private JPanel mainInterfacePanel = null;
 
 	private IrrigationClient client;
 
@@ -128,12 +129,11 @@ public class MainIrrigationGameWindow extends JPanel {
 
 		this.setLayout(new BorderLayout(4,4));
 		this.setSize(1130, 558);
-		this.add(getJPanelMain(),null);
+		this.add(getPanel(),null);
 
 	}
 
-	private JPanel getJPanelMain() {
-		// TODO Auto-generated method stub
+	private JPanel getPanel() {
 		if(jPanelMain == null){
 			jPanelMain = new JPanel();
 			jPanelMain.setLayout(new BorderLayout(4,4));
@@ -142,16 +142,17 @@ public class MainIrrigationGameWindow extends JPanel {
 			JPanel upperPanel = new JPanel();
 			upperPanel.setLayout(new BoxLayout(upperPanel, BoxLayout.X_AXIS));
 			upperPanel.add(getIrrigationCapacityLabel());
+			upperPanel.add(Box.createHorizontalGlue());
 			upperPanel.add(getWaterSupplyLabel());
 			jPanelMain.add(upperPanel, BorderLayout.NORTH);
-			jPanelMain.add(getDownloadScreenPanel(), BorderLayout.CENTER);
+			jPanelMain.add(getMainInterfacePanel(), BorderLayout.CENTER);
 			return jPanelMain;
 		}
 		return jPanelMain;
 	}
 
-	private JPanel getDownloadScreenPanel() {
-		if(downloadScreenPanel == null){
+	private JPanel getMainInterfacePanel() {
+		if(mainInterfacePanel == null){
 			scoreBoardLabel = new JLabel();
 			scoreBoardLabel.setBounds(new Rectangle(582,225+100+35,530,20));
 			scoreBoardLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -169,16 +170,16 @@ public class MainIrrigationGameWindow extends JPanel {
 			priorityjLabel = new JLabel();
 			priorityjLabel.setBounds(new Rectangle(780, 16, 44, 16));
 			priorityjLabel.setText("");
-			downloadScreenPanel = new JPanel();
-			downloadScreenPanel.setLayout(null);
-			downloadScreenPanel.setName("downloadScreenPanel");
-			downloadScreenPanel.setBackground(Color.WHITE);
-			downloadScreenPanel.add(getCenterPanel(),null);
-			downloadScreenPanel.add(getTimeLeftProgressBar(), null);
-			downloadScreenPanel.add(gateSwitchLabel, null);
-			downloadScreenPanel.add(scoreBoardLabel, null);
+			mainInterfacePanel = new JPanel();
+			mainInterfacePanel.setLayout(null);
+			mainInterfacePanel.setName("Main interface panel");
+			mainInterfacePanel.setBackground(Color.WHITE);
+			mainInterfacePanel.add(getCenterPanel(),null);
+			mainInterfacePanel.add(getTimeLeftProgressBar(), null);
+			mainInterfacePanel.add(gateSwitchLabel, null);
+			mainInterfacePanel.add(scoreBoardLabel, null);
 		}
-		return downloadScreenPanel;
+		return mainInterfacePanel;
 	}
 
 	private JProgressBar getTimeLeftProgressBar() {
@@ -561,10 +562,10 @@ public class MainIrrigationGameWindow extends JPanel {
 		centerPanel.add(getCanalPanel(clientDataModel));
 		//switch(clientGameState.getPriority()){
 
-		downloadScreenPanel.add(getJPanelUpStreamWindow(),null);
-		downloadScreenPanel.add(getJPanelDownStreamWindow(),null);
+		mainInterfacePanel.add(getJPanelUpStreamWindow(),null);
+		mainInterfacePanel.add(getJPanelDownStreamWindow(),null);
 		//adding the in between Panel
-		downloadScreenPanel.add(getMiddleWindowPanel(),null);
+		mainInterfacePanel.add(getMiddleWindowPanel(),null);
 		/*case 0 : downloadScreenPanel.add(getJPanelUpStreamWindow(0),null);
     		 	  downloadScreenPanel.add(getJPanelDownStreamWindow(0),null);
     		 	 //Assigning the Priorities on the Priority Label
