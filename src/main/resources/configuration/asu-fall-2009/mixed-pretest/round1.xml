@@ -2,18 +2,16 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
 <comment>Irrigation experiment round configuration</comment>
-
 <entry key="practice-round">true</entry>
 
 <entry key="instructions">
 <![CDATA[
+<h3>Practice Round 2</h3>
 <p>
-We will now start with two practice rounds. This practice round will not contribute
-to your earnings.  If you have any questions feel free to raise your hand and to ask
-your question.
-<br> 
-<b>Do you have any questions?</b>
+This is the second practice round of the experiment.  If you have any questions
+after participating in the first round, please ask them now.
 </p>
 ]]>
 </entry>
 </properties>
+

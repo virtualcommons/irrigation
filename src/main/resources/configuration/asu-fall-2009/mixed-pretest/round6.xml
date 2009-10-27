@@ -3,17 +3,15 @@
 <properties>
 <comment>Irrigation experiment round configuration</comment>
 
-<entry key="practice-round">true</entry>
+<entry key='infrastructure-degradation-factor'>85</entry>
 
 <entry key="instructions">
 <![CDATA[
+<h3>Round 5 Instructions</h3>
 <p>
-We will now start with two practice rounds. This practice round will not contribute
-to your earnings.  If you have any questions feel free to raise your hand and to ask
-your question.
-<br> 
-<b>Do you have any questions?</b>
+This round is the same as the previous round.  
 </p>
+
 ]]>
 </entry>
 </properties>
