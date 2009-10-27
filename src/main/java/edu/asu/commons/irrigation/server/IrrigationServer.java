@@ -138,6 +138,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
         addEventProcessor(new EventTypeProcessor<BeginChatRoundRequest>(BeginChatRoundRequest.class) {
             @Override
             public void handle(BeginChatRoundRequest request) {
+                persister.clearChatData();
                 // pass it on to all the clients
                 synchronized (clients) {
                     for (Identifier id: clients.keySet()) {
@@ -222,6 +223,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
                     ChatEvent chatEvent = new ChatEvent(request.getTarget(), request.toString(), request.getSource());                  
                     transmit(chatEvent);
                 }
+                persister.store(request);
             }
         });
         addEventProcessor(new EventTypeProcessor<InvestedTokensEvent>(InvestedTokensEvent.class) {
@@ -274,7 +276,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
         // post round cleanup
         /////////////////////////////////////////////////////////////////////////////////
         for(GroupDataModel group : serverDataModel.getAllGroupDataModels()){
-            group.calculateTotalFlowCapacity();            
+            group.initializeInfrastructure();            
             // iterate through all groups and send back their contribution status
             for (Identifier id : group.getClientDataMap().keySet()) {
                 InfrastructureUpdateEvent infrastructureUpdateEvent = new InfrastructureUpdateEvent(id, group);
@@ -309,7 +311,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
 //                clientData.init(group.getCurrentlyAvailableFlowCapacity());
 //            }
             if (clientData.isGateOpen()) {
-                group.allocateFlowCapacity(clientData);
+                group.allocateWater(clientData);
             }
             else if (clientData.isGateClosed()) {
                 clientData.init(group.getAvailableClientFlowCapacity());

@@ -68,7 +68,7 @@ public class CanalPanel extends JPanel {
 	    if (timer != null) {
 	        timer.stop();
 	    }
-	    this.maximumIrrigationCapacity = clientDataModel.getGroupDataModel().getMaximumAvailableFlowCapacity();
+	    this.maximumIrrigationCapacity = clientDataModel.getGroupDataModel().getMaximumAvailableWaterFlow();
 	    this.clientDataModel = clientDataModel;
 	    initialize();
 	}

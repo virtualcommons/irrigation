@@ -54,7 +54,7 @@ public class InfrastructureEfficiencyChartPanel extends JPanel {
         int x,y;
         GroupDataModel group = client.getClientDataModel().getGroupDataModel();
         final int infrastructureEfficiency = group.getInfrastructureEfficiency();
-        final int actualFlowCapacity = group.getFlowCapacity();
+        final int actualFlowCapacity = group.getIrrigationCapacity();
         for (y = 0; y <= actualFlowCapacity; y++) {
             actualFlowCapacitySeries.add(infrastructureEfficiency, y);
         }
@@ -62,10 +62,10 @@ public class InfrastructureEfficiencyChartPanel extends JPanel {
             y =	group.calculateFlowCapacity(x);
             potentialFlowCapacitySeries.add(x,y);
         }
-        final int initialInfrastructureEfficiency = group.getInitialInfrastructureEfficiency();
-        final int initialFlowCapacity = group.calculateFlowCapacity(initialInfrastructureEfficiency);
-        for (y = 0; y <= initialFlowCapacity; y++) {
-            initialInfrastructureEfficiencySeries.add(initialInfrastructureEfficiency, y);
+        final int infrastructureEfficiencyBeforeInvestment = group.getInfrastructureEfficiencyBeforeInvestment();
+        final int irrigationCapacityBeforeInvestment = group.getIrrigationCapacityBeforeInvestment();
+        for (y = 0; y <= irrigationCapacityBeforeInvestment; y++) {
+            initialInfrastructureEfficiencySeries.add(infrastructureEfficiencyBeforeInvestment, y);
         }
 
         final XYSeriesCollection data = new XYSeriesCollection();

@@ -8,6 +8,7 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -22,20 +23,21 @@ import javax.swing.GroupLayout.ParallelGroup;
 
 import edu.asu.commons.irrigation.server.ClientData;
 import edu.asu.commons.util.HtmlEditorPane;
-
-
-
+/**
+ * $Id$
+ * 
+ * Primary game interface window for the irrigation game.
+ * 
+ * @author <a href='mailto:Allen.Lee@asu.edu'>Allen Lee</a>, Sanket Joshi
+ * @version $Rev$
+ */
 public class MainIrrigationGameWindow extends JPanel {
 
-	//public ChartWindowPanelTokenBandwidth xySeriesDemo;
+    private static final long serialVersionUID = 5900368694556557132L;
 
-	public IrrigationGameWindow controlPanel;
+    public IrrigationGameWindow controlPanel;
 
-	//public ActivitySummaryPanel activitySummaryWindow;
-
-	public CanalPanel canalPanel;
-
-	private static final long serialVersionUID = 1L;
+	private CanalPanel canalPanel;
 
 	private JPanel jPanelMain = null;
 	//this contains the CanalPanel
@@ -88,8 +90,10 @@ public class MainIrrigationGameWindow extends JPanel {
 	private JLabel totalTokensEarnedLabel;
 
 	private JLabel irrigationCapacityLabel;
+	private JLabel waterSupplyLabel;
 
 	private JTextField irrigationCapacityTextField;
+	private JTextField waterSupplyTextField;
 
 	private HtmlEditorPane waterCollectedToTokensTable;
 
@@ -135,7 +139,11 @@ public class MainIrrigationGameWindow extends JPanel {
 			jPanelMain.setLayout(new BorderLayout(4,4));
 			jPanelMain.setBackground(Color.WHITE);
 			jPanelMain.setForeground(Color.BLACK);
-			jPanelMain.add(getIrrigationCapacityLabel(), BorderLayout.NORTH);
+			JPanel upperPanel = new JPanel();
+			upperPanel.setLayout(new BoxLayout(upperPanel, BoxLayout.X_AXIS));
+			upperPanel.add(getIrrigationCapacityLabel());
+			upperPanel.add(getWaterSupplyLabel());
+			jPanelMain.add(upperPanel, BorderLayout.NORTH);
 			jPanelMain.add(getDownloadScreenPanel(), BorderLayout.CENTER);
 			return jPanelMain;
 		}
@@ -345,7 +353,7 @@ public class MainIrrigationGameWindow extends JPanel {
 		}
 		return totalTokensEarnedLabel;
 	}
-
+	
 	private JLabel getIrrigationCapacityLabel() {
 		if (irrigationCapacityLabel == null) {
 			irrigationCapacityLabel = new JLabel();
@@ -360,6 +368,21 @@ public class MainIrrigationGameWindow extends JPanel {
 			irrigationCapacityTextField = createTextField();
 		}
 		return irrigationCapacityTextField;
+	}
+	
+	private JLabel getWaterSupplyLabel() {
+	    if (waterSupplyLabel == null) {
+	        waterSupplyLabel = new JLabel("Water supply: ");
+	        waterSupplyLabel.setLabelFor(getWaterSupplyTextField());
+	        waterSupplyLabel.setFont(new Font("sansserif", Font.BOLD, 16));
+	    }
+	    return waterSupplyLabel;
+	}
+	private JTextField getWaterSupplyTextField() {
+	    if (waterSupplyTextField == null) {
+	        waterSupplyTextField = createTextField();
+	    }
+	    return waterSupplyTextField;
 	}
 	/**
 	 * This method initializes jPanel3
@@ -388,16 +411,6 @@ public class MainIrrigationGameWindow extends JPanel {
 		return waterCollectedToTokensScrollPane;
 	}
 
-	private void setProgressBarColor(int timeLeft) {
-		if (timeLeft < 10) {
-//			timeLeftProgressBar.setForeground( Color.RED );
-//			timeLeftProgressBar.setBackground( Color.RED );
-//			return Color.RED;
-		}
-		else {
-//			timeLeftProgressBar.setBackground( Color.GREEN );
-		}
-	}
 	/**
 	 * Should be invoked every second throughout the experiment, from a ClientUpdateEvent sent by the server.
 	 */
@@ -408,6 +421,7 @@ public class MainIrrigationGameWindow extends JPanel {
 				String timeLeftString = String.format("%d sec", timeLeft);
 				timeLeftProgressBar.setValue( timeLeft );
 				timeLeftProgressBar.setString(timeLeftString);
+				// FIXME: figure out how to reliably set the progress bar colors regardless of OS.
 //				setProgressBarColor(timeLeft);
 				for (final ClientData clientData : clientDataModel.getClientDataMap().values()) {
 					if (clientData.isGateOpen()) {
@@ -520,10 +534,14 @@ public class MainIrrigationGameWindow extends JPanel {
 	public void startRound() {
 		open = false;
 		getMiddleWindowPanel().initialize(clientDataModel);
-		int irrigationCapacity = clientDataModel.getGroupDataModel().getMaximumAvailableFlowCapacity();
+		int irrigationCapacity = clientDataModel.getIrrigationCapacity();
+		int waterSupply = clientDataModel.getWaterSupplyCapacity();
 		irrigationCapacityLabel.setText(
 				String.format("Irrigation capacity: %d cubic feet per second (cfps)",
 						irrigationCapacity));
+		waterSupplyLabel.setText(
+		        String.format("Water supply: %d cubic feet per second (cfps)",
+		                waterSupply));
 
 		revalidate();
 		//		mainIrrigationPanel.add(getJPanelUpStreamWindow(),null);

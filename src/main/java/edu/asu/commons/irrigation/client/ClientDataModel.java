@@ -117,5 +117,13 @@ public class ClientDataModel implements DataModel<RoundConfiguration> {
 		return clientDataList;
     }
 
+    public int getWaterSupplyCapacity() {
+        return roundConfiguration.getWaterSupplyCapacity();
+    }
+
+    public int getIrrigationCapacity() {
+        return groupDataModel.getIrrigationCapacity();
+    }
+
 
 }

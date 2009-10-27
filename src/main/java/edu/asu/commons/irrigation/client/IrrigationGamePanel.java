@@ -443,7 +443,7 @@ public class IrrigationGamePanel extends JPanel {
 //		getWaterCollectedToTokensTable().setText(clientDataModel.getServerConfiguration().getWaterCollectedToTokensTable());
 //		getScoreBoxPanel().initialize(clientDataModel);
 		getMiddleWindowPanel().initialize(clientDataModel);
-		int irrigationCapacity = clientDataModel.getGroupDataModel().getMaximumAvailableFlowCapacity();
+		int irrigationCapacity = clientDataModel.getGroupDataModel().getMaximumAvailableWaterFlow();
 		irrigationCapacityLabel.setText(
 				String.format("Irrigation capacity: %d cubic feet per second (cfps)",
 						irrigationCapacity));

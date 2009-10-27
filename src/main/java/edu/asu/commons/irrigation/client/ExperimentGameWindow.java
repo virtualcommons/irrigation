@@ -507,20 +507,21 @@ public class ExperimentGameWindow extends JPanel {
         int totalContributedTokens = groupDataModel.getTotalContributedTokens();
         final StringBuilder builder = new StringBuilder();
         builder.append("Infrastructure efficiency before investment: ")
-        	.append(groupDataModel.getInitialInfrastructureEfficiency())
+        	.append(groupDataModel.getInfrastructureEfficiencyBeforeInvestment())
         	.append("%\n");
-        builder.append("Irrigation capacity before investment: ").append(groupDataModel.getInitialFlowCapacity()).append(" cubic feet per second\n\n");
+        builder.append("Irrigation capacity before investment: ").append(groupDataModel.getIrrigationCapacityBeforeInvestment()).append(" cubic feet per second\n\n");
         builder.append(
         		String.format(
         				"Your group invested a total of %d tokens, increasing the infrastructure efficiency to %d%%.\n", 
         				totalContributedTokens, groupDataModel.getInfrastructureEfficiency()));
-        if (groupDataModel.getFlowCapacity() > groupDataModel.getInitialFlowCapacity()) {
+        if (groupDataModel.getIrrigationCapacity() > groupDataModel.getIrrigationCapacityBeforeInvestment()) {
         	builder.append("Your group's investment has increased the irrigation capacity to ");
         }
         else {
         	builder.append("Your group's investment was not enough to increase the irrigation capacity.  Your group's irrigation capacity is still ");
         }
-        builder.append(groupDataModel.getFlowCapacity()).append(" cubic feet of water per second.");
+        builder.append(groupDataModel.getIrrigationCapacity()).append(" cubic feet of water per second.  The amount of water available to pass through your irrigation canal is ")
+            .append(groupDataModel.getActualFlowCapacity());
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 contributionInformationTextArea.setText(builder.toString());
@@ -601,7 +602,7 @@ public class ExperimentGameWindow extends JPanel {
         else {
             instructionsBuilder.append(roundConfiguration.getInstructions());
             instructionsBuilder.append("<hr/>");
-            int irrigationCapacity = clientDataModel.getGroupDataModel().getFlowCapacity();
+            int irrigationCapacity = clientDataModel.getGroupDataModel().getIrrigationCapacity();
             int clientCapacity = roundConfiguration.getMaximumClientFlowCapacity();
             if (roundConfiguration.shouldResetInfrastructureEfficiency()) {
             	instructionsBuilder.append("The irrigation infrastructure efficiency is currently 75%.");

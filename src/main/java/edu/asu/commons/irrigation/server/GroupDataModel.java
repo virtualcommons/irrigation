@@ -30,11 +30,11 @@ public class GroupDataModel implements DataModel<RoundConfiguration> {
 	private transient Logger logger = Logger.getLogger(GroupDataModel.class.getName());
 
     private int currentlyAvailableFlowCapacity = 0;
-    private int maximumAvailableFlowCapacity = 0;
+    private int maximumAvailableWaterFlow = 0;
     
     private int infrastructureEfficiency;
     // infrastructure efficiency before investment (but post decline)
-    private int initialInfrastructureEfficiency;
+    private int infrastructureEfficiencyBeforeInvestment;
     
     private int totalContributedTokens = 0;
     
@@ -87,7 +87,7 @@ public class GroupDataModel implements DataModel<RoundConfiguration> {
         return totalContributedTokens;
     }
     
-    public void calculateTotalFlowCapacity() {
+    public void initializeInfrastructure() {
         // for practice round and first round, initialize to initial infrastructure efficiency
     	//setting the total contributed Bandwidth = 0 , so that for every round,
     	// fresh totalContributed tokens are calculated
@@ -96,7 +96,7 @@ public class GroupDataModel implements DataModel<RoundConfiguration> {
             totalContributedTokens += clientData.getInvestedTokens();
         }
     	updateInfrastructureEfficiency(totalContributedTokens);
-        currentlyAvailableFlowCapacity = maximumAvailableFlowCapacity = getFlowCapacity();
+        currentlyAvailableFlowCapacity = maximumAvailableWaterFlow = getActualFlowCapacity();
     }
     
     private void updateInfrastructureEfficiency(int totalContributedTokens) {
@@ -111,7 +111,7 @@ public class GroupDataModel implements DataModel<RoundConfiguration> {
         }
         // set original infrastructure efficiency before token contributions
         getLogger().info("initial infrastructure efficiency: " + infrastructureEfficiency);
-        initialInfrastructureEfficiency = infrastructureEfficiency;
+        infrastructureEfficiencyBeforeInvestment = infrastructureEfficiency;
         // add total invested tokens to infrastructure efficiency, clamp at
         // 100
         infrastructureEfficiency = Math.min(100, totalContributedTokens + infrastructureEfficiency);
@@ -155,19 +155,34 @@ public class GroupDataModel implements DataModel<RoundConfiguration> {
         return 40;
     }
     
-    public int getInitialFlowCapacity() {
-    	return Math.min(calculateFlowCapacity(initialInfrastructureEfficiency), getRoundConfiguration().getWaterSupplyCapacity());
+    public int getIrrigationCapacityBeforeInvestment() {
+//    	return Math.min(calculateFlowCapacity(initialInfrastructureEfficiency), getRoundConfiguration().getWaterSupplyCapacity());
+        return calculateFlowCapacity(infrastructureEfficiencyBeforeInvestment);
     }
     
-    public int getFlowCapacity() {
-    	return Math.min(calculateFlowCapacity(infrastructureEfficiency), getRoundConfiguration().getWaterSupplyCapacity());
+    /**
+     * Returns the theoretical maximum amount of water that the infrastructure can handle.
+     * This is independent of the actual water supply. 
+     */
+    public int getIrrigationCapacity() {
+        return calculateFlowCapacity(infrastructureEfficiency);
+//    	return Math.min(calculateFlowCapacity(infrastructureEfficiency), getRoundConfiguration().getWaterSupplyCapacity());
+    }
+
+    /**
+     * Returns the actual maximum amount of water that can pass through the canal, which is the minimum
+     * of the irrigation capacity and the water supply. 
+     * @return
+     */
+    public int getActualFlowCapacity() {
+        return Math.min(getIrrigationCapacity(), getRoundConfiguration().getWaterSupplyCapacity());
     }
     
     public void resetCurrentlyAvailableFlowCapacity() {
-        currentlyAvailableFlowCapacity = maximumAvailableFlowCapacity;
+        currentlyAvailableFlowCapacity = maximumAvailableWaterFlow;
     }
 
-    public void allocateFlowCapacity(ClientData clientData) {
+    public void allocateWater(ClientData clientData) {
     	int maximumClientFlowCapacity = getRoundConfiguration().getMaximumClientFlowCapacity();
         if (currentlyAvailableFlowCapacity >= maximumClientFlowCapacity) {
             currentlyAvailableFlowCapacity -= maximumClientFlowCapacity;
@@ -180,17 +195,16 @@ public class GroupDataModel implements DataModel<RoundConfiguration> {
         clientData.collectWater();        
     }
 
-
-    public int getMaximumAvailableFlowCapacity() {
-        return maximumAvailableFlowCapacity;
+    public int getMaximumAvailableWaterFlow() {
+        return maximumAvailableWaterFlow;
     }
 
 	public int getInfrastructureEfficiency() {
 		return infrastructureEfficiency;
 	}
 
-	public int getInitialInfrastructureEfficiency() {
-		return initialInfrastructureEfficiency;
+	public int getInfrastructureEfficiencyBeforeInvestment() {
+		return infrastructureEfficiencyBeforeInvestment;
 	}
 	
 	public Logger getLogger() {
