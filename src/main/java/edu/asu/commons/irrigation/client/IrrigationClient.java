@@ -1,8 +1,6 @@
 package edu.asu.commons.irrigation.client;
 
 import java.awt.Dimension;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -26,7 +24,6 @@ import edu.asu.commons.irrigation.events.PauseRequest;
 import edu.asu.commons.irrigation.events.RegistrationEvent;
 import edu.asu.commons.irrigation.events.RoundStartedEvent;
 import edu.asu.commons.irrigation.events.ShowInstructionsRequest;
-import edu.asu.commons.irrigation.server.ClientData;
 import edu.asu.commons.net.ClientDispatcher;
 import edu.asu.commons.net.DispatcherFactory;
 import edu.asu.commons.net.Identifier;
@@ -34,6 +31,8 @@ import edu.asu.commons.net.Identifier;
 /**
  * $Id$
  * 
+ * Irrigation client main entry point / controller that ties together the GUI component, networking logic via the Dispatcher, 
+ * and general game logic.
  *
  * @author <a href='mailto:Allen.Lee@asu.edu'>Allen Lee</a>, Sanket Joshi
  * @version $Rev$
@@ -52,17 +51,11 @@ public class IrrigationClient {
 
     private Identifier id;
 
-    // private MainIrrigationGameWindow mainIrrigationGameWindow;
-
     private ExperimentGameWindow experimentGameWindow;
-
-    IrrigationGameWindow currentWindow = null;
 
     private ClientDataModel clientDataModel;
 
     private final EventChannel channel;
-
-    Map<Identifier, ClientData> updatedClientDataMap = new LinkedHashMap<Identifier, ClientData>();
 
     private IrrigationClient() {
         this(EventChannelFactory.create(), new ServerConfiguration());
@@ -83,15 +76,14 @@ public class IrrigationClient {
     }
 
     public void connect() {
-        System.err.println("connecting to: " + serverConfiguration.getServerAddress()
-                + " state: " + state);
         if (state != ClientState.UNCONNECTED)
             return;
         
         id = clientDispatcher.connect(serverConfiguration.getServerAddress());
         if (id == null) {
-            throw new RuntimeException("Null ID from Dispatcher.  Server: <"
-                    + serverConfiguration.getServerAddress() + "> is probably down.");
+            throw new RuntimeException(
+            		"Null ID from Dispatcher.  Server: <"
+            		+ serverConfiguration.getServerAddress() + "> is probably down.");
         }
         state = ClientState.CONNECTED;
     }
