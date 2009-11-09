@@ -44,8 +44,6 @@ public class IrrigationGamePanel extends JPanel {
 	//this contains the CanalPanel
 	private JPanel centerPanel;
 
-	private ScoreBoxPanel scoreBoxPanel;
-
 	private IrrigationClient client;
 
 //	private Dimension screenSize;
@@ -292,54 +290,8 @@ public class IrrigationGamePanel extends JPanel {
 		return panel;
 	}
 
-//	private IrrigationGameWindow getIrrigationGameWindow() {
-//		if(irrigationGameWindow == null) {
-//			irrigationGameWindow = new IrrigationGameWindow(screenSize,client,this);
-//		}
-//		return irrigationGameWindow;
-//	}
-	
-//	/**
-//     * This method initializes jPanel1
-//     *
-//     * @return javax.swing.JPanel
-//     */
-//    private JPanel getJPanelUpStreamWindow() {
-//        if (jPanelUpStreamWindow == null) {
-//            jPanelUpStreamWindow = new JPanel();
-//            jPanelUpStreamWindow.setLayout(null);
-//            jPanelUpStreamWindow.setBackground(new Color(186, 226, 237));
-//            jPanelUpStreamWindow.setBounds(new Rectangle(13, 225+100+50, 530, 326));
-//            jPanelUpStreamWindow.add(getIrrigationGameWindow(), null);
-//        }
-//        return jPanelUpStreamWindow;
-//    }
-//	/**
-//	 * This method initializes jPanel3
-//	 *
-//	 * @return javax.swing.JPanel
-//	 */
-//	private JPanel getJPanelDownStreamWindow() {
-//		if (jPanelDownStreamWindow == null) {
-//			jPanelDownStreamWindow = new JPanel();
-//			jPanelDownStreamWindow.setLayout(null);
-//			jPanelDownStreamWindow.setBackground(new Color(186, 226, 237));
-//			jPanelDownStreamWindow.setBounds(new Rectangle(582, 225 + 100+50, 530, 326));
-//			jPanelDownStreamWindow.add(getScoreBoxPanel(),null);
-//		}
-//		return jPanelDownStreamWindow;
-//	}
-
-	private ScoreBoxPanel getScoreBoxPanel() {
-		if(scoreBoxPanel == null){
-			scoreBoxPanel = new ScoreBoxPanel();
-		}
-		return scoreBoxPanel;
-	}
-
-
 	/**
-	 * This method initializes TimeRemainingjProgressBar
+	 * The time left progress bar.
 	 *
 	 * @return javax.swing.JProgressBar
 	 */
