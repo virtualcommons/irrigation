@@ -29,8 +29,8 @@ public class MiddleScorePanel extends JPanel {
 
     private JLabel tokensEarnedLabel;
     
-    private JLabel tokensNotInvestedLabel;
-    private JLabel totalTokensEarnedLabel;
+//    private JLabel tokensNotInvestedLabel;
+//    private JLabel totalTokensEarnedLabel;
 
     private int priority;
 
@@ -55,21 +55,21 @@ public class MiddleScorePanel extends JPanel {
 //        this.add(getTotalTokensEarnedLabel(),null);
     }
     
-    private JLabel getTotalTokensEarnedLabel() {
-    	if (totalTokensEarnedLabel == null) {
-    		totalTokensEarnedLabel = new JLabel();
-    		totalTokensEarnedLabel.setBounds(new Rectangle(5,10+32+10+20+10+20+10+20+10+30+30,30,20));
-    	}
-    	return totalTokensEarnedLabel;
-    }
+//    private JLabel getTotalTokensEarnedLabel() {
+//    	if (totalTokensEarnedLabel == null) {
+//    		totalTokensEarnedLabel = new JLabel();
+//    		totalTokensEarnedLabel.setBounds(new Rectangle(5,10+32+10+20+10+20+10+20+10+30+30,30,20));
+//    	}
+//    	return totalTokensEarnedLabel;
+//    }
     
-    private JLabel getTokensNotInvestedLabel() {
-    	if (tokensNotInvestedLabel == null) {
-    		tokensNotInvestedLabel = new JLabel(String.valueOf(clientData.getUninvestedTokens()));
-    		tokensNotInvestedLabel.setBounds(new Rectangle(5,10+32+10+20+10+20+10+20+10+30,30,20));
-    	}
-    	return tokensNotInvestedLabel;
-    }
+//    private JLabel getTokensNotInvestedLabel() {
+//    	if (tokensNotInvestedLabel == null) {
+//    		tokensNotInvestedLabel = new JLabel(String.valueOf(clientData.getUninvestedTokens()));
+//    		tokensNotInvestedLabel.setBounds(new Rectangle(5,10+32+10+20+10+20+10+20+10+30,30,20));
+//    	}
+//    	return tokensNotInvestedLabel;
+//    }
 
     private JLabel getTokensEarnedLabel() {
         if(tokensEarnedLabel == null){
@@ -106,12 +106,12 @@ public class MiddleScorePanel extends JPanel {
 
     public void update(ClientData clientData) {
         this.clientData = clientData;
-        availableWaterLabel.setText("" + clientData.getAvailableFlowCapacity());
-        waterCollectedLabel.setText("" + clientData.getWaterCollected());
-        tokensEarnedLabel.setText("" + clientData.getTokensEarnedFromWaterCollected());
+        availableWaterLabel.setText(clientData.getAvailableFlowCapacity() + " cfps");
+        waterCollectedLabel.setText(clientData.getWaterCollected() + " cf");
+        tokensEarnedLabel.setText(String.valueOf(clientData.getTokensEarnedFromWaterCollected()));
 
         if(clientData.isGateOpen() && clientData.getAvailableFlowCapacity() > 0) {
-            // show that client is actively irrigating
+            // animation displaying active crop growing?
 
         }
     }

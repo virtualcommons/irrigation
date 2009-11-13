@@ -6,7 +6,7 @@ package edu.asu.commons.irrigation.client;
  */
 public class Gate {
 
-	private boolean openGate = false;
+	private boolean gateOpen = false;
 	
 	private int height;
 	
@@ -40,13 +40,7 @@ public class Gate {
 	
 	private int y2;
 	
-	private int priority;
-	
-	private double totalContributedBandwidth;
-	
 	public Gate(double totalContributedBandwidth, int priority){
-		this.totalContributedBandwidth = totalContributedBandwidth;
-		this.priority = priority;
 		setWidth(198);
 		setHeight(totalContributedBandwidth*0.8);
 		setOpeningsWidth(gateWidth);
@@ -62,7 +56,6 @@ public class Gate {
 	}
 
 	public void setOpeningsY(int openingsY) {
-		// TODO Auto-generated method stub
 		this.openingsy = 100 - openingsY;
 		this.y1 = 100 - openingsY;
 		this.y2 = 100 - openingsY;
@@ -70,22 +63,18 @@ public class Gate {
 	}
 
 	public void setOpeningsWidth(int gateWidth) {
-		// TODO Auto-generated method stub
 		openingsWidth = gateWidth;
 	}
 
 	public void setOpeningsHeight(double gateHeight) {
-		// TODO Auto-generated method stub
 		openingsHeight = (int)(gateHeight)+this.gateHeight;
 	}
 
 	public void setY(int y) {
-		// TODO Auto-generated method stub
 	  this.y = y;
 	}
 
 	public void setWidth(int width) {
-		// TODO Auto-generated method stub
 		this.width = width;
 
 	}
@@ -132,106 +121,84 @@ public class Gate {
 	}
 
 	public int getHeight() {
-		// TODO Auto-generated method stub
 		return height;
 	}
 
 	public int getWidth() {
-		// TODO Auto-generated method stub
 		return width;
 	}
 
 	public int getY() {
-		// TODO Auto-generated method stub
+
 		return y;
 	}
 
 	public int getX() {
-		// TODO Auto-generated method stub
 		return x;
 	}
 	
-	public boolean isOpenGate(){
-		if(openGate == true)
-			return true;
-		else
-			return false;
+	public boolean isGateOpen(){
+		return gateOpen;
 	}
 
-	public void setGateOpen(boolean openGate) {
-		// TODO Auto-generated method stub
-		this.openGate = openGate;
+	public void setGateOpen(boolean gateOpen) {
+		this.gateOpen = gateOpen;
 	}
 
 	public int getOpeningsHeight() {
-		// TODO Auto-generated method stub
 		return openingsHeight;
 	}
 
 	public int getOpeningsX() {
-		// TODO Auto-generated method stub
 		return openingsx;
 	}
 
 	public int getOpeningsY() {
-		// TODO Auto-generated method stub
 		return openingsy;
 	}
 
 	public int getOpeningsWidth() {
-		// TODO Auto-generated method stub
 		return openingsWidth;
 	}
 
 	public int gety2() {
-		// TODO Auto-generated method stub
 		return y2;
 	}
 
 	public int gety1() {
-		// TODO Auto-generated method stub
 		return y1;
 	}
 
 	public int getx1() {
-		// TODO Auto-generated method stub
 		return x1;
 	}
 
 	public int getx2() {
-		// TODO Auto-generated method stub
 		return x2;
 	}
 
 	public void setx1(int x1) {
-		// TODO Auto-generated method stub
 		this.x1 = x1;
 	}
 
 	public int getGateWidth() {
-		// TODO Auto-generated method stub
 		return gateWidth;
 	}
 
 	public void sety1(int y1) {
-		// TODO Auto-generated method stub
 		this.y1 = y1;
 	}
 
 	public int getdefaultx1() {
-		// TODO Auto-generated method stub
 		return defaultx1;
 	}
 
 	public int getdefaulty1() {
-		// TODO Auto-generated method stub
 		return defaulty1;
 	}
 
 	public void sety2(int y2) {
-		// TODO Auto-generated method stub
 		this.y2 = y2;
 	}
-	
 	
 }

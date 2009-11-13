@@ -1,6 +1,5 @@
 package edu.asu.commons.irrigation.client;
 
-
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.util.ArrayList;
@@ -27,7 +26,7 @@ public class MiddleWindowPanel extends JPanel {
     private JLabel availableWaterLabel; 
     private JLabel waterCollectedLabel;
     private JLabel tokensEarnedLabel;
-    private JLabel tokensNotInvestedLabel;
+//    private JLabel tokensNotInvestedLabel;
     private JLabel totalTokensEarnedLabel;
 
 
