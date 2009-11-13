@@ -104,8 +104,9 @@ of time left in the chat period will be shown at the <b>top left of the screen</
 <![CDATA[
 <img src="http://dev.commons.asu.edu/irrigation/images/game-interface-screenshot.jpg">
 
-<b>Table 2</b>: Earnings resulting from the amount of water applied to your field.
-
+<p>
+<b>Table 2</b>: Number of tokens earned from the water applied to your field.
+</p>
 <table border="1" cellspacing="2" cellpadding="2">
 <thead>
 <th>Water units received (cubic feet)</th>
@@ -189,173 +190,96 @@ other applications.</h3></center>
 
 <entry key="quiz-page1">
 <![CDATA[
-<br><br>
-To continue to the next page, please answer the following question:<br>
+<p>
+The first two questions deal with irrigation infrastructure investment using Table
+1.
+</p>
+<p>
+<b>Table 1</b>: The water delivery capacity as a function of irrigation
+infrastructure efficiency
+</p>
+<table border="1" cellspacing="2" cellpadding="2">
+<thead>
+<th>Infrastructure Efficiency (percent)</th>
+<th>Water delivery (cubic feet per second)</th>
+</thead>
+<tr>
+<td> &le; 45</td><td>0</td>
+</tr>
+<tr>
+<td>46-51</td><td>5</td>
+</tr>
+<tr>
+<td>52-55</td><td>10</td>
+</tr>
+<tr>
+<td>56-58</td><td>15</td>
+</tr>
+<tr>
+<td>59-61</td><td>20</td>
+</tr>
+<tr>
+<td>62-65</td><td>25</td>
+</tr>
+<tr>
+<td>66-70</td><td>30</td>
+</tr>
+<tr>
+<td>71-80</td><td>35</td>
+</tr>
+<tr>
+<td>81-100</td><td>40</td>
+</tr>
+</table>
+
 <form>
-How many OTHER people in the room will be in your group?<br>
-<input type="radio" name="q1" value="0">0<br>
-<input type="radio" name="q1" value="1">1<br>
-<input type="radio" name="q1" value="4">4<br>
-<input type="radio" name="q1" value="Everybody">Everybody<br>
+Question 1:<br>
+Given an existing infrastructure efficiency of 20%, if the five participants invest
+a <b>total of 29 additional tokens</b>, what is the new irrigation infrastructure
+efficiency?<br>
+<input type="text" name="q1" value = "">%
 <br><br>
-<input type="submit" name="submit" value="Submit">
-</form>
+
+Question 2:<br>
+Suppose the infrastructure efficiency in the last round was 60%.  For the current
+round, the efficiency will decline by an amount of 25% for a resulting
+infrastructure efficiency of 35%.  If the members of your group invest a total of 15
+tokens, what will be your group's resulting water delivery capacity?<br>
+
+<input type="text" name="q2" value = ""> cubic feet per second
+<br><br>
+
+<b>The next two questions deal with the capacity of the irrigation system in relation
+to the actual amount of water available.</b>
+<br><br>
+Question 3:<br>
+If the irrigation efficiency is between 71 and 80%, the water delivery capacity of
+the irrigation system is 35 cubic feet per second.  Suppose the water supply
+available to your group is 30 cubic feet per second and A opens their gate,
+diverting water at 25 cubic feet per second.  What is the available water flow for
+B?
+<br>
+<input type='text' name='q3' value=''> cubic feet per second
+<br><br>
+Question 4:
+If the available water delivery capacity is 25 cubic feet per second and A, B, C,
+and D are not using water, how much cubic feet of water per second is available for
+E?<br>
+<input type='text' name='q4' value=''> cubic feet per second
+<br><br>
+
+<input type="submit" name="submit" value="Submit"><br>
+<br>
+
 ]]>
 </entry>
 
 <entry key="quiz-page2">
 <![CDATA[
-<br><br>
-To continue to the next page, please answer the following question:<br>
-<form>
-Which of the following topics are you <b>not allowed</b> to discuss in chat?<br>
-<input type="radio" name="q2" value="weather">the weather<br>
-<input type="radio" name="q2" value="identity">your real identity<br>
-<input type="radio" name="q2" value="experiment">the experiment<br>
-<input type="radio" name="q2" value="earnings">what you will do with the money you earn from this experiment<br>
-<br><br>
-<input type="submit" name="submit" value="Submit">
-</form>
-]]>
-</entry>
-
-
-<entry key="quiz-page3">
-<![CDATA[
-<br><br>
-To continue to the next page, please answer the following questions:<br>
-<form>
-Question 1:<br>
-Given an existing infrastructure efficiency of 20%, if the five participants invest
-a <b>total of 29 additional tokens</b>, what is the new irrigation infrastructure
-efficiency?
-(<small><b>Note: only enter a number, you don't need to add the % sign</b></small>)<br>
-<input type="text" name="q3" value = "">
-<br><br>
-
-Question 2:<br>
-Given an existing infrastructure efficiency of 50%, if <b>two participants invest 10 tokens each</b>
-while the <b>three other participants invest 2 tokens each</b>, what is the new
-irrigation infrastructure efficiency?
-(<b>Note: only enter a number, you don't need to add the % sign</b>)<br>
-<input type="text" name="q4" value = "">
-<br><br>
-<input type="submit" name="submit" value="Submit"><br>
-<br>
-</form>
-]]>
-</entry>
-
-
-<entry key="quiz-page4">
-<![CDATA[
-<br><br>
-To continue to the next page, please answer the following question:<br>
-Question 3:<br>
-<form>
-What is the minimum time to deliver 500 cubic feet of water to your field when
-your maximum water flow capacity is available?
-<br>
-<input type="radio" name="q5" value="12.5">12.5 seconds<br>
-<input type="radio" name="q5" value="20">20 seconds<br>
-<input type="radio" name="q5" value="25">25 seconds<br>
-<input type="radio" name="q5" value="50">50 seconds<br>
-<br><br>
-<input type="submit" name="submit" value="Submit">
-</form>
-]]>
-</entry>
-
-
-<entry key="general-instructions5">
-<![CDATA[
-<h3>Positions A,B,C,D and E</h3>
-<p> 
-The animation above illustrates how water flows to each player when their gates are
-opened and closed. When a player opens their gate, the black line will rotate to a
-vertical position, allowing water (represented by white dots) to flow to them. Note
-that the water available downstream of a player with an open port is reduced,
-illustrated by a narrowing of the canal.
-</p>
 <p>
-Access to water depends on your position as shown in the window.  Water originates
-in the box at the upper left part of the screen and travels to the right.  Thus,
-participant A will have first access to the available water. Water not used by
-participant A is then available to be used by participant B. Water not used by
-participants A and B is then available for C. Water not used by participants A, B
-and C is available for D. Finally, water not used by participants A, B, C and D is
-available for E. 
+The final two questions cover the number of tokens you can earn in within a round.
 </p>
-<p>
-You can only get water to your field if you have water available to your position.
-Suppose that the total irrigation capacity available is 40 cfps and 40 cfps of water
-is available. If player A opens their gate they will consume 25 cfps of water and 15
-cfps is left for B. Suppose on the other hand, A does not open the gate, then a
-total of 40 cfps is left for B, allowing B to extract water at the maximum rate of
-25 cfps. 
-</p>
-<p>
-As another example, suppose that the canal system has been allowed to deteriorate
-so that the total irrigation capacity available is 20 cfps. While player A’s gate is
-open, no water is available for B. If A is NOT using water, 20 cfps is available for
-B.
-</p>
-]]>
-</entry>
-
-<entry key="general-instructionsq5">
-<![CDATA[
-<br><br>
-To continue to the next page, please answer the following question:<br>
-<form>
-Suppose the irrigation efficiency is between 71 and 80% so that the canal flow
-capacity is 30 cfps.  If A opens their gate and diverts water at 25 cfps what is the
-available water flow for B?
-<br>
-<input type="radio" name="q6" value="30">30 cfps<br>
-<input type="radio" name="q6" value="25">25 cfps<br>
-<input type="radio" name="q6" value="15">15 cfps<br>
-<input type="radio" name="q6" value="5">5 cfps<br>
-<br><br>
-If the canal flow capacity available is 25 cfps and A,B,C and D are not using water,
-what is the available water for E?
-<br>
-<input type="radio" name="q7" value="40">40 cfps<br>
-<input type="radio" name="q7" value="25">25 cfps<br>
-<input type="radio" name="q7" value="15">15 cfps<br>
-<input type="radio" name="q7" value="0">0 cfps<br>
-
-<input type="submit" name="submit" value="Submit">
-<br><br>
-</form>
-]]>
-</entry>
-
-<entry key="general-instructions6">
-<![CDATA[
-<h3>How to grow crops</h3>
-<p>
-To start growing crops, click on the yellow button labeled &quot;open gate&quot;.
-This will open your irrigation gate and allow water to flow to your field if it is
-available. The text on the button will change to &quot;close gate&quot; - if
-you would like to close the gate and stop extracting water from the canal, just
-click on the yellow button again. Your gate will close and the text on the button
-will change back to &quot;open gate&quot;.
-</p>
-<p>
-The amount of water units (cubic feet) your field has received is shown on the
-screen, as well as the resulting amount of tokens earned from growing a crop.
-The number of tokens earned in each round depends on how much water you have
-diverted to your field. If you receive less than 150 cubic feet (cf) the crop has
-not received enough water to grow a crop and you will thus not receive any tokens.
-The maximum earnings are received when between 500 cf and 549 cf are diverted to
-your field. If more than 549 cf water is diverted to your field, this will
-negatively affect the growth of the crop (i.e. overwatering) and less tokens will be
-earned. In the table below you can see the amount of tokens earned for amount of
-water applied to your field. 
-</p>
-<b>Table 2</b>: Earnings resulting from the amount of water applied to your field.
-
+<b>Table 2</b>: Tokens earned from the amount of water applied to your field.
 <table border="1" cellspacing="2" cellpadding="2">
 <thead>
 <th>Water units received (cubic feet)</th>
@@ -407,15 +331,30 @@ water applied to your field.
 <td>&gt; 899</td><td>0</td>
 </tr>
 </table>
-
+<p>
 Your earnings at the end of the round depend on your investment and the number of
-tokens received for the crop.  For example, suppose you invest 6 out of the 10
-tokens you are endowed with at the start of the round and you receive 333 cubic feet
-of water.  Your total earnings will be the amount of tokens leftover from your
-initial endowment (10 - 6) plus the tokens you earned from your crop (15 tokens for
-333 cubic feet of water, see Table 2).  The total number of tokens earned is 19
-($0.85 since each token is $0.05).
+tokens you receive from applying water to your fields and growing a crop.  As an
+example, suppose you invest 6 tokens out of the 10 tokens you are endowed with at
+the start of each round.  If you receive 333 cubic feet of water you would receive a
+grand total of 19 tokens (4 tokens left over from your 10 token endowment + 15
+tokens for growing a crop with 333 cubic feet of water).   Since each token is worth
+$0.05, you would have an actual earnings of $0.85 for that round.
 
+<form>
+Question 5:<br>
+If you invest 7 of the 10 tokens you start with and you apply 202 cubic feet of
+water to your fields, what is the total number of tokens you will have earned at the
+end of the round?<br>
+<input type="text" name="q5" value="">tokens
+<br><br>
+Question 6:<br>
+If you invest all 10 tokens you start with and you apply 555 cubic feet of water to
+your fields, what is the total number of tokens you will have earned at the end of
+the round?<br>
+<input type="text" name="q6" value="">tokens
+<br><br>
+<input type="submit" name="submit" value="Submit">
+</form>
 ]]>
 </entry>
 
@@ -472,93 +411,6 @@ initial endowment (10 - 6) plus the tokens you earned from your crop (15 tokens 
 <td>&gt; 899</td><td>0</td>
 </tr>
 </table>
-]]>
-</entry>
-
-
-<entry key="general-instructionsq6">
-<![CDATA[
-<br><br>
-To continue to the next page, please answer the following question:<br>
-<form>
-If you invest 7 of the 10 tokens you started with, and you put 202 cf of water
-on your field, what is the <b>total number of tokens</b> you will have earned
-for that round?
-<br>
-<input type="radio" name="q8" value="3">3<br>
-<input type="radio" name="q8" value="5">5<br>
-<input type="radio" name="q8" value="7">7<br>
-<input type="radio" name="q8" value="13">13<br>
-<br><br>
-If you invest all 10 tokens you start with, and you put 555 cf of water on your
-field, what is the total number of tokens your will have earned for that round?
-<br>
-<input type="radio" name="q9" value="10">10<br>
-<input type="radio" name="q9" value="19">19<br>
-<input type="radio" name="q9" value="20">20<br>
-<input type="radio" name="q9" value="29">29<br>
-<br><br>
-<input type="submit" name="submit" value="Submit">
-</form>
-]]>
-</entry>
-
-<entry key="general-instructions7">
-<![CDATA[
-<h3>Scores</h3>
-<p>
-The total number of tokens collected during a round is shown on the screen with the
-message:
-<br><br>
-Total tokens earned this round: 0
-<br><br>
-This the total of tokens not invested in irrigation structure plus additional
-tokens earned by growing a crop.
-<br>
-You will also see the scores of the other participants summarized on the screen.
-Finally, you will see the water flow capacity of each player at any given moment, as
-illustrated in the figure below. 
-
-]]>
-</entry>
-
-
-<entry key="general-instructionsq7">
-<![CDATA[
-<br><br>
-To continue to the next page, please answer the following question:<br>
-<form>
-Each token is worth 5 cents, thus if you collected 30 tokens in a round you earned:
-<br>
-<input type="radio" name="q10" value=".15">$0.15<br>
-<input type="radio" name="q10" value=".50">$0.50<br>
-<input type="radio" name="q10" value="1.50">$1.50<br>
-<input type="radio" name="q10" value="2.50">$2.50<br>
-<br><br>
-<input type="submit" name="submit" value="Submit">
-<br><br>
-</form>
-]]>
-</entry>
-
-<entry key="general-instructions8">
-<![CDATA[
-<p>
-We will now start with two practice rounds. This practice round will not
-contribute to your earnings – it is intended to acquaint you with the
-functioning of the exercise environment.
-</p>
-<p>
-You will first chat via text with other participants in your group and then
-decide how much you wish to invest in irrigation infrastructure maintenance.
-After all investment decisions have been made you will begin the actual round
-and make real-time decisions on when to open your gates and irrigate your
-fields.
-</p>
-<p>
-If you have any questions feel free to raise your hand and to ask your question.
-<b>Do you have any questions so far?</b>
-</p>
 ]]>
 </entry>
 

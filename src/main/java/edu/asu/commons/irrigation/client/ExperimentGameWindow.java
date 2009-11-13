@@ -238,11 +238,18 @@ public class ExperimentGameWindow extends JPanel {
 
 
     private String getQuizPage() {
-        StringBuilder builder = new StringBuilder(getServerConfiguration().getQuizPage(currentQuizPageNumber));
+        StringBuilder builder = new StringBuilder();
+        String quizPage = getServerConfiguration().getQuizPage(currentQuizPageNumber);
         String quizPageResponse = quizPageResponses.get(currentQuizPageNumber);
-        if (quizPageResponse != null) {
-            builder.append(quizPageResponse);
+        if (quizPageResponse == null) {
+            builder.append(quizPage);
         }
+        else {
+            quizPage = quizPage.replace("<input type=\"submit\" name=\"submit\" value=\"Submit\">", "");
+            
+            builder.append(quizPage).append(quizPageResponse);
+        }
+
         return builder.toString();
     }
     
@@ -438,8 +445,7 @@ public class ExperimentGameWindow extends JPanel {
                 for (Map.Entry<Object, Object> entry : responses.entrySet()) {
                     sortedResponses.put((String) entry.getKey(), (String) entry.getValue());
                 }
-                
-                builder.append("<h3>Results</h3>");
+                builder.append("<hr/><h2>Results</h2>");
                 for (Map.Entry<String, String> entry : sortedResponses.entrySet()) {
                     String questionNumber = (String) entry.getKey();
                     if (questionNumber.charAt(0) == 'q') {
@@ -456,9 +462,6 @@ public class ExperimentGameWindow extends JPanel {
                         builder.append(String.format("Correct answer: %s<br/>", correctAnswer));
                         builder.append(quizAnswers.get( "qDescriptiveAnswer" + number )).append("</p>");
                     }
-                    else {
-                        System.err.println("weird stuff in form data: " + questionNumber + ":" + entry.getValue());
-                    }
                 }
                 quizPageResponses.put(currentQuizPageNumber, builder.toString());
                 // no matter what we move on to the next question page
@@ -468,6 +471,7 @@ public class ExperimentGameWindow extends JPanel {
                 }
                 quizzesAnswered++;
                 client.transmit(new QuizResponseEvent(client.getId(), currentQuizPageNumber, responses, incorrectAnswers));
+                setInstructions(getQuizPage());
             }
         };
 
@@ -550,7 +554,9 @@ public class ExperimentGameWindow extends JPanel {
                 StringBuilder builder = new StringBuilder();
                 builder.append(
                         String.format(
-                        		"<h2>The current infrastructure efficiency is %d%%.  The irrigation capacity is %d cubic feet per second and the water supply is %d cubic feet per second.</h2>",
+                        		"<h2>Current infrastructure efficiency: %d%%</h2>" +
+                        		"<h2>Current irrigation capacity: %d cubic feet per second</h2>" +
+                        		"<h2>Available water supply: %d cubic feet per second</h2>",
                                 infrastructureEfficiency,
                                 group.calculateFlowCapacity(infrastructureEfficiency),
                                 roundConfiguration.getWaterSupplyCapacity()

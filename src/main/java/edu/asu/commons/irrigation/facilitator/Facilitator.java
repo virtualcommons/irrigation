@@ -32,19 +32,15 @@ import edu.asu.commons.net.Identifier;
  */
 public class Facilitator {
 
-    private final static Facilitator INSTANCE = new Facilitator();
-
-    private Identifier id;  //  @jve:decl-index=0:
+    private Identifier id; 
 
     private ClientDispatcher dispatcher;
 
     private ServerConfiguration configuration;
 
-    private ServerDataModel serverGameState;  //  @jve:decl-index=0:
+    private ServerDataModel serverDataModel;  //  @jve:decl-index=0:
 
     private FacilitatorWindow facilitatorWindow;
-
-    private boolean experimentRunning = false;
 
     private final EventChannel channel = EventChannelFactory.create();
 
@@ -71,10 +67,6 @@ public class Facilitator {
         });
     }
 
-    public static Facilitator getInstance(){
-        return INSTANCE;
-    }
-
     public void setConfiguration(ServerConfiguration configuration) {
         if (configuration == null) {
             System.err.println("attempt to setConfiguration with null, ignoring");
@@ -84,10 +76,6 @@ public class Facilitator {
             this.configuration = configuration;
         }
     }
-
-    /**
-     * @param args
-     */
 
     /*
      * Connects facilitator to the server and registers with the server as a facilitator.
@@ -121,8 +109,8 @@ public class Facilitator {
     public static void main(String[] args) {
         Runnable createGuiRunnable = new Runnable() {
             public void run() {
-                Dimension dimension = new Dimension(600, 600);
-                Facilitator facilitator = Facilitator.getInstance();
+                Dimension dimension = new Dimension(800, 600);
+                Facilitator facilitator = new Facilitator();
                 facilitator.initialize();
                 facilitator.connect();
                 JFrame frame = new JFrame();
@@ -161,23 +149,19 @@ public class Facilitator {
         return id;
     }
 
-    public ServerDataModel getServerGameState(){
-        return serverGameState;
+    public ServerDataModel getServerDataModel(){
+        return serverDataModel;
     }
 
     public ServerConfiguration getConfiguration(){
         return configuration;
     }
 
-    public boolean isExperimentRunning(){
-        return experimentRunning;
-    }
-
     public RoundConfiguration getCurrentRoundConfiguration() {
         return configuration.getCurrentParameters();
     }
 
-    public void setServerGameState(ServerDataModel serverGameState) {
-        this.serverGameState = serverGameState;
+    public void setServerDataModel(ServerDataModel serverGameState) {
+        this.serverDataModel = serverGameState;
     }
 }

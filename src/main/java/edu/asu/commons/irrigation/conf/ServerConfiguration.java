@@ -129,7 +129,7 @@ extends ExperimentConfiguration.Base<RoundConfiguration> {
     }
     
     public int getNumberOfQuestionPages() {
-        return assistant.getIntProperty("question-pages", 8);
+        return assistant.getIntProperty("question-pages", 2);
     }
     
     public int getChatDuration() {

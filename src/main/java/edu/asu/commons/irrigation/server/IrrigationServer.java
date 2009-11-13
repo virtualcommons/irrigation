@@ -21,7 +21,6 @@ import edu.asu.commons.irrigation.conf.ServerConfiguration;
 import edu.asu.commons.irrigation.events.BeginChatRoundRequest;
 import edu.asu.commons.irrigation.events.ClientUpdateEvent;
 import edu.asu.commons.irrigation.events.CloseGateEvent;
-import edu.asu.commons.irrigation.events.ShowTokenInvestmentScreenRequest;
 import edu.asu.commons.irrigation.events.EndRoundEvent;
 import edu.asu.commons.irrigation.events.FacilitatorEndRoundEvent;
 import edu.asu.commons.irrigation.events.InfrastructureUpdateEvent;
@@ -31,7 +30,10 @@ import edu.asu.commons.irrigation.events.PauseRequest;
 import edu.asu.commons.irrigation.events.QuizResponseEvent;
 import edu.asu.commons.irrigation.events.RegistrationEvent;
 import edu.asu.commons.irrigation.events.RoundStartedEvent;
+import edu.asu.commons.irrigation.events.ShowGameScreenshotRequest;
 import edu.asu.commons.irrigation.events.ShowInstructionsRequest;
+import edu.asu.commons.irrigation.events.ShowQuizRequest;
+import edu.asu.commons.irrigation.events.ShowTokenInvestmentScreenRequest;
 import edu.asu.commons.net.Dispatcher;
 import edu.asu.commons.net.Identifier;
 import edu.asu.commons.net.event.ConnectionEvent;
@@ -93,6 +95,26 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
     }
 
     private void initializeFacilitatorHandlers() {
+        addEventProcessor(new EventTypeProcessor<ShowGameScreenshotRequest>(ShowGameScreenshotRequest.class) {
+            public void handle(ShowGameScreenshotRequest request) {
+                // FIXME: check request id against facilitator id?
+                synchronized (clients) {
+                    for (Identifier id: clients.keySet()) {
+                        transmit(new ShowGameScreenshotRequest(id));
+                    }
+                }
+            }
+        });
+        addEventProcessor(new EventTypeProcessor<ShowQuizRequest>(ShowQuizRequest.class) {
+            public void handle(ShowQuizRequest request) {
+                // FIXME: check request id against facilitator id?
+                synchronized (clients) {
+                    for (Identifier id: clients.keySet()) {
+                        transmit(new ShowQuizRequest(id));
+                    }
+                }
+            }
+        });
         addEventProcessor(new EventTypeProcessor<FacilitatorRegistrationRequest>(FacilitatorRegistrationRequest.class) {
             @Override
             public void handle(FacilitatorRegistrationRequest event) {

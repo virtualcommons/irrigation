@@ -11,11 +11,11 @@ import java.awt.event.ActionListener;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -23,7 +23,6 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.GroupLayout.ParallelGroup;
 
 import edu.asu.commons.irrigation.server.ClientData;
-import edu.asu.commons.util.HtmlEditorPane;
 /**
  * $Id$
  * 
@@ -83,10 +82,6 @@ public class MainIrrigationGameWindow extends JPanel {
 
 	private JTextField irrigationCapacityTextField;
 	private JTextField waterSupplyTextField;
-
-	private HtmlEditorPane waterCollectedToTokensTable;
-
-	private JScrollPane waterCollectedToTokensScrollPane;
 
 	public MainIrrigationGameWindow(IrrigationClient client) {
 		super();
@@ -361,15 +356,8 @@ public class MainIrrigationGameWindow extends JPanel {
 		return jPanelDownStreamWindow;
 	}
 
-	private JScrollPane getWaterCollectedToTokensTable() {
-		if (waterCollectedToTokensTable == null) {
-			waterCollectedToTokensTable = new HtmlEditorPane();
-			waterCollectedToTokensTable.setEditable(false);
-			waterCollectedToTokensTable.setText(client.getServerConfiguration().getWaterCollectedToTokensTable());
-			waterCollectedToTokensScrollPane = new JScrollPane(waterCollectedToTokensTable);
-			waterCollectedToTokensScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		}
-		return waterCollectedToTokensScrollPane;
+	private JLabel getWaterCollectedToTokensTable() {
+	    return new JLabel(new ImageIcon("images/payoff-structure.jpg"));
 	}
 
 	/**

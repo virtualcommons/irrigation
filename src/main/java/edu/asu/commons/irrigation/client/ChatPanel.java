@@ -106,11 +106,11 @@ public class ChatPanel extends JPanel {
         private void sendMessage() {
             String message = chatField.getText();
             if (message != null && ! message.isEmpty() && targetIdentifier != null) {
+                displayMessage(String.format("%s -> %s", getChatHandle(getClientId()), getChatHandle(targetIdentifier)), 
+                        message);
             	chatField.setText("");
             	irrigationClient.transmit(new ChatRequest(getClientId(), message, targetIdentifier));
-            	displayMessage(
-            			String.format("%s -> %s", getChatHandle(getClientId()), getChatHandle(targetIdentifier)), 
-            			message);
+ 
             }
             chatField.requestFocusInWindow();
         }
@@ -198,7 +198,6 @@ public class ChatPanel extends JPanel {
         } 
         catch (BadLocationException e) {
             e.printStackTrace();
-            throw new RuntimeException(e);
         }
     }
 
@@ -229,8 +228,8 @@ public class ChatPanel extends JPanel {
             public void handle(final ChatEvent chatEvent) {
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
-                        displayMessage(getChatHandle(chatEvent.getSource()) + " -> "
-                                + getChatHandle(chatEvent.getTarget()), chatEvent.toString());
+                        displayMessage(String.format("%s -> %s", getChatHandle(chatEvent.getSource()), getChatHandle(chatEvent.getTarget())),
+                                chatEvent.toString());
                     }
                 });
             }
