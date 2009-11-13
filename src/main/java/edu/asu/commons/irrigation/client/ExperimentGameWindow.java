@@ -136,10 +136,10 @@ public class ExperimentGameWindow extends JPanel {
             tokenInvestmentPanel.setName("Token investment panel");
             tokenInvestmentPanel.setLayout(new BorderLayout());
             tokenInstructionsEditorPane = createInstructionsEditorPane();
+            tokenInstructionsEditorPane.setCaretPosition(0);
             tokenInstructionsScrollPane = new JScrollPane(tokenInstructionsEditorPane);
             tokenInvestmentPanel.add(tokenInstructionsScrollPane, BorderLayout.CENTER);
-            tokenInstructionsEditorPane.setCaretPosition(0);
-            tokenInstructionsEditorPane.repaint();
+
             tokenInvestmentPanel.add(getSubmitTokenPanel(), BorderLayout.SOUTH);
             tokenInvestmentPanel.setBackground(Color.WHITE);
         }
@@ -222,6 +222,9 @@ public class ExperimentGameWindow extends JPanel {
                         currentQuizPageNumber++;
                         setInstructions(getQuizPage());
                     }
+                    else {
+                        setInstructions(instructionsBuilder.toString());
+                    }
                 }
             });
 
@@ -235,7 +238,6 @@ public class ExperimentGameWindow extends JPanel {
 //        }
 //        return canalAnimationPanel;
 //    }
-
 
     private String getQuizPage() {
         StringBuilder builder = new StringBuilder();
@@ -317,7 +319,6 @@ public class ExperimentGameWindow extends JPanel {
             // create a quiz listener and then initialize the instructions.
             instructionsEditorPane.setActionListener(createQuizListener(getServerConfiguration()));
             instructionsEditorPane.setCaretPosition(0);
-            instructionsEditorPane.setBackground(Color.WHITE);
         }
         return instructionsEditorPane;
     }
@@ -325,7 +326,8 @@ public class ExperimentGameWindow extends JPanel {
     private HtmlEditorPane createInstructionsEditorPane() {
         HtmlEditorPane htmlEditorPane = new HtmlEditorPane();
         htmlEditorPane.setEditable(false);
-        htmlEditorPane.setFont(new Font("sansserif", Font.TRUETYPE_FONT, 14));
+        htmlEditorPane.setFont(new Font("sansserif", Font.TRUETYPE_FONT, 16));
+        htmlEditorPane.setBackground(Color.WHITE);
         return htmlEditorPane;
 
     }
@@ -335,7 +337,7 @@ public class ExperimentGameWindow extends JPanel {
         revalidate();
     }
 
-    public void startRound(final RoundConfiguration configuration) {
+    public void startRound() {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 addCenterComponent(irrigationGamePanel);
@@ -404,7 +406,7 @@ public class ExperimentGameWindow extends JPanel {
         		clientData.getTotalDollarsEarnedThisRound(), clientData.getTotalDollarsEarned()+showUpBonus, showUpBonus));
         //append the added practice round instructions
         
-        if (roundConfiguration.isPracticeRound() || roundConfiguration.isSecondPracticeRound()) {
+        if (roundConfiguration.isPracticeRound()) {
             instructionsBuilder.append(roundConfiguration.getPracticeRoundPaymentInstructions());
         }
         else if (event.isLastRound()) {
@@ -587,8 +589,8 @@ public class ExperimentGameWindow extends JPanel {
             }
             else {
             	instructionsBuilder.append(
-            			String.format("<p>The current infrastructure efficiency is %d%% but will be degraded by %d%% during this round." +
-            					"The current irrigation capacity is %d cfps and the available water supply is %d cfps.</p><hr/>",
+            			String.format("<p>The <b>current infrastructure efficiency is %d%%</b> but will <b>decline by %d%%</b> during this round." +
+            					"The <b>current irrigation capacity is %d cfps</b> and the <b>available water supply is %d cfps</b>.</p><hr/>",
             					clientDataModel.getGroupDataModel().getInfrastructureEfficiency(),
             					roundConfiguration.getInfrastructureDegradationFactor(),
             					irrigationCapacity,

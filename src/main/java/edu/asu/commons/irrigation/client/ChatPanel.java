@@ -1,6 +1,7 @@
 package edu.asu.commons.irrigation.client;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -96,7 +97,7 @@ public class ChatPanel extends JPanel {
         private void sendMessage() {
             String message = chatField.getText();
             if (message != null && ! message.isEmpty() && targetIdentifier != null) {
-                displayMessage(String.format("%s -> %s : ", getChatHandle(getClientId()), getChatHandle(targetIdentifier)), 
+                displayMessage(String.format("%s : ", getChatHandle(getClientId())), 
                         message);
             	chatField.setText("");
             	irrigationClient.transmit(new ChatRequest(getClientId(), message, targetIdentifier));
@@ -147,6 +148,7 @@ public class ChatPanel extends JPanel {
         setLayout(new BorderLayout(4, 4));
         messageWindow = new JTextPane();
         messageWindow.setEditable(false);
+        messageWindow.setBackground(Color.WHITE);
         messageScrollPane = new JScrollPane(messageWindow);
         addStylesToMessageWindow();
         textEntryPanel = new TextEntryPanel();
@@ -154,6 +156,7 @@ public class ChatPanel extends JPanel {
         chatInstructionsPane.setContentType("text/html");
         chatInstructionsPane.setEditorKit(new HTMLEditorKit());
         chatInstructionsPane.setEditable(false);
+        chatInstructionsPane.setBackground(Color.WHITE);
         JScrollPane chatInstructionsScrollPane = new JScrollPane(chatInstructionsPane);
         add(chatInstructionsScrollPane, BorderLayout.PAGE_START);
         add(messageScrollPane, BorderLayout.CENTER);
@@ -198,7 +201,7 @@ public class ChatPanel extends JPanel {
             public void handle(final ChatEvent chatEvent) {
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
-                        displayMessage(String.format("%s -> %s : ", getChatHandle(chatEvent.getSource()), getChatHandle(chatEvent.getTarget())),
+                        displayMessage(String.format("%s : ", getChatHandle(chatEvent.getSource()), getChatHandle(chatEvent.getTarget())),
                                 chatEvent.toString());
                     }
                 });

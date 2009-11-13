@@ -267,11 +267,9 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
         addEventProcessor(new EventTypeProcessor<QuizResponseEvent>(QuizResponseEvent.class) {
             @Override
             public void handle(QuizResponseEvent event) {
-                numberOfCompletedQuizzes++;
                 getLogger().info("Completed quizzes: " + numberOfCompletedQuizzes);
-                if(numberOfCompletedQuizzes == clients.size()*8){
-                    getLogger().info("Everyone has finished reading the general instructions successfully");
-                }
+                numberOfCompletedQuizzes++;
+                persister.store(event);
             }
         });
         addEventProcessor(new EventTypeProcessor<OpenGateEvent>(OpenGateEvent.class) {

@@ -106,8 +106,8 @@ public class MiddleScorePanel extends JPanel {
 
     public void update(ClientData clientData) {
         this.clientData = clientData;
-        availableWaterLabel.setText(clientData.getAvailableFlowCapacity() + " cfps");
-        waterCollectedLabel.setText(clientData.getWaterCollected() + " cf");
+        availableWaterLabel.setText(clientData.getAvailableFlowCapacity() + "");
+        waterCollectedLabel.setText(clientData.getWaterCollected() + "");
         tokensEarnedLabel.setText(String.valueOf(clientData.getTokensEarnedFromWaterCollected()));
 
         if(clientData.isGateOpen() && clientData.getAvailableFlowCapacity() > 0) {

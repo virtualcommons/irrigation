@@ -62,7 +62,7 @@ public class ClientDataModel implements DataModel<RoundConfiguration> {
      public synchronized void initialize(RoundStartedEvent event) {
         groupDataModel.clear();
         setGroupDataModel(event.getGroupDataModel());
-        setTimeLeft( (int) (getRoundConfiguration().getRoundDuration().getDelta() / 1000L) );
+        setTimeLeft( getRoundConfiguration().getRoundDurationInSeconds() );
     }
 
     public int getPriority(){

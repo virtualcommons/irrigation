@@ -23,10 +23,6 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
 
     private static final float DEFAULT_DOLLARS_PER_TOKEN = .05f;
 
-    public RoundConfiguration() {
-        super();
-    }
-    
     public static int getTokensEarned(int waterCollected) {
     	if (waterCollected < 150) {
     		return 0;
@@ -75,8 +71,6 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
     	}
     }
     
-    
-    
     public RoundConfiguration(String resource) {
         super(resource);
     }
@@ -121,12 +115,7 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
         return getProperty("practice-round-payment-instructions", 
                 "This is a practice round so the earnings mentioned are only for illustrative purposes and <b>will not count towards your actual earnings</b>.");
     }
-
-    // FIXME: horrible hack.. figure out why this is here again.
-    public boolean isSecondPracticeRound(){
-        return getBooleanProperty("second-practice-round",false);
-    }
-
+    
     public int getClientsPerGroup() {
         return getIntProperty("clients-per-group", 5);
     }
@@ -151,7 +140,7 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
     }
     
     public boolean shouldResetInfrastructureEfficiency() {
-    	return getBooleanProperty("reset-infrastructure-efficiency", false);
+    	return isFirstRound() || getBooleanProperty("reset-infrastructure-efficiency", false);
     }
 
     public String getInstructions() {
@@ -167,8 +156,8 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
         return getBooleanProperty("quiz");
     }
 
-    public String getQuizInstructions() {
-        return getStringProperty("quiz-instructions");
+    public String getQuizPage() {
+        return getStringProperty("quiz-page");
     }
 
     public Map<String, String> getQuizAnswers() {
@@ -201,7 +190,11 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
      */
     @Override
     public Duration getRoundDuration() {
-        return Duration.create(getIntProperty("round-duration", 50));
+        return Duration.create(getRoundDurationInSeconds());
+    }
+    
+    public int getRoundDurationInSeconds() {
+        return getIntProperty("round-duration", 50);
     }
 
     public boolean shouldRandomizeGroup() {

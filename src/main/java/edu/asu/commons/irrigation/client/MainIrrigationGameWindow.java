@@ -449,12 +449,17 @@ public class MainIrrigationGameWindow extends JPanel {
 	 */
 	public void setClientDataModel(final ClientDataModel clientDataModel) {
 		this.clientDataModel = clientDataModel;
-		fillPanels(clientDataModel);
+
 	}
 
 	public void startRound() {
 		open = false;
 		getMiddleWindowPanel().initialize(clientDataModel);
+        centerPanel.add(getCanalPanel(clientDataModel));
+        mainInterfacePanel.add(getJPanelUpStreamWindow(),null);
+        mainInterfacePanel.add(getJPanelDownStreamWindow(),null);
+        mainInterfacePanel.add(getMiddleWindowPanel(),null);
+		canalPanel.startRound();
 		int irrigationCapacity = clientDataModel.getIrrigationCapacity();
 		int waterSupply = clientDataModel.getWaterSupplyCapacity();
 		irrigationCapacityLabel.setText(
@@ -463,20 +468,8 @@ public class MainIrrigationGameWindow extends JPanel {
 		waterSupplyLabel.setText(
 		        String.format("Water supply: %d cubic feet per second (cfps)",
 		                waterSupply));
-
 		revalidate();
 	}
-
-	/**
-	 * fills in the panels depending on the priority of the client
-	 */
-	public void fillPanels(ClientDataModel clientDataModel) {
-		centerPanel.add(getCanalPanel(clientDataModel));
-		mainInterfacePanel.add(getJPanelUpStreamWindow(),null);
-		mainInterfacePanel.add(getJPanelDownStreamWindow(),null);
-		mainInterfacePanel.add(getMiddleWindowPanel(),null);
-	}
-
 
 	private MiddleWindowPanel getMiddleWindowPanel() {
 		if(middleWindowPanel == null) {

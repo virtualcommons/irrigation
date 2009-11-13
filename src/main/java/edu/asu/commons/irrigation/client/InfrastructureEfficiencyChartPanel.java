@@ -76,9 +76,9 @@ public class InfrastructureEfficiencyChartPanel extends JPanel {
         //	            data.addSeries(actualFlowCapacitySeriesY);
 
         final JFreeChart chart = ChartFactory.createXYLineChart(
-                "Total Flow Capacity",
+                "Water Delivery Capacity vs. Infrastructure Efficiency",
                 "Infrastructure Efficiency",
-                "Actual Flow Capacity",
+                "Water Delivery Capacity",
                 data,
                 PlotOrientation.VERTICAL,
                 true,

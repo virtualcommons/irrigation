@@ -1,7 +1,6 @@
 package edu.asu.commons.irrigation.client;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagLayout;
@@ -60,36 +59,34 @@ public class CanalPanel extends JPanel {
 		super();
 		//when totalContributed bandwidth = 1.0, you dont see the canal line
 		setClientDataModel(clientDataModel);
+		initialize();
 	}
 	
 	public void setClientDataModel(ClientDataModel clientDataModel) {
-	    if (timer != null) {
-	        timer.stop();
-	    }
 	    this.maximumIrrigationCapacity = clientDataModel.getGroupDataModel().getMaximumAvailableWaterFlow();
 	    this.clientDataModel = clientDataModel;
-	    initialize();
 	}
 
 	/**
-	 * 
-	 * @return void
+	 *  
 	 */
 	private void initialize() {
-		this.setSize(new Dimension(1098,150));
+//		this.setSize(new Dimension(1098,150));
 		setLayout(new GridBagLayout());
-		this.setBackground(Color.WHITE);
+		setBackground(Color.WHITE);
 		//initialize each gate
-		for(int i=0;i<numberOfGates ;i++){
-			gate[i] = new Gate(maximumIrrigationCapacity,i);
-		}
-
+		initializeGates();
 		initializeBalls();
-
 		timer = new Timer(DELAY, new Rebound()); // setup the Timer to do an action
 		// every DELAY times.
 		timer.start(); // starts the timer. 
 
+	}
+	
+	private void initializeGates() {
+	    for(int i=0;i<numberOfGates ;i++){
+	        gate[i] = new Gate(maximumIrrigationCapacity,i);
+	    }
 	}
 
 	protected void paintComponent(Graphics graphics){
@@ -201,7 +198,7 @@ public class CanalPanel extends JPanel {
 	}
 
 	// this is the private class the Timer will look at every DELAY seconds
-	private class Rebound implements ActionListener{
+	private class Rebound implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			for(int i=0;i<BALLCOUNT;i++){
 				//updateGUI();
@@ -413,12 +410,14 @@ public class CanalPanel extends JPanel {
 		gate[priority].setHeight(gate[priority-1].getHeight());*/
 		repaint();
 	}
+	
+	public void startRound() {
+	    initializeGates();
+	    timer.start();
+	}
 
 	public void endRound() {
-	    if (timer != null) {
-	        timer.stop();
-	    }
-	    timer = null;
+	    timer.stop();
 		closeAllGates();
 	}
 	

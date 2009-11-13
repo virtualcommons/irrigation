@@ -118,7 +118,7 @@ finished to receive their payment.
 </p>
 <p>
 You will see a text box appear on your screen when a chat period starts. The amount
-of time left in the chat period will be shown at the <b>top left of the screen</b>.<br>
+of time left in the chat period will be displayed <b>below the chat messages window</b>.<br>
 </p>
 ]]>
 </entry>
@@ -126,62 +126,6 @@ of time left in the chat period will be shown at the <b>top left of the screen</
 <entry key='game-screenshot-instructions'>
 <![CDATA[
 <img src="http://dev.commons.asu.edu/irrigation/images/game-interface-screenshot.jpg">
-
-<p>
-<b>Table 2</b>: Number of tokens earned from the water applied to your field.
-</p>
-<table border="1" cellspacing="2" cellpadding="2">
-<thead>
-<th>Water units received (cubic feet)</th>
-<th>Tokens earned</th>
-</thead>
-<tr>
-<td>&lt; 150</td><td>0</td>
-</tr>
-<tr>
-<td>150-199</td><td>1</td>
-</tr>
-<tr>
-<td>200-249</td><td>4</td>
-</tr>
-<tr>
-<td>250-299</td><td>10</td>
-</tr>
-<tr>
-<td>300-349</td><td>15</td>
-</tr>
-<tr>
-<td>350-399</td><td>18</td>
-</tr>
-<tr>
-<td>400-499</td><td>19</td>
-</tr>
-<tr>
-<td>500-549</td><td>20</td>
-</tr>
-<tr>
-<td>550-649</td><td>19</td>
-</tr>
-<tr>
-<td>650-699</td><td>18</td>
-</tr>
-<tr>
-<td>700-749</td><td>15</td>
-</tr>
-<tr>
-<td>750-799</td><td>10</td>
-</tr>
-<tr>
-<td>800-849</td><td>4</td>
-</tr>
-<tr>
-<td>850-899</td><td>1</td>
-</tr>
-<tr>
-<td>&gt; 899</td><td>0</td>
-</tr>
-</table>
-
 ]]>
 </entry>
 
@@ -214,46 +158,9 @@ other applications.</h3></center>
 <entry key="quiz-page1">
 <![CDATA[
 <p>
-The first two questions deal with irrigation infrastructure investment using Table
-1.
+The first two questions deal with irrigation infrastructure investment.  
+<b>Please refer to Table 1 of your handout</b>.
 </p>
-<p>
-<b>Table 1</b>: The water delivery capacity as a function of irrigation
-infrastructure efficiency
-</p>
-<table border="1" cellspacing="2" cellpadding="2">
-<thead>
-<th>Infrastructure Efficiency (percent)</th>
-<th>Water delivery (cubic feet per second)</th>
-</thead>
-<tr>
-<td> &le; 45</td><td>0</td>
-</tr>
-<tr>
-<td>46-51</td><td>5</td>
-</tr>
-<tr>
-<td>52-55</td><td>10</td>
-</tr>
-<tr>
-<td>56-58</td><td>15</td>
-</tr>
-<tr>
-<td>59-61</td><td>20</td>
-</tr>
-<tr>
-<td>62-65</td><td>25</td>
-</tr>
-<tr>
-<td>66-70</td><td>30</td>
-</tr>
-<tr>
-<td>71-80</td><td>35</td>
-</tr>
-<tr>
-<td>81-100</td><td>40</td>
-</tr>
-</table>
 
 <form>
 Question 1:<br>
@@ -301,68 +208,8 @@ E?<br>
 <![CDATA[
 <p>
 The final two questions cover the number of tokens you can earn in within a round.
+<b>Please refer to table 2 of your handout</b>.
 </p>
-<b>Table 2</b>: Tokens earned from the amount of water applied to your field.
-<table border="1" cellspacing="2" cellpadding="2">
-<thead>
-<th>Water units received (cubic feet)</th>
-<th>Tokens earned</th>
-</thead>
-<tr>
-<td>&lt; 150</td><td>0</td>
-</tr>
-<tr>
-<td>150-199</td><td>1</td>
-</tr>
-<tr>
-<td>200-249</td><td>4</td>
-</tr>
-<tr>
-<td>250-299</td><td>10</td>
-</tr>
-<tr>
-<td>300-349</td><td>15</td>
-</tr>
-<tr>
-<td>350-399</td><td>18</td>
-</tr>
-<tr>
-<td>400-499</td><td>19</td>
-</tr>
-<tr>
-<td>500-549</td><td>20</td>
-</tr>
-<tr>
-<td>550-649</td><td>19</td>
-</tr>
-<tr>
-<td>650-699</td><td>18</td>
-</tr>
-<tr>
-<td>700-749</td><td>15</td>
-</tr>
-<tr>
-<td>750-799</td><td>10</td>
-</tr>
-<tr>
-<td>800-849</td><td>4</td>
-</tr>
-<tr>
-<td>850-899</td><td>1</td>
-</tr>
-<tr>
-<td>&gt; 899</td><td>0</td>
-</tr>
-</table>
-<p>
-Your earnings at the end of the round depend on your investment and the number of
-tokens you receive from applying water to your fields and growing a crop.  As an
-example, suppose you invest 6 tokens out of the 10 tokens you are endowed with at
-the start of each round.  If you receive 333 cubic feet of water you would receive a
-grand total of 19 tokens (4 tokens left over from your 10 token endowment + 15
-tokens for growing a crop with 333 cubic feet of water).   Since each token is worth
-$0.05, you would have an actual earnings of $0.85 for that round.
-
 <form>
 Question 5:<br>
 If you invest 7 of the 10 tokens you start with and you apply 202 cubic feet of
