@@ -101,9 +101,11 @@ extends ExperimentConfiguration.Base<RoundConfiguration> {
             String key = "q" + i;
             String answer = properties.getProperty(key);
             answers.put(key, answer);
-            String quizDescriptiveAnswerKey = "qDescriptiveAnswer" + i;
-            String quizDescriptiveAnswer = properties.getProperty(quizDescriptiveAnswerKey);
-            answers.put(quizDescriptiveAnswerKey, quizDescriptiveAnswer);
+            String quizExplanationKey = "explanation" + i;
+            String quizExplanation = properties.getProperty(quizExplanationKey);
+            answers.put(quizExplanationKey, quizExplanation);
+            String descriptiveAnswerKey = "a" + i;
+            answers.put(descriptiveAnswerKey, properties.getProperty(descriptiveAnswerKey));
         }
         return answers;
     }

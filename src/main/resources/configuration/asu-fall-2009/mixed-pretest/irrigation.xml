@@ -26,16 +26,39 @@
 <entry key="wait-for-participants">true</entry>
 <entry key="number-of-rounds">17</entry>
 
-<entry key="q1">4</entry>
-<entry key="q2">identity</entry>
-<entry key="q3">49</entry>
-<entry key="q4">76</entry>
-<entry key="q5">20</entry>
-<entry key="q6">5</entry>
-<entry key="q7">25</entry>
-<entry key="q8">7</entry>
-<entry key="q9">19</entry>
-<entry key="q10">1.50</entry>
+<entry key="q1">49</entry>
+<entry key="a1">49%</entry>
+<entry key="explanation1">An existing infrastructure efficiency of 20% + 29 tokens invested = 49% infrastructure efficiency.</entry>
+<entry key="q2">5</entry>
+<entry key="a2">5 cubic feet per second</entry>
+<entry key="explanation2">
+<![CDATA[
+An existing infrastructure efficiency of 35% + 15 tokens invested = 50% infrastructure efficiency for the current round.  
+An infrastructure efficiency of 50% corresponds to a water delivery capacity
+of 5 cubic feet per second.
+]]>
+</entry>
+<entry key="q3">5</entry>
+<entry key='a3'>5 cubic feet per second</entry>
+<entry key="explanation3">Since there is only 30 cubic feet per second of water
+available, the irrigation infrastructure capacity of 35 cubic feet per
+second will not be fully used.  When A opens their gate, they take 25 of the
+30 cubic feet per second out of the canal, leaving 5 cubic feet per second for
+B.
+</entry>
+<entry key="q4">25</entry>
+<entry key="a4">25 cubic feet per second</entry>
+<entry key="explanation4">If A has 25 cfps available and does not take any
+water, the same amount is available for the people downstream. Since B, C and
+D do not take water, 25 cfps is available for E.</entry>
+<entry key="q5">7</entry>
+<entry key="a5">7 tokens</entry>
+<entry key="explanation5">If you invest 7 out of 10 tokens, you keep 3 tokens for yourself. If you apply 202 cubic feet of water to your field you will earn 4 tokens. 3 + 4 = 7 tokens </entry>
+<entry key="q6">19</entry>
+<entry key="a6">19 tokens</entry>
+<entry key="explanation6">If you invest all 10 tokens, you keep 0 tokens from
+your initial endowment.  If you apply 555 cubic feet of water to your field
+you will earn 19 tokens. 0 + 19 = 19 tokens.</entry>
 
 <entry key='final-instructions'>
 <![CDATA[

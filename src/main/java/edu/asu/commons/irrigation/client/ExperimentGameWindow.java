@@ -459,8 +459,8 @@ public class ExperimentGameWindow extends JPanel {
                             color = "red";
                         }
                         builder.append(String.format("Your answer: <font color='%s'>%s</font><br/>", color, response));
-                        builder.append(String.format("Correct answer: %s<br/>", correctAnswer));
-                        builder.append(quizAnswers.get( "qDescriptiveAnswer" + number )).append("</p>");
+                        builder.append(String.format("Correct answer: %s<br/>", quizAnswers.get("a" + number)));
+                        builder.append(quizAnswers.get( "explanation" + number )).append("</p>");
                     }
                 }
                 quizPageResponses.put(currentQuizPageNumber, builder.toString());
