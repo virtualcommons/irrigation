@@ -64,41 +64,6 @@ extends ExperimentConfiguration.Base<RoundConfiguration> {
         return CONFIGURATION_FILE_NAME;
     }
     
-    /**
-     * Returns the appropriate general instructions text, performing logic for adding
-     * positions and quizzes.   
-     * 
-     * @param instructionPageNumber
-     * @param pagesTraversed
-     * @return
-     */
-    public String getGeneralInstructions(
-            int instructionPageNumber,
-            int pagesTraversed, 
-            int clientPosition) 
-    {
-        // FIXME: get rid of hard coded instruction page constants.
-        if (instructionPageNumber < 11) {
-            StringBuilder builder = new StringBuilder();
-            if (instructionPageNumber == 4) {
-                builder.append("Your position: ").append(toPriorityString(clientPosition));
-            }
-            builder.append(getGeneralInstructions(instructionPageNumber));
-//            if (isUndisruptedFlowRequired()) {
-//                builder.append(getUndisruptedFlowInstructions());
-//            }
-            // if the current instruction page number is greater than the number of pages traversed, then 
-            // we need to render the quizzes.  Otherwise, we don't. 
-            if (instructionPageNumber > pagesTraversed) {
-                builder.append( getQuizQuestion(instructionPageNumber) );
-            }
-            return builder.toString();
-        }
-        else {
-            return getGeneralInstructions(instructionPageNumber);
-        }
-    }
-
     private final static String[] PRIORITY_STRINGS = { "A", "B", "C", "D", "E" };
 
     public String toPriorityString(int clientPriority) {
@@ -124,6 +89,10 @@ extends ExperimentConfiguration.Base<RoundConfiguration> {
     public String getInitialInstructions() {
         return assistant.getProperty("initial-instructions");
     }
+    
+    public String getWelcomeInstructions() {
+        return assistant.getProperty("welcome-instructions");
+    }
 
     public Map<String, String> getQuizAnswers() {
         Properties properties = assistant.getProperties();
@@ -132,6 +101,9 @@ extends ExperimentConfiguration.Base<RoundConfiguration> {
             String key = "q" + i;
             String answer = properties.getProperty(key);
             answers.put(key, answer);
+            String quizDescriptiveAnswerKey = "qDescriptiveAnswer" + i;
+            String quizDescriptiveAnswer = properties.getProperty(quizDescriptiveAnswerKey);
+            answers.put(quizDescriptiveAnswerKey, quizDescriptiveAnswer);
         }
         return answers;
     }
@@ -140,10 +112,8 @@ extends ExperimentConfiguration.Base<RoundConfiguration> {
         return assistant.getProperty("general-instructionsq" + pageNumber);
     }
 
-    public String getGeneralInstructions(int pageNumber) {
-        return assistant.getProperty(
-                "general-instructions"+pageNumber, 
-                "<b>No instructions available for this round</b>");
+    public String getQuizPage(int pageNumber) {
+        return assistant.getProperty("quiz-page"+pageNumber); 
     }
     
     public String getWaterCollectedToTokensTable() {
@@ -158,8 +128,8 @@ extends ExperimentConfiguration.Base<RoundConfiguration> {
         return assistant.getProperty("investment-instructions");
     }
     
-    public int getNumberOfGeneralInstructionPages() {
-        return assistant.getIntProperty("general-instruction-pages", 8);
+    public int getNumberOfQuestionPages() {
+        return assistant.getIntProperty("question-pages", 8);
     }
     
     public int getChatDuration() {
@@ -177,6 +147,10 @@ extends ExperimentConfiguration.Base<RoundConfiguration> {
     					"The time left for the discussion is displayed above the text field at the bottom of the screen.</p>",
     					getChatDuration())
     	);
+    }
+
+    public String getGameScreenshotInstructions() {
+        return assistant.getProperty("game-screenshot-instructions");
     }
 
 }

@@ -122,8 +122,8 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
     }
 
     public Map<String, String> getQuizAnswers() {
-        Properties properties = getProperties();
         if (isQuizEnabled()) {
+            Properties properties = getProperties();
             Map<String, String> answers = new HashMap<String, String>();
             for (int i = 1; properties.containsKey("q" + i); i++) {
                 String key = "q" + i;

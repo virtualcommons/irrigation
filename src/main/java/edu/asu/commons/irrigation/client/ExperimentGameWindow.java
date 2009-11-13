@@ -11,14 +11,15 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.TreeMap;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -29,7 +30,7 @@ import javax.swing.Timer;
 import edu.asu.commons.irrigation.conf.RoundConfiguration;
 import edu.asu.commons.irrigation.conf.ServerConfiguration;
 import edu.asu.commons.irrigation.events.EndRoundEvent;
-import edu.asu.commons.irrigation.events.QuizCompletedEvent;
+import edu.asu.commons.irrigation.events.QuizResponseEvent;
 import edu.asu.commons.irrigation.server.ClientData;
 import edu.asu.commons.irrigation.server.GroupDataModel;
 import edu.asu.commons.util.HtmlEditorPane;
@@ -39,7 +40,6 @@ import edu.asu.commons.util.HtmlEditorPane.FormActionEvent;
  * $Id$
  * 
  * The root experiment window placed in the client's JFrame.  
- * 
  *
  * @author <a href='mailto:Allen.Lee@asu.edu'>Allen Lee</a>
  * @version $Rev$
@@ -56,15 +56,15 @@ public class ExperimentGameWindow extends JPanel {
 
     private HtmlEditorPane instructionsEditorPane;
 
-    private JPanel investTokensPanel = null;
+    private JPanel tokenInvestmentPanel;
 
-    private JPanel graphPanel;
+    private JPanel contributionInformationPanel;
 
     private JTextField investedTokensTextField;
 
     private JButton submitTokensButton;
 
-    private InfrastructureEfficiencyChartPanel infrastructureEfficiencyChartPanel = null;
+    private InfrastructureEfficiencyChartPanel infrastructureEfficiencyChartPanel;
 
     private IrrigationClient client;
     
@@ -84,7 +84,7 @@ public class ExperimentGameWindow extends JPanel {
 
     private JPanel instructionsPanel;
 
-    private int instructionNumber = 1;
+    private int currentQuizPageNumber = 1;
 
     private JPanel submitTokenPanel;
 
@@ -92,59 +92,58 @@ public class ExperimentGameWindow extends JPanel {
 
     private JScrollPane tokenInstructionsScrollPane;
 
-    private JLabel quizMessageLabel;
-
-    private int pagesTraversed = 0;
+    private int quizzesAnswered = 0;
 
     private JPanel pieChartPanel;
 
     private TokenInvestmentPieChartPanel pieChart;
 
-    private CanalAnimationPanel canalAnimationPanel;
+//    private CanalAnimationPanel canalAnimationPanel;
 
     private CardLayout cardLayout;
     
-    private int numberOfGeneralInstructionPages;
+    private int numberOfQuestionPages;
+    
+    private Map<Integer, String> quizPageResponses = new HashMap<Integer, String>();
+
 
     public ExperimentGameWindow(IrrigationClient client) {
         this.client = client;
         this.clientDataModel = client.getClientDataModel();
-        this.numberOfGeneralInstructionPages = getServerConfiguration().getNumberOfGeneralInstructionPages();
+        this.numberOfQuestionPages = getServerConfiguration().getNumberOfQuestionPages();
     }
     
     void initialize() {
         cardLayout = new CardLayout();
         setLayout(cardLayout);
-
-        setInstructions(getGeneralInstructions(0));
-
+        setInstructions(getServerConfiguration().getWelcomeInstructions());
         addToCardLayout(getInstructionsPanel());
 //        irrigationGamePanel = new IrrigationGamePanel(client);
         irrigationGamePanel = new MainIrrigationGameWindow(client);
         addToCardLayout(irrigationGamePanel);
-        addToCardLayout(getInvestTokensPanel());
+        addToCardLayout(getTokenInvestmentPanel());
         addToCardLayout(getChatPanel());
-        addToCardLayout(getGraphPanel());
+        addToCardLayout(getContributionInformationPanel());
     }
     
     private void addToCardLayout(Component component) {
         add(component, component.getName());
     }
 
-    private JPanel getInvestTokensPanel() {
-        if (investTokensPanel == null) {
-            investTokensPanel = new JPanel();
-            investTokensPanel.setName("Invest tokens panel");
-            investTokensPanel.setLayout(new BorderLayout());
+    private JPanel getTokenInvestmentPanel() {
+        if (tokenInvestmentPanel == null) {
+            tokenInvestmentPanel = new JPanel();
+            tokenInvestmentPanel.setName("Token investment panel");
+            tokenInvestmentPanel.setLayout(new BorderLayout());
             tokenInstructionsEditorPane = createInstructionsEditorPane();
             tokenInstructionsScrollPane = new JScrollPane(tokenInstructionsEditorPane);
-            investTokensPanel.add(tokenInstructionsScrollPane, BorderLayout.CENTER);
+            tokenInvestmentPanel.add(tokenInstructionsScrollPane, BorderLayout.CENTER);
             tokenInstructionsEditorPane.setCaretPosition(0);
             tokenInstructionsEditorPane.repaint();
-            investTokensPanel.add(getSubmitTokenPanel(), BorderLayout.SOUTH);
-            investTokensPanel.setBackground(Color.WHITE);
+            tokenInvestmentPanel.add(getSubmitTokenPanel(), BorderLayout.SOUTH);
+            tokenInvestmentPanel.setBackground(Color.WHITE);
         }
-        return investTokensPanel;
+        return tokenInvestmentPanel;
     }
 
     private JPanel getSubmitTokenPanel() {
@@ -173,21 +172,17 @@ public class ExperimentGameWindow extends JPanel {
             instructionsPanel.setName("Instructions panel");
             instructionsPanel.setLayout(new BorderLayout());
             instructionsPanel.add(getInstructionsScrollPane(), BorderLayout.CENTER);
-            instructionsPanel.add(getInstructionsNavigationPanel(), BorderLayout.PAGE_END);
+            instructionsPanel.add(getQuizNavigationPanel(), BorderLayout.PAGE_END);
         }
         return instructionsPanel;
     }
     
-    private JPanel getInstructionsNavigationPanel() {
+    private JPanel getQuizNavigationPanel() {
         if (instructionsNavigationPanel == null) {
             instructionsNavigationPanel = new JPanel();
             instructionsNavigationPanel.setLayout(new BorderLayout());
             instructionsNavigationPanel.add(getPreviousButton(), BorderLayout.LINE_START);
             instructionsNavigationPanel.add(getNextButton(), BorderLayout.LINE_END);
-            // displays quiz messages (correct/incorrect answer).
-            quizMessageLabel = new JLabel();
-            quizMessageLabel.setHorizontalAlignment(JLabel.CENTER);
-            instructionsNavigationPanel.add(quizMessageLabel, BorderLayout.CENTER);
         }
         return instructionsNavigationPanel;
     }
@@ -199,25 +194,13 @@ public class ExperimentGameWindow extends JPanel {
             previousButton.setEnabled(false);
             previousButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    quizMessageLabel.setText("");
                     // getting the next instruction Number
-                    if (instructionNumber > 1) {
-                        instructionNumber--;
+                    if (currentQuizPageNumber > 1) {
+                        currentQuizPageNumber--;
+                        setInstructions(getQuizPage());
                     }
-                    previousButton.setEnabled(instructionNumber > 1);
+                    previousButton.setEnabled(currentQuizPageNumber > 1);
                     nextButton.setEnabled(true);
-                    setInstructions(getGeneralInstructions(instructionNumber,pagesTraversed));
-                    // FIXME: get rid of hardcoded animation on page 5.  Should instead
-                    // just be an animated gif or something more like 
-                    // if instructions.hasAnimation()
-                    if (instructionNumber == 5) {
-                        getInstructionsPanel().add(getCanalAnimationPanel(), BorderLayout.PAGE_START);
-                    }
-                    else {
-                        
-                        getInstructionsPanel().remove(getCanalAnimationPanel());
-                    }
-                    getInstructionsPanel().revalidate();
                 }
             });
         }
@@ -231,22 +214,14 @@ public class ExperimentGameWindow extends JPanel {
             nextButton.setEnabled(false);
             nextButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    quizMessageLabel.setText("");
                     previousButton.setEnabled(true);
-                    if (instructionNumber >= pagesTraversed){
+                    if (currentQuizPageNumber >= quizzesAnswered){
                         nextButton.setEnabled(false);
                     }
-                    if (instructionNumber < numberOfGeneralInstructionPages) {
-                        instructionNumber++;
-                        setInstructions(getGeneralInstructions(instructionNumber,pagesTraversed));
+                    if (currentQuizPageNumber < numberOfQuestionPages) {
+                        currentQuizPageNumber++;
+                        setInstructions(getQuizPage());
                     }
-                    if(instructionNumber == 5) {
-                        getInstructionsPanel().add(getCanalAnimationPanel(), BorderLayout.PAGE_START);
-                    }
-                    else {
-                        getInstructionsPanel().remove(getCanalAnimationPanel());
-                    }
-                    getInstructionsPanel().revalidate();
                 }
             });
 
@@ -254,26 +229,21 @@ public class ExperimentGameWindow extends JPanel {
         return nextButton;
     }
 
-    private CanalAnimationPanel getCanalAnimationPanel() {
-        if (canalAnimationPanel == null) {
-            canalAnimationPanel = new CanalAnimationPanel(40);
+//    private CanalAnimationPanel getCanalAnimationPanel() {
+//        if (canalAnimationPanel == null) {
+//            canalAnimationPanel = new CanalAnimationPanel(40);
+//        }
+//        return canalAnimationPanel;
+//    }
+
+
+    private String getQuizPage() {
+        StringBuilder builder = new StringBuilder(getServerConfiguration().getQuizPage(currentQuizPageNumber));
+        String quizPageResponse = quizPageResponses.get(currentQuizPageNumber);
+        if (quizPageResponse != null) {
+            builder.append(quizPageResponse);
         }
-        return canalAnimationPanel;
-    }
-
-    /**
-     * This returns the string of general instructions from the irrigation.xml file
-     * where the general instructions are stored
-     * @param pagesTraversed 
-     * 
-     * @return
-     */
-    private String getGeneralInstructions(int pageNumber, int pagesTraversed) {
-        return getServerConfiguration().getGeneralInstructions(pageNumber, pagesTraversed, clientDataModel.getPriority());
-    }
-
-    private String getGeneralInstructions(int pageNumber) {
-        return getServerConfiguration().getGeneralInstructions(pageNumber);
+        return builder.toString();
     }
     
     private ServerConfiguration getServerConfiguration() {
@@ -356,19 +326,15 @@ public class ExperimentGameWindow extends JPanel {
     private void addCenterComponent(Component newCenterComponent) {
         cardLayout.show(this, newCenterComponent.getName());
         revalidate();
-        repaint();
     }
 
     public void startRound(final RoundConfiguration configuration) {
-        Runnable runnable = new Runnable() {
+        SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                getCanalAnimationPanel().stopTimer();
-                disableInstructions();
                 addCenterComponent(irrigationGamePanel);
                 irrigationGamePanel.startRound();
             }
-        };
-        SwingUtilities.invokeLater(runnable);
+        });
     }
 
     public void update() {
@@ -445,64 +411,69 @@ public class ExperimentGameWindow extends JPanel {
     private void setInstructions(final String instructions) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                getInstructionsEditorPane().setText(instructions);
-                getInstructionsEditorPane().setCaretPosition(0);
+                instructionsEditorPane.setText(instructions);
+                instructionsEditorPane.setCaretPosition(0);
+                addCenterComponent(getInstructionsPanel());
                 getInstructionsScrollPane().revalidate();
             }
         });
     }
-
+    
     private ActionListener createQuizListener(final ServerConfiguration configuration) {
         return new ActionListener() {
             private Map<String, String> quizAnswers = configuration.getQuizAnswers();
-            public void actionPerformed(ActionEvent e){
+            public synchronized void actionPerformed(ActionEvent e) {
+                if (quizPageResponses.containsKey(currentQuizPageNumber)) {
+                    // this form has already been submit.
+                    // FIXME: report to user?
+                    return;
+                }
                 FormActionEvent formEvent = (FormActionEvent) e;
                 Properties responses = formEvent.getData();
                 List<String> incorrectAnswers = new ArrayList<String>();
                 responses.list(System.err);
+                StringBuilder builder = new StringBuilder();
+                TreeMap<String, String> sortedResponses = new TreeMap<String, String>();
+                // sort responses so we can put them in order.
                 for (Map.Entry<Object, Object> entry : responses.entrySet()) {
+                    sortedResponses.put((String) entry.getKey(), (String) entry.getValue());
+                }
+                
+                builder.append("<h3>Results</h3>");
+                for (Map.Entry<String, String> entry : sortedResponses.entrySet()) {
                     String questionNumber = (String) entry.getKey();
                     if (questionNumber.charAt(0) == 'q') {
+                        String number = questionNumber.substring(1, questionNumber.length());
                         String response = (String) entry.getValue();
                         String correctAnswer = quizAnswers.get(questionNumber);
+                        builder.append(String.format("<p><b>Question %s</b><br/>", number));
+                        String color = "blue";
                         if (! response.equals(correctAnswer)) {
                             incorrectAnswers.add(questionNumber);
+                            color = "red";
                         }
+                        builder.append(String.format("Your answer: <font color='%s'>%s</font><br/>", color, response));
+                        builder.append(String.format("Correct answer: %s<br/>", correctAnswer));
+                        builder.append(quizAnswers.get( "qDescriptiveAnswer" + number )).append("</p>");
+                    }
+                    else {
+                        System.err.println("weird stuff in form data: " + questionNumber + ":" + entry.getValue());
                     }
                 }
-                printIncorrectAnswerList(incorrectAnswers);
-                if (incorrectAnswers.isEmpty()) {
+                quizPageResponses.put(currentQuizPageNumber, builder.toString());
+                // no matter what we move on to the next question page
+                // tell them what was right and what was wrong.
+                if (currentQuizPageNumber < numberOfQuestionPages) {
                     nextButton.setEnabled(true);
-                    pagesTraversed++;
-                    //System.out.println("quiz :instruction number : "+instructionNumber+" pages traversed"+pagesTraversed);	
-                    setInstructions(getGeneralInstructions(instructionNumber,pagesTraversed));
-                    addCenterComponent(getInstructionsPanel());
-                    quizMessageLabel.setForeground(Color.BLUE);
-                    quizMessageLabel.setText("You answered the question(s) correctly.  Please continue to the next page by clicking 'Next'");
-                    // notify the server and also notify the participant.
-                    //StringBuilder builder = new StringBuilder(configuration.getInstructions());
-                    //builder.append("<br><b>Congratulations!</b> You have answered all questions correctly.");
-                    //setInstructions(builder.toString());
-                    client.transmit(new QuizCompletedEvent(client.getId(),instructionNumber));
                 }
-                else {
-                    nextButton.setEnabled(false);
-                    quizMessageLabel.setForeground(Color.RED);
-                    quizMessageLabel.setText("You did not answer the question(s) correctly. Please try again.");
-                }
-            }
-
-            private void printIncorrectAnswerList(List<String> incorrectAnswers) {
-                System.out.println("Size of the incorrect answers is :"+incorrectAnswers.size());
-                for(int i=0;i<incorrectAnswers.size();i++){
-                    System.out.println("Incorrect Answers :"+incorrectAnswers.get(i));
-                }
+                quizzesAnswered++;
+                client.transmit(new QuizResponseEvent(client.getId(), currentQuizPageNumber, responses, incorrectAnswers));
             }
         };
 
     }
 
-    public void displayTokenContributions(final ClientData clientData) {
+    public void displayContributionInformation(final ClientData clientData) {
     	GroupDataModel groupDataModel = clientData.getGroupDataModel();
         int totalContributedTokens = groupDataModel.getTotalContributedTokens();
         final StringBuilder builder = new StringBuilder();
@@ -527,25 +498,24 @@ public class ExperimentGameWindow extends JPanel {
                 contributionInformationTextArea.setText(builder.toString());
                 infrastructureEfficiencyChartPanel.initialize();
                 pieChart.setClientData(clientData);
-                addCenterComponent(getGraphPanel());
+                addCenterComponent(getContributionInformationPanel());
             }
         });
         irrigationGamePanel.setClientDataModel(clientDataModel);
     }
     
-    public JPanel getGraphPanel() {
-        if (graphPanel == null) {
-            graphPanel = new JPanel();
-            graphPanel.setName("Graph panel");
-            graphPanel.setLayout(new BoxLayout(graphPanel, BoxLayout.Y_AXIS));
-            graphPanel.add(getPieChartPanel());
-            graphPanel.add(Box.createVerticalStrut(15));
+    public JPanel getContributionInformationPanel() {
+        if (contributionInformationPanel == null) {
+            contributionInformationPanel = new JPanel();
+            contributionInformationPanel.setName("Graph panel");
+            contributionInformationPanel.setLayout(new BoxLayout(contributionInformationPanel, BoxLayout.Y_AXIS));
+            contributionInformationPanel.add(getPieChartPanel());
+            contributionInformationPanel.add(Box.createVerticalStrut(15));
             contributionInformationTextArea = new JTextArea();
             contributionInformationTextArea.setEditable(false);
-
-            graphPanel.add(contributionInformationTextArea);
+            contributionInformationPanel.add(contributionInformationTextArea);
         }
-        return graphPanel;
+        return contributionInformationPanel;
     }
 
     private JPanel getPieChartPanel() {
@@ -564,19 +534,19 @@ public class ExperimentGameWindow extends JPanel {
     }
 
 
-    public void updateTokenInstructionsPanel() {
+    public void showTokenInvestmentScreen() {
         Runnable runnable = new Runnable() {
             public void run() {
                 GroupDataModel group = clientDataModel.getGroupDataModel();
                 RoundConfiguration roundConfiguration = clientDataModel.getRoundConfiguration();
                 int infrastructureEfficiency = 0;
-                if (roundConfiguration.isPracticeRound() || roundConfiguration.isFirstRound()) {
+                if (roundConfiguration.shouldResetInfrastructureEfficiency()) {
                     infrastructureEfficiency = roundConfiguration.getInitialInfrastructureEfficiency();
                 }
                 else {
                     infrastructureEfficiency = group.getInfrastructureEfficiency() - roundConfiguration.getInfrastructureDegradationFactor();
                 }
-                addCenterComponent(getInvestTokensPanel());
+                addCenterComponent(getTokenInvestmentPanel());
                 StringBuilder builder = new StringBuilder();
                 builder.append(
                         String.format(
@@ -594,16 +564,11 @@ public class ExperimentGameWindow extends JPanel {
     }
 
     public void updateRoundInstructions(RoundConfiguration roundConfiguration) {
-        info("Updating round instructions: " + roundConfiguration.getInstructions());
-        // if this is the first round, show the general instructions.
-        if (roundConfiguration.isFirstRound()) {
-
-        }
-        else {
+        if (! roundConfiguration.isFirstRound()) {
             instructionsBuilder.append(roundConfiguration.getInstructions());
             instructionsBuilder.append("<hr/>");
             int irrigationCapacity = clientDataModel.getGroupDataModel().getIrrigationCapacity();
-            int clientCapacity = roundConfiguration.getMaximumClientFlowCapacity();
+//            int clientCapacity = roundConfiguration.getMaximumClientFlowCapacity();
             if (roundConfiguration.shouldResetInfrastructureEfficiency()) {
             	instructionsBuilder.append("The irrigation infrastructure efficiency is currently 75%.");
             }
@@ -619,7 +584,6 @@ public class ExperimentGameWindow extends JPanel {
             }
             setInstructions(instructionsBuilder.toString());
         }
-        addCenterComponent(getInstructionsPanel());
     }
 
     private ChatPanel getChatPanel() {
@@ -650,7 +614,7 @@ public class ExperimentGameWindow extends JPanel {
                 public void actionPerformed(ActionEvent event) {
                     final long timeRemaining = endTime - System.currentTimeMillis();
                     if (timeRemaining < 0) {
-                    	updateTokenInstructionsPanel();
+                    	showTokenInvestmentScreen();
                         getInvestedTokensTextField().requestFocusInWindow();
                         timer.stop();
                         timer = null;
@@ -664,13 +628,37 @@ public class ExperimentGameWindow extends JPanel {
         }
     }
     
-    private void disableInstructions() {
-        quizMessageLabel.setText("");
-        getInstructionsPanel().remove(getInstructionsNavigationPanel());
+    public void showQuiz() {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                getInstructionsPanel().add(getQuizNavigationPanel(), BorderLayout.PAGE_END);
+                getInstructionsPanel().revalidate();
+            }
+        });
+        setInstructions(getQuizPage());
+    }
+    
+    /**
+     * Should only be invoked when the instructions navigation panel is done.  
+     * How do we know when it's done?  When the user adds a new      
+     */
+    public void disableQuiz() {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                getInstructionsPanel().remove(getQuizNavigationPanel());
+                getInstructionsPanel().revalidate();
+            }
+        });
+    }
+    
+    public void showGameScreenshot() {
+        setInstructions(getServerConfiguration().getGameScreenshotInstructions());
     }
 
-    public void enableInstructions() {
-        setInstructions(getGeneralInstructions(1,pagesTraversed));
-        addCenterComponent(getInstructionsPanel());
+    /** 
+     * Invoked when the show instructions button is pressed.
+     */
+    public void showInstructions() {
+        setInstructions(getServerConfiguration().getInitialInstructions());
     }
 }

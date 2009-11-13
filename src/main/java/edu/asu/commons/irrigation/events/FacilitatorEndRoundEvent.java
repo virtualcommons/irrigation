@@ -5,8 +5,11 @@ import edu.asu.commons.irrigation.server.ServerDataModel;
 import edu.asu.commons.net.Identifier;
 
 /**
+ * $Id$
+ * 
+ * Updates the facilitator with the end of the round information (used to build the debriefing).
+ * 
  * @author Sanket
- *
  */
 public class FacilitatorEndRoundEvent extends AbstractEvent {
 
@@ -23,7 +26,7 @@ public class FacilitatorEndRoundEvent extends AbstractEvent {
     }
 
     public boolean isLastRound(){
-	    return serverDataModel.getRoundConfiguration().getParentConfiguration().isLastRound();
+	    return serverDataModel.getRoundConfiguration().isLastRound();
 	}
     
 }

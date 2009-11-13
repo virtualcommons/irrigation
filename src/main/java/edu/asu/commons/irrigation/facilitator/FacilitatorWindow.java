@@ -14,7 +14,7 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
 import edu.asu.commons.irrigation.events.BeginChatRoundRequest;
-import edu.asu.commons.irrigation.events.DisplaySubmitTokenRequest;
+import edu.asu.commons.irrigation.events.ShowTokenInvestmentScreenRequest;
 import edu.asu.commons.irrigation.events.FacilitatorEndRoundEvent;
 import edu.asu.commons.irrigation.events.ShowInstructionsRequest;
 import edu.asu.commons.irrigation.server.ClientData;
@@ -133,7 +133,7 @@ public class FacilitatorWindow extends JPanel {
             displayInvestmentButton = new JButton("Show Investment Screen");
             displayInvestmentButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent event) {
-                    facilitator.transmit(new DisplaySubmitTokenRequest(facilitator.getId()));
+                    facilitator.transmit(new ShowTokenInvestmentScreenRequest(facilitator.getId()));
                 }
             });
         }

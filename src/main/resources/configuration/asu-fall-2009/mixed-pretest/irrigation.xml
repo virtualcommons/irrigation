@@ -2,6 +2,7 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
 <comment>Irrigation experiment server configuration</comment>
+<!--<entry key="hostname">localhost</entry>-->
 <entry key="hostname">@SERVER_ADDRESS@</entry>
 <entry key="port">@PORT_NUMBER@</entry>
 <entry key="round0">round0.xml</entry>
@@ -54,96 +55,30 @@ Thanks for participating!
 
 <entry key="initial-instructions">
 <![CDATA[
-<h3>Welcome</h3>
 <p>
-Please be patient while the experimental environment is set up.  
-<b>Please do not close this window or open any other windows.</b>
-</p>
-]]>
-</entry>
-
-
-<entry key="facilitator-instructions">
-<![CDATA[
-<h3>Facilitator Instructions</h3>
-<p>
-Welcome to the facilitator interface.  This interface allows you to control
-the experiment.  You may only modify configuration parameters <b>before</b>
-you start the experiment by selecting the Configuration menu.  When all the
-participants are ready to begin the experiment, you can start the experiment
-by selecting Experiment -&gt; Start.  After a round has been completed you
-will be able to view the statistics for all of the participants.  You can
-begin the next round by selecting Round -&gt; Start.
-</p>
-]]>
-</entry>
-
-
-
-<entry key="general-instructions0">
-<![CDATA[
-<center><h3>Welcome to the experiment.  Please do not close this window or open any
-other applications.</h3></center>
-]]>
-</entry>
-
-<entry key="general-instructions1">
-<![CDATA[
-<h3>General Instructions</h3>
-<p>Welcome. You have already earned 5 dollars by showing up for this exercise.
-You can earn more, up to an extra 25 dollars, by participating in the exercise
-which will last for about one hour. You will participate in this exercise as a
-part of a group. Each group has five participants. Your group has been formed
-by randomly assigning you to FOUR other participants in the room. The amount
-of money you earn will depend on the decisions made by you and the rest of the
-group.  That is, your earnings will depend on your decisions as well as the
-other members of your group.
+You have already earned 5 dollars by showing up for this exercise. You can earn
+more, up to an extra 25 dollars. You will participate in this exercise as a part of
+a group of five participants. Your group has been formed by randomly assigning you
+to FOUR other participants in the room. 
 </p>
 <p>
-This exercise mimics decisions people make in irrigation systems. In each round you
-will receive 10 tokens which you can choose to keep or invest in the irrigation
-infrastructure (for example canals and water diversion structures). Depending on the
-state of repair of the irrigation infrastructure, it will be capable of directing
-water to your field when you use your water diversion structure (called an
-irrigation gate). Depending on the amount of water you can get to your field, you
-can grow crops. Depending on the number of crops you grow you earn tokens. Each
-token is worth 5 cents and you will be paid cash in private at the end of the
-experiment based on the number of tokens you earned.
+The amount of money you earn will depend on the decisions made by you and the other
+members of your group. This exercise mimics decisions people make in irrigation
+systems. In each round you will receive 10 tokens which you can invest in the
+irrigation infrastructure. Given the capacity of the irrigation infrastructure and
+the availability of water, you can grow crops. Tokens earned in a round is the sum
+of tokens not invested plus tokens earned by growing crops. Each token is worth 5
+cents. In each round you will first make a decision as to how much to invest in the
+irrigation infrastructure. Based on the combined contributions of all 5 participants
+in your group in each round, your group can maintain the capacity of the irrigation
+infrastructure for growing crops. 
 </p>
+
 <p>
-The experiment consists of a number of rounds. In each round you will first make a
-decision as to how much to invest in the irrigation infrastructure. Without periodic
-investment, the irrigation infrastructure will break down over time. Based on the
-combined contributions of all 5 participants in your group in each round, as
-explained below, your group can maintain the performance of the irrigation
-infrastructure.  The condition of the irrigation infrastructure determines
-its capacity to deliver water which you can use to grow crops. 
-</p>
-]]>
-</entry>
-
-<entry key="general-instructionsq1">
-<![CDATA[
-<br><br>
-To continue to the next page, please answer the following question:<br>
-<form>
-How many OTHER people in the room will be in your group?<br>
-<input type="radio" name="q1" value="0">0<br>
-<input type="radio" name="q1" value="1">1<br>
-<input type="radio" name="q1" value="4">4<br>
-<input type="radio" name="q1" value="Everybody">Everybody<br>
-<br><br>
-<input type="submit" name="submit" value="Submit">
-</form>
-]]>
-</entry>
-
-<entry key="general-instructions2">
-<![CDATA[
-<h3>Chat</h3>
-<p>Before each round you will have a chat period of 40 seconds where you can send
-text messages to the other participants. You may discuss any aspect of the exercise
-with two important exceptions:
+We will now start a practice round to help illustrate the experiment.  Before each
+round in this experiment you will have a chat period of 60 seconds where you can
+send text messages to the other participants. You may discuss any aspect of the
+exercise with two important exceptions:
 </p>
 <ol>
 <li>You are <b>not allowed</b> to promise the other participants
@@ -165,7 +100,110 @@ of time left in the chat period will be shown at the <b>top left of the screen</
 ]]>
 </entry>
 
-<entry key="general-instructionsq2">
+<entry key='game-screenshot-instructions'>
+<![CDATA[
+<img src="http://dev.commons.asu.edu/irrigation/images/game-interface-screenshot.jpg">
+
+<b>Table 2</b>: Earnings resulting from the amount of water applied to your field.
+
+<table border="1" cellspacing="2" cellpadding="2">
+<thead>
+<th>Water units received (cubic feet)</th>
+<th>Tokens earned</th>
+</thead>
+<tr>
+<td>&lt; 150</td><td>0</td>
+</tr>
+<tr>
+<td>150-199</td><td>1</td>
+</tr>
+<tr>
+<td>200-249</td><td>4</td>
+</tr>
+<tr>
+<td>250-299</td><td>10</td>
+</tr>
+<tr>
+<td>300-349</td><td>15</td>
+</tr>
+<tr>
+<td>350-399</td><td>18</td>
+</tr>
+<tr>
+<td>400-499</td><td>19</td>
+</tr>
+<tr>
+<td>500-549</td><td>20</td>
+</tr>
+<tr>
+<td>550-649</td><td>19</td>
+</tr>
+<tr>
+<td>650-699</td><td>18</td>
+</tr>
+<tr>
+<td>700-749</td><td>15</td>
+</tr>
+<tr>
+<td>750-799</td><td>10</td>
+</tr>
+<tr>
+<td>800-849</td><td>4</td>
+</tr>
+<tr>
+<td>850-899</td><td>1</td>
+</tr>
+<tr>
+<td>&gt; 899</td><td>0</td>
+</tr>
+</table>
+
+]]>
+</entry>
+
+
+<entry key="facilitator-instructions">
+<![CDATA[
+<h3>Facilitator Instructions</h3>
+<p>
+Welcome to the facilitator interface.  This interface allows you to control
+the experiment.  You may only modify configuration parameters <b>before</b>
+you start the experiment by selecting the Configuration menu.  When all the
+participants are ready to begin the experiment, you can start the experiment
+by selecting Experiment -&gt; Start.  After a round has been completed you
+will be able to view the statistics for all of the participants.  You can
+begin the next round by selecting Round -&gt; Start.
+</p>
+]]>
+</entry>
+
+
+
+<entry key="welcome-instructions">
+<![CDATA[
+<center><h3>Welcome to the experiment.  Please do not close this window or open any
+other applications.</h3></center>
+]]>
+</entry>
+
+
+<entry key="quiz-page1">
+<![CDATA[
+<br><br>
+To continue to the next page, please answer the following question:<br>
+<form>
+How many OTHER people in the room will be in your group?<br>
+<input type="radio" name="q1" value="0">0<br>
+<input type="radio" name="q1" value="1">1<br>
+<input type="radio" name="q1" value="4">4<br>
+<input type="radio" name="q1" value="Everybody">Everybody<br>
+<br><br>
+<input type="submit" name="submit" value="Submit">
+</form>
+]]>
+</entry>
+
+<entry key="quiz-page2">
 <![CDATA[
 <br><br>
 To continue to the next page, please answer the following question:<br>
@@ -181,120 +219,8 @@ Which of the following topics are you <b>not allowed</b> to discuss in chat?<br>
 ]]>
 </entry>
 
-<entry key="general-instructions3">
-<![CDATA[
-<h3>Creating Irrigation Infrastructure</h3>
-<p>
-After the chat period ends you and each other participant will be given 10 tokens.
-You must then decide what to do with these tokens. You may decide to invest in the
-irrigation infrastructure or to keep the tokens.  If you keep the tokens you will
-earn at a minimum 10 tokens X 5 cents = $0.50 for each round.  If you do this every
-round after twenty rounds you will end up with at least $10 (plus any crops that you
-may be able to grow as we will discuss later).  Your total earnings for
-participating in the experiment would then be at least $10 plus your show-up payment
-of $5, for a grand total of at least $15.
-</p>
-<p>
-On the other hand, if you invest some of your tokens in the irrigation
-infrastructure, you may be able to earn more than this amount by growing crops. If
-the irrigation infrastructure is operating at near maximum capacity you can earn
-close to $1.50 each round.  Thus if you grow crops you can roughly triple your
-earnings compared to doing nothing. The actual earnings depend on the decisions you
-and the other participants in your group make in terms of investment and when to
-grow crops.
-</p>
-<p>
-In each round the condition of the irrigation system declines such that its water
-delivery efficiency drops by 25%. Investment is necessary to keep the irrigation
-infrastructure from deteriorating.  If you decide to invest in irrigation
-infrastructure you must decide on the amount to invest out of your initial 10
-tokens. Keep in mind that the irrigation infrastructure must exceed a certain level
-before you can grow crops.  The tokens invested by all participants in your group
-are added together and will total up to an amount 0 and 50 tokens.  Each token
-invested increases the irrigation infrastructure efficiency by one percentage point,
-up to a <b>maximum of 100%</b>.  This means that if the irrigation infrastructure
-efficiency is at 80% it would not make sense for your group to invest a total of 50
-tokens, as any investment beyond 20 tokens would be wasted.  In the table below you
-can see the water delivery capacity measured in water units per second as a function
-of the condition of the irrigation infrastructure.  When the infrastructure is at
-100% efficiency, 40 cubic feet of water per second (cfps) will be available.  When the
-irrigation infrastructure efficiency falls below 45%, there is no capacity left for
-transporting water and thus there is no water available for anyone.
-</p>
-<p>
-Your initial irrigation infrastructure will start at 75% efficiency but <b>will
-carry over from round to round</b>.  As an example, let's say that no one in a 
-group invests any tokens in the first round.  The irrigation infrastructure
-efficiency will be set at 75% for that first round.  The table below lists the water
-delivery in cubic feet per second (cfps) corresponding to the irrigation infrastructure
-efficiency.  If you look at the second to last row you can see that at 75%
-efficiency the irrigation infrastructure will deliver 35 cfps.  So in the first
-round the group will have 35 cfps of water available to them.
-</p>
-<p>
-Recall that each round the irrigation infrastructure efficiency deteriorates by 25%,
-so at the start of the second round the infrastructure efficiency decreases to 50%.
-At this point all five members of the group decide to invest 7 tokens each.   This
-increases the infrastructure efficiency by 35%, resulting in a total infrastructure
-efficiency of 85%.  If you look at the table again you can see that an
-infrastructure efficiency of 85% will deliver 40 cfps.
-</p>
-<p>
-The actual amount of water that is available for the group depends on the amount of
-water available. Your group might have created an irrigation infrastructure with a
-capacity of 40 cfps, but due to lack of rainfall only 30 cfps is available. On the
-other hand, if the infrastructure capacity allows 30 cfps and 40 cfps of water is available
-to the system, only 30 cfps can be delivered.
-</p>
 
-<p>
-To recap, at the beginning of each round you will be informed of the current
-irrigation infrastructure efficiency.  You will then decide how many tokens (between
-0 and 10) to invest in the irrigation infrastructure.  After everybody has made
-their decision, you will be notified of the condition of the irrigation
-infrastructure and the corresponding water delivery capacity.  
-</p>
-
-<b>Table 1:</b> The water delivery capacity as a function of the irrigation
-infrastructure condition
-<table border="1" cellspacing="2" cellpadding="2">
-<thead>
-<th>Infrastructure efficiency (percent)</th>
-<th>Water delivery (cubic feet per second)</th>
-</thead>
-<tr>
-<td>&le; 45</td><td>0</td>
-</tr>
-<tr>
-<td>46-51</td><td>5</td>
-</tr>
-<tr>
-<td>52-55</td><td>10</td>
-</tr>
-<tr>
-<td>56-58</td><td>15</td>
-</tr>
-<tr>
-<td>59-61</td><td>20</td>
-</tr>
-<tr>
-<td>62-65</td><td>25</td>
-</tr>
-<tr>
-<td>66-70</td><td>30</td>
-</tr>
-<tr>
-<td>71-80</td><td>35</td>
-</tr>
-<tr>
-<td>81-100</td><td>40</td>
-</tr>
-</table>
-
-]]>
-</entry>
-
-<entry key="general-instructionsq3">
+<entry key="quiz-page3">
 <![CDATA[
 <br><br>
 To continue to the next page, please answer the following questions:<br>
@@ -320,40 +246,8 @@ irrigation infrastructure efficiency?
 ]]>
 </entry>
 
-<entry key="general-instructions4">
-<![CDATA[
-<h3>Growing crops</h3>
-<p>There are <b>five</b> participants in each group, each of which is randomly assigned to
-one of the five positions, A, B, C, D or E. Below is a screenshot of the
-graphical interface representation of the irrigation system.  Water comes from
-the box to the left and the five players are located from upstream (leftmost)
-to downstream (rightmost) accordingly.  To illustrate, assume you are in
-position C. The black lines represent "gates" that you open and close by
-clicking on the large button on the lower left corner of the screen.
-Each round consists of 50 seconds and the amount of time left in the
-experiment is indicated by a bar at the top of the screen. 
-</p>
-<img src="http://dev.commons.asu.edu/irrigation/images/game-interface-screenshot.jpg">
-<br><br>
-<p>
-You can irrigate your field during the round by opening your gate.  Your
-earnings depend on the amount of water you can draw onto your fields and will
-be explained in more detail on the next page.  The speed at which you can grow
-a crop depends on the amount of water available to you <b>at the time that you
-open your gate</b>.  The maximum flow capacity of the main canal shared by A,
-B, C, D, and E is forty cubic feet per second.
-</p>
-<p>
-The maximum amount of water that can flow through your gate when it is opened
-is 25 cubic feet per second. If other people are using the canal, the water
-flow available to you might be less, and it may take longer to get water to
-your field since you are also limited by the amount of water that is flowing
-through the shared canal.
-</p>
-]]>
-</entry>
 
-<entry key="general-instructionsq4">
+<entry key="quiz-page4">
 <![CDATA[
 <br><br>
 To continue to the next page, please answer the following question:<br>

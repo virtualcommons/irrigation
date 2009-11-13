@@ -74,6 +74,7 @@ public class ClientData implements Serializable {
         return getAssignedNumber() - 1;
     }
     
+    // FIXME: logic duplicated with ServerConfiguration.toPriorityString(int priority);
     private final static String[] PRIORITY_STRINGS = { "A", "B", "C", "D", "E" };
 
     public String getPriorityString() {

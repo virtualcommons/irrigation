@@ -15,7 +15,6 @@ import edu.asu.commons.irrigation.conf.ServerConfiguration;
 import edu.asu.commons.irrigation.events.BeginChatRoundRequest;
 import edu.asu.commons.irrigation.events.ClientUpdateEvent;
 import edu.asu.commons.irrigation.events.CloseGateEvent;
-import edu.asu.commons.irrigation.events.DisplaySubmitTokenRequest;
 import edu.asu.commons.irrigation.events.EndRoundEvent;
 import edu.asu.commons.irrigation.events.InfrastructureUpdateEvent;
 import edu.asu.commons.irrigation.events.InvestedTokensEvent;
@@ -23,7 +22,10 @@ import edu.asu.commons.irrigation.events.OpenGateEvent;
 import edu.asu.commons.irrigation.events.PauseRequest;
 import edu.asu.commons.irrigation.events.RegistrationEvent;
 import edu.asu.commons.irrigation.events.RoundStartedEvent;
+import edu.asu.commons.irrigation.events.ShowGameScreenshotRequest;
 import edu.asu.commons.irrigation.events.ShowInstructionsRequest;
+import edu.asu.commons.irrigation.events.ShowQuizRequest;
+import edu.asu.commons.irrigation.events.ShowTokenInvestmentScreenRequest;
 import edu.asu.commons.net.ClientDispatcher;
 import edu.asu.commons.net.DispatcherFactory;
 import edu.asu.commons.net.Identifier;
@@ -169,7 +171,7 @@ public class IrrigationClient {
             public void handle(InfrastructureUpdateEvent event) {
                 System.err.println("Received group update event: " + event);
                 clientDataModel.setGroupDataModel(event.getGroupDataModel());
-                experimentGameWindow.displayTokenContributions(event.getClientData());
+                experimentGameWindow.displayContributionInformation(event.getClientData());
             }
         });
         channel.add(this, new EventTypeProcessor<RoundStartedEvent>(RoundStartedEvent.class) {
@@ -191,9 +193,9 @@ public class IrrigationClient {
                 experimentGameWindow.update();
             }
         });
-        channel.add(this, new EventTypeProcessor<DisplaySubmitTokenRequest>(DisplaySubmitTokenRequest.class) {
-            public void handle(DisplaySubmitTokenRequest request) {
-                experimentGameWindow.updateTokenInstructionsPanel();
+        channel.add(this, new EventTypeProcessor<ShowTokenInvestmentScreenRequest>(ShowTokenInvestmentScreenRequest.class) {
+            public void handle(ShowTokenInvestmentScreenRequest request) {
+                experimentGameWindow.showTokenInvestmentScreen();
             }
         });
         channel.add(this, new EventTypeProcessor<BeginChatRoundRequest>(BeginChatRoundRequest.class) {
@@ -204,7 +206,17 @@ public class IrrigationClient {
         });
         channel.add(this, new EventTypeProcessor<ShowInstructionsRequest>(ShowInstructionsRequest.class) {
             public void handle(ShowInstructionsRequest request) {
-                experimentGameWindow.enableInstructions();
+                experimentGameWindow.showInstructions();
+            }
+        });
+        channel.add(this, new EventTypeProcessor<ShowQuizRequest>(ShowQuizRequest.class) {
+            public void handle(ShowQuizRequest request) {
+                experimentGameWindow.showQuiz();
+            }
+        });
+        channel.add(this, new EventTypeProcessor<ShowGameScreenshotRequest>(ShowGameScreenshotRequest.class) {
+            public void handle(ShowGameScreenshotRequest request) {
+                experimentGameWindow.showGameScreenshot();
             }
         });
     }

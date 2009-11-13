@@ -21,14 +21,14 @@ import edu.asu.commons.irrigation.conf.ServerConfiguration;
 import edu.asu.commons.irrigation.events.BeginChatRoundRequest;
 import edu.asu.commons.irrigation.events.ClientUpdateEvent;
 import edu.asu.commons.irrigation.events.CloseGateEvent;
-import edu.asu.commons.irrigation.events.DisplaySubmitTokenRequest;
+import edu.asu.commons.irrigation.events.ShowTokenInvestmentScreenRequest;
 import edu.asu.commons.irrigation.events.EndRoundEvent;
 import edu.asu.commons.irrigation.events.FacilitatorEndRoundEvent;
 import edu.asu.commons.irrigation.events.InfrastructureUpdateEvent;
 import edu.asu.commons.irrigation.events.InvestedTokensEvent;
 import edu.asu.commons.irrigation.events.OpenGateEvent;
 import edu.asu.commons.irrigation.events.PauseRequest;
-import edu.asu.commons.irrigation.events.QuizCompletedEvent;
+import edu.asu.commons.irrigation.events.QuizResponseEvent;
 import edu.asu.commons.irrigation.events.RegistrationEvent;
 import edu.asu.commons.irrigation.events.RoundStartedEvent;
 import edu.asu.commons.irrigation.events.ShowInstructionsRequest;
@@ -157,12 +157,12 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
                 }
             }
         });
-        addEventProcessor(new EventTypeProcessor<DisplaySubmitTokenRequest>(DisplaySubmitTokenRequest.class) {
+        addEventProcessor(new EventTypeProcessor<ShowTokenInvestmentScreenRequest>(ShowTokenInvestmentScreenRequest.class) {
             @Override
-            public void handle(DisplaySubmitTokenRequest request) {
+            public void handle(ShowTokenInvestmentScreenRequest request) {
                 synchronized (clients) {
                     for (Identifier id: clients.keySet()) {
-                        transmit(new DisplaySubmitTokenRequest(id));
+                        transmit(new ShowTokenInvestmentScreenRequest(id));
                     }
                 }
             }
@@ -239,9 +239,9 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
                 }
             }
         });
-        addEventProcessor(new EventTypeProcessor<QuizCompletedEvent>(QuizCompletedEvent.class) {
+        addEventProcessor(new EventTypeProcessor<QuizResponseEvent>(QuizResponseEvent.class) {
             @Override
-            public void handle(QuizCompletedEvent event) {
+            public void handle(QuizResponseEvent event) {
                 numberOfCompletedQuizzes++;
                 getLogger().info("Completed quizzes: " + numberOfCompletedQuizzes);
                 if(numberOfCompletedQuizzes == clients.size()*8){
