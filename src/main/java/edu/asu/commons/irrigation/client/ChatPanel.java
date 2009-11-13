@@ -49,8 +49,6 @@ public class ChatPanel extends JPanel {
 
     private IrrigationClient irrigationClient;
 
-    private Identifier clientId;
-
     private JScrollPane messageScrollPane;
 
     private JTextPane messageWindow;
@@ -61,13 +59,8 @@ public class ChatPanel extends JPanel {
     
     private JTextField chatField;
 
-    
-    public ChatPanel() {
-        initGuiComponents();
-    }
-    
     public ChatPanel(IrrigationClient irrigationClient) {
-        this();
+        initGuiComponents();
         setIrrigationClient(irrigationClient);
     }
 
@@ -106,7 +99,7 @@ public class ChatPanel extends JPanel {
         private void sendMessage() {
             String message = chatField.getText();
             if (message != null && ! message.isEmpty() && targetIdentifier != null) {
-                displayMessage(String.format("%s -> %s", getChatHandle(getClientId()), getChatHandle(targetIdentifier)), 
+                displayMessage(String.format("%s -> %s : ", getChatHandle(getClientId()), getChatHandle(targetIdentifier)), 
                         message);
             	chatField.setText("");
             	irrigationClient.transmit(new ChatRequest(getClientId(), message, targetIdentifier));
@@ -129,20 +122,6 @@ public class ChatPanel extends JPanel {
     
     private Map<Identifier, String> chatHandles = new HashMap<Identifier, String>();
 
-    public static void main(String[] args) {
-        JFrame frame = new JFrame();
-        ChatPanel chatPanel = new ChatPanel();
-        Identifier selfId = new Identifier(){};
-        chatPanel.clientId = selfId;
-        chatPanel.initialize(Arrays.asList(new Identifier[] {
-                new Identifier(){}, new Identifier(){}, 
-                new Identifier(){}, selfId }));
-        frame.add(chatPanel);
-        frame.setSize(new Dimension(400, 400));
-        frame.setVisible(true);
-    }
-
-
     private void addStylesToMessageWindow() {
         StyledDocument styledDocument = messageWindow.getStyledDocument();
         // and why not have something like... StyleContext.getDefaultStyle() to
@@ -152,10 +131,8 @@ public class ChatPanel extends JPanel {
         // Style regularStyle = styledDocument.addStyle("regular",
         // defaultStyle);
         StyleConstants.setFontFamily(defaultStyle, "Helvetica");
-        StyleConstants.setBold(styledDocument.addStyle("bold", defaultStyle),
-                true);
-        StyleConstants.setItalic(styledDocument
-                .addStyle("italic", defaultStyle), true);
+        StyleConstants.setBold(styledDocument.addStyle("bold", defaultStyle), true);
+        StyleConstants.setItalic(styledDocument.addStyle("italic", defaultStyle), true);
     }
 
     public void setTimeLeft(long timeLeft) {
@@ -189,11 +166,10 @@ public class ChatPanel extends JPanel {
 
     private void displayMessage(String chatHandle, String message) {
         //		String chatHandle = getChatHandle(source);
-        StyledDocument document = messageWindow.getStyledDocument();
+        final StyledDocument document = messageWindow.getStyledDocument();
         try {
-            document.insertString(document.getLength(), chatHandle + " : ",
-                    document.getStyle("bold"));
-            document.insertString(document.getLength(), message + "\n", null);
+            document.insertString(document.getLength(), chatHandle, document.getStyle("bold"));
+            document.insertString(document.getLength(), message + "\n", document.getStyle("italic"));
             messageWindow.setCaretPosition(document.getLength());
         } 
         catch (BadLocationException e) {
@@ -215,10 +191,7 @@ public class ChatPanel extends JPanel {
     }
     
     public Identifier getClientId() {
-    	if (clientId == null) {
-    		clientId = irrigationClient.getId();
-    	}
-    	return clientId;
+    	return irrigationClient.getId();
     }
 
     public void setIrrigationClient(IrrigationClient client) {
@@ -228,7 +201,7 @@ public class ChatPanel extends JPanel {
             public void handle(final ChatEvent chatEvent) {
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
-                        displayMessage(String.format("%s -> %s", getChatHandle(chatEvent.getSource()), getChatHandle(chatEvent.getTarget())),
+                        displayMessage(String.format("%s -> %s : ", getChatHandle(chatEvent.getSource()), getChatHandle(chatEvent.getTarget())),
                                 chatEvent.toString());
                     }
                 });

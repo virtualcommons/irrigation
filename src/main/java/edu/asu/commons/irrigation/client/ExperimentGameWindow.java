@@ -463,10 +463,17 @@ public class ExperimentGameWindow extends JPanel {
                         builder.append(quizAnswers.get( "explanation" + number )).append("</p>");
                     }
                 }
+                if (incorrectAnswers.isEmpty()) {
+                	builder.append("<p>Congratulations, you got all of the questions correct.</p>");
+                }
+                else {
+                	builder.append(String.format("<p>You answered %d questions incorrectly.  Please review the correct answers to make sure you understand.</p>", incorrectAnswers.size()));
+                }
+                builder.append("<p><b>Please click the 'Next' button at the bottom right of the screen to continue.</b></p>");
                 quizPageResponses.put(currentQuizPageNumber, builder.toString());
                 // no matter what we move on to the next question page
                 // tell them what was right and what was wrong.
-                if (currentQuizPageNumber < numberOfQuestionPages) {
+                if (currentQuizPageNumber <= numberOfQuestionPages) {
                     nextButton.setEnabled(true);
                 }
                 quizzesAnswered++;

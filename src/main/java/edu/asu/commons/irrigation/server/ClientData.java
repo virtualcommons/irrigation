@@ -206,52 +206,9 @@ public class ClientData implements Serializable {
      * @return
      */
     public int getTokensEarnedFromWaterCollected() {
-    	if (waterCollected < 150) {
-    		return 0;
-    	}
-    	else if (waterCollected < 200) {
-    		return 1;
-    	}
-    	else if (waterCollected < 250) {
-    		return 4;
-    	}
-    	else if (waterCollected < 300) {
-    		return 10;
-    	}
-    	else if (waterCollected < 350) {
-    		return 15;
-    	}
-    	else if (waterCollected < 400) {
-    		return 18;
-    	}
-    	else if (waterCollected < 500) {
-    		return 19;
-    	}
-    	else if (waterCollected < 550) {
-    		return 20;
-    	}
-    	else if (waterCollected < 650) {
-    		return 19;
-    	}
-    	else if (waterCollected < 700) {
-    		return 18;
-    	}
-    	else if (waterCollected < 750) {
-    		return 15;
-    	}
-    	else if (waterCollected < 800) {
-    		return 10;
-    	}
-    	else if (waterCollected < 850) {
-    		return 4;
-    	}
-    	else if (waterCollected < 900) {
-    		return 1;
-    	}
-    	else {
-    		return 0;
-    	}
+    	return RoundConfiguration.getTokensEarned(waterCollected);
     }
+
 
     public void collectWater() {
     	waterCollected += availableFlowCapacity;

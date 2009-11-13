@@ -11,7 +11,6 @@ import java.awt.event.ActionListener;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -22,6 +21,14 @@ import javax.swing.SwingUtilities;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.GroupLayout.ParallelGroup;
 
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
+
+import edu.asu.commons.irrigation.conf.RoundConfiguration;
 import edu.asu.commons.irrigation.server.ClientData;
 /**
  * $Id$
@@ -355,9 +362,32 @@ public class MainIrrigationGameWindow extends JPanel {
 		}
 		return jPanelDownStreamWindow;
 	}
+	
+	private XYSeries currentWaterAppliedSeries = new XYSeries("Current water applied");
 
-	private JLabel getWaterCollectedToTokensTable() {
-	    return new JLabel(new ImageIcon("images/payoff-structure.jpg"));
+	private ChartPanel getWaterCollectedToTokensTable() {
+        final XYSeries tokensEarnedSeries = new XYSeries("Tokens earned from water applied");
+        
+        for (int waterApplied = 0; waterApplied < 1000; waterApplied++) {
+        	int tokensEarned = RoundConfiguration.getTokensEarned(waterApplied);
+        	tokensEarnedSeries.add(waterApplied, tokensEarned);
+        }
+        
+        
+        XYSeriesCollection data = new XYSeriesCollection();
+        data.addSeries(tokensEarnedSeries);
+        data.addSeries(currentWaterAppliedSeries);
+		JFreeChart chart = ChartFactory.createXYLineChart(
+                "Water applied to tokens earned",
+                "Cubic feet of water applied to your field",
+                "Tokens earned",
+                data,
+                PlotOrientation.VERTICAL,
+                true,
+                true,
+                false
+        );
+		return new ChartPanel(chart);
 	}
 
 	/**
@@ -389,7 +419,11 @@ public class MainIrrigationGameWindow extends JPanel {
 				getTokensEarnedTextField().setText("" + clientData.getTokensEarnedFromWaterCollected());
 				getTotalTokensEarnedTextField().setText("" + clientData.getAllTokensEarnedThisRound());
 				getMiddleWindowPanel().update(clientDataModel);
-
+				
+				currentWaterAppliedSeries.clear();
+				for (int i = 0; i <= clientData.getTokensEarnedFromWaterCollected(); i++) {
+					currentWaterAppliedSeries.add(clientData.getWaterCollected(), i);
+				}
 			}
 
 		});

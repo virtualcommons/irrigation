@@ -160,6 +160,9 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
         addEventProcessor(new EventTypeProcessor<BeginChatRoundRequest>(BeginChatRoundRequest.class) {
             @Override
             public void handle(BeginChatRoundRequest request) {
+            	if (getRoundConfiguration().isFirstRound()) {
+            		shuffleParticipants();
+            	}
                 persister.clearChatData();
                 // pass it on to all the clients
                 synchronized (clients) {
@@ -355,6 +358,18 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
         server.repl();
     }
 
+    private void shuffleParticipants() {
+        serverDataModel.clear();
+        List<ClientData> clientDataList = new ArrayList<ClientData>(clients.values());
+        // randomize the client data list 
+        Collections.shuffle(clientDataList);
+        // re-add each the clients to the server data model 
+        for (ClientData data: clientDataList) {
+            serverDataModel.addClient(data);
+        }
+    }
+    
+
     enum IrrigationServerState { WAITING, ROUND_IN_PROGRESS };
 
     private class IrrigationServerStateMachine implements StateMachine {
@@ -448,6 +463,8 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
             submittedClients = 0;
             persister.clear();
         }
+        
+
         private void advanceToNextRound() {
             if (getConfiguration().isLastRound()) {
                 state = IrrigationServerState.WAITING;
@@ -458,14 +475,8 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
             // set up the next round
             synchronized (clients) {
                 if (nextRoundConfiguration.shouldRandomizeGroup()) {
-                    serverDataModel.clear();
-                    List<ClientData> clientDataList = new ArrayList<ClientData>(clients.values());
-                    // randomize the client data list 
-                    Collections.shuffle(clientDataList);
-                    // re-add each the clients to the server data model 
-                    for (ClientData data: clientDataList) {
-                        serverDataModel.addClient(data);
-                    }
+                	shuffleParticipants();
+
                 }      
                 // send registration events to all participants.
                 for (ClientData data: clients.values()) {
