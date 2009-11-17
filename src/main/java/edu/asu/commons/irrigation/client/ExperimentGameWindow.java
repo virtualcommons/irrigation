@@ -102,14 +102,13 @@ public class ExperimentGameWindow extends JPanel {
     void initialize() {
         cardLayout = new CardLayout();
         setLayout(cardLayout);
-        setInstructions(getServerConfiguration().getWelcomeInstructions());
         addToCardLayout(getInstructionsPanel());
-//        irrigationGamePanel = new IrrigationGamePanel(client);
         irrigationGamePanel = new MainIrrigationGameWindow(client);
         addToCardLayout(irrigationGamePanel);
         addToCardLayout(getTokenInvestmentPanel());
         addToCardLayout(getChatPanel());
         addToCardLayout(getContributionInformationPanel());
+        setInstructions(getServerConfiguration().getWelcomeInstructions());
     }
     
     private void addToCardLayout(Component component) {
@@ -201,15 +200,13 @@ public class ExperimentGameWindow extends JPanel {
             nextButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     previousButton.setEnabled(true);
-                    if (currentQuizPageNumber >= quizzesAnswered){
-                        nextButton.setEnabled(false);
-                    }
+                    currentQuizPageNumber++;
                     if (currentQuizPageNumber < getServerConfiguration().getNumberOfQuestionPages()) {
-                        currentQuizPageNumber++;
                         setInstructions(getQuizPage());
                     }
                     else {
                         setInstructions(instructionsBuilder.toString());
+                        nextButton.setEnabled(false);
                     }
                 }
             });

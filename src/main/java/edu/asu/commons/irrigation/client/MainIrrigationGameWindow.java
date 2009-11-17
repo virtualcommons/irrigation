@@ -124,14 +124,12 @@ public class MainIrrigationGameWindow extends JPanel {
 
 	private JPanel getMainInterfacePanel() {
 		if(mainInterfacePanel == null){
-			scoreBoardLabel = new JLabel();
+			scoreBoardLabel = new JLabel("EARNINGS GRAPH");
 			scoreBoardLabel.setBounds(new Rectangle(582,225+100+35,530,20));
 			scoreBoardLabel.setHorizontalAlignment(SwingConstants.CENTER);
-			scoreBoardLabel.setText("WATER COLLECTED TO TOKENS EARNED TABLE");
-			gateSwitchLabel = new JLabel();
+			gateSwitchLabel = new JLabel("DASHBOARD");
 			gateSwitchLabel.setBounds(new Rectangle(13,225+100+35,530,20));
 			gateSwitchLabel.setHorizontalAlignment(SwingConstants.CENTER);
-			gateSwitchLabel.setText("DASHBOARD");
 			mainInterfacePanel = new JPanel();
 			mainInterfacePanel.setLayout(null);
 			mainInterfacePanel.setName("Main interface panel");
