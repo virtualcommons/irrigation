@@ -20,12 +20,13 @@ import java.util.TreeMap;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
+import javax.swing.text.html.HTMLEditorKit;
 
 import edu.asu.commons.irrigation.conf.RoundConfiguration;
 import edu.asu.commons.irrigation.conf.ServerConfiguration;
@@ -52,29 +53,22 @@ public class ExperimentGameWindow extends JPanel {
     
     private ChatPanel chatPanel;
 
-    private JScrollPane instructionsScrollPane;
-
     private HtmlEditorPane instructionsEditorPane;
 
     private JPanel tokenInvestmentPanel;
-
     private JPanel contributionInformationPanel;
 
     private JTextField investedTokensTextField;
-
-    private JButton submitTokensButton;
 
     private InfrastructureEfficiencyChartPanel infrastructureEfficiencyChartPanel;
 
     private IrrigationClient client;
     
-//    private MainIrrigationGameWindow mainIrrigationGameWindow;
-
     private MainIrrigationGameWindow irrigationGamePanel;
 
     private StringBuilder instructionsBuilder = new StringBuilder();
 
-    private JTextArea contributionInformationTextArea;
+    private JEditorPane contributionInformationEditorPane;
 
     private JButton nextButton;
 
@@ -90,11 +84,7 @@ public class ExperimentGameWindow extends JPanel {
 
     private HtmlEditorPane tokenInstructionsEditorPane;
 
-    private JScrollPane tokenInstructionsScrollPane;
-
     private int quizzesAnswered = 0;
-
-    private JPanel pieChartPanel;
 
     private TokenInvestmentPieChartPanel pieChart;
 
@@ -102,15 +92,11 @@ public class ExperimentGameWindow extends JPanel {
 
     private CardLayout cardLayout;
     
-    private int numberOfQuestionPages;
-    
     private Map<Integer, String> quizPageResponses = new HashMap<Integer, String>();
-
 
     public ExperimentGameWindow(IrrigationClient client) {
         this.client = client;
         this.clientDataModel = client.getClientDataModel();
-        this.numberOfQuestionPages = getServerConfiguration().getNumberOfQuestionPages();
     }
     
     void initialize() {
@@ -137,9 +123,8 @@ public class ExperimentGameWindow extends JPanel {
             tokenInvestmentPanel.setLayout(new BorderLayout());
             tokenInstructionsEditorPane = createInstructionsEditorPane();
             tokenInstructionsEditorPane.setCaretPosition(0);
-            tokenInstructionsScrollPane = new JScrollPane(tokenInstructionsEditorPane);
+            JScrollPane tokenInstructionsScrollPane = new JScrollPane(tokenInstructionsEditorPane);
             tokenInvestmentPanel.add(tokenInstructionsScrollPane, BorderLayout.CENTER);
-
             tokenInvestmentPanel.add(getSubmitTokenPanel(), BorderLayout.SOUTH);
             tokenInvestmentPanel.setBackground(Color.WHITE);
         }
@@ -151,19 +136,16 @@ public class ExperimentGameWindow extends JPanel {
             submitTokenPanel = new JPanel();
             submitTokenPanel.setLayout(new BorderLayout());
             submitTokenPanel.add(getInvestedTokensTextField(), BorderLayout.CENTER);
-            submitTokenPanel.add(getSubmitTokensButton(), BorderLayout.EAST);
+            JButton submitTokensButton = new JButton("Invest");
+            submitTokensButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    submitInvestedTokens();
+                }
+            });
+            submitTokenPanel.add(submitTokensButton, BorderLayout.SOUTH);
             return submitTokenPanel;
         }
         return submitTokenPanel;
-    }
-    
-    private JScrollPane getInstructionsScrollPane() {
-        if (instructionsScrollPane == null) {
-            instructionsScrollPane = new JScrollPane(getInstructionsEditorPane());
-            instructionsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-            instructionsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        }
-        return instructionsScrollPane;
     }
 
     private JPanel getInstructionsPanel() {
@@ -171,8 +153,12 @@ public class ExperimentGameWindow extends JPanel {
             instructionsPanel = new JPanel();
             instructionsPanel.setName("Instructions panel");
             instructionsPanel.setLayout(new BorderLayout());
-            instructionsPanel.add(getInstructionsScrollPane(), BorderLayout.CENTER);
-            instructionsPanel.add(getQuizNavigationPanel(), BorderLayout.PAGE_END);
+            JScrollPane instructionsScrollPane = new JScrollPane(getInstructionsEditorPane());
+            instructionsScrollPane = new JScrollPane(getInstructionsEditorPane());
+            instructionsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+            instructionsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            instructionsPanel.add(instructionsScrollPane, BorderLayout.CENTER);
+//            instructionsPanel.add(getQuizNavigationPanel(), BorderLayout.PAGE_END);
         }
         return instructionsPanel;
     }
@@ -218,7 +204,7 @@ public class ExperimentGameWindow extends JPanel {
                     if (currentQuizPageNumber >= quizzesAnswered){
                         nextButton.setEnabled(false);
                     }
-                    if (currentQuizPageNumber < numberOfQuestionPages) {
+                    if (currentQuizPageNumber < getServerConfiguration().getNumberOfQuestionPages()) {
                         currentQuizPageNumber++;
                         setInstructions(getQuizPage());
                     }
@@ -248,10 +234,8 @@ public class ExperimentGameWindow extends JPanel {
         }
         else {
             quizPage = quizPage.replace("<input type=\"submit\" name=\"submit\" value=\"Submit\">", "");
-            
             builder.append(quizPage).append(quizPageResponse);
         }
-
         return builder.toString();
     }
     
@@ -271,19 +255,6 @@ public class ExperimentGameWindow extends JPanel {
             });
         }
         return investedTokensTextField;
-    }
-
-    private JButton getSubmitTokensButton() {
-        if (submitTokensButton == null) {
-            submitTokensButton = new JButton();
-            submitTokensButton.setText("Invest");
-            submitTokensButton.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    submitInvestedTokens();
-                }
-            });
-        }
-        return submitTokensButton;
     }
 
     private void submitInvestedTokens() {
@@ -413,17 +384,24 @@ public class ExperimentGameWindow extends JPanel {
             instructionsBuilder.append(getServerConfiguration().getFinalInstructions());
         }
         instructionsBuilder.append("<hr/>");
-        setInstructions(instructionsBuilder.toString());
+        displayInstructions(instructionsBuilder.toString());
     }
 
     // adding the instructions into the instruction Panel
     private void setInstructions(final String instructions) {
+        setInstructions(instructions, false);
+    }
+    
+    private void setInstructions(String instructions, boolean caretToEnd) {
+        instructionsEditorPane.setText(instructions);
+        instructionsEditorPane.setCaretPosition(caretToEnd ? instructions.length() : 0);
+    }
+    
+    private void displayInstructions(final String instructions) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                instructionsEditorPane.setText(instructions);
-                instructionsEditorPane.setCaretPosition(0);
+                setInstructions(instructions);
                 addCenterComponent(getInstructionsPanel());
-                getInstructionsScrollPane().revalidate();
             }
         });
     }
@@ -434,6 +412,7 @@ public class ExperimentGameWindow extends JPanel {
             public synchronized void actionPerformed(ActionEvent e) {
                 if (quizPageResponses.containsKey(currentQuizPageNumber)) {
                     // this form has already been submit.
+                    // shouldn't happen
                     // FIXME: report to user?
                     return;
                 }
@@ -453,6 +432,11 @@ public class ExperimentGameWindow extends JPanel {
                     if (questionNumber.charAt(0) == 'q') {
                         String number = questionNumber.substring(1, questionNumber.length());
                         String response = (String) entry.getValue();
+                        if (response == null || response.trim().isEmpty()) {
+                            // if any responses are empty, abort.
+                            
+                            return;
+                        }
                         String correctAnswer = quizAnswers.get(questionNumber);
                         builder.append(String.format("<p><b>Question %s</b><br/>", number));
                         String color = "blue";
@@ -475,12 +459,12 @@ public class ExperimentGameWindow extends JPanel {
                 quizPageResponses.put(currentQuizPageNumber, builder.toString());
                 // no matter what we move on to the next question page
                 // tell them what was right and what was wrong.
-                if (currentQuizPageNumber <= numberOfQuestionPages) {
+                if (currentQuizPageNumber <= getServerConfiguration().getNumberOfQuestionPages()) {
                     nextButton.setEnabled(true);
                 }
                 quizzesAnswered++;
                 client.transmit(new QuizResponseEvent(client.getId(), currentQuizPageNumber, responses, incorrectAnswers));
-                setInstructions(getQuizPage());
+                setInstructions(getQuizPage(), true);
             }
         };
 
@@ -490,27 +474,27 @@ public class ExperimentGameWindow extends JPanel {
     	GroupDataModel groupDataModel = clientData.getGroupDataModel();
         int totalContributedTokens = groupDataModel.getTotalContributedTokens();
         final StringBuilder builder = new StringBuilder();
-        builder.append("Infrastructure efficiency before investment: ")
+        builder.append("<ul><li>Infrastructure efficiency before investment: ")
         	.append(groupDataModel.getInfrastructureEfficiencyBeforeInvestment())
-        	.append("%\n");
-        builder.append("Irrigation capacity before investment: ").append(groupDataModel.getIrrigationCapacityBeforeInvestment()).append(" cubic feet per second\n\n");
+        	.append("%</li>");
+        builder.append("<li>Irrigation capacity before investment: ").append(groupDataModel.getIrrigationCapacityBeforeInvestment()).append(" cubic feet per second</li>");
         builder.append(
         		String.format(
-        				"Your group invested a total of %d tokens, increasing the infrastructure efficiency to %d%%.\n", 
+        				"<li>Total group investment: %d tokens, increasing the infrastructure efficiency to %d%%</li>", 
         				totalContributedTokens, groupDataModel.getInfrastructureEfficiency()));
         if (groupDataModel.getIrrigationCapacity() > groupDataModel.getIrrigationCapacityBeforeInvestment()) {
-        	builder.append("Your group's investment has increased the irrigation capacity to ");
+        	builder.append("<li><b>Your group's investment has increased the irrigation capacity to ");
         }
         else {
-        	builder.append("Your group's investment was not enough to increase the irrigation capacity.  Your group's irrigation capacity is still ");
+        	builder.append("<li>Your group's investment was not enough to increase the irrigation capacity.  Your group's irrigation capacity is still ");
         }
-        builder.append(groupDataModel.getIrrigationCapacity()).append(" cubic feet of water per second.  The amount of water available to pass through your irrigation canal is ")
-            .append(groupDataModel.getActualFlowCapacity());
+        builder.append(groupDataModel.getIrrigationCapacity()).append(" cubic feet of water per second.</li><li>The amount of water available to pass through your irrigation canal is ")
+            .append(groupDataModel.getActualFlowCapacity()).append(" cubic feet per second</li>");
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                contributionInformationTextArea.setText(builder.toString());
+                contributionInformationEditorPane.setText(builder.toString());
                 infrastructureEfficiencyChartPanel.initialize();
-                pieChart.setClientData(clientData);
+                pieChart.initialize(clientData);
                 addCenterComponent(getContributionInformationPanel());
             }
         });
@@ -522,28 +506,29 @@ public class ExperimentGameWindow extends JPanel {
             contributionInformationPanel = new JPanel();
             contributionInformationPanel.setName("Graph panel");
             contributionInformationPanel.setLayout(new BoxLayout(contributionInformationPanel, BoxLayout.Y_AXIS));
-            contributionInformationPanel.add(getPieChartPanel());
+            contributionInformationPanel.add(createPieChartPanel());
             contributionInformationPanel.add(Box.createVerticalStrut(15));
-            contributionInformationTextArea = new JTextArea();
-            contributionInformationTextArea.setEditable(false);
-            contributionInformationPanel.add(contributionInformationTextArea);
+            contributionInformationEditorPane = new JEditorPane();
+            contributionInformationEditorPane.setContentType("text/html");
+            contributionInformationEditorPane.setEditorKit(new HTMLEditorKit());
+            contributionInformationEditorPane.setEditable(false);
+            contributionInformationEditorPane.setBackground(Color.WHITE);
+            contributionInformationPanel.add(contributionInformationEditorPane);
         }
         return contributionInformationPanel;
     }
 
-    private JPanel getPieChartPanel() {
-        if (pieChartPanel == null) {
-            pieChartPanel = new JPanel();
-            infrastructureEfficiencyChartPanel = new InfrastructureEfficiencyChartPanel(client);
-            pieChart = new TokenInvestmentPieChartPanel();
-            GridLayout gridLayout = new GridLayout();
-            gridLayout.setRows(1);
-            gridLayout.setColumns(2);
-            pieChartPanel.setLayout(gridLayout);
-            pieChartPanel.add(infrastructureEfficiencyChartPanel);
-            pieChartPanel.add(pieChart);
-        }
-        return pieChartPanel;
+    private JPanel createPieChartPanel() {
+        JPanel panel = new JPanel();
+        infrastructureEfficiencyChartPanel = new InfrastructureEfficiencyChartPanel(client);
+        pieChart = new TokenInvestmentPieChartPanel();
+        GridLayout gridLayout = new GridLayout();
+        gridLayout.setRows(1);
+        gridLayout.setColumns(2);
+        panel.setLayout(gridLayout);
+        panel.add(infrastructureEfficiencyChartPanel);
+        panel.add(pieChart);
+        return panel;
     }
 
 
@@ -597,7 +582,7 @@ public class ExperimentGameWindow extends JPanel {
             					roundConfiguration.getWaterSupplyCapacity()
             					));
             }
-            setInstructions(instructionsBuilder.toString());
+            displayInstructions(instructionsBuilder.toString());
         }
     }
 
@@ -646,11 +631,11 @@ public class ExperimentGameWindow extends JPanel {
     public void showQuiz() {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
+                setInstructions(getQuizPage());
                 getInstructionsPanel().add(getQuizNavigationPanel(), BorderLayout.PAGE_END);
                 getInstructionsPanel().revalidate();
             }
         });
-        setInstructions(getQuizPage());
     }
     
     /**
@@ -667,13 +652,13 @@ public class ExperimentGameWindow extends JPanel {
     }
     
     public void showGameScreenshot() {
-        setInstructions(getServerConfiguration().getGameScreenshotInstructions());
+        displayInstructions(getServerConfiguration().getGameScreenshotInstructions());
     }
 
     /** 
      * Invoked when the show instructions button is pressed.
      */
     public void showInstructions() {
-        setInstructions(getServerConfiguration().getInitialInstructions());
+        displayInstructions(getServerConfiguration().getInitialInstructions());
     }
 }

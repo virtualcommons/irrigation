@@ -18,7 +18,12 @@ import edu.asu.commons.irrigation.server.GroupDataModel;
 import edu.asu.commons.net.Identifier;
 
 /**
+ * $Id$
+ * 
  * Presents the group contributions as a pie chart.
+ *
+ * @author <a href='mailto:Allen.Lee@asu.edu'>Allen Lee</a>
+ * @version $Rev$
  */
 public class TokenInvestmentPieChartPanel extends JPanel {
 
@@ -30,7 +35,7 @@ public class TokenInvestmentPieChartPanel extends JPanel {
 		setLayout(new BorderLayout());
 	}
 	
-    public void setClientData(final ClientData clientData) {
+    public void initialize(final ClientData clientData) {
     	final PieDataset dataset = createPieDataset(clientData);
     	final JFreeChart chart = createChart(dataset);
     	if (chartPanel != null) {
@@ -45,42 +50,22 @@ public class TokenInvestmentPieChartPanel extends JPanel {
      * Creates a pie dataset out of the client 
      * @return a sample dataset.
      */
-    private PieDataset createPieDataset(ClientData clientData) {
+    private PieDataset createPieDataset(ClientData thisClientData) {
         final DefaultPieDataset defaultPieDataset = new DefaultPieDataset();
-        GroupDataModel groupDataModel = clientData.getGroupDataModel();
+        GroupDataModel groupDataModel = thisClientData.getGroupDataModel();
         Map<Identifier,ClientData>clientDataMap = groupDataModel.getClientDataMap();
-        for (ClientData currentClientData : clientDataMap.values()) {
+        for (ClientData clientData : clientDataMap.values()) {
             StringBuilder labelBuilder = new StringBuilder();
-            if (currentClientData.getId().equals(clientData.getId())) {
-                labelBuilder.append("You");
+            labelBuilder.append(clientData.getPriorityString());
+            if (clientData.getId().equals(thisClientData.getId())) {
+                labelBuilder.append(" (You)");
             }
-            else {
-                labelBuilder.append(currentClientData.getPriorityString());
-            }
-            labelBuilder.append(" invested ").append(currentClientData.getInvestedTokens()).append(" token(s)");
-            defaultPieDataset.setValue(labelBuilder.toString(), currentClientData.getInvestedTokens());
+            labelBuilder.append(" invested ").append(clientData.getInvestedTokens()).append(" token(s)");
+            defaultPieDataset.setValue(labelBuilder.toString(), clientData.getInvestedTokens());
         }
         return defaultPieDataset;        
     }
     
-    // ****************************************************************************
-    // * JFREECHART DEVELOPER GUIDE                                               *
-    // * The JFreeChart Developer Guide, written by David Gilbert, is available   *
-    // * to purchase from Object Refinery Limited:                                *
-    // *                                                                          *
-    // * http://www.object-refinery.com/jfreechart/guide.html                     *
-    // *                                                                          *
-    // * Sales are used to provide funding for the JFreeChart project - please    * 
-    // * support us so that we can continue developing free software.             *
-    // ****************************************************************************
-    
-    /**
-     * Creates a chart.
-     * 
-     * @param dataset  the dataset.
-     * 
-     * @return a chart.
-     */
     private JFreeChart createChart(final PieDataset dataset) {
         
         final JFreeChart chart = ChartFactory.createPieChart(
@@ -94,11 +79,10 @@ public class TokenInvestmentPieChartPanel extends JPanel {
         final PiePlot plot = (PiePlot) chart.getPlot();
         //plot.setLabelGenerator(new CustomLabelGenerator());
         plot.setLabelFont(new Font("SansSerif", Font.PLAIN, 12));
-        plot.setNoDataMessage("No data available");
+        plot.setNoDataMessage("No contributions were made.");
         plot.setCircular(false);
         plot.setLabelGap(0.02);
         return chart;
-        
     }
     
 }

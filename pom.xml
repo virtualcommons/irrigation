@@ -108,7 +108,7 @@ vim:sts=2:sw=2
               <tasks>
                 <!-- 
                 can be invoked via 
-                     mdeployvn -P ant -D target=
+                     mvn -P ant -D target=
                   -->
                 <property name="compile.classpath" refid="maven.compile.classpath"/>
                 <property name="runtime.classpath" refid="maven.runtime.classpath"/>
@@ -130,6 +130,5 @@ vim:sts=2:sw=2
         </dependency>
       </dependencies>
     </profile>
-
   </profiles>
 </project>

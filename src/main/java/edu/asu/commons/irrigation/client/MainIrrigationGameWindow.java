@@ -373,7 +373,6 @@ public class MainIrrigationGameWindow extends JPanel {
         	tokensEarnedSeries.add(waterApplied, tokensEarned);
         }
         
-        
         XYSeriesCollection data = new XYSeriesCollection();
         data.addSeries(tokensEarnedSeries);
         data.addSeries(currentWaterAppliedSeries);
@@ -387,6 +386,7 @@ public class MainIrrigationGameWindow extends JPanel {
                 true,
                 false
         );
+		chart.setAntiAlias(true);
 		return new ChartPanel(chart);
 	}
 

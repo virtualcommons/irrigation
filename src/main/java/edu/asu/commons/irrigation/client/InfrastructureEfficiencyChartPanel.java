@@ -12,6 +12,7 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
+import edu.asu.commons.irrigation.conf.RoundConfiguration;
 import edu.asu.commons.irrigation.server.GroupDataModel;
 
 /**
@@ -51,29 +52,33 @@ public class InfrastructureEfficiencyChartPanel extends JPanel {
         final XYSeries potentialFlowCapacitySeries = new XYSeries("Potential");
         //				final XYSeries actualFlowCapacitySeriesY = new XYSeries("Actual");
         final XYSeries initialInfrastructureEfficiencySeries = new XYSeries("Initial");
-        int x,y;
+        final XYSeries waterSupplySeries = new XYSeries("Available water supply");
         GroupDataModel group = client.getClientDataModel().getGroupDataModel();
-        final int infrastructureEfficiency = group.getInfrastructureEfficiency();
+        final int actualInfrastructureEfficiency = group.getInfrastructureEfficiency();
         final int actualFlowCapacity = group.getIrrigationCapacity();
-        for (y = 0; y <= actualFlowCapacity; y++) {
-            actualFlowCapacitySeries.add(infrastructureEfficiency, y);
+        for (int y = 0; y <= actualFlowCapacity; y++) {
+            actualFlowCapacitySeries.add(actualInfrastructureEfficiency, y);
         }
-        for(x =0; x<=client.getRoundConfiguration().getMaximumInfrastructureEfficiency();x++){
-            y =	group.calculateFlowCapacity(x);
-            potentialFlowCapacitySeries.add(x,y);
+        RoundConfiguration roundConfiguration = client.getRoundConfiguration();
+        int maximumInfrastructureEfficiency = roundConfiguration.getMaximumInfrastructureEfficiency();
+        int waterSupplyCapacity = roundConfiguration.getWaterSupplyCapacity(); 
+        for(int x = 0; x <= maximumInfrastructureEfficiency; x++){
+            int flowCapacity =	group.calculateFlowCapacity(x);
+            potentialFlowCapacitySeries.add(x,flowCapacity);
+            waterSupplySeries.add(x, waterSupplyCapacity);
         }
         final int infrastructureEfficiencyBeforeInvestment = group.getInfrastructureEfficiencyBeforeInvestment();
         final int irrigationCapacityBeforeInvestment = group.getIrrigationCapacityBeforeInvestment();
-        for (y = 0; y <= irrigationCapacityBeforeInvestment; y++) {
+        for (int y = 0; y <= irrigationCapacityBeforeInvestment; y++) {
             initialInfrastructureEfficiencySeries.add(infrastructureEfficiencyBeforeInvestment, y);
         }
+        
 
         final XYSeriesCollection data = new XYSeriesCollection();
         data.addSeries(initialInfrastructureEfficiencySeries);
         data.addSeries(actualFlowCapacitySeries);
         data.addSeries(potentialFlowCapacitySeries);
-
-        //	            data.addSeries(actualFlowCapacitySeriesY);
+        data.addSeries(waterSupplySeries);
 
         final JFreeChart chart = ChartFactory.createXYLineChart(
                 "Water Delivery Capacity vs. Infrastructure Efficiency",
