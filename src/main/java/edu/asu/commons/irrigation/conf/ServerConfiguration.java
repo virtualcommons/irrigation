@@ -130,7 +130,7 @@ extends ExperimentConfiguration.Base<RoundConfiguration> {
         return assistant.getProperty("investment-instructions");
     }
     
-    public int getNumberOfQuestionPages() {
+    public int getNumberOfQuizPages() {
         return assistant.getIntProperty("question-pages", 2);
     }
     

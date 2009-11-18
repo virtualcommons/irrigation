@@ -101,8 +101,7 @@ public class ChatPanel extends JPanel {
                         message);
             	chatField.setText("");
             	irrigationClient.transmit(new ChatRequest(getClientId(), message, targetIdentifier));
- 
-            }
+             }
             chatField.requestFocusInWindow();
         }
 
@@ -164,7 +163,7 @@ public class ChatPanel extends JPanel {
         add(textEntryPanel, BorderLayout.PAGE_END);
     }
 
-    private void displayMessage(String chatHandle, String message) {
+    public void displayMessage(String chatHandle, String message) {
         //		String chatHandle = getChatHandle(source);
         final StyledDocument document = messageWindow.getStyledDocument();
         try {
@@ -188,6 +187,7 @@ public class ChatPanel extends JPanel {
             HANDLES[i] = " " + HANDLE_STRING.charAt(i) + " ";
             chatHandles.put(participants.get(i), HANDLES[i]);
         }
+        displayMessage("", " ---- chat round starting ---- ");
     }
     
     public Identifier getClientId() {

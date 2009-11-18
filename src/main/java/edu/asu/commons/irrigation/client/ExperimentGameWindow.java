@@ -97,9 +97,10 @@ public class ExperimentGameWindow extends JPanel {
     public ExperimentGameWindow(IrrigationClient client) {
         this.client = client;
         this.clientDataModel = client.getClientDataModel();
+        initialize();
     }
     
-    void initialize() {
+    private void initialize() {
         cardLayout = new CardLayout();
         setLayout(cardLayout);
         addToCardLayout(getInstructionsPanel());
@@ -121,7 +122,6 @@ public class ExperimentGameWindow extends JPanel {
             tokenInvestmentPanel.setName("Token investment panel");
             tokenInvestmentPanel.setLayout(new BorderLayout());
             tokenInstructionsEditorPane = createInstructionsEditorPane();
-            tokenInstructionsEditorPane.setCaretPosition(0);
             JScrollPane tokenInstructionsScrollPane = new JScrollPane(tokenInstructionsEditorPane);
             tokenInvestmentPanel.add(tokenInstructionsScrollPane, BorderLayout.CENTER);
             tokenInvestmentPanel.add(getSubmitTokenPanel(), BorderLayout.SOUTH);
@@ -201,7 +201,7 @@ public class ExperimentGameWindow extends JPanel {
                 public void actionPerformed(ActionEvent e) {
                     previousButton.setEnabled(true);
                     currentQuizPageNumber++;
-                    if (currentQuizPageNumber < getServerConfiguration().getNumberOfQuestionPages()) {
+                    if (currentQuizPageNumber <= getServerConfiguration().getNumberOfQuizPages()) {
                         setInstructions(getQuizPage());
                     }
                     else {
@@ -286,7 +286,6 @@ public class ExperimentGameWindow extends JPanel {
             instructionsEditorPane.setName("Instructions editor pane");
             // create a quiz listener and then initialize the instructions.
             instructionsEditorPane.setActionListener(createQuizListener(getServerConfiguration()));
-            instructionsEditorPane.setCaretPosition(0);
         }
         return instructionsEditorPane;
     }
@@ -456,7 +455,7 @@ public class ExperimentGameWindow extends JPanel {
                 quizPageResponses.put(currentQuizPageNumber, builder.toString());
                 // no matter what we move on to the next question page
                 // tell them what was right and what was wrong.
-                if (currentQuizPageNumber <= getServerConfiguration().getNumberOfQuestionPages()) {
+                if (currentQuizPageNumber <= getServerConfiguration().getNumberOfQuizPages()) {
                     nextButton.setEnabled(true);
                 }
                 quizzesAnswered++;
@@ -595,7 +594,7 @@ public class ExperimentGameWindow extends JPanel {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 startTimer(getServerConfiguration().getChatDuration() * 1000L);
-                ChatPanel chatPanel = getChatPanel();
+//                ChatPanel chatPanel = getChatPanel();
                 chatPanel.initialize(clientDataModel.getAllClientIdentifiers());
                 addCenterComponent( chatPanel );
                 chatPanel.setFocusInChatField();
@@ -613,6 +612,7 @@ public class ExperimentGameWindow extends JPanel {
                     if (timeRemaining < 0) {
                     	showTokenInvestmentScreen();
                         getInvestedTokensTextField().requestFocusInWindow();
+//                        chatPanel.displayMessage("", "---- chat round ending ----");
                         timer.stop();
                         timer = null;
                     }

@@ -71,9 +71,8 @@ public class IrrigationClient {
     }
     
     private void initialize() {
-        clientDataModel = new ClientDataModel(channel, this);
+    	clientDataModel = new ClientDataModel(channel, this);
         experimentGameWindow = new ExperimentGameWindow(this);
-        experimentGameWindow.initialize();
         connect();
     }
 
