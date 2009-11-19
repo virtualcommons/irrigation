@@ -75,7 +75,9 @@ Thanks for participating!
 ]]>
 </entry>
 
-
+<!-- FIXME: lots of parameterizable fields here.  should make instructions
+template-language-pluggable 
+-->
 <entry key="initial-instructions">
 <![CDATA[
 <p>
@@ -88,18 +90,19 @@ to FOUR other participants in the room.
 The amount of money you earn will depend on the decisions made by you and the other
 members of your group. This exercise mimics decisions people make in irrigation
 systems. In each round you will receive 10 tokens which you can invest in the
-irrigation infrastructure. Given the capacity of the irrigation infrastructure and
-the availability of water, you can grow crops. Tokens earned in a round is the sum
-of tokens not invested plus tokens earned by growing crops. Each token is worth 5
-cents. In each round you will first make a decision as to how much to invest in the
-irrigation infrastructure. Based on the combined contributions of all 5 participants
-in your group in each round, your group can maintain the capacity of the irrigation
-infrastructure for growing crops. 
+irrigation infrastructure. Based on the <b>water delivery capacity</b> of the
+irrigation infrastructure and the availability of water you will be able to
+grow crops. Tokens earned in a round is the sum of tokens not invested plus
+tokens earned by growing crops. Each token is worth 5 cents. In each round you
+will first decide how much to invest in the irrigation infrastructure.  Based
+on the combined contributions of all 5 participants in your group in each
+round, your group can maintain the capacity of the irrigation infrastructure
+for growing crops. 
 </p>
 
 <p>
 We will now start a practice round to help illustrate the experiment.  Before each
-round in this experiment you will have a chat period of 60 seconds where you can
+round in this experiment you will have a chat period of %d seconds where you can
 send text messages to the other participants. You may discuss any aspect of the
 exercise with two important exceptions:
 </p>
@@ -114,11 +117,7 @@ finished.
 We will be monitoring the chat traffic.  If we detect any violation of these rules,
 we will have to remove <b>all members of the group where the violation occurred</b>
 from the experiment. That group will have to wait until the entire experiment is
-finished to receive their payment.
-</p>
-<p>
-You will see a text box appear on your screen when a chat period starts. The amount
-of time left in the chat period will be displayed <b>below the chat messages window</b>.<br>
+finished to receive payment.
 </p>
 ]]>
 </entry>
@@ -284,9 +283,36 @@ the round?<br>
 ]]>
 </entry>
 
+<entry key='chat-instructions'>
+<![CDATA[
+<h3>Chat Instructions</h3>
+You may now chat for %d seconds with the other members of your group.  You may
+discuss any aspect of the exercise with two important exceptions:
+</p>
+<ol>
+<li>You are <b>not allowed</b> to promise the other participants
+side-payments or threaten them with any consequence after the experiment is
+finished.
+</li>
+<li>You are <b>not allowed to reveal your real identity</b>.</li>
+</ol>
+<p>
+We will be monitoring the chat traffic.  If we detect any violation of these rules,
+we will have to remove <b>all members of the group where the violation occurred</b>
+from the experiment. That group will have to wait until the entire experiment is
+finished to receive payment.
+</p>
+<p>
+You can send messages by typing in the text field at the bottom of the screen
+and then pressing the return key or clicking the send button. The time left
+for the discussion is displayed with a progress bar above the text field at
+the bottom of the screen.
+</p>
+]]>
+</entry>
+
 <entry key="investment-instructions">
 <![CDATA[
-<h3>Invest tokens in the irrigation infrastructure</h3>
 <p>
 You have been endowed with 10 tokens to invest. You must make a decision about
 how much you wish to invest [0,10] in the irrigation infrastructure.  You can

@@ -87,7 +87,11 @@ extends ExperimentConfiguration.Base<RoundConfiguration> {
     }
 
     public String getInitialInstructions() {
-        return assistant.getProperty("initial-instructions");
+    	String initialInstructions = assistant.getProperty("initial-instructions", "");
+    	if (initialInstructions.contains("%d")) {
+    		return String.format(initialInstructions, getChatDuration());
+    	}
+    	return initialInstructions;
     }
     
     public String getWelcomeInstructions() {
@@ -139,16 +143,11 @@ extends ExperimentConfiguration.Base<RoundConfiguration> {
     }
 
     public String getChatInstructions() {
-    	return assistant.getProperty("chat-instructions", 
-    			String.format(
-    					"<h3>Chat Instructions</h3><p>You now have the opportunity to chat for %d seconds.  You can discuss whatever you want" +
-    					" related to the experiment with some restrictions.  You may not promise the other participant(s) side " +
-    					"payments or threaten them with any consequence (e.g., physical violence) after the experiment is finished.  Also, you may not reveal your real identity." +
-    					"We are monitoring chat traffic - if we notice a violation of the rules we will remove the group from the room until the other groups are finished with the experiment.</p>" +
-    					"<p>You can send messages by typing in the text field at the bottom of the screen and then hit return or click send.  " +
-    					"The time left for the discussion is displayed above the text field at the bottom of the screen.</p>",
-    					getChatDuration())
-    	);
+    	String chatInstructions = assistant.getProperty("chat-instructions", "");
+    	if (chatInstructions.contains("%d")) {
+    		return String.format(chatInstructions, getChatDuration());
+    	}
+    	return chatInstructions;
     }
 
     public String getGameScreenshotInstructions() {

@@ -461,10 +461,10 @@ public class MainIrrigationGameWindow extends JPanel {
 		int irrigationCapacity = clientDataModel.getIrrigationCapacity();
 		int waterSupply = clientDataModel.getWaterSupplyCapacity();
 		irrigationCapacityLabel.setText(
-				String.format("Irrigation capacity: %d cubic feet per second (cfps)",
+				String.format("Water delivery capacity: %d cubic feet per second (cfps)",
 						irrigationCapacity));
 		waterSupplyLabel.setText(
-		        String.format("Water supply: %d cubic feet per second (cfps)",
+		        String.format("Available water supply: %d cubic feet per second (cfps)",
 		                waterSupply));
 		revalidate();
 	}
