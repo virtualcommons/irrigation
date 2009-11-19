@@ -207,6 +207,7 @@ public class ExperimentGameWindow extends JPanel {
                     else {
                         setInstructions(instructionsBuilder.toString());
                         nextButton.setEnabled(false);
+                        disableQuiz();
                     }
                 }
             });
@@ -390,7 +391,7 @@ public class ExperimentGameWindow extends JPanel {
     
     private void setInstructions(String instructions, boolean caretToEnd) {
         instructionsEditorPane.setText(instructions);
-        instructionsEditorPane.setCaretPosition(caretToEnd ? instructions.length() : 0);
+        instructionsEditorPane.setCaretPosition(caretToEnd ? instructions.length() - 1 : 0);
     }
     
     private void displayInstructions(final String instructions) {
@@ -473,19 +474,19 @@ public class ExperimentGameWindow extends JPanel {
         builder.append("<ul><li>Infrastructure efficiency before investment: ")
         	.append(groupDataModel.getInfrastructureEfficiencyBeforeInvestment())
         	.append("%</li>");
-        builder.append("<li>Irrigation capacity before investment: ").append(groupDataModel.getIrrigationCapacityBeforeInvestment()).append(" cubic feet per second</li>");
+        builder.append("<li>Water delivery capacity before investment: ").append(groupDataModel.getIrrigationCapacityBeforeInvestment()).append(" cubic feet per second</li>");
         builder.append(
         		String.format(
         				"<li>Total group investment: %d tokens, increasing the infrastructure efficiency to %d%%</li>", 
         				totalContributedTokens, groupDataModel.getInfrastructureEfficiency()));
-        if (groupDataModel.getIrrigationCapacity() > groupDataModel.getIrrigationCapacityBeforeInvestment()) {
-        	builder.append("<li><b>Your group's investment has increased the irrigation capacity to ");
+        if (groupDataModel.getWaterDeliveryCapacity() > groupDataModel.getIrrigationCapacityBeforeInvestment()) {
+        	builder.append("<li><b>Your group's investment has increased the water delivery capacity to ");
         }
         else {
-        	builder.append("<li>Your group's investment was not enough to increase the irrigation capacity.  Your group's irrigation capacity is still ");
+        	builder.append("<li>Your group's investment was not enough to increase the water delivery capacity.  Your group's water delivery capacity is still ");
         }
-        builder.append(groupDataModel.getIrrigationCapacity()).append(" cubic feet of water per second.</li><li>The amount of water available to pass through your irrigation canal is ")
-            .append(groupDataModel.getActualFlowCapacity()).append(" cubic feet per second</li>");
+        builder.append(groupDataModel.getWaterDeliveryCapacity()).append(" cubic feet of water per second.</li><li>The amount of water available to pass through your irrigation canal is ")
+            .append(groupDataModel.getActualWaterDeliveryCapacity()).append(" cubic feet per second</li>");
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 contributionInformationEditorPane.setText(builder.toString());
@@ -538,17 +539,17 @@ public class ExperimentGameWindow extends JPanel {
                     infrastructureEfficiency = roundConfiguration.getInitialInfrastructureEfficiency();
                 }
                 else {
-                    infrastructureEfficiency = group.getInfrastructureEfficiency() - roundConfiguration.getInfrastructureDegradationFactor();
+                    infrastructureEfficiency = Math.max(0, group.getInfrastructureEfficiency() - roundConfiguration.getInfrastructureDegradationFactor());
                 }
                 addCenterComponent(getTokenInvestmentPanel());
                 StringBuilder builder = new StringBuilder();
                 builder.append(
                         String.format(
                         		"<h2>Current infrastructure efficiency: %d%%</h2>" +
-                        		"<h2>Current irrigation capacity: %d cubic feet per second</h2>" +
+                        		"<h2>Current water delivery capacity: %d cubic feet per second</h2>" +
                         		"<h2>Available water supply: %d cubic feet per second</h2>",
                                 infrastructureEfficiency,
-                                group.calculateFlowCapacity(infrastructureEfficiency),
+                                group.calculateWaterDeliveryCapacity(infrastructureEfficiency),
                                 roundConfiguration.getWaterSupplyCapacity()
                         ));
                 builder.append(getServerConfiguration().getInvestmentInstructions());
@@ -563,18 +564,18 @@ public class ExperimentGameWindow extends JPanel {
         if (! roundConfiguration.isFirstRound()) {
             instructionsBuilder.append(roundConfiguration.getInstructions());
             instructionsBuilder.append("<hr/>");
-            int irrigationCapacity = clientDataModel.getGroupDataModel().getIrrigationCapacity();
+            int irrigationCapacity = clientDataModel.getGroupDataModel().getWaterDeliveryCapacity();
 //            int clientCapacity = roundConfiguration.getMaximumClientFlowCapacity();
             if (roundConfiguration.shouldResetInfrastructureEfficiency()) {
-            	instructionsBuilder.append("The irrigation infrastructure efficiency is currently 75%.");
+            	instructionsBuilder.append("The irrigation infrastructure efficiency is currently 75% (water delivery capacity of 35 cfps).");
             }
             else {
             	instructionsBuilder.append(
-            			String.format("<p>The <b>current infrastructure efficiency is %d%%</b> but will <b>decline by %d%%</b> during this round." +
-            					"The <b>current irrigation capacity is %d cfps</b> and the <b>available water supply is %d cfps</b>.</p><hr/>",
+            			String.format("<p>The <b>irrigation infrastructure efficiency is %d%% (water delivery capacity of %d cfps)</b> but will <b>decline by %d%%</b> during this round." +
+            					"The <b>available water supply is %d cfps</b>.</p><br/><hr/>",
             					clientDataModel.getGroupDataModel().getInfrastructureEfficiency(),
+                                                irrigationCapacity,
             					roundConfiguration.getInfrastructureDegradationFactor(),
-            					irrigationCapacity,
             					roundConfiguration.getWaterSupplyCapacity()
             					));
             }
@@ -637,15 +638,11 @@ public class ExperimentGameWindow extends JPanel {
     
     /**
      * Should only be invoked when the instructions navigation panel is done.  
-     * How do we know when it's done?  When the user adds a new      
+     * How do we know when it's done?        
      */
-    public void disableQuiz() {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                getInstructionsPanel().remove(getQuizNavigationPanel());
-                getInstructionsPanel().revalidate();
-            }
-        });
+    private void disableQuiz() {
+        getInstructionsPanel().remove(getQuizNavigationPanel());
+        getInstructionsPanel().revalidate();
     }
     
     public void showGameScreenshot() {

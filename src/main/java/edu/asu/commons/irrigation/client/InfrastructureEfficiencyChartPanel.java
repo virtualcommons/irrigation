@@ -55,15 +55,15 @@ public class InfrastructureEfficiencyChartPanel extends JPanel {
         final XYSeries waterSupplySeries = new XYSeries("Available water supply");
         GroupDataModel group = client.getClientDataModel().getGroupDataModel();
         final int actualInfrastructureEfficiency = group.getInfrastructureEfficiency();
-        final int actualFlowCapacity = group.getIrrigationCapacity();
+        final int actualFlowCapacity = group.getWaterDeliveryCapacity();
         for (int y = 0; y <= actualFlowCapacity; y++) {
             actualFlowCapacitySeries.add(actualInfrastructureEfficiency, y);
         }
         RoundConfiguration roundConfiguration = client.getRoundConfiguration();
         int maximumInfrastructureEfficiency = roundConfiguration.getMaximumInfrastructureEfficiency();
         int waterSupplyCapacity = roundConfiguration.getWaterSupplyCapacity(); 
-        for(int x = 0; x <= maximumInfrastructureEfficiency; x++){
-            int flowCapacity =	group.calculateFlowCapacity(x);
+        for (int x = 0; x <= maximumInfrastructureEfficiency; x++) {
+            int flowCapacity =	group.calculateWaterDeliveryCapacity(x);
             potentialFlowCapacitySeries.add(x,flowCapacity);
             waterSupplySeries.add(x, waterSupplyCapacity);
         }
@@ -76,14 +76,15 @@ public class InfrastructureEfficiencyChartPanel extends JPanel {
 
         final XYSeriesCollection data = new XYSeriesCollection();
         data.addSeries(initialInfrastructureEfficiencySeries);
+        // the second series gets turned blue.
+        data.addSeries(waterSupplySeries);
         data.addSeries(actualFlowCapacitySeries);
         data.addSeries(potentialFlowCapacitySeries);
-        data.addSeries(waterSupplySeries);
 
         final JFreeChart chart = ChartFactory.createXYLineChart(
                 "Water Delivery Capacity vs. Infrastructure Efficiency",
-                "Infrastructure Efficiency",
-                "Water Delivery Capacity",
+                "Infrastructure Efficiency (%)",
+                "Water Delivery Capacity (cfps)",
                 data,
                 PlotOrientation.VERTICAL,
                 true,

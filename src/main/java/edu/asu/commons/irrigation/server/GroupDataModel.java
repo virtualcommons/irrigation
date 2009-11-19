@@ -96,7 +96,7 @@ public class GroupDataModel implements DataModel<RoundConfiguration> {
             totalContributedTokens += clientData.getInvestedTokens();
         }
     	updateInfrastructureEfficiency(totalContributedTokens);
-        currentlyAvailableFlowCapacity = maximumAvailableWaterFlow = getActualFlowCapacity();
+        currentlyAvailableFlowCapacity = maximumAvailableWaterFlow = getActualWaterDeliveryCapacity();
     }
     
     private void updateInfrastructureEfficiency(int totalContributedTokens) {
@@ -124,7 +124,7 @@ public class GroupDataModel implements DataModel<RoundConfiguration> {
      * @param totalTokens
      * @return
      */
-    public int calculateFlowCapacity(final int infrastructureEfficiency) {
+    public int calculateWaterDeliveryCapacity(final int infrastructureEfficiency) {
     	if (infrastructureEfficiency <= 45) {
     		return 0;
     	}
@@ -157,15 +157,15 @@ public class GroupDataModel implements DataModel<RoundConfiguration> {
     
     public int getIrrigationCapacityBeforeInvestment() {
 //    	return Math.min(calculateFlowCapacity(initialInfrastructureEfficiency), getRoundConfiguration().getWaterSupplyCapacity());
-        return calculateFlowCapacity(infrastructureEfficiencyBeforeInvestment);
+        return calculateWaterDeliveryCapacity(infrastructureEfficiencyBeforeInvestment);
     }
     
     /**
      * Returns the theoretical maximum amount of water that the infrastructure can handle.
      * This is independent of the actual water supply. 
      */
-    public int getIrrigationCapacity() {
-        return calculateFlowCapacity(infrastructureEfficiency);
+    public int getWaterDeliveryCapacity() {
+        return calculateWaterDeliveryCapacity(infrastructureEfficiency);
 //    	return Math.min(calculateFlowCapacity(infrastructureEfficiency), getRoundConfiguration().getWaterSupplyCapacity());
     }
 
@@ -174,8 +174,8 @@ public class GroupDataModel implements DataModel<RoundConfiguration> {
      * of the irrigation capacity and the water supply. 
      * @return
      */
-    public int getActualFlowCapacity() {
-        return Math.min(getIrrigationCapacity(), getRoundConfiguration().getWaterSupplyCapacity());
+    public int getActualWaterDeliveryCapacity() {
+        return Math.min(getWaterDeliveryCapacity(), getRoundConfiguration().getWaterSupplyCapacity());
     }
     
     public void resetCurrentlyAvailableFlowCapacity() {

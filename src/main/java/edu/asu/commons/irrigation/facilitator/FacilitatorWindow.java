@@ -18,7 +18,6 @@ import edu.asu.commons.irrigation.events.FacilitatorEndRoundEvent;
 import edu.asu.commons.irrigation.events.ShowGameScreenshotRequest;
 import edu.asu.commons.irrigation.events.ShowInstructionsRequest;
 import edu.asu.commons.irrigation.events.ShowQuizRequest;
-import edu.asu.commons.irrigation.events.ShowTokenInvestmentScreenRequest;
 import edu.asu.commons.irrigation.server.ClientData;
 import edu.asu.commons.irrigation.server.GroupDataModel;
 import edu.asu.commons.irrigation.server.ServerDataModel;
@@ -52,32 +51,28 @@ public class FacilitatorWindow extends JPanel {
     
     private JButton showScreenshotButton;
     
-    private JButton displayInvestmentButton;
+//    private JButton displayInvestmentButton;
     
     private StringBuilder builder = new StringBuilder();
 
-	private JButton beginExperimentButton;
+	private JButton overrideButton;
     /**
      * This is the default constructor
      */
 
     public FacilitatorWindow(Facilitator facilitator) {
         this.facilitator = facilitator;
-        initGuiComponents();
+        initialize();
     }
 
-    /**
-     * 
-     * @return void
-     */
-    private void initGuiComponents() {
+    private void initialize() {
         setLayout(new BorderLayout());
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
         buttonPanel.add(getShowInstructionsButton());
-        buttonPanel.add(getBeginChatButton());
-        buttonPanel.add(getDisplayInvestmentButton());
         buttonPanel.add(getShowScreenshotButton());
+        buttonPanel.add(getBeginChatButton());
+//        buttonPanel.add(getDisplayInvestmentButton());
         buttonPanel.add(getStartRoundButton());
         buttonPanel.add(getShowQuizButton());
         buttonPanel.add(getStartRoundOverrideButton());
@@ -125,28 +120,28 @@ public class FacilitatorWindow extends JPanel {
     }
     
     private JButton getStartRoundOverrideButton() {
-    	if (beginExperimentButton == null) {
-    		beginExperimentButton = new JButton("Override");
-    		beginExperimentButton.addActionListener(new ActionListener() {
+    	if (overrideButton == null) {
+    		overrideButton = new JButton("Override");
+    		overrideButton.addActionListener(new ActionListener() {
     			public void actionPerformed(ActionEvent event) {
     				facilitator.sendStartRoundOverride();
     			}
     		});
     	}
-    	return beginExperimentButton;
+    	return overrideButton;
     }
     
-    private JButton getDisplayInvestmentButton() {
-        if (displayInvestmentButton == null) {
-            displayInvestmentButton = new JButton("Show Investment Screen");
-            displayInvestmentButton.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent event) {
-                    facilitator.transmit(new ShowTokenInvestmentScreenRequest(facilitator.getId()));
-                }
-            });
-        }
-        return displayInvestmentButton;
-    }
+//    private JButton getDisplayInvestmentButton() {
+//        if (displayInvestmentButton == null) {
+//            displayInvestmentButton = new JButton("Show Investment Screen");
+//            displayInvestmentButton.addActionListener(new ActionListener() {
+//                public void actionPerformed(ActionEvent event) {
+//                    facilitator.transmit(new ShowTokenInvestmentScreenRequest(facilitator.getId()));
+//                }
+//            });
+//        }
+//        return displayInvestmentButton;
+//    }
 
     public Facilitator getFacilitator() {
         return facilitator;

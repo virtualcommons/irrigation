@@ -177,7 +177,7 @@ public class ChatPanel extends JPanel {
     }
 
     public void initialize(List<Identifier> participants) {
-        System.err.println("Setting participants: " + participants);
+        displayMessage("", " ---- chat round starting ---- ");
         if (HANDLES != null) {
             return;
         }
@@ -187,7 +187,6 @@ public class ChatPanel extends JPanel {
             HANDLES[i] = " " + HANDLE_STRING.charAt(i) + " ";
             chatHandles.put(participants.get(i), HANDLES[i]);
         }
-        displayMessage("", " ---- chat round starting ---- ");
     }
     
     public Identifier getClientId() {
