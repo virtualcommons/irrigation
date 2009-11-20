@@ -327,8 +327,8 @@ infrastructure efficiency.
 </p>
 <table border="1" cellspacing="2" cellpadding="2">
 <thead>
-<th>Total Infrastructure Efficiency (percent)</th>
-<th>Water delivery (cubic feet per second)</th>
+<th>Irrigation Infrastructure Efficiency (percent)</th>
+<th>Water delivery capacity (cubic feet per second)</th>
 </thead>
 <tr>
 <td> &le; 45</td><td>0</td>
