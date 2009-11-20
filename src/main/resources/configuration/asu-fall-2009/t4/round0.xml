@@ -2,7 +2,10 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
 <comment>Irrigation experiment round configuration</comment>
+
 <entry key="practice-round">true</entry>
+<entry key='reset-infrastructure-efficiency'>true</entry>
+<entry key='initial-infrastructure-efficiency'>50</entry>
 
 <entry key="instructions">
 <![CDATA[
