@@ -10,7 +10,6 @@ import java.awt.event.ActionListener;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -18,8 +17,6 @@ import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.GroupLayout.ParallelGroup;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -68,22 +65,15 @@ public class MainIrrigationGameWindow extends JPanel {
 
 	private boolean open;
 
-	private JTextField waterCollectedTextField;
-
-	private JLabel waterCollectedLabel;
-
-	private JTextField tokensNotInvestedTextField;
-
-	private JLabel tokensNotInvestedLabel;
-
-	private JTextField tokensEarnedTextField;
-
-	private JLabel tokensEarnedLabel;
-
-	private JTextField totalTokensEarnedTextField;
-
-	private JLabel totalTokensEarnedLabel;
-
+//	private JTextField waterCollectedTextField;
+//	private JLabel waterCollectedLabel;
+//	private JTextField tokensNotInvestedTextField;
+//	private JLabel tokensNotInvestedLabel;
+//	private JTextField tokensEarnedTextField;
+//	private JLabel tokensEarnedLabel;
+//	private JTextField totalTokensEarnedTextField;
+//	private JLabel totalTokensEarnedLabel;
+	
 	private JLabel irrigationCapacityLabel;
 	private JLabel waterSupplyLabel;
 
@@ -186,8 +176,8 @@ public class MainIrrigationGameWindow extends JPanel {
 			jPanelUpStreamWindow.setLayout(new BorderLayout());
 			jPanelUpStreamWindow.setBackground(new Color(186, 226, 237));
 			jPanelUpStreamWindow.setBounds(new Rectangle(13, 225+100+50, 530, 326));
-			jPanelUpStreamWindow.add(getGateSwitchButton(), BorderLayout.NORTH);
-			jPanelUpStreamWindow.add(getControlPanel(), BorderLayout.CENTER);
+			jPanelUpStreamWindow.add(getGateSwitchButton(), BorderLayout.CENTER);
+//			jPanelUpStreamWindow.add(getControlPanel(), BorderLayout.SOUTH);
 		}
 		return jPanelUpStreamWindow;
 	}
@@ -213,107 +203,110 @@ public class MainIrrigationGameWindow extends JPanel {
 		}
 		return gateSwitchButton;
 	}
+	
 
-	private JPanel getControlPanel() {
-		JPanel bottomInformationPanel = new JPanel();
-		GroupLayout layout = new GroupLayout(bottomInformationPanel);
-		bottomInformationPanel.setLayout(layout);
-		layout.setAutoCreateContainerGaps(true);
-		layout.setAutoCreateGaps(true);
+//	private JPanel getControlPanel() {
+//		JPanel bottomInformationPanel = new JPanel();
+//		GroupLayout layout = new GroupLayout(bottomInformationPanel);
+//		bottomInformationPanel.setLayout(layout);
+//		layout.setAutoCreateContainerGaps(true);
+//		layout.setAutoCreateGaps(true);
+//
+//		GroupLayout.SequentialGroup horizontalGroup = layout.createSequentialGroup();
+//		ParallelGroup labelsGroup = layout.createParallelGroup();
+//		labelsGroup.addComponent(getWaterCollectedLabel()).addComponent(getTokensNotInvestedLabel()).addComponent(getTokensEarnedLabel()).addComponent(getTotalTokensEarnedLabel());
+//
+//		horizontalGroup.addGroup(labelsGroup);
+//
+//		ParallelGroup textFieldGroup = layout.createParallelGroup();
+//		textFieldGroup.addComponent(getWaterCollectedTextField());
+//		textFieldGroup.addComponent(getTokensNotInvestedTextField());
+//		textFieldGroup.addComponent(getTokensEarnedTextField());
+//		textFieldGroup.addComponent(getTotalTokensEarnedTextField());
+//		horizontalGroup.addGroup(textFieldGroup);
+//		layout.setHorizontalGroup(horizontalGroup);
+//
+//		GroupLayout.SequentialGroup verticalGroup = layout.createSequentialGroup();
+//		verticalGroup.addGroup(layout.createParallelGroup(Alignment.BASELINE)
+//				.addComponent(getWaterCollectedLabel()).addComponent(getWaterCollectedTextField()));
+//
+//		verticalGroup.addGroup(layout.createParallelGroup(Alignment.BASELINE)
+//				.addComponent(getTokensNotInvestedLabel()).addComponent(getTokensNotInvestedTextField()));
+//
+//		verticalGroup.addGroup(layout.createParallelGroup(Alignment.BASELINE)
+//				.addComponent(getTokensEarnedLabel()).addComponent(getTokensEarnedTextField()));
+//
+//		verticalGroup.addGroup(layout.createParallelGroup(Alignment.BASELINE)
+//				.addComponent(getTotalTokensEarnedLabel()).addComponent(getTotalTokensEarnedTextField()));
+//
+//		layout.setVerticalGroup(verticalGroup);
+//		return bottomInformationPanel;
+//	}
 
-		GroupLayout.SequentialGroup horizontalGroup = layout.createSequentialGroup();
-		ParallelGroup labelsGroup = layout.createParallelGroup();
-		labelsGroup.addComponent(getWaterCollectedLabel()).addComponent(getTokensNotInvestedLabel()).addComponent(getTokensEarnedLabel()).addComponent(getTotalTokensEarnedLabel());
-
-		horizontalGroup.addGroup(labelsGroup);
-
-		ParallelGroup textFieldGroup = layout.createParallelGroup();
-		textFieldGroup.addComponent(getWaterCollectedTextField());
-		textFieldGroup.addComponent(getTokensNotInvestedTextField());
-		textFieldGroup.addComponent(getTokensEarnedTextField());
-		textFieldGroup.addComponent(getTotalTokensEarnedTextField());
-		horizontalGroup.addGroup(textFieldGroup);
-		layout.setHorizontalGroup(horizontalGroup);
-
-		GroupLayout.SequentialGroup verticalGroup = layout.createSequentialGroup();
-		verticalGroup.addGroup(layout.createParallelGroup(Alignment.BASELINE)
-				.addComponent(getWaterCollectedLabel()).addComponent(getWaterCollectedTextField()));
-
-		verticalGroup.addGroup(layout.createParallelGroup(Alignment.BASELINE)
-				.addComponent(getTokensNotInvestedLabel()).addComponent(getTokensNotInvestedTextField()));
-
-		verticalGroup.addGroup(layout.createParallelGroup(Alignment.BASELINE)
-				.addComponent(getTokensEarnedLabel()).addComponent(getTokensEarnedTextField()));
-
-		verticalGroup.addGroup(layout.createParallelGroup(Alignment.BASELINE)
-				.addComponent(getTotalTokensEarnedLabel()).addComponent(getTotalTokensEarnedTextField()));
-
-		layout.setVerticalGroup(verticalGroup);
-		return bottomInformationPanel;
-	}
-
-	private JTextField getWaterCollectedTextField() {
-		if (waterCollectedTextField == null) {
-			waterCollectedTextField = createTextField();
-		}
-		return waterCollectedTextField;
-	}
-
-	private JTextField createTextField() {
-		JTextField textField = new JTextField();
-		textField.setEditable(false);
-//		textField.setBackground(Color.LIGHT_GRAY);
-		textField.setBackground(Color.YELLOW);
-		return textField;
-	}
-
-	private JLabel getWaterCollectedLabel() {
-		if (waterCollectedLabel == null) {
-			waterCollectedLabel = new JLabel("Total water applied to your field: ");
-		}
-		return waterCollectedLabel;
-	}
-
-	private JTextField getTokensNotInvestedTextField() {
-		if (tokensNotInvestedTextField == null) {
-			tokensNotInvestedTextField = createTextField();
-		}
-		return tokensNotInvestedTextField;
-	}
-	private JLabel getTokensNotInvestedLabel() {
-		if (tokensNotInvestedLabel == null) {
-			tokensNotInvestedLabel = new JLabel("Tokens not invested: ");
-		}
-		return tokensNotInvestedLabel;
-	}
-
-	private JTextField getTokensEarnedTextField() {
-		if (tokensEarnedTextField == null) {
-			tokensEarnedTextField = createTextField();
-		}
-		return tokensEarnedTextField;
-	}
-	private JLabel getTokensEarnedLabel() {
-		if (tokensEarnedLabel == null) {
-			tokensEarnedLabel = new JLabel("Tokens earned by crop production: ");
-		}
-		return tokensEarnedLabel;
-	}
-
-	private JTextField getTotalTokensEarnedTextField() {
-		if (totalTokensEarnedTextField == null) {
-			totalTokensEarnedTextField = createTextField();
-		}
-		return totalTokensEarnedTextField;
-
-	}
-
-	private JLabel getTotalTokensEarnedLabel() {
-		if (totalTokensEarnedLabel == null) {
-			totalTokensEarnedLabel = new JLabel("Total tokens earned this round: ");
-		}
-		return totalTokensEarnedLabel;
-	}
+    private JTextField createTextField() {
+        JTextField textField = new JTextField();
+        textField.setEditable(false);
+//      textField.setBackground(Color.LIGHT_GRAY);
+        textField.setBackground(Color.YELLOW);
+        return textField;
+    }	
+	
+//	private JTextField getWaterCollectedTextField() {
+//		if (waterCollectedTextField == null) {
+//			waterCollectedTextField = createTextField();
+//		}
+//		return waterCollectedTextField;
+//	}
+//
+//
+//
+//	private JLabel getWaterCollectedLabel() {
+//		if (waterCollectedLabel == null) {
+//			waterCollectedLabel = new JLabel("Total water applied to your field: ");
+//		}
+//		return waterCollectedLabel;
+//	}
+//
+//	private JTextField getTokensNotInvestedTextField() {
+//		if (tokensNotInvestedTextField == null) {
+//			tokensNotInvestedTextField = createTextField();
+//		}
+//		return tokensNotInvestedTextField;
+//	}
+//	private JLabel getTokensNotInvestedLabel() {
+//		if (tokensNotInvestedLabel == null) {
+//			tokensNotInvestedLabel = new JLabel("Tokens not invested: ");
+//		}
+//		return tokensNotInvestedLabel;
+//	}
+//
+//	private JTextField getTokensEarnedTextField() {
+//		if (tokensEarnedTextField == null) {
+//			tokensEarnedTextField = createTextField();
+//		}
+//		return tokensEarnedTextField;
+//	}
+//	private JLabel getTokensEarnedLabel() {
+//		if (tokensEarnedLabel == null) {
+//			tokensEarnedLabel = new JLabel("Tokens earned by crop production: ");
+//		}
+//		return tokensEarnedLabel;
+//	}
+//
+//	private JTextField getTotalTokensEarnedTextField() {
+//		if (totalTokensEarnedTextField == null) {
+//			totalTokensEarnedTextField = createTextField();
+//		}
+//		return totalTokensEarnedTextField;
+//
+//	}
+//
+//	private JLabel getTotalTokensEarnedLabel() {
+//		if (totalTokensEarnedLabel == null) {
+//			totalTokensEarnedLabel = new JLabel("Total tokens earned this round: ");
+//		}
+//		return totalTokensEarnedLabel;
+//	}
 	
 	private JLabel getIrrigationCapacityLabel() {
 		if (irrigationCapacityLabel == null) {
@@ -412,10 +405,10 @@ public class MainIrrigationGameWindow extends JPanel {
 					}
 				}
 				ClientData clientData = clientDataModel.getClientData();
-				getWaterCollectedTextField().setText("" + clientData.getWaterCollected());
-				getTokensNotInvestedTextField().setText("" + clientData.getUninvestedTokens());
-				getTokensEarnedTextField().setText("" + clientData.getTokensEarnedFromWaterCollected());
-				getTotalTokensEarnedTextField().setText("" + clientData.getAllTokensEarnedThisRound());
+//				getWaterCollectedTextField().setText("" + clientData.getWaterCollected());
+//				getTokensNotInvestedTextField().setText("" + clientData.getUninvestedTokens());
+//				getTokensEarnedTextField().setText("" + clientData.getTokensEarnedFromWaterCollected());
+//				getTotalTokensEarnedTextField().setText("" + clientData.getAllTokensEarnedThisRound());
 				getMiddleWindowPanel().update(clientDataModel);
 				
 				currentWaterAppliedSeries.clear();

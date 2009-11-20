@@ -61,9 +61,6 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
 
     private final ServerDataModel serverDataModel;
 
-    //    private final Object quizSignal = new Object();
-    //    private int numberOfCompletedQuizzes;
-
     private int submittedClients;
 
     private IrrigationPersister persister;
@@ -145,9 +142,11 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
                     return;
                 }
                 // ignore the request if not every group has submit their tokens.
-                synchronized (roundSignal) {
-                	roundSignal.notifyAll();
-                }                        
+                if (isTokenInvestmentComplete()) {
+                    synchronized (roundSignal) {
+                        roundSignal.notifyAll();
+                    }
+                }
             }
         });
         addEventProcessor(new EventTypeProcessor<EndRoundRequest>(EndRoundRequest.class) {
@@ -160,10 +159,14 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
         addEventProcessor(new EventTypeProcessor<BeginChatRoundRequest>(BeginChatRoundRequest.class) {
             @Override
             public void handle(BeginChatRoundRequest request) {
+                // XXX: the participants have already been added to the data model at this point
+                // so we shuffle them around right before the first practice round's chat.
             	if (getRoundConfiguration().isFirstRound()) {
             		shuffleParticipants();
             	}
-                persister.clearChatData();
+            	else {
+            	    persister.clearChatData();
+            	}
                 // pass it on to all the clients
                 synchronized (clients) {
                     for (Identifier id: clients.keySet()) {
@@ -204,7 +207,6 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
                 Identifier identifier = event.getId();
                 ClientData clientData = new ClientData(identifier);
                 synchronized (clients) {
-                    // FIXME: shouldn't add to server data model right away... 
                     clients.put(identifier, clientData);
                     serverDataModel.addClient(clientData);
                 }
@@ -254,10 +256,13 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
         addEventProcessor(new EventTypeProcessor<InvestedTokensEvent>(InvestedTokensEvent.class) {
             @Override
             public void handle(InvestedTokensEvent event) {
-                ClientData clientData = clients.get(event.getId());
-                clientData.setInvestedTokens(event.getInvestedTokens());
+                if (isTokenInvestmentComplete()) {
+                    getLogger().severe("Trying to invest more tokens but token investment is already complete:" + event);
+                    return;
+                }
+                clients.get(event.getId()).setInvestedTokens(event.getInvestedTokens());
                 submittedClients++;
-                if (submittedClients >= clients.size()) {
+                if (isTokenInvestmentComplete()) {
                     // everyone's submitted their tokens so we can calculate the available bandwidth and 
                     // notify each client
                     initializeInfrastructureEfficiency();
@@ -274,8 +279,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
         });
         addEventProcessor(new EventTypeProcessor<OpenGateEvent>(OpenGateEvent.class) {
             public void handle(OpenGateEvent event) {
-                ClientData clientData = clients.get(event.getId());
-                clientData.openGate();
+                clients.get(event.getId()).openGate();
             }
         });
         addEventProcessor(new EventTypeProcessor<CloseGateEvent>(CloseGateEvent.class) {
@@ -288,6 +292,10 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
                 clients.get(event.getId()).pause();
             }
         });
+    }
+    
+    private boolean isTokenInvestmentComplete() {
+        return submittedClients >= clients.size();
     }
 
     /**
