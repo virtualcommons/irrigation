@@ -397,10 +397,7 @@ public class MainIrrigationGameWindow extends JPanel {
 					if (clientData.isGateOpen()) {
 						canalPanel.openGate(clientData.getPriority());
 					}
-					else if(clientData.isPaused()){
-						canalPanel.closeGate(clientData.getPriority());
-					}
-					else if(clientData.isGateClosed()){
+					else {
 						canalPanel.closeGate(clientData.getPriority());
 					}
 				}

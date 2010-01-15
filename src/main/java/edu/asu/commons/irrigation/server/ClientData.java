@@ -39,16 +39,10 @@ public class ClientData implements Serializable {
 
     private int totalTokens;
 
-    private boolean paused = false;
-
     private boolean gateOpen = false;
 
     public ClientData(Identifier id) {
         this.id = id;
-    }
-
-    public boolean isPaused(){
-        return paused;
     }
 
     public boolean isGateClosed(){
@@ -86,35 +80,16 @@ public class ClientData implements Serializable {
         return "Position not found";
     }
 
-    /**
-     * here the parameters isPaused, isStopped and isStartDownload would change.
-     * The server every time would check the clients queue. It would be a queue of clients requests.
-     * and it then would check these bits...and then act accordingly. These would be the operations
-     * that the users are allowed to do.
-     */
-
     public void openGate(){
-        gateOpen = true;
-        paused = false;
-    }
-
-    public void pause(){
-        paused = true;
-        gateOpen = false;
-    }
-    
-    public void unpause() {
-        paused = false;
         gateOpen = true;
     }
 
     public void closeGate(){
         gateOpen = false;
-        paused = false;
     }
 
     /**
-     * get and set the TOkens that are contributed by this client.
+     * get and set the Tokens that are contributed by this client.
      *     * @param contributedTokens
      */
     public void setInvestedTokens(int investedTokens) {
@@ -142,19 +117,19 @@ public class ClientData implements Serializable {
     public void setRoundConfiguration(RoundConfiguration roundConfiguration) {
         this.roundConfiguration = roundConfiguration;
     }
-/**
- * clearing the clientData at the end of each round
- *
- */
-    public void endRound() {
+
+    /**
+     * Resets this client data's instance variables at the end of the round.
+     * 
+     */
+    public void resetEndRound() {
         closeGate();
         investedTokens = 0;
-        //adding number of files to be downloaded = 0 per round
         waterCollected = 0;
     }
 
     public void resetAllTokens() {
-        endRound();
+        resetEndRound();
         totalTokens = 0;
     }
 

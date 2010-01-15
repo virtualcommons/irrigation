@@ -398,17 +398,14 @@ public class CanalPanel extends JPanel {
 	public void openGate(int priority) {
 		gate[priority].setGateOpen(true);
 //		paintComponent(graphics2D);
-		repaint();
-		
+//		repaint();
 	}
 
 	public void closeGate(int priority) {
 		gate[priority].setGateOpen(false);
-		gate[priority].setx1(gate[priority].getdefaultx1());
-		gate[priority].sety1(gate[priority].getdefaulty1());
-		/*if(!(priority == 0))
-		gate[priority].setHeight(gate[priority-1].getHeight());*/
-		repaint();
+//		gate[priority].setx1(gate[priority].getdefaultx1());
+//		gate[priority].sety1(gate[priority].getdefaulty1());
+//		repaint();
 	}
 	
 	public void startRound() {

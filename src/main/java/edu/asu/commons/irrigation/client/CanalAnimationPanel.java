@@ -490,16 +490,15 @@ public class CanalAnimationPanel extends JPanel {
     public void openGates(int priority) {
         gate[priority].setGateOpen(true);
         // set the height of all the canal panels depending on the state of the game
-        repaint();
     }
 
     public void closeGates(int priority) {
         gate[priority].setGateOpen(false);
-        gate[priority].setx1(gate[priority].getdefaultx1());
-        gate[priority].sety1(gate[priority].getdefaulty1());
+//        gate[priority].setx1(gate[priority].getdefaultx1());
+//        gate[priority].sety1(gate[priority].getdefaulty1());
         /*if(!(priority == 0))
 		gate[priority].setHeight(gate[priority-1].getHeight());*/
-        repaint();
+//        repaint();
     }
 
     public void endRound() {

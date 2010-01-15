@@ -1,17 +1,12 @@
 package edu.asu.commons.irrigation.events;
 
-import java.util.Map;
-
 import edu.asu.commons.event.AbstractEvent;
 import edu.asu.commons.event.ExperimentUpdateEvent;
-import edu.asu.commons.irrigation.server.ClientData;
 import edu.asu.commons.irrigation.server.GroupDataModel;
 import edu.asu.commons.net.Identifier;
 
 /**
- * @author Sanket
- * carries all the information till the end of the round. 
- *
+ * Conveys the GroupDataModel and a lastRound boolean flag to the relevant clients.
  */
 public class EndRoundEvent extends AbstractEvent implements ExperimentUpdateEvent  {
 	
@@ -26,17 +21,9 @@ public class EndRoundEvent extends AbstractEvent implements ExperimentUpdateEven
 		this.lastRound = lastRound;
         this.groupDataModel = groupDataModel;
 	}
-	/**
-	 * returns all the clients in this group
-	 * @return
-	 */
-	
-	public Map<Identifier, ClientData> getClientDataMap(){
-		return groupDataModel.getClientDataMap();
-	}
     
-    public ClientData getClientData() {
-        return getClientDataMap().get(id);
+    public GroupDataModel getGroupDataModel() {
+        return groupDataModel;
     }
 	
 	public boolean isLastRound(){

@@ -1,8 +1,9 @@
 package edu.asu.commons.irrigation.client;
 
 /**
+ * FIXME: Refactor this class.
+ * 
  * @author Sanket
- *
  */
 public class Gate {
 
@@ -143,6 +144,10 @@ public class Gate {
 
 	public void setGateOpen(boolean gateOpen) {
 		this.gateOpen = gateOpen;
+		if (! gateOpen) {
+		    setx1(getdefaultx1());
+		    sety1(getdefaulty1());
+		}
 	}
 
 	public int getOpeningsHeight() {

@@ -19,7 +19,6 @@ import edu.asu.commons.irrigation.events.EndRoundEvent;
 import edu.asu.commons.irrigation.events.InfrastructureUpdateEvent;
 import edu.asu.commons.irrigation.events.InvestedTokensEvent;
 import edu.asu.commons.irrigation.events.OpenGateEvent;
-import edu.asu.commons.irrigation.events.PauseRequest;
 import edu.asu.commons.irrigation.events.RegistrationEvent;
 import edu.asu.commons.irrigation.events.RoundStartedEvent;
 import edu.asu.commons.irrigation.events.ShowGameScreenshotRequest;
@@ -126,12 +125,6 @@ public class IrrigationClient {
         transmit(investedTokensEvent);
     }
 
-    /**
-     * Transmitting the file string , that is the file chosen for the current
-     * file download
-     * 
-     * @param fileNo
-     */
     public void openGate() {
         OpenGateEvent openGateEvent = new OpenGateEvent(getId());
         transmit(openGateEvent);
@@ -140,11 +133,6 @@ public class IrrigationClient {
     public void closeGate() {
         CloseGateEvent closeGateEvent = new CloseGateEvent(getId());
         transmit(closeGateEvent);
-    }
-
-    public void pause() {
-        PauseRequest pauseRequest = new PauseRequest(getId());
-        transmit(pauseRequest);
     }
     
     public void transmit(Event event) {
@@ -181,7 +169,7 @@ public class IrrigationClient {
         });
         channel.add(this, new EventTypeProcessor<EndRoundEvent>(EndRoundEvent.class) {
             public void handle(EndRoundEvent event) {
-            	clientDataModel.setGroupDataModel(event.getClientData().getGroupDataModel());
+            	clientDataModel.setGroupDataModel(event.getGroupDataModel());
                 experimentGameWindow.endRound(event);
             }
         });

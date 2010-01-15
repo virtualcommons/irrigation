@@ -26,7 +26,6 @@ import edu.asu.commons.irrigation.events.FacilitatorEndRoundEvent;
 import edu.asu.commons.irrigation.events.InfrastructureUpdateEvent;
 import edu.asu.commons.irrigation.events.InvestedTokensEvent;
 import edu.asu.commons.irrigation.events.OpenGateEvent;
-import edu.asu.commons.irrigation.events.PauseRequest;
 import edu.asu.commons.irrigation.events.QuizResponseEvent;
 import edu.asu.commons.irrigation.events.RegistrationEvent;
 import edu.asu.commons.irrigation.events.RoundStartedEvent;
@@ -287,11 +286,6 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
                 clients.get(event.getId()).closeGate();
             }
         });
-        addEventProcessor(new EventTypeProcessor<PauseRequest>(PauseRequest.class) {
-            public void handle(PauseRequest event) {
-                clients.get(event.getId()).pause();
-            }
-        });
     }
     
     private boolean isTokenInvestmentComplete() {
@@ -344,12 +338,8 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
             if (clientData.isGateOpen()) {
                 group.allocateWater(clientData);
             }
-            else if (clientData.isGateClosed()) {
+            else {
                 clientData.init(group.getAvailableClientFlowCapacity());
-            }
-            // right now the clients cannot be paused.
-            else if (clientData.isPaused()) {
-
             }
         }
         for (Identifier id: group.getClientIdentifiers()) {
@@ -441,9 +431,17 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
             //Send the end round event to the facilitator
             //Send the end round event to all the clients
             synchronized (clients) {
+                // add collected tokens to total if this isn't a practice round.
+                if (! getRoundConfiguration().isPracticeRound()) {
+                    // first add tokens
+                    for (ClientData data : clients.values()) {
+                        data.addTokensEarnedThisRoundToTotal();
+                    }
+                }
                 for (ClientData data : clients.values()) {
-                    data.addTokensEarnedThisRoundToTotal();
-                    transmit(new EndRoundEvent(data.getId(), data.getGroupDataModel(), getConfiguration().isLastRound()));
+                    transmit(new EndRoundEvent(data.getId(), 
+                            data.getGroupDataModel(), 
+                            getConfiguration().isLastRound()));    
                 }
             }
             transmit(new FacilitatorEndRoundEvent(facilitatorId, serverDataModel));
@@ -458,12 +456,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
             // reset client data values
             synchronized (clients) {
                 for (ClientData clientData: clients.values()) {
-                    if (getConfiguration().getCurrentParameters().isPracticeRound()) {
-                        clientData.resetAllTokens();
-                    }
-                    else {
-                        clientData.endRound();
-                    }
+                    clientData.resetEndRound();
                 }
             }
             submittedClients = 0;

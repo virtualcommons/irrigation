@@ -2,15 +2,12 @@ package edu.asu.commons.irrigation.client;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
@@ -77,12 +74,12 @@ public class ChatPanel extends JPanel {
                     }
                 }
             });
-            final JButton sendButton = new JButton("Send");
-            sendButton.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent event) {
-                    sendMessage();
-                }
-            });
+//            final JButton sendButton = new JButton("Send");
+//            sendButton.addActionListener(new ActionListener() {
+//                public void actionPerformed(ActionEvent event) {
+//                    sendMessage();
+//                }
+//            });
             JPanel timeLeftPanel = new JPanel();
             timeLeftProgressBar = new JProgressBar(0, 60);
             timeLeftProgressBar.setStringPainted(true);
@@ -91,7 +88,7 @@ public class ChatPanel extends JPanel {
 
             add(timeLeftPanel, BorderLayout.PAGE_START);
             add(chatField, BorderLayout.CENTER);
-            add(sendButton, BorderLayout.PAGE_END);
+//            add(sendButton, BorderLayout.PAGE_END);
         }
 
         private void sendMessage() {
