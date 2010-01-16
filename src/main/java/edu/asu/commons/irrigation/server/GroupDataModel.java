@@ -124,7 +124,7 @@ public class GroupDataModel implements DataModel<RoundConfiguration> {
      * @param totalTokens
      * @return
      */
-    public int calculateWaterDeliveryCapacity(final int infrastructureEfficiency) {
+    public int calculateIrrigationCapacity(final int infrastructureEfficiency) {
     	if (infrastructureEfficiency <= 45) {
     		return 0;
     	}
@@ -157,15 +157,15 @@ public class GroupDataModel implements DataModel<RoundConfiguration> {
     
     public int getIrrigationCapacityBeforeInvestment() {
 //    	return Math.min(calculateFlowCapacity(initialInfrastructureEfficiency), getRoundConfiguration().getWaterSupplyCapacity());
-        return calculateWaterDeliveryCapacity(infrastructureEfficiencyBeforeInvestment);
+        return calculateIrrigationCapacity(infrastructureEfficiencyBeforeInvestment);
     }
     
     /**
      * Returns the theoretical maximum amount of water that the infrastructure can handle.
      * This is independent of the actual water supply. 
      */
-    public int getWaterDeliveryCapacity() {
-        return calculateWaterDeliveryCapacity(infrastructureEfficiency);
+    public int getIrrigationCapacity() {
+        return calculateIrrigationCapacity(infrastructureEfficiency);
 //    	return Math.min(calculateFlowCapacity(infrastructureEfficiency), getRoundConfiguration().getWaterSupplyCapacity());
     }
 
@@ -175,7 +175,7 @@ public class GroupDataModel implements DataModel<RoundConfiguration> {
      * @return
      */
     public int getActualWaterDeliveryCapacity() {
-        return Math.min(getWaterDeliveryCapacity(), getRoundConfiguration().getWaterSupplyCapacity());
+        return Math.min(getIrrigationCapacity(), getRoundConfiguration().getWaterSupplyCapacity());
     }
     
     public void resetCurrentlyAvailableFlowCapacity() {

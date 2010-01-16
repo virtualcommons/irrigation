@@ -122,7 +122,7 @@ public class ClientDataModel implements DataModel<RoundConfiguration> {
     }
 
     public int getIrrigationCapacity() {
-        return groupDataModel.getWaterDeliveryCapacity();
+        return groupDataModel.getIrrigationCapacity();
     }
 
 
