@@ -3,8 +3,6 @@
 <properties>
 <comment>Irrigation experiment round configuration</comment>
 
-<entry key='infrastructure-degradation-factor'>10</entry>
-
 <entry key="instructions">
 <![CDATA[
 <h3>Round 8 Instructions</h3>

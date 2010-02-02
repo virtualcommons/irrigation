@@ -2,28 +2,22 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
 <comment>Irrigation experiment round configuration</comment>
-<entry key='infrastructure-degradation-factor'>10</entry>
-
+<entry key='infrastructure-degradation-factor'>20</entry>
 
 <entry key="instructions">
 <![CDATA[
 <h3>Round 11 Instructions</h3>
 <p>
-This is round 11/20.  
-</p>
-<p>
-In the past 10 rounds the infrastructure efficiency declined from one round to the
-next at a constant rate of 25%. In the following 10 rounds the average decline of
-the infrastructure efficiency remains the same, but the amount of decline can vary
-from round to round. This means that in some rounds the decline will be larger than 25%
-and some rounds the decline will be smaller than 25%.  Before each round begins you
-will continue to make a decision on how much to invest in the irrigation
-infrastructure.  After all of your investment contributions have been submitted the
-resulting level of infrastructure efficiency will be displayed and then the round
-will begin.  If you have any questions, please ask them now.
-</p>
-
-The infrastructure has been degraded by 10%.
+In the past rounds the infrastructure efficiency declined from one round to
+the next at a constant amount of 25%. In the following rounds the <b>average
+decline</b> of the infrastructure efficiency will remain the same, but the
+<b>actual amount</b> of decline can vary from round to round. This means that
+in some rounds the decline will be larger than 25% and some rounds the decline
+will be smaller than 25%. Before each round begins you will continue to make a
+decision on how much to invest in the irrigation infrastructure.  After all of
+your investment contributions have been submitted the resulting level of
+infrastructure efficiency will be displayed and then the round will begin.  If
+you have any questions, please ask them now. 
 </p>
 
 ]]>

@@ -2,15 +2,14 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
 <comment>Irrigation experiment round configuration</comment>
-<entry key='infrastructure-degradation-factor'>10</entry>
-<entry key="clients-per-group">5</entry>
 
+<entry key='infrastructure-degradation-factor'>30</entry>
 
 <entry key="instructions">
 <![CDATA[
 <h3>Round 19 Instructions</h3>
 <p>
-This is round 19/20.  The infrastructure has been degraded by 10%.
+This round is the same as the previous round.
 </p>
 
 ]]>

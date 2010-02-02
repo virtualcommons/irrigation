@@ -3,13 +3,14 @@
 <properties>
 <comment>Irrigation experiment round configuration</comment>
 
+<entry key='infrastructure-degradation-factor'>25</entry>
+
 <entry key="instructions">
 <![CDATA[
 <h3>Round 20 Instructions</h3>
 <p>
-This is round 20/20.  The infrastructure has been degraded by 10%.
+This is the final round.
 </p>
-
 ]]>
 </entry>
 </properties>
