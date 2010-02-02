@@ -106,7 +106,7 @@ public class CanalPanel extends JPanel {
 			graphics2D.setColor(Color.BLUE);
 			graphics2D.fillRect(gate[i].getOpeningsX(), gate[i].getOpeningsY(),gate[i].getOpeningsWidth(),
 					gate[i].getOpeningsHeight());
-			graphics2D.setColor(Color.BLACK);
+			graphics2D.setColor(Color.YELLOW);
 			graphics2D.drawLine(gate[i].getx1(),gate[i].gety1(),gate[i].getx2(),gate[i].gety2());
 		}
 
