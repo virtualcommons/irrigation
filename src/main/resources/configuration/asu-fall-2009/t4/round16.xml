@@ -3,13 +3,13 @@
 <properties>
 <comment>Irrigation experiment round configuration</comment>
 
-<entry key='max-canal-flow-capacity'>39</entry>
+<entry key='max-canal-flow-capacity'>25</entry>
 
 <entry key="instructions">
 <![CDATA[
 <h3>Round 15 Instructions</h3>
 <p>
-This is the final round.
+This round is the same as the previous rounds.
 </p>
 
 ]]>

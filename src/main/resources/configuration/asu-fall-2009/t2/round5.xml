@@ -3,15 +3,12 @@
 <properties>
 <comment>Irrigation experiment round configuration</comment>
 
-<entry key='max-canal-flow-capacity'>31</entry>
-
 <entry key="instructions">
 <![CDATA[
-<h3>Round 12 Instructions</h3>
+<h3>Round 4 Instructions</h3>
 <p>
-This round is the same as previous rounds.
+This round is the same as the previous round.
 </p>
-
 ]]>
 </entry>
 </properties>

@@ -4,8 +4,6 @@
 <comment>Irrigation experiment round configuration</comment>
 
 
-<entry key='max-canal-flow-capacity'>25</entry>
-
 <entry key="instructions">
 <![CDATA[
 <h3>Round 10 Instructions</h3>
