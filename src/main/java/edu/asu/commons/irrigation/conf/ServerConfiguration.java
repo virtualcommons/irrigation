@@ -55,7 +55,7 @@ extends ExperimentConfiguration.Base<RoundConfiguration> {
     }
 
     @Override
-    protected RoundConfiguration createConfiguration(String roundConfigurationFile) {
+    protected RoundConfiguration createRoundConfiguration(String roundConfigurationFile) {
         return new RoundConfiguration(roundConfigurationFile);
     }
 

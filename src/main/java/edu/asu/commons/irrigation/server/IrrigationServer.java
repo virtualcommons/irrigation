@@ -45,7 +45,7 @@ import edu.asu.commons.util.Utils;
  * 
  * Main entry point for the irrigation experiment server.
  * 
- * @author Sanket Joshi, <a href='Allen.Lee@asu.edu'>Allen Lee</a>
+ * @author <a href='mailto:Allen.Lee@asu.edu'>Allen Lee</a>
  * @version $Revision$
  */
 public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {

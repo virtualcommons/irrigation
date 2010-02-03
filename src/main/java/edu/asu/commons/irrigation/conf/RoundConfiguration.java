@@ -113,7 +113,7 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
     
     public String getPracticeRoundPaymentInstructions() {
         return getProperty("practice-round-payment-instructions", 
-                "This is a practice round so the earnings mentioned are only for illustrative purposes and <b>will not count towards your actual earnings</b>.");
+                "This was a practice round so the earnings mentioned are only for illustrative purposes and <b>do not count towards your actual earnings</b>.");
     }
     
     public int getClientsPerGroup() {

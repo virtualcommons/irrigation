@@ -21,6 +21,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -94,6 +95,8 @@ public class ExperimentGameWindow extends JPanel {
     
     private Map<Integer, String> quizPageResponses = new HashMap<Integer, String>();
 
+    private JLabel investedTokensLabel;
+
     public ExperimentGameWindow(IrrigationClient client) {
         this.client = client;
         this.clientDataModel = client.getClientDataModel();
@@ -134,6 +137,7 @@ public class ExperimentGameWindow extends JPanel {
         if (submitTokenPanel == null) {
             submitTokenPanel = new JPanel();
             submitTokenPanel.setLayout(new BorderLayout());
+            submitTokenPanel.add(getInvestedTokensLabel(), BorderLayout.PAGE_START);
             submitTokenPanel.add(getInvestedTokensTextField(), BorderLayout.CENTER);
             JButton submitTokensButton = new JButton("Invest");
             submitTokensButton.addActionListener(new ActionListener() {
@@ -141,7 +145,7 @@ public class ExperimentGameWindow extends JPanel {
                     submitInvestedTokens();
                 }
             });
-            submitTokenPanel.add(submitTokensButton, BorderLayout.SOUTH);
+            submitTokenPanel.add(submitTokensButton, BorderLayout.PAGE_END);
             return submitTokenPanel;
         }
         return submitTokenPanel;
@@ -240,6 +244,13 @@ public class ExperimentGameWindow extends JPanel {
     private ServerConfiguration getServerConfiguration() {
         return clientDataModel.getServerConfiguration();
     }
+    
+    private JLabel getInvestedTokensLabel() {
+        if (investedTokensLabel == null) {
+            investedTokensLabel = new JLabel();
+        }
+        return investedTokensLabel; 
+    }
 
     private JTextField getInvestedTokensTextField() {
         if (investedTokensTextField == null) {
@@ -258,26 +269,19 @@ public class ExperimentGameWindow extends JPanel {
     private void submitInvestedTokens() {
         try {
             int token = Integer.parseInt(investedTokensTextField.getText());
-            // validating token range
+            // validate token range
             if (token >= 0 && token <= 10) {
                 client.transmitInvestedTokensEvent(token);
+                investedTokensLabel.setText("");
                 setInstructions("Please wait while the server computes your total flow capacity based on your group's total token contribution investment.");
                 addCenterComponent(getInstructionsPanel());
             } 
             else {
-                investedTokensTextField.setText("");
-                instructionsBuilder.delete(0, instructionsBuilder.length());
-                instructionsBuilder.append("<h3>Please enter your tokens within the range 0 - 10</h3>");
-                instructionsBuilder.append(getServerConfiguration().getInvestmentInstructions());
-                tokenInstructionsEditorPane.setText(instructionsBuilder.toString());
+                investedTokensLabel.setText("Please enter a number between 0 and 10");
             }
         }
         catch(NumberFormatException e){
-            investedTokensTextField.setText("");
-            instructionsBuilder.delete(0, instructionsBuilder.length());
-            instructionsBuilder.append("<h3>You only have between 0 and 10 to invest.  Please choose a number between 0 and 10 and try again.</h3>");
-            instructionsBuilder.append(getServerConfiguration().getInvestmentInstructions());
-            tokenInstructionsEditorPane.setText(instructionsBuilder.toString());
+            investedTokensLabel.setText("Please enter a number between 0 and 10");
         }
     }
 
@@ -294,7 +298,7 @@ public class ExperimentGameWindow extends JPanel {
     private HtmlEditorPane createInstructionsEditorPane() {
         HtmlEditorPane htmlEditorPane = new HtmlEditorPane();
         htmlEditorPane.setEditable(false);
-        htmlEditorPane.setFont(new Font("sansserif", Font.TRUETYPE_FONT, 16));
+        htmlEditorPane.setFont(new Font("LucidaSansRegular", Font.TRUETYPE_FONT, 16));
         htmlEditorPane.setBackground(Color.WHITE);
         return htmlEditorPane;
 
@@ -343,15 +347,16 @@ public class ExperimentGameWindow extends JPanel {
      * @param event
      */
     private void addDebriefingText(EndRoundEvent event) {
+        double showUpPayment = clientDataModel.getServerConfiguration().getShowUpPayment();
+        RoundConfiguration roundConfiguration = clientDataModel.getRoundConfiguration();
         instructionsBuilder.delete(0, instructionsBuilder.length());
-        instructionsBuilder.append("<b>You are at position " + clientDataModel.getPriorityString());
+        instructionsBuilder.append("<b>Results from the previous round</b>");
         instructionsBuilder.append(
                 "<table border='3' cellpadding='5'><thead><th>Position</th><th>Initial token endowment</th><th>Tokens invested</th><th>Tokens not invested</th>" +
                 "<th>Tokens earned from growing crops</th><th>Total tokens earned during this round</th>" +
                 "<th>Dollars earned during this round</th><th>Total dollars earned (including show-up bonus)</th></thead>" +
                 "<tbody>");
-        double showUpBonus = clientDataModel.getServerConfiguration().getShowUpPayment();
-        RoundConfiguration roundConfiguration = clientDataModel.getRoundConfiguration();
+
         for(ClientData clientData : clientDataModel.getClientDataSortedByPriority()) {
             String backgroundColor = clientData.getPriority() == clientDataModel.getPriority() ? "#FFFFCC" : "CCCCCC"; 
         	instructionsBuilder.append(
@@ -364,14 +369,14 @@ public class ExperimentGameWindow extends JPanel {
         					clientData.getTokensEarnedFromWaterCollected(),
         					clientData.getAllTokensEarnedThisRound(),
         					clientData.getTotalDollarsEarnedThisRound(),
-        					clientData.getTotalDollarsEarned() + showUpBonus
+        					clientData.getTotalDollarsEarned() + showUpPayment
         					));
         }
         
         ClientData clientData = clientDataModel.getClientData();
         instructionsBuilder.append("</tbody></table><hr/>");
-        instructionsBuilder.append(String.format("<h3>You received $%3.2f this past round.  Your total earnings are $%3.2f, including the $%3.2f show up bonus.</h3>",
-        		clientData.getTotalDollarsEarnedThisRound(), clientData.getTotalDollarsEarned()+showUpBonus, showUpBonus));
+        instructionsBuilder.append(String.format("<h3>You (position %s) received $%3.2f this past round.  Your total earnings are $%3.2f, including the $%3.2f show up bonus.</h3>",
+        		clientData.getPriorityString(), clientData.getTotalDollarsEarnedThisRound(), clientData.getTotalDollarsEarned()+showUpPayment, showUpPayment));
         //append the added practice round instructions
         
         if (roundConfiguration.isPracticeRound()) {
@@ -564,18 +569,25 @@ public class ExperimentGameWindow extends JPanel {
         if (! roundConfiguration.isFirstRound()) {
             instructionsBuilder.append(roundConfiguration.getInstructions());
             instructionsBuilder.append("<hr/>");
-            int irrigationCapacity = clientDataModel.getGroupDataModel().getIrrigationCapacity();
-//            int clientCapacity = roundConfiguration.getMaximumClientFlowCapacity();
             if (roundConfiguration.shouldResetInfrastructureEfficiency()) {
-            	instructionsBuilder.append("The irrigation infrastructure efficiency is currently 75% (water delivery capacity of 35 cfps).");
+                int initialInfrastructureEfficiency = roundConfiguration.getInitialInfrastructureEfficiency();
+            	instructionsBuilder.append(
+            	        String.format("The irrigation infrastructure efficiency has been reset to %d%% with a corresponding water delivery capacity of %d cfps.", 
+            	                initialInfrastructureEfficiency,
+            	                clientDataModel.getGroupDataModel().calculateIrrigationCapacity(initialInfrastructureEfficiency)));
+            	                
             }
             else {
+                int initialInfrastructureEfficiency = clientDataModel.getGroupDataModel().getInfrastructureEfficiency();
+                int degradationFactor = roundConfiguration.getInfrastructureDegradationFactor();
+                int actualInfrastructureEfficiency = initialInfrastructureEfficiency - degradationFactor;
             	instructionsBuilder.append(
-            			String.format("<p>The <b>irrigation infrastructure efficiency is %d%% (water delivery capacity of %d cfps)</b> but will <b>decline by %d%%</b> during this round." +
+            			String.format("<p>The irrigation infrastructure efficiency carried over from the previous round is %d%% but has declined by %d%% and is now %d%% (%d cfps) at the start of this round.  " +
             					"The <b>available water supply is %d cfps</b>.</p><br/><hr/>",
-            					clientDataModel.getGroupDataModel().getInfrastructureEfficiency(),
-                                                irrigationCapacity,
-            					roundConfiguration.getInfrastructureDegradationFactor(),
+            					initialInfrastructureEfficiency,
+            					degradationFactor,
+            					actualInfrastructureEfficiency,
+            					clientDataModel.getGroupDataModel().calculateIrrigationCapacity(actualInfrastructureEfficiency),
             					roundConfiguration.getWaterSupplyCapacity()
             					));
             }

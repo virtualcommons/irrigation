@@ -1,11 +1,15 @@
 package edu.asu.commons.irrigation.client;
 
+import java.awt.Color;
+
 /**
  * FIXME: Refactor this class.
  * 
  * @author Sanket
  */
 public class Gate {
+    
+    public final static Color DEFAULT_COLOR = Color.black;
 
 	private boolean gateOpen = false;
 	
