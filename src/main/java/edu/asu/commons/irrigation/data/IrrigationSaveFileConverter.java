@@ -63,13 +63,14 @@ public class IrrigationSaveFileConverter {
 
         @Override
         public void process(SavedRoundData savedRoundData, PrintWriter writer) {
-            writer.println("Group #, Identifier, Event");
+            writer.println("Time, Group #, Identifier, Event");
             ServerDataModel serverDataModel = (ServerDataModel) savedRoundData.getDataModel();
             ArrayList<GroupDataModel> groups = new ArrayList<GroupDataModel>(serverDataModel.getAllGroupDataModels());
             for (PersistableEvent persistableEvent: savedRoundData.getActions()) {
+                long elapsedTime = savedRoundData.getElapsedTimeInSeconds(persistableEvent);
                 Identifier id = persistableEvent.getId();
                 GroupDataModel group = serverDataModel.getGroupDataModel(id);
-                writer.println(String.format("%s, %s, %s", groups.indexOf(group), id, persistableEvent));
+                writer.println(String.format("%d, %s, %s, %s", elapsedTime, groups.indexOf(group), id, persistableEvent));
             }
         }
 

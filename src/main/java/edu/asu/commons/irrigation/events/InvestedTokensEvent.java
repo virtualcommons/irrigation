@@ -22,10 +22,9 @@ public class InvestedTokensEvent extends AbstractPersistableEvent {
 	public int getInvestedTokens(){
 		return investedTokens;
 	}
-
 	
+	public String toString() {
+	    return String.format("%s invested %d tokens", id, investedTokens);
+	}
 	
-	
-
-
 }

@@ -10,6 +10,7 @@ import edu.asu.commons.event.Event;
 import edu.asu.commons.event.EventChannel;
 import edu.asu.commons.event.EventChannelFactory;
 import edu.asu.commons.event.EventTypeProcessor;
+import edu.asu.commons.event.SocketIdentifierUpdateRequest;
 import edu.asu.commons.irrigation.conf.RoundConfiguration;
 import edu.asu.commons.irrigation.conf.ServerConfiguration;
 import edu.asu.commons.irrigation.events.BeginChatRoundRequest;
@@ -28,6 +29,7 @@ import edu.asu.commons.irrigation.events.ShowTokenInvestmentScreenRequest;
 import edu.asu.commons.net.ClientDispatcher;
 import edu.asu.commons.net.DispatcherFactory;
 import edu.asu.commons.net.Identifier;
+import edu.asu.commons.net.SocketIdentifier;
 
 /**
  * $Id$
@@ -85,6 +87,8 @@ public class IrrigationClient {
             		"Null ID from Dispatcher.  Server: <"
             		+ serverConfiguration.getServerAddress() + "> is probably down.");
         }
+        // send back id
+        transmit(new SocketIdentifierUpdateRequest((SocketIdentifier) id));
         state = ClientState.CONNECTED;
     }
 

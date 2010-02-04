@@ -18,5 +18,9 @@ public class OpenGateEvent extends AbstractPersistableEvent {
 	public OpenGateEvent(Identifier id) {
 		super(id);
 	}
+	
+	public String toString() {
+	    return id + " opened gate";
+	}
 
 }

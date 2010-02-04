@@ -23,7 +23,7 @@ public class ClientData implements Serializable {
 
     private static final long serialVersionUID = 5281922601551921005L;
 
-    private final Identifier id;
+    private Identifier id;
     
     private GroupDataModel groupDataModel;
 
@@ -199,6 +199,10 @@ public class ClientData implements Serializable {
 
 	public double getTotalDollarsEarned() {
 		return roundConfiguration.getDollarsPerToken() * totalTokens;
+	}
+	
+	public void setId(Identifier id) {
+	    this.id = id;
 	}
 
 }

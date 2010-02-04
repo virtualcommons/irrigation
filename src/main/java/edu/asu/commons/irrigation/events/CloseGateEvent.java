@@ -18,4 +18,8 @@ public class CloseGateEvent extends AbstractPersistableEvent {
 		super(id);
 	}
 
+    public String toString() {
+        return id + " closed gate";
+    }
+    
 }

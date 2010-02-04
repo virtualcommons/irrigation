@@ -14,6 +14,8 @@ import edu.asu.commons.event.ChatRequest;
 import edu.asu.commons.event.EndRoundRequest;
 import edu.asu.commons.event.EventTypeProcessor;
 import edu.asu.commons.event.FacilitatorRegistrationRequest;
+import edu.asu.commons.event.RoundStartedMarkerEvent;
+import edu.asu.commons.event.SocketIdentifierUpdateRequest;
 import edu.asu.commons.experiment.AbstractExperiment;
 import edu.asu.commons.experiment.StateMachine;
 import edu.asu.commons.irrigation.conf.RoundConfiguration;
@@ -35,6 +37,7 @@ import edu.asu.commons.irrigation.events.ShowQuizRequest;
 import edu.asu.commons.irrigation.events.ShowTokenInvestmentScreenRequest;
 import edu.asu.commons.net.Dispatcher;
 import edu.asu.commons.net.Identifier;
+import edu.asu.commons.net.SocketIdentifier;
 import edu.asu.commons.net.event.ConnectionEvent;
 import edu.asu.commons.net.event.DisconnectionRequest;
 import edu.asu.commons.util.Duration;
@@ -195,9 +198,21 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
             }
         });
     }
-    
+
+    /**
+     * Registers client handling EventTypeProcessors.  
+     * Each EventTypeProcessor encapsulates the handling of a specific kind of message event.
+     */
     private void initializeClientHandlers() {
-        // client handlers
+        addEventProcessor(new EventTypeProcessor<SocketIdentifierUpdateRequest>(SocketIdentifierUpdateRequest.class) {
+            @Override
+            public void handle(SocketIdentifierUpdateRequest request) {
+                SocketIdentifier socketId = request.getSocketIdentifier();
+                System.err.println("socket id from client: " + socketId);
+                ClientData clientData = clients.get(socketId);
+                System.err.println("client data: " + clientData);
+            }
+        });
         addEventProcessor(new EventTypeProcessor<ConnectionEvent>(ConnectionEvent.class) {
             @Override
             public void handle(ConnectionEvent event) {
@@ -394,6 +409,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
             currentRoundDuration.start();
             state = IrrigationServerState.ROUND_IN_PROGRESS;
             secondTick.start();
+            persister.store(new RoundStartedMarkerEvent());
 //            lastTime = System.currentTimeMillis();
         }
 
