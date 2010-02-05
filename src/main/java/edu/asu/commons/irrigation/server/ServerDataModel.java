@@ -59,11 +59,7 @@ public class ServerDataModel implements DataModel<RoundConfiguration>, Serializa
     }
 
     public GroupDataModel getGroupDataModel(Identifier id) {
-        GroupDataModel group = clientsToGroups.get(id);
-        if (group == null) {
-            throw new NullPointerException("No group available for id:" + id);
-        }
-        return group;
+        return clientsToGroups.get(id);
     }
 
 

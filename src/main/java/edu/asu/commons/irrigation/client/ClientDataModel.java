@@ -107,14 +107,14 @@ public class ClientDataModel implements DataModel<RoundConfiguration> {
     }
     
     public List<ClientData> getClientDataSortedByPriority() {
-		ArrayList<ClientData> clientDataList = new ArrayList<ClientData>(getGroupDataModel().getClientDataMap().values());
-		// sort by position.
-		Collections.sort(clientDataList, new Comparator<ClientData>() {
-			public int compare(ClientData a, ClientData b) {
-				return new Integer(a.getPriority()).compareTo(b.getPriority());
-			}
-		});
-		return clientDataList;
+        ArrayList<ClientData> clientDataList = new ArrayList<ClientData>(getGroupDataModel().getClientDataMap().values());
+        // sort by position.
+        Collections.sort(clientDataList, new Comparator<ClientData>() {
+            public int compare(ClientData a, ClientData b) {
+                return new Integer(a.getPriority()).compareTo(b.getPriority());
+            }
+        });
+        return clientDataList;
     }
 
     public int getWaterSupplyCapacity() {

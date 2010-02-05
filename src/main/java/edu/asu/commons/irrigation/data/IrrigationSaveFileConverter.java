@@ -70,7 +70,8 @@ public class IrrigationSaveFileConverter {
                 long elapsedTime = savedRoundData.getElapsedTimeInSeconds(persistableEvent);
                 Identifier id = persistableEvent.getId();
                 GroupDataModel group = serverDataModel.getGroupDataModel(id);
-                writer.println(String.format("%d, %s, %s, %s", elapsedTime, groups.indexOf(group), id, persistableEvent));
+                String groupNumber = (group == null) ? "System Event" : String.valueOf(groups.indexOf(group));
+                writer.println(String.format("%d, %s, %s, %s", elapsedTime, groupNumber, id, persistableEvent));
             }
         }
 
