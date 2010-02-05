@@ -208,9 +208,16 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
             @Override
             public void handle(SocketIdentifierUpdateRequest request) {
                 SocketIdentifier socketId = request.getSocketIdentifier();
-                System.err.println("socket id from client: " + socketId);
+                //getLogger().info("socket id from client: " + socketId);
+                //getLogger().info("station number from client: " + socketId.getStationNumber());
+                //getLogger().info("station number from event: " + request.getStationNumber());
                 ClientData clientData = clients.get(socketId);
-                System.err.println("client data: " + clientData);
+                if (clientData == null) {
+                    getLogger().warning("No client data available for socket: " + socketId);
+                    return;
+                }
+                SocketIdentifier clientSocketId = (SocketIdentifier) clientData.getId();
+                clientSocketId.setStationNumber(request.getStationNumber());
             }
         });
         addEventProcessor(new EventTypeProcessor<ConnectionEvent>(ConnectionEvent.class) {

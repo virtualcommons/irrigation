@@ -205,6 +205,11 @@
       </fileset>
     </jar>
     <chmod file='${dist.dir}/${jar.name}' perm='664'/>
+    <!--
+    <signjar destDir="target/signed" alias="vcommons"
+             keystore="/home/alllee/.keystore" 
+             storepass="vc.keystore.pass" />
+             -->
   </target>
   <!-- Prepare for a build by creating appropriate directories -->
   <target name="prepare" depends='resolve'>

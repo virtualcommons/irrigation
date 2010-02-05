@@ -88,7 +88,8 @@ public class IrrigationClient {
             		+ serverConfiguration.getServerAddress() + "> is probably down.");
         }
         // send back id
-        transmit(new SocketIdentifierUpdateRequest((SocketIdentifier) id));
+        SocketIdentifier socketId = (SocketIdentifier) id;
+        transmit(new SocketIdentifierUpdateRequest(socketId, socketId.getStationNumber()));
         state = ClientState.CONNECTED;
     }
 

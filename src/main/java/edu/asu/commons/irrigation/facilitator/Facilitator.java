@@ -22,6 +22,7 @@ import edu.asu.commons.irrigation.server.ServerDataModel;
 import edu.asu.commons.net.ClientDispatcher;
 import edu.asu.commons.net.DispatcherFactory;
 import edu.asu.commons.net.Identifier;
+import edu.asu.commons.net.SocketIdentifier;
 
 /**
  * $Id$
@@ -90,7 +91,8 @@ public class Facilitator {
 
     public void connect(InetSocketAddress address) {
         id = dispatcher.connect(address);
-        transmit(new FacilitatorRegistrationRequest(id));
+        SocketIdentifier socketId = (SocketIdentifier) id;
+        transmit(new FacilitatorRegistrationRequest(socketId));
     }
 
     void initialize() {

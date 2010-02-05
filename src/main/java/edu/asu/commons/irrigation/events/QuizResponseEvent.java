@@ -18,30 +18,34 @@ import edu.asu.commons.net.Identifier;
  */
 public class QuizResponseEvent extends AbstractPersistableEvent implements ClientRequest {
 
-	private static final long serialVersionUID = -7081410122722056083L;
-	
-	private int quizPage;
-	
-	private Properties responses;
-	
-	private List<String> incorrectAnswers;
-	
-	public QuizResponseEvent(Identifier id, int quizPage, Properties responses, List<String> incorrectAnswers) {
-		super(id);
-		this.quizPage = quizPage;
-		this.responses = responses;
-		this.incorrectAnswers = incorrectAnswers;
-	}
-	
-	public int getQuizPage(){
-		return quizPage;
-	}
-	
-	public Properties getResponses() {
-	    return responses;
-	}
-	
-	public List<String> getIncorrectAnswers() {
-	    return incorrectAnswers;
-	}
+    private static final long serialVersionUID = -7081410122722056083L;
+
+    private int quizPage;
+
+    private Properties responses;
+
+    private List<String> incorrectAnswers;
+
+    public QuizResponseEvent(Identifier id, int quizPage, Properties responses, List<String> incorrectAnswers) {
+        super(id);
+        this.quizPage = quizPage;
+        this.responses = responses;
+        this.incorrectAnswers = incorrectAnswers;
+    }
+
+    public int getQuizPage(){
+        return quizPage;
+    }
+
+    public Properties getResponses() {
+        return responses;
+    }
+
+    public List<String> getIncorrectAnswers() {
+        return incorrectAnswers;
+    }
+
+    public String toString() {
+        return id + " quiz page response: " + responses + "\n\t incorrect: " + incorrectAnswers;
+    }
 }
