@@ -2,7 +2,7 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
 <comment>Irrigation experiment round configuration</comment>
-<entry key='infrastructure-degradation-factor'>15</entry>
+<entry key='infrastructure-degradation-factor'>10</entry>
 
 <entry key="instructions">
 <![CDATA[
