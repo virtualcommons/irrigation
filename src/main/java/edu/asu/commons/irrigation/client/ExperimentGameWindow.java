@@ -582,7 +582,7 @@ public class ExperimentGameWindow extends JPanel {
                 int degradationFactor = roundConfiguration.getInfrastructureDegradationFactor();
                 int actualInfrastructureEfficiency = initialInfrastructureEfficiency - degradationFactor;
             	instructionsBuilder.append(
-            			String.format("<p>The irrigation infrastructure efficiency carried over from the previous round is %d%% but has declined by %d%% and is now %d%% (%d cfps) at the start of this round.  " +
+            			String.format("<p>The irrigation infrastructure efficiency carried over from the previous round is %d%% but has declined by %d and is now %d%% (%d cfps) at the start of this round.  " +
             					"The <b>available water supply is %d cfps</b>.</p><br/><hr/>",
             					initialInfrastructureEfficiency,
             					degradationFactor,
