@@ -2,7 +2,6 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
 <comment>Irrigation experiment server configuration</comment>
-<!--<entry key="hostname">localhost</entry>-->
 <entry key="hostname">@SERVER_ADDRESS@</entry>
 <entry key="port">@PORT_NUMBER@</entry>
 <entry key="round0">round0.xml</entry>
@@ -22,9 +21,14 @@
 <entry key="round14">round14.xml</entry>
 <entry key="round15">round15.xml</entry>
 <entry key="round16">round16.xml</entry>
+<entry key="round17">round17.xml</entry>
+<entry key="round18">round18.xml</entry>
+<entry key="round19">round19.xml</entry>
+<entry key="round20">round20.xml</entry>
+<entry key="round21">round21.xml</entry>
 
 <entry key="wait-for-participants">true</entry>
-<entry key="number-of-rounds">17</entry>
+<entry key="number-of-rounds">22</entry>
 
 <entry key="q1">49</entry>
 <entry key="a1">49%</entry>
@@ -231,9 +235,12 @@ the round?<br>
 <![CDATA[
 <table border="1" cellspacing="2" cellpadding="2">
 <thead>
+<tr>
 <th>Water applied to your field</th>
 <th>Tokens earned</th>
+</tr>
 </thead>
+<tbody>
 <tr>
 <td>&lt; 150</td><td>0</td>
 </tr>
@@ -279,6 +286,7 @@ the round?<br>
 <tr>
 <td>&gt; 899</td><td>0</td>
 </tr>
+</tbody>
 </table>
 ]]>
 </entry>
@@ -326,9 +334,12 @@ infrastructure efficiency.
 </p>
 <table border="1" cellspacing="2" cellpadding="2">
 <thead>
+<tr>
 <th>Irrigation Infrastructure Efficiency (percent)</th>
 <th>Water delivery capacity (cubic feet per second)</th>
+</tr>
 </thead>
+<tbody>
 <tr>
 <td> &le; 45</td><td>0</td>
 </tr>
@@ -356,6 +367,7 @@ infrastructure efficiency.
 <tr>
 <td>81-100</td><td>40</td>
 </tr>
+</tbody>
 </table>
 ]]>
 </entry>

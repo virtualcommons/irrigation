@@ -235,9 +235,12 @@ the round?<br>
 <![CDATA[
 <table border="1" cellspacing="2" cellpadding="2">
 <thead>
+<tr>
 <th>Water applied to your field</th>
 <th>Tokens earned</th>
+</tr>
 </thead>
+<tbody>
 <tr>
 <td>&lt; 150</td><td>0</td>
 </tr>
@@ -283,6 +286,7 @@ the round?<br>
 <tr>
 <td>&gt; 899</td><td>0</td>
 </tr>
+</tbody>
 </table>
 ]]>
 </entry>
@@ -330,9 +334,12 @@ infrastructure efficiency.
 </p>
 <table border="1" cellspacing="2" cellpadding="2">
 <thead>
+<tr>
 <th>Irrigation Infrastructure Efficiency (percent)</th>
 <th>Water delivery capacity (cubic feet per second)</th>
+</tr>
 </thead>
+<tbody>
 <tr>
 <td> &le; 45</td><td>0</td>
 </tr>
@@ -360,6 +367,7 @@ infrastructure efficiency.
 <tr>
 <td>81-100</td><td>40</td>
 </tr>
+</tbody>
 </table>
 ]]>
 </entry>
