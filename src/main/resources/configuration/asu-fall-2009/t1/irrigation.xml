@@ -38,8 +38,7 @@
 <entry key="explanation2">
 <![CDATA[
 An existing infrastructure efficiency of 35% + 15 tokens invested = 50% infrastructure efficiency for the current round.  
-An infrastructure efficiency of 50% corresponds to a water delivery capacity
-of 5 cubic feet per second.
+An infrastructure efficiency of 50% corresponds to a water delivery capacity of 5 cubic feet per second.
 ]]>
 </entry>
 <entry key="q3">5</entry>
@@ -152,8 +151,9 @@ begin the next round by selecting Round -&gt; Start.
 
 <entry key="welcome-instructions">
 <![CDATA[
-<center><h3>Welcome to the experiment.  Please do not close this window or open any
-other applications.</h3></center>
+<center><h3>Welcome to the experiment.  Please wait quietly and do not close this window or open any
+other applications. The experiment will begin shortly after everyone has been
+assigned a station.</h3></center>
 ]]>
 </entry>
 
