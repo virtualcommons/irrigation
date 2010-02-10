@@ -199,25 +199,25 @@ public class GroupDataModel implements DataModel<RoundConfiguration> {
         return maximumAvailableWaterFlow;
     }
 
-	public int getInfrastructureEfficiency() {
-		return infrastructureEfficiency;
-	}
+    public int getInfrastructureEfficiency() {
+        return infrastructureEfficiency;
+    }
 
-	public int getInfrastructureEfficiencyBeforeInvestment() {
-		return infrastructureEfficiencyBeforeInvestment;
-	}
-	
-	public Logger getLogger() {
-	    if (logger == null) {
-	        logger = Logger.getLogger(getClass().getName());
-	    }
-	    return logger;
-	}
-	
-    
+    public int getInfrastructureEfficiencyBeforeInvestment() {
+        return infrastructureEfficiencyBeforeInvestment;
+    }
+
+    public Logger getLogger() {
+        if (logger == null) {
+            logger = Logger.getLogger(getClass().getName());
+        }
+        return logger;
+    }
+
+
     public void setRoundConfiguration(RoundConfiguration roundConfiguration) {
-		this.roundConfiguration = roundConfiguration;
-	}
+        this.roundConfiguration = roundConfiguration;
+    }
 
 }
 

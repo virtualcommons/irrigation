@@ -89,7 +89,7 @@ public class IrrigationSaveFileConverter {
             ServerDataModel serverDataModel = (ServerDataModel) savedRoundData.getDataModel();
             RoundConfiguration roundConfiguration = (RoundConfiguration) savedRoundData.getRoundParameters();
             ArrayList<GroupDataModel> groups = new ArrayList<GroupDataModel>(serverDataModel.getAllGroupDataModels());
-            writer.println("Group, Total group tokens earned, Water availability, Water supply, Tokens invested");
+            writer.println("Group, Total group tokens earned, Water availability, Water supply, Tokens invested, Infrastructure before investment, Total infrastructure efficiency, % infrastructure decline");
             for (GroupDataModel group: groups) {
                 int totalGroupTokensEarned = 0;
                 int totalGroupTokenInvestment = 0;
@@ -97,12 +97,16 @@ public class IrrigationSaveFileConverter {
                     totalGroupTokensEarned += data.getAllTokensEarnedThisRound();
                     totalGroupTokenInvestment += data.getInvestedTokens();
                 }
-                writer.println(String.format("%s, %d, %d, %d, %d", 
+                writer.println(String.format("%s, %d, %d, %d, %d, %d, %d, %d", 
                         groups.indexOf(group), 
                         totalGroupTokensEarned, 
                         group.getIrrigationCapacity(), 
                         roundConfiguration.getWaterSupplyCapacity(),
-                        totalGroupTokenInvestment));
+                        totalGroupTokenInvestment,
+                        group.getInfrastructureEfficiencyBeforeInvestment(),
+                        group.getInfrastructureEfficiency(),
+                        roundConfiguration.getInfrastructureDegradationFactor()
+                        ));
             }
             Map<GroupDataModel, SortedSet<ChatRequest>> chatRequestMap = new HashMap<GroupDataModel, SortedSet<ChatRequest>>();
             SortedSet<ChatRequest> allChatRequests = savedRoundData.getChatRequests();
