@@ -3,7 +3,7 @@
 <properties>
 <comment>Irrigation experiment round configuration</comment>
 
-<entry key='max-canal-flow-capacity'>28</entry>
+<entry key='max-canal-flow-capacity'>32</entry>
 
 <entry key="instructions">
 <![CDATA[
