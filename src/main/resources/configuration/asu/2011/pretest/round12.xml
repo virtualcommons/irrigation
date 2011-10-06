@@ -3,11 +3,13 @@
 <properties>
 <comment>Irrigation experiment round configuration</comment>
 
-<entry key='infrastructure-degradation-factor'>10</entry>
+<entry key='initial-infrastructure-efficiency'>75</entry>
+<entry key='reset-infrastructure-efficiency'>true</entry>
+<entry key='infrastructure-degradation-factor'>20</entry>
 
 <entry key="instructions">
 <![CDATA[
-<h3>Round 4 Instructions</h3>
+<h3>Round 11 Instructions</h3>
 <p>
 In the past rounds the infrastructure efficiency declined from one round to
 the next at a constant amount of 25%. In the following rounds the <b>average

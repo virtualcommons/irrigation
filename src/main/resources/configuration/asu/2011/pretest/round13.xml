@@ -2,13 +2,14 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
 <comment>Irrigation experiment round configuration</comment>
-<entry key='max-canal-flow-capacity'>36</entry>
+
+<entry key='infrastructure-degradation-factor'>30</entry>
 
 <entry key="instructions">
 <![CDATA[
-<h3>Round 14 Instructions</h3>
+<h3>Round 12 Instructions</h3>
 <p>
-This is round 14/20.  
+This round is the same as the previous round.
 </p>
 
 ]]>

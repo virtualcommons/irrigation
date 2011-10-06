@@ -2,7 +2,6 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
 <comment>Irrigation experiment server configuration</comment>
-<!--<entry key="hostname">localhost</entry>-->
 <entry key="hostname">@SERVER_ADDRESS@</entry>
 <entry key="port">@PORT_NUMBER@</entry>
 <entry key="round0">round0.xml</entry>
@@ -22,9 +21,14 @@
 <entry key="round14">round14.xml</entry>
 <entry key="round15">round15.xml</entry>
 <entry key="round16">round16.xml</entry>
+<entry key="round17">round17.xml</entry>
+<entry key="round18">round18.xml</entry>
+<entry key="round19">round19.xml</entry>
+<entry key="round20">round20.xml</entry>
+<entry key="round21">round21.xml</entry>
 
 <entry key="wait-for-participants">true</entry>
-<entry key="number-of-rounds">17</entry>
+<entry key="number-of-rounds">22</entry>
 
 <entry key="q1">49</entry>
 <entry key="a1">49%</entry>
@@ -34,8 +38,7 @@
 <entry key="explanation2">
 <![CDATA[
 An existing infrastructure efficiency of 35% + 15 tokens invested = 50% infrastructure efficiency for the current round.  
-An infrastructure efficiency of 50% corresponds to a water delivery capacity
-of 5 cubic feet per second.
+An infrastructure efficiency of 50% corresponds to a water delivery capacity of 5 cubic feet per second.
 ]]>
 </entry>
 <entry key="q3">5</entry>
@@ -80,11 +83,13 @@ template-language-pluggable
 -->
 <entry key="initial-instructions">
 <![CDATA[
+<h1>Instructions</h1>
+<hr>
 <p>
 You have already earned 5 dollars by showing up for this exercise. You can earn
-more, up to an extra 25 dollars. You will participate in this exercise as a part of
-a group of five participants. Your group has been formed by randomly assigning you
-to FOUR other participants in the room. 
+more, up to about 25 dollars. You will participate in this exercise as a part of a
+group of five participants. Your group has been formed by randomly assigning you
+with four other participants in the room. 
 </p>
 <p>
 The amount of money you earn will depend on the decisions made by you and the other
@@ -148,8 +153,12 @@ begin the next round by selecting Round -&gt; Start.
 
 <entry key="welcome-instructions">
 <![CDATA[
-<center><h3>Welcome to the experiment.  Please do not close this window or open any
-other applications.</h3></center>
+    <h1>Welcome</h1>
+    <hr>
+        <p>
+            Welcome to the Ostrom Lab.  Please wait quietly and do not close this window or open any
+            other applications. The experiment will begin shortly after everyone has been assigned a station.
+        </p>
 ]]>
 </entry>
 
@@ -231,9 +240,12 @@ the round?<br>
 <![CDATA[
 <table border="1" cellspacing="2" cellpadding="2">
 <thead>
+<tr>
 <th>Water applied to your field</th>
 <th>Tokens earned</th>
+</tr>
 </thead>
+<tbody>
 <tr>
 <td>&lt; 150</td><td>0</td>
 </tr>
@@ -279,6 +291,7 @@ the round?<br>
 <tr>
 <td>&gt; 899</td><td>0</td>
 </tr>
+</tbody>
 </table>
 ]]>
 </entry>
@@ -304,9 +317,8 @@ finished to receive payment.
 </p>
 <p>
 You can send messages by typing in the text field at the bottom of the screen
-and then pressing the return key or clicking the send button. The time left
-for the discussion is displayed with a progress bar above the text field at
-the bottom of the screen.
+and then pressing the return key. The time left for the discussion is displayed with
+a progress bar above the text field at the bottom of the screen.
 </p>
 ]]>
 </entry>
@@ -327,9 +339,12 @@ infrastructure efficiency.
 </p>
 <table border="1" cellspacing="2" cellpadding="2">
 <thead>
+<tr>
 <th>Irrigation Infrastructure Efficiency (percent)</th>
 <th>Water delivery capacity (cubic feet per second)</th>
+</tr>
 </thead>
+<tbody>
 <tr>
 <td> &le; 45</td><td>0</td>
 </tr>
@@ -357,6 +372,7 @@ infrastructure efficiency.
 <tr>
 <td>81-100</td><td>40</td>
 </tr>
+</tbody>
 </table>
 ]]>
 </entry>

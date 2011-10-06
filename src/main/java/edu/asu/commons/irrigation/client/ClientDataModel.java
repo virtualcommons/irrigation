@@ -34,10 +34,12 @@ public class ClientDataModel implements DataModel<RoundConfiguration> {
    
     private ServerConfiguration serverConfiguration;
     private RoundConfiguration roundConfiguration;
+    private final EventChannel eventChannel;
 
     private int timeLeft = 0;
 
     public ClientDataModel(EventChannel channel, IrrigationClient client) {
+        this.eventChannel = channel;
         this.client = client;
         this.serverConfiguration = client.getServerConfiguration();
     }
@@ -56,7 +58,7 @@ public class ClientDataModel implements DataModel<RoundConfiguration> {
     }
     
     public List<Identifier> getAllClientIdentifiers() {
-        return new ArrayList<Identifier>(groupDataModel.getClientIdentifiers());
+        return new ArrayList<Identifier>(groupDataModel.getAllClientIdentifiers());
     }
 
      public synchronized void initialize(RoundStartedEvent event) {
@@ -123,6 +125,10 @@ public class ClientDataModel implements DataModel<RoundConfiguration> {
 
     public int getIrrigationCapacity() {
         return groupDataModel.getIrrigationCapacity();
+    }
+
+    public EventChannel getEventChannel() {
+        return eventChannel;
     }
 
 

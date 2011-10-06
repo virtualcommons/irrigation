@@ -1,11 +1,13 @@
 package edu.asu.commons.irrigation.server;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Logger;
 
+import edu.asu.commons.event.EventChannel;
 import edu.asu.commons.experiment.DataModel;
 import edu.asu.commons.irrigation.conf.RoundConfiguration;
 import edu.asu.commons.net.Identifier;
@@ -22,12 +24,15 @@ import edu.asu.commons.net.Identifier;
 public class GroupDataModel implements DataModel<RoundConfiguration> {
 
     private static final long serialVersionUID = 5817418171228817123L;
+    
+    private transient Logger logger = Logger.getLogger(GroupDataModel.class.getName());
 
     private final Map<Identifier, ClientData> clients = new LinkedHashMap<Identifier, ClientData>();
 
     private RoundConfiguration roundConfiguration;
 
-	private transient Logger logger = Logger.getLogger(GroupDataModel.class.getName());
+    private transient ServerDataModel serverDataModel;
+
 
     private int currentlyAvailableFlowCapacity = 0;
     private int maximumAvailableWaterFlow = 0;
@@ -38,7 +43,9 @@ public class GroupDataModel implements DataModel<RoundConfiguration> {
     
     private int totalContributedTokens = 0;
     
+    
     public GroupDataModel(ServerDataModel serverDataModel) {
+        this.serverDataModel = serverDataModel;
         setRoundConfiguration(serverDataModel.getRoundConfiguration());
     }
 
@@ -46,8 +53,8 @@ public class GroupDataModel implements DataModel<RoundConfiguration> {
         return clients.get(id);
     }
 
-    public Set<Identifier> getClientIdentifiers() {
-        return Collections.unmodifiableSet(clients.keySet());
+    public List<Identifier> getAllClientIdentifiers() {
+        return new ArrayList<Identifier>(clients.keySet());
     }
 
     public void addClient(ClientData clientData) {
@@ -217,6 +224,19 @@ public class GroupDataModel implements DataModel<RoundConfiguration> {
 
     public void setRoundConfiguration(RoundConfiguration roundConfiguration) {
         this.roundConfiguration = roundConfiguration;
+    }
+
+    @Override
+    public EventChannel getEventChannel() {
+        return serverDataModel.getEventChannel();
+    }
+
+    public ServerDataModel getServerDataModel() {
+        return serverDataModel;
+    }
+
+    public void setServerDataModel(ServerDataModel serverDataModel) {
+        this.serverDataModel = serverDataModel;
     }
 
 }

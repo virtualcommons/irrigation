@@ -3,13 +3,11 @@
 <properties>
 <comment>Irrigation experiment round configuration</comment>
 
-<entry key='infrastructure-degradation-factor'>10</entry>
-
 <entry key="instructions">
 <![CDATA[
-<h3>Round 6 Instructions</h3>
+<h3>Round 2 Instructions</h3>
 <p>
-This round is the same as the previous round.  
+This round is the same as the previous round.
 </p>
 
 ]]>

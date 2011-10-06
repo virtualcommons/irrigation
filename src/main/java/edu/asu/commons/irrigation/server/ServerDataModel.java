@@ -1,9 +1,11 @@
 package edu.asu.commons.irrigation.server;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -94,5 +96,10 @@ public class ServerDataModel implements DataModel<RoundConfiguration>, Serializa
 
     public void setEventChannel(EventChannel eventChannel) {
         this.eventChannel = eventChannel;
+    }
+
+    @Override
+    public List<Identifier> getAllClientIdentifiers() {
+        return new ArrayList<Identifier>(clientsToGroups.keySet());
     }
 }

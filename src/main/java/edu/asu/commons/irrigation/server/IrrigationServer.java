@@ -51,7 +51,7 @@ import edu.asu.commons.util.Utils;
  * @author <a href='mailto:Allen.Lee@asu.edu'>Allen Lee</a>
  * @version $Revision$
  */
-public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
+public class IrrigationServer extends AbstractExperiment<ServerConfiguration, RoundConfiguration> {
 
     private final Map<Identifier, ClientData> clients = new LinkedHashMap<Identifier, ClientData>();
 
@@ -258,7 +258,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
                 if (Identifier.ALL.equals(target)) {
                     // relay to all clients in this client's group.
                     getLogger().info(String.format("%s sending [ %s ] to all group participants", request.getSource(), request));
-                    for (Identifier targetId : clients.get(source).getGroupDataModel().getClientIdentifiers()) {
+                    for (Identifier targetId : clients.get(source).getGroupDataModel().getAllClientIdentifiers()) {
                         if (targetId.equals(source)) {
                             continue;
                         }
@@ -364,7 +364,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration> {
                 clientData.init(group.getAvailableClientFlowCapacity());
             }
         }
-        for (Identifier id: group.getClientIdentifiers()) {
+        for (Identifier id: group.getAllClientIdentifiers()) {
             ClientUpdateEvent clientUpdateEvent = new ClientUpdateEvent(id, group, timeLeft);
             transmit(clientUpdateEvent);
         }
