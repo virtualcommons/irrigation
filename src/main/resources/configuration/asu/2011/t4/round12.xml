@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Irrigation experiment round configuration</comment>
+
+<entry key='reset-infrastructure-efficiency'>true</entry>
+<entry key='max-canal-flow-capacity'>27</entry>
+
+<entry key="instructions">
+<![CDATA[
+<h3>Round 11 Instructions</h3>
+<p>
+In the past rounds the water supply was stable at a level of 30 cubic
+feet per second for each round. In the following rounds the average water
+supply remains 30 cfps, but the actual water supply varies each round
+between 25 cfps and 35 cfps. After you have made your investment decisions,
+the infrastructure level is announced as well as the actual water supply for
+that round.  Please remember that the water supply is independent of your
+irrigation capacity.  If you develop an irrigation capacity of 30 cfps but the
+water supply is only 20 cfps, you are only getting 20 cfps down your canal.
+</p>
+]]>
+</entry>
+</properties>

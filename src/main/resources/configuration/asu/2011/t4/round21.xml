@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Irrigation experiment round configuration</comment>
+
+<entry key='max-canal-flow-capacity'>39</entry>
+
+<entry key="instructions">
+<![CDATA[
+<h3>Round 20 Instructions</h3>
+<p>
+This is the final round.
+</p>
+]]>
+</entry>
+</properties>
