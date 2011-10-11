@@ -13,6 +13,7 @@ import edu.asu.commons.event.ChatEvent;
 import edu.asu.commons.event.ChatRequest;
 import edu.asu.commons.event.EndRoundRequest;
 import edu.asu.commons.event.EventTypeProcessor;
+import edu.asu.commons.event.FacilitatorMessageEvent;
 import edu.asu.commons.event.FacilitatorRegistrationRequest;
 import edu.asu.commons.event.RoundStartedMarkerEvent;
 import edu.asu.commons.event.SocketIdentifierUpdateRequest;
@@ -255,20 +256,27 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
             public void handle(ChatRequest request) {
                 Identifier source = request.getSource();
                 Identifier target = request.getTarget();
+                ClientData sendingClient = clients.get(source);
                 if (Identifier.ALL.equals(target)) {
                     // relay to all clients in this client's group.
-                    getLogger().info(String.format("%s sending [ %s ] to all group participants", request.getSource(), request));
-                    for (Identifier targetId : clients.get(source).getGroupDataModel().getAllClientIdentifiers()) {
+                    sendFacilitatorMessage(String.format("%s sending [ %s ] to all group participants", request.getSource(), request));
+                    boolean restrictedVisibility = getRoundConfiguration().isRestrictedVisibility();
+                    for (ClientData clientData: clients.get(source).getGroupDataModel().getClientDataMap().values()) {
+                        Identifier targetId = clientData.getId();
                         if (targetId.equals(source)) {
                             continue;
                         }
-                        ChatEvent chatEvent = new ChatEvent(targetId, request.toString(), source, true);
+                        if (restrictedVisibility && ! sendingClient.isImmediateNeighbor(clientData)) {
+                            sendFacilitatorMessage(String.format("%s out of range of %s, not sending message [%s]", clientData, sendingClient, request.getMessage()));
+                            continue;
+                        }
+                        ChatEvent chatEvent = new ChatEvent(targetId, request.getMessage(), source, true);
                         transmit(chatEvent);
                     }
                 }
                 else {
                     getLogger().info(String.format("%s sending [%s] to target [%s]", request.getSource(), request, request.getTarget()));
-                    ChatEvent chatEvent = new ChatEvent(request.getTarget(), request.toString(), request.getSource());                  
+                    ChatEvent chatEvent = new ChatEvent(request.getTarget(), request.getMessage(), request.getSource());                  
                     transmit(chatEvent);
                 }
                 persister.store(request);
@@ -309,7 +317,10 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
             }
         });
     }
-    
+    private void sendFacilitatorMessage(String message) {
+        getLogger().info(message);
+        transmit(new FacilitatorMessageEvent(facilitatorId, message));
+    }
     private boolean isTokenInvestmentComplete() {
         return submittedClients >= clients.size();
     }

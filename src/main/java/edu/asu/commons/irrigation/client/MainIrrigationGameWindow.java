@@ -398,7 +398,7 @@ public class MainIrrigationGameWindow extends JPanel {
 				for (final ClientData clientData : clientDataModel.getClientDataMap().values()) {
 					if (clientData.isGateOpen()) {
 					    if (restrictedVisibility && ! clientDataModel.isImmediateNeighbor(clientData)) {
-					        break;
+					        continue;
 					    }
 					    canalPanel.openGate(clientData.getPriority());
 					}

@@ -204,7 +204,12 @@ public class ClientData implements Serializable {
 	public void setId(Identifier id) {
 	    this.id = id;
 	}
-
+	
+    public boolean isImmediateNeighbor(ClientData otherClientData) {
+        int thisPosition = getPriority();
+        int otherPosition = otherClientData.getPriority();
+        return (thisPosition == otherPosition + 1) || (thisPosition == otherPosition - 1);
+    }
 }
 
 

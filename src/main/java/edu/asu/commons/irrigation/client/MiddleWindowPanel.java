@@ -74,8 +74,9 @@ public class MiddleWindowPanel extends JPanel {
     public void update(ClientDataModel clientDataModel) {
         boolean restrictedVisibility = clientDataModel.getRoundConfiguration().isRestrictedVisibility();
         for (ClientData clientData : clientDataModel.getClientDataSortedByPriority()) {
+            // if we are in a restricted visibility case
             if (restrictedVisibility && ! clientDataModel.isImmediateNeighbor(clientData)) {
-                break;
+                continue;
             }
             middleScorePanels.get(clientData.getPriority()).update(clientData);
         }

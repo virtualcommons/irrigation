@@ -132,9 +132,7 @@ public class ClientDataModel implements DataModel<RoundConfiguration> {
     }
 
     public boolean isImmediateNeighbor(ClientData otherClientData) {
-        int thisPosition = getClientData().getPriority();
-        int otherPosition = otherClientData.getPriority();
-        return (thisPosition == otherPosition + 1) || (thisPosition == otherPosition - 1);
+        return getClientData().isImmediateNeighbor(otherClientData);
     }
 
 
