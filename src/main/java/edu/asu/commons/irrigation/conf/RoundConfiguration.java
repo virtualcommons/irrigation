@@ -201,4 +201,8 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
         return getBooleanProperty("randomize-groups", false);
     }
 
+    public boolean isRestrictedVisibility() {
+        return getBooleanProperty("restrictedVisibility", false);
+    }
+
 }

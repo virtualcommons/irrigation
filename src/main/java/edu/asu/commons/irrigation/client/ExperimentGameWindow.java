@@ -209,6 +209,7 @@ public class ExperimentGameWindow extends JPanel {
                         setInstructions(getQuizPage());
                     }
                     else {
+                        // this only works in between practice rounds #1 & #2 or after practice round 2
                         setInstructions(instructionsBuilder.toString());
                         nextButton.setEnabled(false);
                         disableQuiz();
@@ -349,6 +350,8 @@ public class ExperimentGameWindow extends JPanel {
     private void addDebriefingText(EndRoundEvent event) {
         double showUpPayment = clientDataModel.getServerConfiguration().getShowUpPayment();
         RoundConfiguration roundConfiguration = clientDataModel.getRoundConfiguration();
+        // FIXME: move this to RoundConfiguration instead and then templatize using
+        // StringTemplate
         instructionsBuilder.delete(0, instructionsBuilder.length());
         instructionsBuilder.append("<b>Results from the previous round</b>");
         instructionsBuilder.append(
@@ -374,7 +377,7 @@ public class ExperimentGameWindow extends JPanel {
         }
         
         ClientData clientData = clientDataModel.getClientData();
-        instructionsBuilder.append("</tbody></table><hr/>");
+        instructionsBuilder.append("</tbody></table><hr>");
         instructionsBuilder.append(String.format("<h3>You (position %s) received $%3.2f this past round.  Your total earnings are $%3.2f, including the $%3.2f show up bonus.</h3>",
         		clientData.getPriorityString(), clientData.getTotalDollarsEarnedThisRound(), clientData.getTotalDollarsEarned()+showUpPayment, showUpPayment));
         //append the added practice round instructions
@@ -385,7 +388,7 @@ public class ExperimentGameWindow extends JPanel {
         else if (event.isLastRound()) {
             instructionsBuilder.append(getServerConfiguration().getFinalInstructions());
         }
-        instructionsBuilder.append("<hr/>");
+        instructionsBuilder.append("<hr>");
         displayInstructions(instructionsBuilder.toString());
     }
 
@@ -396,7 +399,8 @@ public class ExperimentGameWindow extends JPanel {
     
     private void setInstructions(String instructions, boolean caretToEnd) {
         instructionsEditorPane.setText(instructions);
-        instructionsEditorPane.setCaretPosition(caretToEnd ? instructions.length() - 1 : 0);
+        int caretPosition = caretToEnd ? instructionsEditorPane.getDocument().getLength() - 1 : 0;
+        instructionsEditorPane.setCaretPosition(caretPosition);
     }
     
     private void displayInstructions(final String instructions) {
@@ -428,7 +432,7 @@ public class ExperimentGameWindow extends JPanel {
                 for (Map.Entry<Object, Object> entry : responses.entrySet()) {
                     sortedResponses.put((String) entry.getKey(), (String) entry.getValue());
                 }
-                builder.append("<hr/><h2>Results</h2>");
+                builder.append("<hr><h2>Results</h2><hr>");
                 for (Map.Entry<String, String> entry : sortedResponses.entrySet()) {
                     String questionNumber = (String) entry.getKey();
                     if (questionNumber.charAt(0) == 'q') {
@@ -455,7 +459,7 @@ public class ExperimentGameWindow extends JPanel {
                 	builder.append("<p>Congratulations, you got all of the questions correct.</p>");
                 }
                 else {
-                	builder.append(String.format("<p>You answered %d questions incorrectly.  Please review the correct answers to make sure you understand.</p>", incorrectAnswers.size()));
+                	builder.append(String.format("<p>You answered %d questions incorrectly.  Please review the correct answers.</p>", incorrectAnswers.size()));
                 }
                 builder.append("<p><b>Please click the 'Next' button at the bottom right of the screen to continue.</b></p>");
                 quizPageResponses.put(currentQuizPageNumber, builder.toString());
@@ -547,16 +551,15 @@ public class ExperimentGameWindow extends JPanel {
                     infrastructureEfficiency = Math.max(0, group.getInfrastructureEfficiency() - roundConfiguration.getInfrastructureDegradationFactor());
                 }
                 addCenterComponent(getTokenInvestmentPanel());
-                StringBuilder builder = new StringBuilder();
-                builder.append(
+                StringBuilder builder = new StringBuilder(
                         String.format(
-                        		"<h2>Current infrastructure efficiency: %d%%</h2>" +
-                        		"<h2>Current water delivery capacity: %d cubic feet per second</h2>" +
-                        		"<h2>Available water supply: %d cubic feet per second</h2>",
-                                infrastructureEfficiency,
-                                group.calculateIrrigationCapacity(infrastructureEfficiency),
-                                roundConfiguration.getWaterSupplyCapacity()
-                        ));
+                                "<h2>Current infrastructure efficiency: %d%%</h2>" 
+                        + "<h2>Current water delivery capacity: %d cubic feet per second</h2>" 
+                        + "<h2>Available water supply: %d cubic feet per second</h2>",
+                        infrastructureEfficiency,
+                        group.calculateIrrigationCapacity(infrastructureEfficiency),
+                        roundConfiguration.getWaterSupplyCapacity()
+                                ));
                 builder.append(getServerConfiguration().getInvestmentInstructions());
                 tokenInstructionsEditorPane.setText(builder.toString());
                 getInvestedTokensTextField().requestFocusInWindow();
@@ -568,7 +571,7 @@ public class ExperimentGameWindow extends JPanel {
     public void updateRoundInstructions(RoundConfiguration roundConfiguration) {
         if (! roundConfiguration.isFirstRound()) {
             instructionsBuilder.append(roundConfiguration.getInstructions());
-            instructionsBuilder.append("<hr/>");
+            instructionsBuilder.append("<hr>");
             if (roundConfiguration.shouldResetInfrastructureEfficiency()) {
                 int initialInfrastructureEfficiency = roundConfiguration.getInitialInfrastructureEfficiency();
             	instructionsBuilder.append(
@@ -583,7 +586,7 @@ public class ExperimentGameWindow extends JPanel {
                 int actualInfrastructureEfficiency = initialInfrastructureEfficiency - degradationFactor;
             	instructionsBuilder.append(
             			String.format("<p>The irrigation infrastructure efficiency carried over from the previous round is %d%% but has declined by %d and is now %d%% (%d cfps) at the start of this round.  " +
-            					"The <b>available water supply is %d cfps</b>.</p><br/><hr/>",
+            					"The <b>available water supply is %d cfps</b>.</p><br><hr>",
             					initialInfrastructureEfficiency,
             					degradationFactor,
             					actualInfrastructureEfficiency,

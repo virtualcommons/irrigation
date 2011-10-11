@@ -86,11 +86,13 @@ template-language-pluggable
 <h1>Instructions</h1>
 <hr>
 <p>
-You have already earned 5 dollars by showing up for this exercise. You can earn
-more, up to about 25 dollars. You will participate in this exercise as a part of a
-group of five participants. Your group has been formed by randomly assigning you
-with four other participants in the room. 
+Welcome.  You have already earned 5 dollars by showing up for this exercise. You can
+earn more, up to about 25 dollars. You will participate in this exercise as a part
+of a group of five participants. Your group has been formed by randomly assigning
+you with four other participants in the room. 
 </p>
+<h1>Earnings</h1>
+<hr>
 <p>
 The amount of money you earn will depend on the decisions made by you and the other
 members of your group. This exercise mimics decisions people make in irrigation
@@ -105,11 +107,13 @@ round, your group can maintain the capacity of the irrigation infrastructure
 for growing crops. 
 </p>
 
+<h1>Practice Rounds</h1>
+<hr>
 <p>
 We will now start a practice round to help illustrate the experiment.  Before each
-round in this experiment you will have a chat period of %d seconds where you can
-send text messages to the other participants. You may discuss any aspect of the
-exercise with two important exceptions:
+round in this experiment you will have a chat period of {chatDuration} seconds where
+you can send text messages to your neighboring participants. You may discuss any aspect of
+the exercise with two important exceptions:
 </p>
 <ol>
 <li>You are <b>not allowed</b> to promise the other participants

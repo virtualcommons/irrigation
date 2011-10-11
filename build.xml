@@ -235,6 +235,7 @@
            debug="on"
            optimize="off"
            deprecation="on"
+           includeantruntime='true'
            source="1.6"
            >
       <compilerarg value='-Xlint:unchecked'/> 

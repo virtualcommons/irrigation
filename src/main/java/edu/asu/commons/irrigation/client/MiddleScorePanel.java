@@ -12,7 +12,7 @@ import edu.asu.commons.irrigation.server.ClientData;
 /**
  * $Id$
  * 
- * 
+ * FIXME: needs some refactoring to get this to look proper.
  *
  * @author Sanket Joshi
  * @version $Rev$

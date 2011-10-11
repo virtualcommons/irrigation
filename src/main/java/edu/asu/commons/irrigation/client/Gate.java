@@ -11,7 +11,7 @@ public class Gate {
     
     public final static Color DEFAULT_COLOR = Color.black;
 
-	private boolean gateOpen = false;
+	private boolean open = false;
 	
 	private int height;
 	
@@ -142,13 +142,20 @@ public class Gate {
 		return x;
 	}
 	
-	public boolean isGateOpen(){
-		return gateOpen;
+	public boolean isOpen(){
+		return open;
+	}
+	
+	public void open() {
+	    setOpen(true);
+	}
+	public void close() {
+	    setOpen(false);
 	}
 
-	public void setGateOpen(boolean gateOpen) {
-		this.gateOpen = gateOpen;
-		if (! gateOpen) {
+	private void setOpen(boolean open) {
+		this.open = open;
+		if (! open) {
 		    setx1(getdefaultx1());
 		    sety1(getdefaulty1());
 		}

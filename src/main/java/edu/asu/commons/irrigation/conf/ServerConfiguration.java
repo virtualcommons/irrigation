@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import org.stringtemplate.v4.ST;
+
 import edu.asu.commons.conf.ExperimentConfiguration;
 
 /**
@@ -88,10 +90,14 @@ extends ExperimentConfiguration.Base<RoundConfiguration> {
 
     public String getInitialInstructions() {
     	String initialInstructions = assistant.getProperty("initial-instructions", "");
-    	if (initialInstructions.contains("%d")) {
-    		return String.format(initialInstructions, getChatDuration());
-    	}
-    	return initialInstructions;
+    	ST template = new ST(initialInstructions, '{', '}');
+    	// FIXME: make this dynamic for all properties and change property names to camel case instead of hyphenated.
+    	// e.g., something like:
+//    	for (Map.Entry<Object, Object> entry: assistant.getProperties().entrySet()) {
+//    	    template.add(entry.getKey().toString(), entry.getValue());
+//    	}
+    	template.add("chatDuration", getChatDuration());
+    	return template.render();
     }
     
     public String getWelcomeInstructions() {

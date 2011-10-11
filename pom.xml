@@ -55,6 +55,11 @@ vim:sts=2:sw=2
       <version>1.2.2</version>
     </dependency>
     <dependency>
+      <groupId>org.antlr</groupId>
+      <artifactId>stringtemplate</artifactId>
+      <version>4.0.2</version>
+    </dependency>
+    <dependency>
       <groupId>jgoodies</groupId>
       <artifactId>forms</artifactId>
       <version>1.0.5</version>

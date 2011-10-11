@@ -13,6 +13,7 @@
     <jar href='csidex.jar'/>
     <jar href='jcommon.jar'/>
     <jar href='jfreechart.jar'/>
+    <jar href='stringtemplate.jar'/>
   </resources>
   <application-desc main-class="@MAIN_CLASS@"/> 
 </jnlp>
