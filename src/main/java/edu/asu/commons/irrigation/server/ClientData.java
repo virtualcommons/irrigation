@@ -208,7 +208,7 @@ public class ClientData implements Serializable {
     public boolean isImmediateNeighbor(ClientData otherClientData) {
         int thisPosition = getPriority();
         int otherPosition = otherClientData.getPriority();
-        return (thisPosition == otherPosition + 1) || (thisPosition == otherPosition - 1);
+        return (thisPosition == otherPosition) || (thisPosition == otherPosition + 1) || (thisPosition == otherPosition - 1);
     }
 }
 

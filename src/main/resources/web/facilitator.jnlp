@@ -11,6 +11,8 @@
     <j2se version="1.6+"/>
     <jar href="facilitator.jar"/>
     <jar href='@FRAMEWORK_JAR@'/>
+    <jar href='stringtemplate.jar'/>
+    <jar href='antlr-runtime.jar'/>
   </resources>
   <application-desc main-class="@MAIN_CLASS@"/> 
 </jnlp>

@@ -97,11 +97,34 @@ extends ExperimentConfiguration.Base<RoundConfiguration> {
 //    	    template.add(entry.getKey().toString(), entry.getValue());
 //    	}
     	template.add("chatDuration", getChatDuration());
+    	template.add("quizAnswerReward", String.format("%3.2f", getQuizAnswerReward()));
+    	template.add("maximumQuizEarnings", String.format("%3.2f", getMaximumQuizEarnings()));
+    	template.add("restrictedVisibilityInstructions", getRestrictedVisibilityInstructions());
     	return template.render();
+    }
+    
+    public String getRestrictedVisibilityInstructions() {
+        return getProperty("restrictedVisibilityInstructions");
+    }
+    
+    public boolean isRestrictedVisibility() {
+        return getBooleanProperty("restrictedVisibility");
+    }
+    
+    public double getQuizAnswerReward() {
+        return assistant.getDoubleProperty("quizAnswerReward", 0.50d);
+    }
+    
+    public double getMaximumQuizEarnings() {
+        return getQuizAnswerReward() * getNumberOfQuizQuestions();
     }
     
     public String getWelcomeInstructions() {
         return assistant.getProperty("welcome-instructions");
+    }
+    
+    public int getNumberOfQuizQuestions() {
+        return assistant.getIntProperty("numberOfQuizQuestions", 6);
     }
 
     public Map<String, String> getQuizAnswers() {

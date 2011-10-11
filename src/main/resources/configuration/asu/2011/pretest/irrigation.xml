@@ -97,23 +97,32 @@ you with four other participants in the room.
 The amount of money you earn will depend on the decisions made by you and the other
 members of your group. This exercise mimics decisions people make in irrigation
 systems. In each round you will receive 10 tokens which you can invest in the
-irrigation infrastructure. Based on the <b>water delivery capacity</b> of the
-irrigation infrastructure and the availability of water you will be able to
-grow crops. Tokens earned in a round is the sum of tokens not invested plus
-tokens earned by growing crops. Each token is worth 5 cents. In each round you
-will first decide how much to invest in the irrigation infrastructure.  Based
-on the combined contributions of all 5 participants in your group in each
-round, your group can maintain the capacity of the irrigation infrastructure
-for growing crops. 
+<b>irrigation infrastructure</b>. Based on the <b>water delivery capacity</b> of the
+irrigation infrastructure and the <b>availability of water to your location</b> you
+will be able to grow crops.  Your total earnings in a round is equal to the sum of
+the <b>tokens you don't invest</b> and the <b>tokens you earn by growing crops</b>,
+where each token is worth 5 cents.  You will also earn ${quizAnswerReward} for each answer you get
+correct on the quiz (total of 6 questions, for a maximum of ${maximumQuizEarnings}).
 </p>
+
+<p>
+In each round you will first decide how much to invest in the irrigation
+infrastructure.  Based on the combined contributions of all 5 participants in your
+group in each round, your group can maintain the capacity of the irrigation
+infrastructure for growing crops. 
+</p>
+<p>
 
 <h1>Practice Rounds</h1>
 <hr>
 <p>
 We will now start a practice round to help illustrate the experiment.  Before each
 round in this experiment you will have a chat period of {chatDuration} seconds where
-you can send text messages to your neighboring participants. You may discuss any aspect of
-the exercise with two important exceptions:
+you can send text messages to the other members of your group. 
+
+{restrictedVisibilityInstructions}
+
+You may discuss any aspect of the exercise with two important exceptions:
 </p>
 <ol>
 <li>You are <b>not allowed</b> to promise the other participants
@@ -129,6 +138,16 @@ from the experiment. That group will have to wait until the entire experiment is
 finished to receive payment.
 </p>
 ]]>
+</entry>
+
+<entry key='restrictedVisibility'>true</entry>
+<entry key='restrictedVisibilityInstructions'>
+    <![CDATA[
+    <b>NOTE:</b> You will be able to communicate with and see your immediate
+    neighbors in this exercise.  For example, if you are in position A you can only
+    communicate with the person in position B, whereas B can communicate with A and
+    C, and so on.
+    ]]>
 </entry>
 
 <entry key='game-screenshot-instructions'>

@@ -1,10 +1,5 @@
 package edu.asu.commons.irrigation.conf;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-
 import edu.asu.commons.conf.ExperimentRoundParameters;
 import edu.asu.commons.util.Duration;
 
@@ -160,20 +155,6 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
         return getStringProperty("quiz-page");
     }
 
-    public Map<String, String> getQuizAnswers() {
-        if (isQuizEnabled()) {
-            Properties properties = getProperties();
-            Map<String, String> answers = new HashMap<String, String>();
-            for (int i = 1; properties.containsKey("q" + i); i++) {
-                String key = "q" + i;
-                String answer = properties.getProperty(key);
-                answers.put(key, answer);
-            }
-            return answers;
-        }
-        return Collections.emptyMap();
-    }
-
     /**
      * Returns true if the current round should have a communication session for
      * getChatDuration() seconds before the round begins.
@@ -183,7 +164,6 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
     public boolean isChatEnabledBeforeRound() {
         return getBooleanProperty("chat-enabled-before-round", true);
     }
-
 
     /**
      * Returns the duration of the round in seconds.  Set to default of 50 seconds per round.
@@ -202,7 +182,7 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
     }
 
     public boolean isRestrictedVisibility() {
-        return getBooleanProperty("restrictedVisibility", false);
+        return getBooleanProperty("restrictedVisibility", getParentConfiguration().isRestrictedVisibility());
     }
 
 }
