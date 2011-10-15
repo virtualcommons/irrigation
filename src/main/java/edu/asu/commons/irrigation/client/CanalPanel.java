@@ -33,7 +33,7 @@ public class CanalPanel extends JPanel {
 
 	private final static int BALLCOUNT = 500;
 
-	private Gate gate[] = new Gate[6];
+	private Gate gates[] = new Gate[6];
 
 	private int gateHeight = 20;
 
@@ -53,6 +53,8 @@ public class CanalPanel extends JPanel {
 
 	private int gateBuffer = 20;
 
+    private boolean restrictedVisibility;
+
 	////////////////////////////////////////////////////////////////////////////
 
 	public CanalPanel(ClientDataModel clientDataModel) {
@@ -65,6 +67,7 @@ public class CanalPanel extends JPanel {
 	public void setClientDataModel(ClientDataModel clientDataModel) {
 	    this.maximumIrrigationCapacity = clientDataModel.getGroupDataModel().getMaximumAvailableWaterFlow();
 	    this.clientDataModel = clientDataModel;
+        restrictedVisibility = clientDataModel.getRoundConfiguration().isRestrictedVisibility();
 	}
 
 	/**
@@ -85,7 +88,7 @@ public class CanalPanel extends JPanel {
 	
 	private void initializeGates() {
 	    for(int i=0;i<numberOfGates ;i++){
-	        gate[i] = new Gate(maximumIrrigationCapacity,i);
+	        gates[i] = new Gate(maximumIrrigationCapacity,i);
 	    }
 	}
 
@@ -98,20 +101,25 @@ public class CanalPanel extends JPanel {
 		//draw the other gates
 		for(int i=0;i<numberOfGates-1;i++){
 			graphics2D.setColor(Color.BLUE);
-			graphics2D.fillRect(gate[i].getX(), gate[i].getY(), gate[i].getWidth(),gate[i].getHeight());
+			graphics2D.fillRect(gates[i].getX(), gates[i].getY(), gates[i].getWidth(),gates[i].getHeight());
 		}
+		for (ClientData clientData: clientDataModel.getClientDataSortedByPriority()) {
+            // FIXME: this conditional preventing canalPanel.openGate has the unintended side effect of not updating the canal width properly.
+            if (restrictedVisibility && ! clientDataModel.isImmediateNeighbor(clientData)) {
+                continue;
+            }
+            int priority = clientData.getPriority();
+            Gate gate = gates[priority];
 
-		int numClients = clientDataModel.getAllClientIdentifiers().size();
-		for(int i=0;i<numClients;i++) {
-			graphics2D.setColor(Color.BLUE);
-			graphics2D.fillRect(gate[i].getOpeningsX(), gate[i].getOpeningsY(),gate[i].getOpeningsWidth(),
-					gate[i].getOpeningsHeight());
-			graphics2D.setColor(Gate.DEFAULT_COLOR);
-			graphics2D.drawLine(gate[i].getx1(),gate[i].gety1(),gate[i].getx2(),gate[i].gety2());
+            graphics2D.setColor(Color.BLUE);
+            graphics2D.fillRect(gate.getOpeningsX(), gate.getOpeningsY(),gate.getOpeningsWidth(),
+                    gate.getOpeningsHeight());
+            graphics2D.setColor(Gate.DEFAULT_COLOR);
+            graphics2D.drawLine(gate.getx1(),gate.gety1(),gate.getx2(),gate.gety2());
 		}
 
 		graphics2D.setColor(Color.BLUE);
-		graphics2D.fillRect(gate[5].getX(), gate[5].getY(),10,gate[5].getHeight());
+		graphics2D.fillRect(gates[5].getX(), gates[5].getY(),10,gates[5].getHeight());
 
 		//////////////////////Animation Logic////////////////////////////
 		graphics.setColor(Color.white);
@@ -119,12 +127,12 @@ public class CanalPanel extends JPanel {
 		for(int i=0;i<BALLCOUNT;i++){
 		    if((balls[i].getPosition() == 1)||(balls[i].getPosition() == 2) || (balls[i].getPosition()==3)
 		            || (balls[i].getPosition() == 4) || (balls[i].getPosition() == 5)){
-		        if(!((!gate[balls[i].getPosition()-1].isOpen())&& balls[i].getY() >= (gate[balls[i].getPosition()-1].getY()+gate[balls[i].getPosition()-1].getHeight())))
+		        if(!((!gates[balls[i].getPosition()-1].isOpen())&& balls[i].getY() >= (gates[balls[i].getPosition()-1].getY()+gates[balls[i].getPosition()-1].getHeight())))
 		            graphics.fillOval(balls[i].x,balls[i].y,balls[i].getBallSize(), balls[i].getBallSize());
 		    }
 		    else{
 		        if(balls[i].getPosition() != 0){
-		            if(gate[balls[i].getPosition() - 6].getHeight() != 0)
+		            if(gates[balls[i].getPosition() - 6].getHeight() != 0)
 		                graphics.fillOval(balls[i].x,balls[i].y,balls[i].getBallSize(), balls[i].getBallSize());
 		        }
 		        else{
@@ -139,48 +147,48 @@ public class CanalPanel extends JPanel {
 
 	private void updateGUI() {
 		for(int i=1;i<6;i++){
-			if(gate[i-1].isOpen()){
-				if(!(gate[i-1].getHeight() - gateHeight < 0)){
-					gate[i].setHeight(gate[i-1].getHeight() - gateHeight );
+			if(gates[i-1].isOpen()){
+				if(!(gates[i-1].getHeight() - gateHeight < 0)){
+					gates[i].setHeight(gates[i-1].getHeight() - gateHeight );
 
 				}
 				else{
-					gate[i].setHeight(0);
+					gates[i].setHeight(0);
 				}
 			}
 			else{
-				gate[i].setHeight(gate[i-1].getHeight());
+				gates[i].setHeight(gates[i-1].getHeight());
 
 			}
 			//order matters here
 			if(!(i == 5)){
-				gate[i].setOpeningsHeight((maximumIrrigationCapacity*bandWidthCanalHeightMapping)
-						- gate[i].getHeight());
-				gate[i].setOpeningsY(gate[i].getOpeningsHeight() - 50);
+				gates[i].setOpeningsHeight((maximumIrrigationCapacity*bandWidthCanalHeightMapping)
+						- gates[i].getHeight());
+				gates[i].setOpeningsY(gates[i].getOpeningsHeight() - 50);
 
 				//opening the lid logic
-				if(gate[i].isOpen()){
-					gate[i].setx1(gate[i].getx2());
-					if(!(gate[i].gety2()- gate[i].getGateWidth() < gate[i].getY()))
-						gate[i].sety1(gate[i].gety2()- gate[i].getGateWidth());
+				if(gates[i].isOpen()){
+					gates[i].setx1(gates[i].getx2());
+					if(!(gates[i].gety2()- gates[i].getGateWidth() < gates[i].getY()))
+						gates[i].sety1(gates[i].gety2()- gates[i].getGateWidth());
 					else
-						gate[i].sety1(gate[i].getOpeningsY());
+						gates[i].sety1(gates[i].getOpeningsY());
 				}
 				else{
-					gate[i].setx1(gate[i].getdefaultx1());
-					gate[i].sety1(gate[i].getdefaulty1());
+					gates[i].setx1(gates[i].getdefaultx1());
+					gates[i].sety1(gates[i].getdefaulty1());
 				}
 
-				if(gate[0].isOpen()){
-					gate[0].setx1(gate[0].getx2());
-					if(!(gate[0].gety2()- gate[0].getGateWidth() < gate[0].getY()))
-						gate[0].sety1(gate[0].gety2()- gate[0].getGateWidth());
+				if(gates[0].isOpen()){
+					gates[0].setx1(gates[0].getx2());
+					if(!(gates[0].gety2()- gates[0].getGateWidth() < gates[0].getY()))
+						gates[0].sety1(gates[0].gety2()- gates[0].getGateWidth());
 					else
-						gate[0].sety1(gate[0].getY());
+						gates[0].sety1(gates[0].getY());
 				}
 				else{
-					gate[0].setx1(gate[0].getdefaultx1());
-					gate[0].sety1(gate[0].getdefaulty1());
+					gates[0].setx1(gates[0].getdefaultx1());
+					gates[0].sety1(gates[0].getdefaulty1());
 				}
 
 			}
@@ -232,7 +240,7 @@ public class CanalPanel extends JPanel {
 		}
 		break;
 
-		case 1: if(gate[0].isOpen() && (balls[i].x >= gate[0].getOpeningsX() && balls[i].x <= (gate[0].getOpeningsX()+gateBuffer))
+		case 1: if(gates[0].isOpen() && (balls[i].x >= gates[0].getOpeningsX() && balls[i].x <= (gates[0].getOpeningsX()+gateBuffer))
 				&& (balls[i].y >= serverHeight - gateBuffer && balls[i].y <= serverHeight)){
 			balls[i].setPosition(7);
 			//directly pass in the information
@@ -250,7 +258,7 @@ public class CanalPanel extends JPanel {
 
 		break;
 
-		case 2: if(gate[1].isOpen() && (balls[i].x >= gate[1].getOpeningsX() && balls[i].x <= (gate[1].getOpeningsX()+gateBuffer))
+		case 2: if(gates[1].isOpen() && (balls[i].x >= gates[1].getOpeningsX() && balls[i].x <= (gates[1].getOpeningsX()+gateBuffer))
 				&& (balls[i].y >= serverHeight - gateBuffer && balls[i].y <= serverHeight)){
 			balls[i].setPosition(8);
 			//directly pass in the information
@@ -268,7 +276,7 @@ public class CanalPanel extends JPanel {
 		break;
 
 
-		case 3: if(gate[2].isOpen() && (balls[i].x >= gate[2].getOpeningsX() && balls[i].x <= (gate[2].getOpeningsX()+gateBuffer))
+		case 3: if(gates[2].isOpen() && (balls[i].x >= gates[2].getOpeningsX() && balls[i].x <= (gates[2].getOpeningsX()+gateBuffer))
 				&& (balls[i].y >= serverHeight - gateBuffer && balls[i].y <= serverHeight)){
 			balls[i].setPosition(9);
 			//directly pass in the information
@@ -291,7 +299,7 @@ public class CanalPanel extends JPanel {
 		}
 		break;
 
-		case 4: if(gate[3].isOpen() && (balls[i].x >= gate[3].getOpeningsX() && balls[i].x <= (gate[3].getOpeningsX()+gateBuffer))
+		case 4: if(gates[3].isOpen() && (balls[i].x >= gates[3].getOpeningsX() && balls[i].x <= (gates[3].getOpeningsX()+gateBuffer))
 				&& (balls[i].y >= serverHeight - gateBuffer && balls[i].y <= serverHeight)){
 			balls[i].setPosition(10);
 			//directly pass in the information
@@ -308,7 +316,7 @@ public class CanalPanel extends JPanel {
 		}
 		break;
 
-		case 5: if(gate[4].isOpen() && (balls[i].x >= gate[4].getOpeningsX() && balls[i].x <= (gate[4].getOpeningsX()+gateBuffer))
+		case 5: if(gates[4].isOpen() && (balls[i].x >= gates[4].getOpeningsX() && balls[i].x <= (gates[4].getOpeningsX()+gateBuffer))
 				&& (balls[i].y >= serverHeight - gateBuffer && balls[i].y <= serverHeight)){
 			balls[i].setPosition(11);
 			//directly pass in the information
@@ -376,17 +384,17 @@ public class CanalPanel extends JPanel {
 			if((balls[ballIndex].getPosition() == 1)||(balls[ballIndex].getPosition() == 2) || (balls[ballIndex].getPosition()==3)
 					|| (balls[ballIndex].getPosition() == 4) || (balls[ballIndex].getPosition() == 5)||(balls[ballIndex].getPosition() == 6)){
 
-				balls[ballIndex].xUpperBound = gate[balls[ballIndex].getPosition() - 1].getX()+gate[balls[ballIndex].getPosition() - 1].getWidth();
-				balls[ballIndex].xLowerBound = gate[balls[ballIndex].getPosition() - 1].getX();
-				balls[ballIndex].yUpperBound = gate[balls[ballIndex].getPosition() - 1].getY()/*+gate[balls[ballIndex].getPosition() - 1].getHeight()*/;
-				balls[ballIndex].yLowerBound = gate[balls[ballIndex].getPosition() - 1].getY();
+				balls[ballIndex].xUpperBound = gates[balls[ballIndex].getPosition() - 1].getX()+gates[balls[ballIndex].getPosition() - 1].getWidth();
+				balls[ballIndex].xLowerBound = gates[balls[ballIndex].getPosition() - 1].getX();
+				balls[ballIndex].yUpperBound = gates[balls[ballIndex].getPosition() - 1].getY()/*+gate[balls[ballIndex].getPosition() - 1].getHeight()*/;
+				balls[ballIndex].yLowerBound = gates[balls[ballIndex].getPosition() - 1].getY();
 			}
 			//the ball is in one of the openings
 			else{
-				balls[ballIndex].xUpperBound = gate[balls[ballIndex].getPosition() - 7].getOpeningsX()+gate[balls[ballIndex].getPosition() - 7].getGateWidth();
-				balls[ballIndex].xLowerBound = gate[balls[ballIndex].getPosition() - 7].getOpeningsX();
-				balls[ballIndex].yUpperBound = gate[balls[ballIndex].getPosition() - 7].getOpeningsY()+gate[balls[ballIndex].getPosition() - 7].getOpeningsHeight();
-				balls[ballIndex].yLowerBound = gate[balls[ballIndex].getPosition() - 7].getOpeningsY();
+				balls[ballIndex].xUpperBound = gates[balls[ballIndex].getPosition() - 7].getOpeningsX()+gates[balls[ballIndex].getPosition() - 7].getGateWidth();
+				balls[ballIndex].xLowerBound = gates[balls[ballIndex].getPosition() - 7].getOpeningsX();
+				balls[ballIndex].yUpperBound = gates[balls[ballIndex].getPosition() - 7].getOpeningsY()+gates[balls[ballIndex].getPosition() - 7].getOpeningsHeight();
+				balls[ballIndex].yLowerBound = gates[balls[ballIndex].getPosition() - 7].getOpeningsY();
 				//X change in motion
 				balls[ballIndex].moveX = 0;
 				//Y change in motion
@@ -396,11 +404,11 @@ public class CanalPanel extends JPanel {
 	}
 
 	public void openGate(int priority) {
-		gate[priority].open();
+		gates[priority].open();
 	}
 
 	public void closeGate(int priority) {
-		gate[priority].close();
+		gates[priority].close();
 	}
 	
 	public void startRound() {

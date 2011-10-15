@@ -35,6 +35,7 @@ import edu.asu.commons.irrigation.events.EndRoundEvent;
 import edu.asu.commons.irrigation.events.QuizResponseEvent;
 import edu.asu.commons.irrigation.server.ClientData;
 import edu.asu.commons.irrigation.server.GroupDataModel;
+import edu.asu.commons.irrigation.ui.IrrigationInterface;
 import edu.asu.commons.util.HtmlEditorPane;
 import edu.asu.commons.util.HtmlEditorPane.FormActionEvent;
 
@@ -124,7 +125,7 @@ public class ExperimentGameWindow extends JPanel {
             tokenInvestmentPanel = new JPanel();
             tokenInvestmentPanel.setName("Token investment panel");
             tokenInvestmentPanel.setLayout(new BorderLayout());
-            tokenInstructionsEditorPane = createInstructionsEditorPane();
+            tokenInstructionsEditorPane = IrrigationInterface.createInstructionsEditorPane();
             JScrollPane tokenInstructionsScrollPane = new JScrollPane(tokenInstructionsEditorPane);
             tokenInvestmentPanel.add(tokenInstructionsScrollPane, BorderLayout.CENTER);
             tokenInvestmentPanel.add(getSubmitTokenPanel(), BorderLayout.SOUTH);
@@ -288,21 +289,12 @@ public class ExperimentGameWindow extends JPanel {
 
     private HtmlEditorPane getInstructionsEditorPane() {
         if (instructionsEditorPane == null) {
-            instructionsEditorPane = createInstructionsEditorPane();
+            instructionsEditorPane = IrrigationInterface.createInstructionsEditorPane();
             instructionsEditorPane.setName("Instructions editor pane");
             // create a quiz listener and then initialize the instructions.
             instructionsEditorPane.setActionListener(createQuizListener(getServerConfiguration()));
         }
         return instructionsEditorPane;
-    }
-    
-    private HtmlEditorPane createInstructionsEditorPane() {
-        HtmlEditorPane htmlEditorPane = new HtmlEditorPane();
-        htmlEditorPane.setEditable(false);
-        htmlEditorPane.setFont(new Font("LucidaSansRegular", Font.TRUETYPE_FONT, 16));
-        htmlEditorPane.setBackground(Color.WHITE);
-        return htmlEditorPane;
-
     }
 
     private void addCenterComponent(Component newCenterComponent) {
@@ -514,11 +506,7 @@ public class ExperimentGameWindow extends JPanel {
             contributionInformationPanel.setLayout(new BoxLayout(contributionInformationPanel, BoxLayout.Y_AXIS));
             contributionInformationPanel.add(createPieChartPanel());
             contributionInformationPanel.add(Box.createVerticalStrut(15));
-            contributionInformationEditorPane = new JEditorPane();
-            contributionInformationEditorPane.setContentType("text/html");
-            contributionInformationEditorPane.setEditorKit(new HTMLEditorKit());
-            contributionInformationEditorPane.setEditable(false);
-            contributionInformationEditorPane.setBackground(Color.WHITE);
+            contributionInformationEditorPane = IrrigationInterface.createInstructionsEditorPane();
             contributionInformationPanel.add(contributionInformationEditorPane);
         }
         return contributionInformationPanel;

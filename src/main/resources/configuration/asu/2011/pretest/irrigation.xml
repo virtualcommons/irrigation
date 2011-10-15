@@ -143,10 +143,10 @@ finished to receive payment.
 <entry key='restrictedVisibility'>true</entry>
 <entry key='restrictedVisibilityInstructions'>
     <![CDATA[
-    <b>NOTE:</b> You will be able to communicate with and see your immediate
-    neighbors in this exercise.  For example, if you are in position A you can only
-    communicate with the person in position B, whereas B can communicate with A and
-    C, and so on.
+    <b>NOTE:</b> In this exercise you will only be able to communicate with and see
+    your <b>immediate neighbors</b>.  For example, if you are in position A you can
+    only communicate with the person in position B, whereas B can communicate with A
+    and C, and so on.
     ]]>
 </entry>
 

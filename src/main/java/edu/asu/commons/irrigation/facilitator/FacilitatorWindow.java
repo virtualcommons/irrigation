@@ -21,6 +21,7 @@ import edu.asu.commons.irrigation.events.ShowQuizRequest;
 import edu.asu.commons.irrigation.server.ClientData;
 import edu.asu.commons.irrigation.server.GroupDataModel;
 import edu.asu.commons.irrigation.server.ServerDataModel;
+import edu.asu.commons.irrigation.ui.IrrigationInterface;
 import edu.asu.commons.net.Identifier;
 import edu.asu.commons.util.HtmlEditorPane;
 
@@ -77,8 +78,7 @@ public class FacilitatorWindow extends JPanel {
         buttonPanel.add(getShowQuizButton());
         buttonPanel.add(getStartRoundOverrideButton());
         add(buttonPanel, BorderLayout.NORTH);
-        editorPane = new HtmlEditorPane();
-        editorPane.setEditable(false);
+        editorPane = IrrigationInterface.createInstructionsEditorPane();
         scrollPane = new JScrollPane(editorPane);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);

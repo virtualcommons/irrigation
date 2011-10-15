@@ -394,12 +394,9 @@ public class MainIrrigationGameWindow extends JPanel {
 				// FIXME: figure out how to reliably set the progress bar colors regardless of OS.
 //				setProgressBarColor(timeLeft);
 				// only show open gates for immediately neighboring clients.
-				boolean restrictedVisibility = client.getRoundConfiguration().isRestrictedVisibility();
+
 				for (final ClientData clientData : clientDataModel.getClientDataMap().values()) {
 					if (clientData.isGateOpen()) {
-					    if (restrictedVisibility && ! clientDataModel.isImmediateNeighbor(clientData)) {
-					        continue;
-					    }
 					    canalPanel.openGate(clientData.getPriority());
 					}
 					else {

@@ -73,7 +73,7 @@ public class MiddleScorePanel extends JPanel {
 
     private JLabel getTokensEarnedLabel() {
         if(tokensEarnedLabel == null){
-            tokensEarnedLabel = new JLabel();
+            tokensEarnedLabel = new JLabel("?");
             tokensEarnedLabel.setBounds(new Rectangle(5,10+32+10+20+10+20+10+20+10,30,20));
         }
         return tokensEarnedLabel;
@@ -81,7 +81,7 @@ public class MiddleScorePanel extends JPanel {
 
     private JLabel getAvailableWaterLabel() {
         if(availableWaterLabel == null){
-            availableWaterLabel = new JLabel();
+            availableWaterLabel = new JLabel("?");
             availableWaterLabel.setBounds(new Rectangle(5,10+32+10+20+10,30,20));
         }
         return availableWaterLabel;
@@ -98,7 +98,7 @@ public class MiddleScorePanel extends JPanel {
 
     private JLabel getWaterCollectedLabel() {
         if(waterCollectedLabel == null){
-            waterCollectedLabel = new JLabel("0");
+            waterCollectedLabel = new JLabel("?");
             waterCollectedLabel.setBounds(new Rectangle(5,10+32+10+20+10+20+10,30,20));
         }
         return waterCollectedLabel;
