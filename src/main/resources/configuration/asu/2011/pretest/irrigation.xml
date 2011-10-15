@@ -322,8 +322,11 @@ the round?<br>
 <entry key='chat-instructions'>
 <![CDATA[
 <h3>Chat Instructions</h3>
-You may now chat for %d seconds with the other members of your group.  You may
-discuss any aspect of the exercise with two important exceptions:
+You may now chat for {chatDuration} seconds with the other members of your group.  
+
+{restrictedVisibilityInstructions}
+
+You may discuss any aspect of the exercise with two important exceptions:
 </p>
 <ol>
 <li>You are <b>not allowed</b> to promise the other participants

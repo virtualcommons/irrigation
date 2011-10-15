@@ -103,6 +103,14 @@ extends ExperimentConfiguration.Base<RoundConfiguration> {
     	return template.render();
     }
     
+    public String getChatInstructions() {
+        String chatInstructions = assistant.getProperty("chat-instructions");
+        ST template = new ST(chatInstructions, '{', '}');
+        template.add("chatDuration", getChatDuration());
+        template.add("restrictedVisibilityInstructions", getRestrictedVisibilityInstructions());
+        return template.render();
+    }
+    
     public String getRestrictedVisibilityInstructions() {
         return getProperty("restrictedVisibilityInstructions");
     }
@@ -171,13 +179,6 @@ extends ExperimentConfiguration.Base<RoundConfiguration> {
         return assistant.getIntProperty("chat-duration", 60);
     }
 
-    public String getChatInstructions() {
-    	String chatInstructions = assistant.getProperty("chat-instructions", "");
-    	if (chatInstructions.contains("%d")) {
-    		return String.format(chatInstructions, getChatDuration());
-    	}
-    	return chatInstructions;
-    }
 
     public String getGameScreenshotInstructions() {
         return assistant.getProperty("game-screenshot-instructions");
