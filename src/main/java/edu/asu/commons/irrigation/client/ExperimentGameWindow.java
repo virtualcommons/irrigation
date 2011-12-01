@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -27,7 +26,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
-import javax.swing.text.html.HTMLEditorKit;
 
 import edu.asu.commons.irrigation.conf.RoundConfiguration;
 import edu.asu.commons.irrigation.conf.ServerConfiguration;
@@ -35,9 +33,9 @@ import edu.asu.commons.irrigation.events.EndRoundEvent;
 import edu.asu.commons.irrigation.events.QuizResponseEvent;
 import edu.asu.commons.irrigation.server.ClientData;
 import edu.asu.commons.irrigation.server.GroupDataModel;
-import edu.asu.commons.irrigation.ui.IrrigationInterface;
-import edu.asu.commons.util.HtmlEditorPane;
-import edu.asu.commons.util.HtmlEditorPane.FormActionEvent;
+import edu.asu.commons.ui.HtmlEditorPane;
+import edu.asu.commons.ui.HtmlEditorPane.FormActionEvent;
+import edu.asu.commons.ui.UserInterfaceUtils;
 
 /**
  * $Id$
@@ -125,7 +123,7 @@ public class ExperimentGameWindow extends JPanel {
             tokenInvestmentPanel = new JPanel();
             tokenInvestmentPanel.setName("Token investment panel");
             tokenInvestmentPanel.setLayout(new BorderLayout());
-            tokenInstructionsEditorPane = IrrigationInterface.createInstructionsEditorPane();
+            tokenInstructionsEditorPane = UserInterfaceUtils.createInstructionsEditorPane();
             JScrollPane tokenInstructionsScrollPane = new JScrollPane(tokenInstructionsEditorPane);
             tokenInvestmentPanel.add(tokenInstructionsScrollPane, BorderLayout.CENTER);
             tokenInvestmentPanel.add(getSubmitTokenPanel(), BorderLayout.SOUTH);
@@ -289,7 +287,7 @@ public class ExperimentGameWindow extends JPanel {
 
     private HtmlEditorPane getInstructionsEditorPane() {
         if (instructionsEditorPane == null) {
-            instructionsEditorPane = IrrigationInterface.createInstructionsEditorPane();
+            instructionsEditorPane = UserInterfaceUtils.createInstructionsEditorPane();
             instructionsEditorPane.setName("Instructions editor pane");
             // create a quiz listener and then initialize the instructions.
             instructionsEditorPane.setActionListener(createQuizListener(getServerConfiguration()));
@@ -506,7 +504,7 @@ public class ExperimentGameWindow extends JPanel {
             contributionInformationPanel.setLayout(new BoxLayout(contributionInformationPanel, BoxLayout.Y_AXIS));
             contributionInformationPanel.add(createPieChartPanel());
             contributionInformationPanel.add(Box.createVerticalStrut(15));
-            contributionInformationEditorPane = IrrigationInterface.createInstructionsEditorPane();
+            contributionInformationEditorPane = UserInterfaceUtils.createInstructionsEditorPane();
             contributionInformationPanel.add(contributionInformationEditorPane);
         }
         return contributionInformationPanel;

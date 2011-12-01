@@ -1,8 +1,13 @@
 syntax:glob
 
+src/main/resources/configuration/*.xml
+tags
 *~
+manifest.mf
+.settings/*
 target
 *.jar
+data/*
 experiment-data/*
 build.properties
 *.log
