@@ -50,7 +50,7 @@ public class Facilitator {
     }
 
     public Facilitator(ServerConfiguration configuration) {
-        dispatcher = DispatcherFactory.getInstance().createClientDispatcher(channel);
+        dispatcher = DispatcherFactory.getInstance().createClientDispatcher(channel, configuration);
         setConfiguration(configuration);
     }
     

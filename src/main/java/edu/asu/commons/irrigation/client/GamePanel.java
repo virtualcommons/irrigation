@@ -25,7 +25,7 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
-import edu.asu.commons.irrigation.conf.RoundConfiguration;
+import edu.asu.commons.irrigation.conf.ServerConfiguration;
 import edu.asu.commons.irrigation.server.ClientData;
 /**
  * $Id$
@@ -35,7 +35,7 @@ import edu.asu.commons.irrigation.server.ClientData;
  * @author <a href='mailto:Allen.Lee@asu.edu'>Allen Lee</a>, Sanket Joshi
  * @version $Rev$
  */
-public class MainIrrigationGameWindow extends JPanel {
+public class GamePanel extends JPanel {
 
     private static final long serialVersionUID = 5900368694556557132L;
 
@@ -80,7 +80,7 @@ public class MainIrrigationGameWindow extends JPanel {
 	private JTextField irrigationCapacityTextField;
 	private JTextField waterSupplyTextField;
 
-	public MainIrrigationGameWindow(IrrigationClient client) {
+	public GamePanel(IrrigationClient client) {
 		super();
 		this.client = client;
 		setName("main irrigation game window");
@@ -360,7 +360,7 @@ public class MainIrrigationGameWindow extends JPanel {
         final XYSeries tokensEarnedSeries = new XYSeries("Tokens earned from water applied");
         
         for (int waterApplied = 0; waterApplied < 1000; waterApplied++) {
-        	int tokensEarned = RoundConfiguration.getTokensEarned(waterApplied);
+        	int tokensEarned = ServerConfiguration.getTokensEarned(waterApplied);
         	tokensEarnedSeries.add(waterApplied, tokensEarned);
         }
         

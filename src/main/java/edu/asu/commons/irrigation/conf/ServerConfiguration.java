@@ -1,40 +1,34 @@
 package edu.asu.commons.irrigation.conf;
 
+import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import org.stringtemplate.v4.NumberRenderer;
 import org.stringtemplate.v4.ST;
 
 import edu.asu.commons.conf.ExperimentConfiguration;
+import edu.asu.commons.irrigation.server.ClientData;
 
 /**
  * $Id$
  * 
- * Contains the know-how for parsing and programmatically accessing the forager
- * server's configuration file properties. The forager server's config file
- * specifies per-server settings, per-experiment settings are managed by
- * ExperimentConfiguration.
- * 
- * FIXME: Recoverable exceptions that are handled shouldn't spit out their stack
- * trace without some additional info stating that they are mostly harmless.
- * 
- * FIXME: make utility/helper methods in ExperimentRoundConfiguration accessible
- * here via abstract superclass or something.
- * 
  * @author <a href='mailto:Allen.Lee@asu.edu'>Allen Lee</a>
- * @see edu.asu.csid.irrigation.RoundConfiguration,
- *      edu.asu.csid.conf.ExperimentConfiguration
  * @version $Revision$
  */
 public class ServerConfiguration 
 extends ExperimentConfiguration.Base<RoundConfiguration> {
 
+    private static final double DEFAULT_QUIZ_CORRECT_ANSWER_REWARD = 0.50d;
+
     private static final long serialVersionUID = 7867208205942476733L;
 
-    private final static String CONFIGURATION_FILE_NAME = "irrigation.xml";
+    private static final String CONFIGURATION_FILE_NAME = "irrigation.xml";
 
-    private final static String DEFAULT_LOG_FILE_DESTINATION = "irrigation.log";
+    private static final String DEFAULT_LOG_FILE_DESTINATION = "irrigation.log";
+    
+    private static final double DEFAULT_DOLLARS_PER_TOKEN = 0.50d;
 
     public ServerConfiguration() {
         super();
@@ -68,6 +62,8 @@ extends ExperimentConfiguration.Base<RoundConfiguration> {
     
     private final static String[] PRIORITY_STRINGS = { "A", "B", "C", "D", "E" };
 
+
+
     public String toPriorityString(int clientPriority) {
         // bounds check
         if (clientPriority >= 0 && clientPriority < PRIORITY_STRINGS.length) {
@@ -89,26 +85,31 @@ extends ExperimentConfiguration.Base<RoundConfiguration> {
     }
 
     public String getInitialInstructions() {
-    	String initialInstructions = assistant.getProperty("initial-instructions", "");
-    	ST template = new ST(initialInstructions, '{', '}');
-    	// FIXME: make this dynamic for all properties and change property names to camel case instead of hyphenated.
-    	// e.g., something like:
-//    	for (Map.Entry<Object, Object> entry: assistant.getProperties().entrySet()) {
-//    	    template.add(entry.getKey().toString(), entry.getValue());
-//    	}
-    	template.add("chatDuration", getChatDuration());
-    	template.add("quizAnswerReward", String.format("%3.2f", getQuizAnswerReward()));
-    	template.add("maximumQuizEarnings", String.format("%3.2f", getMaximumQuizEarnings()));
-    	template.add("restrictedVisibilityInstructions", getRestrictedVisibilityInstructions());
+    	ST template = createStringTemplate(assistant.getProperty("initial-instructions"));
+    	template.groupThatCreatedThisInstance.registerRenderer(Number.class, new NumberRenderer());
+    	NumberFormat formatter = NumberFormat.getCurrencyInstance();
+    	template.add("showUpPayment", formatter.format(getShowUpPayment()));
+        template.add("dollarsPerToken", formatter.format(getDollarsPerToken()));
+        template.add("quizCorrectAnswerReward", formatter.format(getQuizCorrectAnswerReward()));
     	return template.render();
     }
     
     public String getChatInstructions() {
-        String chatInstructions = assistant.getProperty("chat-instructions");
-        ST template = new ST(chatInstructions, '{', '}');
+        ST template = createStringTemplate(assistant.getProperty("chat-instructions"));
         template.add("chatDuration", getChatDuration());
-        template.add("restrictedVisibilityInstructions", getRestrictedVisibilityInstructions());
         return template.render();
+    }
+    
+    public double getTotalIncome(ClientData data) {
+        return getTotalTokenEarnings(data) + getShowUpPayment() + getQuizEarnings(data);
+    }
+    
+    public double getTotalTokenEarnings(ClientData data) {
+        return data.getTotalTokens() * getDollarsPerToken();
+    }
+    
+    public double getQuizEarnings(ClientData data) {
+        return data.getCorrectQuizAnswers() * getQuizCorrectAnswerReward();
     }
     
     public String getRestrictedVisibilityInstructions() {
@@ -119,12 +120,12 @@ extends ExperimentConfiguration.Base<RoundConfiguration> {
         return getBooleanProperty("restrictedVisibility");
     }
     
-    public double getQuizAnswerReward() {
-        return assistant.getDoubleProperty("quizAnswerReward", 0.50d);
+    public double getQuizCorrectAnswerReward() {
+        return assistant.getDoubleProperty("quiz-correct-answer-reward", DEFAULT_QUIZ_CORRECT_ANSWER_REWARD);
     }
     
     public double getMaximumQuizEarnings() {
-        return getQuizAnswerReward() * getNumberOfQuizQuestions();
+        return getQuizCorrectAnswerReward() * getNumberOfQuizQuestions();
     }
     
     public String getWelcomeInstructions() {
@@ -182,6 +183,66 @@ extends ExperimentConfiguration.Base<RoundConfiguration> {
 
     public String getGameScreenshotInstructions() {
         return assistant.getProperty("game-screenshot-instructions");
+    }
+    
+    public String getSameAsPreviousRoundInstructions() {
+        return createStringTemplate(assistant.getProperty("same-as-previous-round-instructions")).render();
+    }
+
+    public String getClientDebriefingTemplate() {
+        return assistant.getProperty("client-debriefing");
+    }
+
+    public double getDollarsPerToken() {
+        return assistant.getDoubleProperty("dollars-per-token", DEFAULT_DOLLARS_PER_TOKEN);
+    }
+
+    public static int getTokensEarned(int waterCollected) {
+    	if (waterCollected < 150) {
+    		return 0;
+    	}
+    	else if (waterCollected < 200) {
+    		return 1;
+    	}
+    	else if (waterCollected < 250) {
+    		return 4;
+    	}
+    	else if (waterCollected < 300) {
+    		return 10;
+    	}
+    	else if (waterCollected < 350) {
+    		return 15;
+    	}
+    	else if (waterCollected < 400) {
+    		return 18;
+    	}
+    	else if (waterCollected < 500) {
+    		return 19;
+    	}
+    	else if (waterCollected < 550) {
+    		return 20;
+    	}
+    	else if (waterCollected < 650) {
+    		return 19;
+    	}
+    	else if (waterCollected < 700) {
+    		return 18;
+    	}
+    	else if (waterCollected < 750) {
+    		return 15;
+    	}
+    	else if (waterCollected < 800) {
+    		return 10;
+    	}
+    	else if (waterCollected < 850) {
+    		return 4;
+    	}
+    	else if (waterCollected < 900) {
+    		return 1;
+    	}
+    	else {
+    		return 0;
+    	}
     }
 
 }

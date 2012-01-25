@@ -1,6 +1,12 @@
 package edu.asu.commons.irrigation.conf;
 
+import java.text.NumberFormat;
+
+import org.stringtemplate.v4.ST;
+
 import edu.asu.commons.conf.ExperimentRoundParameters;
+import edu.asu.commons.irrigation.client.ClientDataModel;
+import edu.asu.commons.irrigation.server.ClientData;
 import edu.asu.commons.util.Duration;
 
 /**
@@ -16,56 +22,6 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
 
     private static final long serialVersionUID = -5053624886508752562L;
 
-    private static final float DEFAULT_DOLLARS_PER_TOKEN = .05f;
-
-    public static int getTokensEarned(int waterCollected) {
-    	if (waterCollected < 150) {
-    		return 0;
-    	}
-    	else if (waterCollected < 200) {
-    		return 1;
-    	}
-    	else if (waterCollected < 250) {
-    		return 4;
-    	}
-    	else if (waterCollected < 300) {
-    		return 10;
-    	}
-    	else if (waterCollected < 350) {
-    		return 15;
-    	}
-    	else if (waterCollected < 400) {
-    		return 18;
-    	}
-    	else if (waterCollected < 500) {
-    		return 19;
-    	}
-    	else if (waterCollected < 550) {
-    		return 20;
-    	}
-    	else if (waterCollected < 650) {
-    		return 19;
-    	}
-    	else if (waterCollected < 700) {
-    		return 18;
-    	}
-    	else if (waterCollected < 750) {
-    		return 15;
-    	}
-    	else if (waterCollected < 800) {
-    		return 10;
-    	}
-    	else if (waterCollected < 850) {
-    		return 4;
-    	}
-    	else if (waterCollected < 900) {
-    		return 1;
-    	}
-    	else {
-    		return 0;
-    	}
-    }
-    
     public RoundConfiguration(String resource) {
         super(resource);
     }
@@ -88,6 +44,10 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
 
     public int getMaximumTokenInvestment() {
         return getIntProperty("max-token-investment", 10);
+    }
+    
+    public int getTokenEndowment() {
+        return getIntProperty("token-endowment", 10);
     }
 
     /**
@@ -124,7 +84,7 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
      * @return
      */
     public double getDollarsPerToken() {
-        return getDoubleProperty("dollars-per-token", DEFAULT_DOLLARS_PER_TOKEN); 
+        return getDoubleProperty("dollars-per-token", getParentConfiguration().getDollarsPerToken()); 
     }
 
     /**
@@ -139,8 +99,7 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
     }
 
     public String getInstructions() {
-        return getStringProperty("instructions", 
-                "<b>No instructions available for this round.</b>");
+        return getStringProperty("instructions", getParentConfiguration().getSameAsPreviousRoundInstructions());
     }
 
     public boolean shouldDisplayGroupTokens() {
@@ -182,7 +141,29 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
     }
 
     public boolean isRestrictedVisibility() {
-        return getBooleanProperty("restrictedVisibility", getParentConfiguration().isRestrictedVisibility());
+        return getBooleanProperty("restricted-visibility-enabled", getParentConfiguration().isRestrictedVisibility());
+    }
+    
+    public String getClientDebriefingTemplate() {
+        return getProperty("client-debriefing", getParentConfiguration().getClientDebriefingTemplate());
+    }
+    
+    private void populateClientEarnings(ClientData data, ServerConfiguration serverConfiguration, NumberFormat currencyFormatter) {
+        data.setGrandTotalIncome(currencyFormatter.format(serverConfiguration.getTotalIncome(data)));
+        data.setTotalDollarsEarnedThisRound(currencyFormatter.format(serverConfiguration.getTotalTokenEarnings(data)));
+        data.setQuizEarnings(currencyFormatter.format(serverConfiguration.getQuizEarnings(data)));
+    }
+
+    public String generateClientDebriefing(ClientDataModel clientDataModel, boolean showExitInstructions) {
+        ST st = createStringTemplate(getClientDebriefingTemplate());
+        NumberFormat formatter = NumberFormat.getCurrencyInstance();
+        for (ClientData clientData: clientDataModel.getClientDataMap().values()) {
+            populateClientEarnings(clientData, getParentConfiguration(), formatter);
+        }
+        st.add("dataModel", clientDataModel);
+        st.add("showUpPayment", formatter.format(getParentConfiguration().getShowUpPayment()));
+        st.add("showExitInstructions", showExitInstructions);
+        return st.render();
     }
 
 }

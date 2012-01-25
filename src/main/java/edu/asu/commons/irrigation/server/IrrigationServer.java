@@ -18,6 +18,7 @@ import edu.asu.commons.event.FacilitatorRegistrationRequest;
 import edu.asu.commons.event.RoundStartedMarkerEvent;
 import edu.asu.commons.event.SocketIdentifierUpdateRequest;
 import edu.asu.commons.experiment.AbstractExperiment;
+import edu.asu.commons.experiment.IPersister;
 import edu.asu.commons.experiment.StateMachine;
 import edu.asu.commons.irrigation.conf.RoundConfiguration;
 import edu.asu.commons.irrigation.conf.ServerConfiguration;
@@ -85,7 +86,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
 
     // FIXME: add the ability to reconfigure an already instantiated server
     public IrrigationServer(ServerConfiguration configuration) {
-        setConfiguration(configuration);
+        super(configuration);
         serverDataModel = new ServerDataModel();
         serverDataModel.setEventChannel(getEventChannel());
         serverDataModel.setRoundConfiguration(configuration.getCurrentParameters());
@@ -556,5 +557,10 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
         if ("clients".equals(input)) {
             System.err.println("clients: " + clients);
         }
+    }
+
+    @Override
+    public IPersister<ServerConfiguration, RoundConfiguration> getPersister() {
+        return persister;
     }
 }

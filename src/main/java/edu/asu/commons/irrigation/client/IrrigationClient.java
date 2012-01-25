@@ -67,7 +67,7 @@ public class IrrigationClient {
     public IrrigationClient(EventChannel channel, ServerConfiguration serverConfiguration) {
         this.channel = channel;
         setServerConfiguration(serverConfiguration);
-        this.clientDispatcher = DispatcherFactory.getInstance().createClientDispatcher(channel);
+        this.clientDispatcher = DispatcherFactory.getInstance().createClientDispatcher(channel, serverConfiguration);
         initEventProcessors();
     }
     

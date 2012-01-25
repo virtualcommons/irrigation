@@ -64,7 +64,7 @@ public class ExperimentGameWindow extends JPanel {
 
     private IrrigationClient client;
     
-    private MainIrrigationGameWindow irrigationGamePanel;
+    private GamePanel irrigationGamePanel;
 
     private StringBuilder instructionsBuilder = new StringBuilder();
 
@@ -106,7 +106,7 @@ public class ExperimentGameWindow extends JPanel {
         cardLayout = new CardLayout();
         setLayout(cardLayout);
         addToCardLayout(getInstructionsPanel());
-        irrigationGamePanel = new MainIrrigationGameWindow(client);
+        irrigationGamePanel = new GamePanel(client);
         addToCardLayout(irrigationGamePanel);
         addToCardLayout(getTokenInvestmentPanel());
         addToCardLayout(getChatPanel());
@@ -322,7 +322,7 @@ public class ExperimentGameWindow extends JPanel {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 investedTokensTextField.setText("");
-                addDebriefingText(event);
+                showDebriefing(event.getGroupDataModel(), event.isLastRound());
                 addCenterComponent(getInstructionsPanel());
             }
         });
@@ -332,55 +332,61 @@ public class ExperimentGameWindow extends JPanel {
     private void info(String message) {
         System.err.println(message);
     }
-
-    /**
-     * 
-     * @param event
-     */
-    private void addDebriefingText(EndRoundEvent event) {
-        double showUpPayment = clientDataModel.getServerConfiguration().getShowUpPayment();
-        RoundConfiguration roundConfiguration = clientDataModel.getRoundConfiguration();
-        // FIXME: move this to RoundConfiguration instead and then templatize using
-        // StringTemplate
+    
+    public void showDebriefing(GroupDataModel groupDataModel, boolean showExitInstructions) {
         instructionsBuilder.delete(0, instructionsBuilder.length());
-        instructionsBuilder.append("<b>Results from the previous round</b>");
-        instructionsBuilder.append(
-                "<table border='3' cellpadding='5'><thead><th>Position</th><th>Initial token endowment</th><th>Tokens invested</th><th>Tokens not invested</th>" +
-                "<th>Tokens earned from growing crops</th><th>Total tokens earned during this round</th>" +
-                "<th>Dollars earned during this round</th><th>Total dollars earned (including show-up bonus)</th></thead>" +
-                "<tbody>");
-
-        for(ClientData clientData : clientDataModel.getClientDataSortedByPriority()) {
-            String backgroundColor = clientData.getPriority() == clientDataModel.getPriority() ? "#FFFFCC" : "CCCCCC"; 
-        	instructionsBuilder.append(
-        			String.format("<tr align='center' bgcolor='%s'><td>%s</td><td>%d</td><td>%d</td><td>%d</td><td>%d</td><td>%d</td><td>$%3.2f</td><td>$%3.2f</td></tr>",
-        			        backgroundColor,
-        			        clientData.getPriorityString(),
-        					clientData.getMaximumTokenInvestment(),
-        					clientData.getInvestedTokens(),
-        					clientData.getUninvestedTokens(),
-        					clientData.getTokensEarnedFromWaterCollected(),
-        					clientData.getAllTokensEarnedThisRound(),
-        					clientData.getTotalDollarsEarnedThisRound(),
-        					clientData.getTotalDollarsEarned() + showUpPayment
-        					));
-        }
-        
-        ClientData clientData = clientDataModel.getClientData();
-        instructionsBuilder.append("</tbody></table><hr>");
-        instructionsBuilder.append(String.format("<h3>You (position %s) received $%3.2f this past round.  Your total earnings are $%3.2f, including the $%3.2f show up bonus.</h3>",
-        		clientData.getPriorityString(), clientData.getTotalDollarsEarnedThisRound(), clientData.getTotalDollarsEarned()+showUpPayment, showUpPayment));
-        //append the added practice round instructions
-        
-        if (roundConfiguration.isPracticeRound()) {
-            instructionsBuilder.append(roundConfiguration.getPracticeRoundPaymentInstructions());
-        }
-        else if (event.isLastRound()) {
-            instructionsBuilder.append(getServerConfiguration().getFinalInstructions());
-        }
-        instructionsBuilder.append("<hr>");
-        displayInstructions(instructionsBuilder.toString());
+        instructionsBuilder.append(clientDataModel.getRoundConfiguration().generateClientDebriefing(clientDataModel, showExitInstructions));
+        setInstructions(instructionsBuilder.toString());
     }
+
+//    /**
+//     * FIXME: refactor to use StringTemplate
+//     * @param event
+//     */
+//    private void addDebriefingText(EndRoundEvent event) {
+//        double showUpPayment = clientDataModel.getServerConfiguration().getShowUpPayment();
+//        RoundConfiguration roundConfiguration = clientDataModel.getRoundConfiguration();
+//        // FIXME: move this to RoundConfiguration instead and then templatize using
+//        // StringTemplate
+//        instructionsBuilder.delete(0, instructionsBuilder.length());
+//        instructionsBuilder.append("<b>Results from the previous round</b>");
+//        instructionsBuilder.append(
+//                "<table border='3' cellpadding='5'><thead><th>Position</th><th>Initial token endowment</th><th>Tokens invested</th><th>Tokens not invested</th>" +
+//                "<th>Tokens earned from growing crops</th><th>Total tokens earned during this round</th>" +
+//                "<th>Dollars earned during this round</th><th>Total dollars earned (including show-up bonus)</th></thead>" +
+//                "<tbody>");
+//
+//        for(ClientData clientData : clientDataModel.getClientDataSortedByPriority()) {
+//            String backgroundColor = clientData.getPriority() == clientDataModel.getPriority() ? "#FFFFCC" : "CCCCCC"; 
+//        	instructionsBuilder.append(
+//        			String.format("<tr align='center' bgcolor='%s'><td>%s</td><td>%d</td><td>%d</td><td>%d</td><td>%d</td><td>%d</td><td>$%3.2f</td><td>$%3.2f</td></tr>",
+//        			        backgroundColor,
+//        			        clientData.getPriorityString(),
+//        					roundConfiguration.getMaximumTokenInvestment(),
+//        					clientData.getInvestedTokens(),
+//        					clientData.getUninvestedTokens(),
+//        					clientData.getTokensEarnedFromWaterCollected(),
+//        					clientData.getAllTokensEarnedThisRound(),
+//        					clientData.getTotalDollarsEarnedThisRound(),
+//        					clientData.getTotalDollarsEarned() + showUpPayment
+//        					));
+//        }
+//        
+//        ClientData clientData = clientDataModel.getClientData();
+//        instructionsBuilder.append("</tbody></table><hr>");
+//        instructionsBuilder.append(String.format("<h3>You (position %s) received $%3.2f this past round.  Your total earnings are $%3.2f, including the $%3.2f show up bonus.</h3>",
+//        		clientData.getPriorityString(), clientData.getTotalDollarsEarnedThisRound(), clientData.getTotalDollarsEarned()+showUpPayment, showUpPayment));
+//        //append the added practice round instructions
+//        
+//        if (roundConfiguration.isPracticeRound()) {
+//            instructionsBuilder.append(roundConfiguration.getPracticeRoundPaymentInstructions());
+//        }
+//        else if (event.isLastRound()) {
+//            instructionsBuilder.append(getServerConfiguration().getFinalInstructions());
+//        }
+//        instructionsBuilder.append("<hr>");
+//        displayInstructions(instructionsBuilder.toString());
+//    }
 
     // adding the instructions into the instruction Panel
     private void setInstructions(final String instructions) {

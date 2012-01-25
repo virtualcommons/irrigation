@@ -43,12 +43,7 @@ An infrastructure efficiency of 50% corresponds to a water delivery capacity of 
 </entry>
 <entry key="q3">5</entry>
 <entry key='a3'>5 cubic feet per second</entry>
-<entry key="explanation3">Since there is only 30 cubic feet per second of water
-available, the irrigation infrastructure capacity of 35 cubic feet per
-second will not be fully used.  When A opens their gate, they take 25 of the
-30 cubic feet per second out of the canal, leaving 5 cubic feet per second for
-B.
-</entry>
+<entry key="explanation3">Since there is only 30 cubic feet per second of water available, the irrigation infrastructure capacity of 35 cubic feet per second will not be fully used.  When A opens their gate, they take 25 of the 30 cubic feet per second out of the canal, leaving 5 cubic feet per second for B.</entry>
 <entry key="q4">25</entry>
 <entry key="a4">25 cubic feet per second</entry>
 <entry key="explanation4">If A has 25 cfps available and does not take any
@@ -59,24 +54,8 @@ D do not take water, 25 cfps is available for E.</entry>
 <entry key="explanation5">If you invest 7 out of 10 tokens, you keep 3 tokens for yourself. If you apply 202 cubic feet of water to your field you will earn 4 tokens. 3 + 4 = 7 tokens </entry>
 <entry key="q6">19</entry>
 <entry key="a6">19 tokens</entry>
-<entry key="explanation6">If you invest all 10 tokens, you keep 0 tokens from
-your initial endowment.  If you apply 555 cubic feet of water to your field
-you will earn 19 tokens. 0 + 19 = 19 tokens.</entry>
+<entry key="explanation6">If you invest all 10 tokens, you keep 0 tokens from your initial endowment.  If you apply 555 cubic feet of water to your field you will earn 19 tokens. 0 + 19 = 19 tokens.</entry>
 
-<entry key='final-instructions'>
-<![CDATA[
-<p>
-The experiment is almost over.  We have a brief survey for you to fill out while the
-facilitator prepares your payments.  When the facilitator has finished preparing
-payments and you have all completed your surveys your computer number will be
-called.  You can then go next door to receive your payment.  For privacy reasons we
-must pay you one at a time. 
-</p>
-<p>
-Thanks for participating!
-</p>
-]]>
-</entry>
 
 <!-- FIXME: lots of parameterizable fields here.  should make instructions
 template-language-pluggable 
@@ -86,43 +65,37 @@ template-language-pluggable
 <h1>Instructions</h1>
 <hr>
 <p>
-Welcome.  You have already earned 5 dollars by showing up for this exercise. You can
-earn more, up to about 25 dollars. You will participate in this exercise as a part
-of a group of five participants. Your group has been formed by randomly assigning
-you with four other participants in the room. 
+You have already earned {showUpPayment} dollars by showing up for this exercise. You
+can earn more, up to a maximum of about 25 dollars, by participating in this
+experiment which will take about an hour to an hour and a half. The amount of money
+you earn depends on your decisions AND the decisions of other people in this room
+over the course of the experiment.
 </p>
-<h1>Earnings</h1>
+<h2>Groups</h2>
+<hr>
+You will be participating in this exercise as a part of a group of
+{self.clientsPerGroup} participants. Your group has been formed by randomly
+selecting you and four other participants in the room. 
+</p>
+<h2>How to participate</h2>
 <hr>
 <p>
-The amount of money you earn will depend on the decisions made by you and the other
-members of your group. This exercise mimics decisions people make in irrigation
-systems. In each round you will receive 10 tokens which you can invest in the
-<b>irrigation infrastructure</b>. Based on the <b>water delivery capacity</b> of the
-irrigation infrastructure and the <b>availability of water to your location</b> you
-will be able to grow crops.  Your total earnings in a round is equal to the sum of
-the <b>tokens you don't invest</b> and the <b>tokens you earn by growing crops</b>,
-where each token is worth 5 cents.  You will also earn ${quizAnswerReward} for each answer you get
-correct on the quiz (total of 6 questions, for a maximum of ${maximumQuizEarnings}).
+This exercise mimics decisions people make in irrigation systems. In each round you
+will receive {self.tokenEndowment} tokens which you can invest in the irrigation
+infrastructure. Based on the <b>water delivery capacity</b> of the irrigation
+infrastructure and the availability of water you will be able to grow crops. Tokens
+earned in a round is the sum of tokens not invested plus tokens earned by growing
+crops. Each token is worth 5 cents. In each round you will first decide how much to
+invest in the irrigation infrastructure.  Based on the combined contributions of all
+5 participants in your group in each round, your group can maintain the capacity of
+the irrigation infrastructure for growing crops. 
 </p>
 
-<p>
-In each round you will first decide how much to invest in the irrigation
-infrastructure.  Based on the combined contributions of all 5 participants in your
-group in each round, your group can maintain the capacity of the irrigation
-infrastructure for growing crops. 
-</p>
-<p>
-
-<h1>Practice Rounds</h1>
-<hr>
 <p>
 We will now start a practice round to help illustrate the experiment.  Before each
-round in this experiment you will have a chat period of {chatDuration} seconds where
-you can send text messages to the other members of your group. 
-
-{restrictedVisibilityInstructions}
-
-You may discuss any aspect of the exercise with two important exceptions:
+round in this experiment you will have a chat period of %d seconds where you can
+send text messages to the other participants. You may discuss any aspect of the
+exercise with two important exceptions:
 </p>
 <ol>
 <li>You are <b>not allowed</b> to promise the other participants
@@ -140,51 +113,38 @@ finished to receive payment.
 ]]>
 </entry>
 
-<entry key='restrictedVisibility'>true</entry>
-<entry key='restrictedVisibilityInstructions'>
-    <![CDATA[
-    <b>NOTE:</b> In this exercise you will only be able to communicate with and see
-    your <b>immediate neighbors</b>.  For example, if you are in position A you can
-    only communicate with the person in position B, whereas B can communicate with A
-    and C, and so on.
-    ]]>
-</entry>
-
 <entry key='game-screenshot-instructions'>
 <![CDATA[
 <img src="http://dev.commons.asu.edu/irrigation/images/game-interface-screenshot.jpg">
 ]]>
 </entry>
 
-
 <entry key="facilitator-instructions">
 <![CDATA[
-<h3>Facilitator Instructions</h3>
 <p>
-Welcome to the facilitator interface.  This interface allows you to control
-the experiment.  You may only modify configuration parameters <b>before</b>
-you start the experiment by selecting the Configuration menu.  When all the
-participants are ready to begin the experiment, you can start the experiment
-by selecting Experiment -&gt; Start.  After a round has been completed you
-will be able to view the statistics for all of the participants.  You can
-begin the next round by selecting Round -&gt; Start.
+    This facilitator interface allows you to control the experiment.  In general you
+    will be following a sequence similar to this:
+</p>
+<ol>
+    <li>Show instructions</li>
+    <li>Start round</li>
+    <li>After round is over, start standalone chat round if necessary</li>
+    <li>Goto 1.</li>
+</ol>
+]]>
+</entry>
+<entry key="welcome-instructions">
+<![CDATA[
+<h1>Welcome</h1>
+<hr>
+<p>
+Welcome to the experiment. We will begin shortly after everyone has been
+assigned a station.
+<br><br>
+Please <b>wait quietly</b> and <b>do not close this window, open any other applications, or communicate with any of the other participants</b>.
 </p>
 ]]>
 </entry>
-
-
-
-<entry key="welcome-instructions">
-<![CDATA[
-    <h1>Welcome</h1>
-    <hr>
-        <p>
-            Welcome to the Ostrom Lab.  Please wait quietly and do not close this window or open any
-            other applications. The experiment will begin shortly after everyone has been assigned a station.
-        </p>
-]]>
-</entry>
-
 
 <entry key="quiz-page1">
 <![CDATA[
@@ -322,11 +282,8 @@ the round?<br>
 <entry key='chat-instructions'>
 <![CDATA[
 <h3>Chat Instructions</h3>
-You may now chat for {chatDuration} seconds with the other members of your group.  
-
-{restrictedVisibilityInstructions}
-
-You may discuss any aspect of the exercise with two important exceptions:
+You may now chat for {self.chatDurationInMinutes} with the other members of your group.  You may
+discuss any aspect of the exercise with two important exceptions:
 </p>
 <ol>
 <li>You are <b>not allowed</b> to promise the other participants
@@ -401,6 +358,70 @@ infrastructure efficiency.
 </tbody>
 </table>
 ]]>
+</entry>
+<entry key='client-debriefing'>
+<![CDATA[
+<h1>{if (self.practiceRound)}Practice Round{else}Round {self.roundNumber}{endif} Results</h1>
+<hr>
+    <table border=3 cellpadding=5 cellspacing=5>
+        <tr>
+            <th>Position</th>
+            <th>Initial token endowment</th>
+            <th>Tokens invested</th>
+            <th>Tokens not invested</th>
+            <th>Tokens earned from growing crops</th>
+            <th>Total tokens earned this round</th>
+            <th>Dollars earned this round</th>
+            <th>Quiz earnings</th>
+            <th>Total dollars earned</th>
+        </tr>
+        {dataModel.clientDataSortedByPriority: {clientData|
+        <tr align='center' bgcolor='#{if (clientData.priority==dataModel.priority)}FFFFCC{else}CCCCCC{endif}'>
+            <td>{clientData.priorityString}</td>
+            <td>{self.tokenEndowment}</td>
+            <td>{clientData.investedTokens}</td>
+            <td>{clientData.uninvestedTokens}</td>
+            <td>{clientData.tokensEarnedFromWaterCollected}</td>
+            <td>{clientData.allTokensEarnedThisRound}</td>
+            <td>{clientData.totalDollarsEarnedThisRound}</td>
+            <td>{clientData.quizEarnings}</td>
+            <td>{clientData.grandTotalIncome}</td>
+        </tr>
+        }}
+    </table>
+    <h2>Earnings</h2>
+    <hr>
+        <p>You are in position {clientData.priorityString} and received {clientData.totalDollarsEarnedThisRound} this past round.
+            Your <b>total income</b> is <b>{clientData.grandTotalIncome}</b>, including the {showUpPayment} show-up bonus.</p>
+    {if (showExitInstructions)}
+    <h2>Exit Survey</h2>
+    <hr>
+    <p>
+        This was the last round, but not the end of the experiment. We ask that you please carefully fill out a brief survey as we prepare your payments.
+    </p>
+    <h2>Payment</h2>
+    <hr>
+    <p>
+        When payments are ready we will call you up one by one. Please wait until
+        your computer number, <b>{clientData.id}</b>, is called to turn in your
+        survey and receive payment.  
+        NOTE: Please <b>answer the survey completely (there may be a back side)</b>
+        and <b>bring all your belongings with you</b> when you come up to receive
+        your payment to help us speed up the payment process.
+    </p>
+]]>
+</entry>
+<entry key="same-as-previous-round-instructions">
+    <![CDATA[
+    <h3>Round {self.roundNumber} Instructions</h3>
+    <hr>
+    <p>Round {self.roundNumber} is the same as the previous round.</p>
+    <p>The length of this round is {duration}.</p>
+    <p><b>Do you have any questions?</b> If you have any questions at this time
+        please raise your hand and someone will come over to your station and
+        answer it.
+    </p>
+    ]]>
 </entry>
 
 </properties>

@@ -3,6 +3,7 @@ package edu.asu.commons.irrigation.server;
 import java.io.Serializable;
 
 import edu.asu.commons.irrigation.conf.RoundConfiguration;
+import edu.asu.commons.irrigation.conf.ServerConfiguration;
 import edu.asu.commons.net.Identifier;
 
 /**
@@ -34,12 +35,19 @@ public class ClientData implements Serializable {
     private int investedTokens;
 
     private int assignedNumber;
-
+    
+    private int correctQuizAnswers = 0;
+    
     private RoundConfiguration roundConfiguration;
 
     private int totalTokens;
 
     private boolean gateOpen = false;
+
+    // transient formatted earnings data set by RoundConfiguration while generating debriefing text
+    private String quizEarnings;
+    private String grandTotalIncome;
+    private String totalDollarsEarnedThisRound;
 
     public ClientData(Identifier id) {
         this.id = id;
@@ -170,8 +178,8 @@ public class ClientData implements Serializable {
         return getTokensEarnedFromWaterCollected() + getUninvestedTokens();
     }
     
-    public double getTotalDollarsEarnedThisRound() {
-    	return roundConfiguration.getDollarsPerToken() * getAllTokensEarnedThisRound();
+    public String getTotalDollarsEarnedThisRound() {
+    	return totalDollarsEarnedThisRound;
     }
 
     /**
@@ -181,7 +189,7 @@ public class ClientData implements Serializable {
      * @return
      */
     public int getTokensEarnedFromWaterCollected() {
-    	return RoundConfiguration.getTokensEarned(waterCollected);
+    	return ServerConfiguration.getTokensEarned(waterCollected);
     }
 
 
@@ -192,14 +200,6 @@ public class ClientData implements Serializable {
     public int getWaterCollected(){
         return waterCollected;
     }
-
-	public int getMaximumTokenInvestment() {
-		return getRoundConfiguration().getMaximumTokenInvestment();
-	}
-
-	public double getTotalDollarsEarned() {
-		return roundConfiguration.getDollarsPerToken() * totalTokens;
-	}
 	
 	public void setId(Identifier id) {
 	    this.id = id;
@@ -209,6 +209,34 @@ public class ClientData implements Serializable {
         int thisPosition = getPriority();
         int otherPosition = otherClientData.getPriority();
         return (thisPosition == otherPosition) || (thisPosition == otherPosition + 1) || (thisPosition == otherPosition - 1);
+    }
+
+    public int getCorrectQuizAnswers() {
+        return correctQuizAnswers;
+    }
+
+    public void setCorrectQuizAnswers(int correctQuizAnswers) {
+        this.correctQuizAnswers = correctQuizAnswers;
+    }
+
+    public String getQuizEarnings() {
+        return quizEarnings;
+    }
+
+    public void setQuizEarnings(String quizEarnings) {
+        this.quizEarnings = quizEarnings;
+    }
+
+    public String getGrandTotalIncome() {
+        return grandTotalIncome;
+    }
+
+    public void setGrandTotalIncome(String grandTotalIncome) {
+        this.grandTotalIncome = grandTotalIncome;
+    }
+
+    public void setTotalDollarsEarnedThisRound(String totalDollarsEarnedThisRound) {
+        this.totalDollarsEarnedThisRound = totalDollarsEarnedThisRound;
     }
 }
 

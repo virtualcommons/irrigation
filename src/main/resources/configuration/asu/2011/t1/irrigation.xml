@@ -83,24 +83,33 @@ template-language-pluggable
 -->
 <entry key="initial-instructions">
 <![CDATA[
+<h1>Instructions</h1>
+<hr>
 <p>
-You have already earned 5 dollars by showing up for this exercise. You can earn
-more, up to an extra 25 dollars. You will participate in this exercise as a part of
-a group of five participants. Your group has been formed by randomly assigning you
-to FOUR other participants in the room. 
+You have already earned {showUpPayment} dollars by showing up for this exercise. You
+can earn more, up to a maximum of about 25 dollars, by participating in this
+experiment which will take about an hour to an hour and a half. The amount of money
+you earn depends on your decisions AND the decisions of other people in this room
+over the course of the experiment.
 </p>
+<h2>Groups</h2>
+<hr>
+You will be participating in this exercise as a part of a group of
+{self.clientsPerGroup} participants. Your group has been formed by randomly
+selecting you and four other participants in the room. 
+</p>
+<h2>How to participate</h2>
+<hr>
 <p>
-The amount of money you earn will depend on the decisions made by you and the other
-members of your group. This exercise mimics decisions people make in irrigation
-systems. In each round you will receive 10 tokens which you can invest in the
-irrigation infrastructure. Based on the <b>water delivery capacity</b> of the
-irrigation infrastructure and the availability of water you will be able to
-grow crops. Tokens earned in a round is the sum of tokens not invested plus
-tokens earned by growing crops. Each token is worth 5 cents. In each round you
-will first decide how much to invest in the irrigation infrastructure.  Based
-on the combined contributions of all 5 participants in your group in each
-round, your group can maintain the capacity of the irrigation infrastructure
-for growing crops. 
+This exercise mimics decisions people make in irrigation systems. In each round you
+will receive {self.tokenEndowment} tokens which you can invest in the irrigation
+infrastructure. Based on the <b>water delivery capacity</b> of the irrigation
+infrastructure and the availability of water you will be able to grow crops. Tokens
+earned in a round is the sum of tokens not invested plus tokens earned by growing
+crops. Each token is worth 5 cents. In each round you will first decide how much to
+invest in the irrigation infrastructure.  Based on the combined contributions of all
+5 participants in your group in each round, your group can maintain the capacity of
+the irrigation infrastructure for growing crops. 
 </p>
 
 <p>

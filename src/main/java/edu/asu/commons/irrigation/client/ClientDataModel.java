@@ -113,7 +113,7 @@ public class ClientDataModel implements DataModel<RoundConfiguration> {
         // sort by position.
         Collections.sort(clientDataList, new Comparator<ClientData>() {
             public int compare(ClientData a, ClientData b) {
-                return new Integer(a.getPriority()).compareTo(b.getPriority());
+                return Integer.valueOf(a.getPriority()).compareTo(b.getPriority());
             }
         });
         return clientDataList;
