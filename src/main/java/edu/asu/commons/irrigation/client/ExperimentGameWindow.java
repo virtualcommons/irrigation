@@ -322,7 +322,7 @@ public class ExperimentGameWindow extends JPanel {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 investedTokensTextField.setText("");
-                showDebriefing(event.getGroupDataModel(), event.isLastRound());
+                showDebriefing(event.isLastRound());
                 addCenterComponent(getInstructionsPanel());
             }
         });
@@ -333,7 +333,7 @@ public class ExperimentGameWindow extends JPanel {
         System.err.println(message);
     }
     
-    public void showDebriefing(GroupDataModel groupDataModel, boolean showExitInstructions) {
+    public void showDebriefing(boolean showExitInstructions) {
         instructionsBuilder.delete(0, instructionsBuilder.length());
         instructionsBuilder.append(clientDataModel.getRoundConfiguration().generateClientDebriefing(clientDataModel, showExitInstructions));
         setInstructions(instructionsBuilder.toString());
