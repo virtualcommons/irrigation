@@ -13,7 +13,6 @@ vim:sts=2:sw=2:
       </filesystem>
       <ibiblio name='commons.snapshots' m2compatible='true' root='http://dev.commons.asu.edu/archiva/repository/snapshots'/>
       <ibiblio name='commons.internal' m2compatible='true' root='http://dev.commons.asu.edu/archiva/repository/internal'/>
-      <ibiblio name='tdar.archiva' m2compatible='true' root='http://dev.tdar.org/archiva/repository/internal'/>
     </chain>
   </resolvers>
 </ivysettings>

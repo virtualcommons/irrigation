@@ -13,7 +13,7 @@
     <jar href='jcommon.jar'/>
     <jar href='@FRAMEWORK_JAR@'/>
     <jar href='jfreechart.jar'/>
-    <jar href='stringtemplate.jar'/>
+    <jar href='ST4.jar'/>
     <jar href='antlr-runtime.jar'/>
   </resources>
   <application-desc main-class="@MAIN_CLASS@"/> 
