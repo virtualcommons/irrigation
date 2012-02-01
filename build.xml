@@ -1,6 +1,6 @@
-<!-- $Id: build.xml 330 2008-02-13 05:31:26Z alllee $
+<!-- $Id$
      vim:sts=2:sw=2:
-     Version: $Revision: 330 $
+     Version: $Revision$
  -->
 <project xmlns:ivy='antlib:org.apache.ivy.ant' name="irrigation" default="build-all" basedir="."> 
 
@@ -220,6 +220,9 @@
 
   <!-- Clean up build by deleting build directories -->
   <target name="clean">
+    <echo message="Removing ${user.home}/.ant/cache" />
+    <delete dir='${user.home}/.ant/cache' />
+    <delete dir='${user.home}/.m2/repository/edu/asu/commons' />
     <delete dir="${build.dir}"/>
     <delete dir="${test.build.dir}"/>
     <delete dir='${lib.dir}'/>

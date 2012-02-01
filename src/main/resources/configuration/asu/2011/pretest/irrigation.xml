@@ -85,7 +85,7 @@ will receive {self.tokenEndowment} tokens which you can invest in the irrigation
 infrastructure. Based on the <b>water delivery capacity</b> of the irrigation
 infrastructure and the availability of water you will be able to grow crops. Tokens
 earned in a round is the sum of tokens not invested plus tokens earned by growing
-crops. Each token is worth 5 cents. In each round you will first decide how much to
+crops. Each token is worth {dollarsPerToken}. In each round you will first decide how much to
 invest in the irrigation infrastructure.  Based on the combined contributions of all
 5 participants in your group in each round, your group can maintain the capacity of
 the irrigation infrastructure for growing crops. 
@@ -93,9 +93,9 @@ the irrigation infrastructure for growing crops.
 
 <p>
 We will now start a practice round to help illustrate the experiment.  Before each
-round in this experiment you will have a chat period of %d seconds where you can
-send text messages to the other participants. You may discuss any aspect of the
-exercise with two important exceptions:
+round in this experiment you will have a chat period of {self.chatDurationInMinutes}
+where you can send text messages to the other participants. You may discuss any
+aspect of the exercise with two important exceptions:
 </p>
 <ol>
 <li>You are <b>not allowed</b> to promise the other participants

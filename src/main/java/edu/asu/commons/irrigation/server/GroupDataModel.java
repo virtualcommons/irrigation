@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import edu.asu.commons.event.EventChannel;
 import edu.asu.commons.experiment.DataModel;
 import edu.asu.commons.irrigation.conf.RoundConfiguration;
+import edu.asu.commons.irrigation.conf.ServerConfiguration;
 import edu.asu.commons.net.Identifier;
 
 /**
@@ -21,7 +22,7 @@ import edu.asu.commons.net.Identifier;
  * @author <a href='mailto:Allen.Lee@asu.edu'>Allen Lee</a>
  * @version $Rev$
  */
-public class GroupDataModel implements DataModel<RoundConfiguration> {
+public class GroupDataModel implements DataModel<ServerConfiguration, RoundConfiguration> {
 
     private static final long serialVersionUID = 5817418171228817123L;
     
@@ -237,6 +238,11 @@ public class GroupDataModel implements DataModel<RoundConfiguration> {
 
     public void setServerDataModel(ServerDataModel serverDataModel) {
         this.serverDataModel = serverDataModel;
+    }
+
+    @Override
+    public ServerConfiguration getExperimentConfiguration() {
+        return roundConfiguration.getParentConfiguration();
     }
 
 }

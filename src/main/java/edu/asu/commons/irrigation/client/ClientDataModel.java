@@ -24,7 +24,7 @@ import edu.asu.commons.net.Identifier;
  * @author <a href='mailto:Allen.Lee@asu.edu'>Allen Lee</a>
  * @version $Rev$
  */
-public class ClientDataModel implements DataModel<RoundConfiguration> { 
+public class ClientDataModel implements DataModel<ServerConfiguration, RoundConfiguration> { 
 
     private static final long serialVersionUID = -3424256672940188027L;
 
@@ -133,6 +133,11 @@ public class ClientDataModel implements DataModel<RoundConfiguration> {
 
     public boolean isImmediateNeighbor(ClientData otherClientData) {
         return getClientData().isImmediateNeighbor(otherClientData);
+    }
+
+    @Override
+    public ServerConfiguration getExperimentConfiguration() {
+        return serverConfiguration;
     }
 
 

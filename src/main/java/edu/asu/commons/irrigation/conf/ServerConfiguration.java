@@ -28,7 +28,7 @@ extends ExperimentConfiguration.Base<RoundConfiguration> {
 
     private static final String DEFAULT_LOG_FILE_DESTINATION = "irrigation.log";
     
-    private static final double DEFAULT_DOLLARS_PER_TOKEN = 0.50d;
+    private static final double DEFAULT_DOLLARS_PER_TOKEN = 0.05d;
 
     public ServerConfiguration() {
         super();
@@ -95,9 +95,11 @@ extends ExperimentConfiguration.Base<RoundConfiguration> {
     }
     
     public String getChatInstructions() {
-        ST template = createStringTemplate(assistant.getProperty("chat-instructions"));
-        template.add("chatDuration", getChatDuration());
-        return template.render();
+        return createStringTemplate(assistant.getProperty("chat-instructions")).render();
+    }
+    
+    public String getChatDurationInMinutes() {
+        return assistant.inMinutes(getChatDuration()) + " minutes";
     }
     
     public double getTotalIncome(ClientData data) {

@@ -1,6 +1,5 @@
 package edu.asu.commons.irrigation.server;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,6 +11,7 @@ import java.util.Set;
 import edu.asu.commons.event.EventChannel;
 import edu.asu.commons.experiment.DataModel;
 import edu.asu.commons.irrigation.conf.RoundConfiguration;
+import edu.asu.commons.irrigation.conf.ServerConfiguration;
 import edu.asu.commons.net.Identifier;
 
 /**
@@ -21,7 +21,7 @@ import edu.asu.commons.net.Identifier;
  * @author <a href='mailto:Allen.Lee@asu.edu'>Allen Lee</a>
  * @version $Rev$
  */
-public class ServerDataModel implements DataModel<RoundConfiguration>, Serializable {
+public class ServerDataModel implements DataModel<ServerConfiguration, RoundConfiguration> {
 
     private static final long serialVersionUID = -2633842942700901843L;
 
@@ -101,5 +101,10 @@ public class ServerDataModel implements DataModel<RoundConfiguration>, Serializa
     @Override
     public List<Identifier> getAllClientIdentifiers() {
         return new ArrayList<Identifier>(clientsToGroups.keySet());
+    }
+
+    @Override
+    public ServerConfiguration getExperimentConfiguration() {
+        return roundConfiguration.getParentConfiguration();
     }
 }

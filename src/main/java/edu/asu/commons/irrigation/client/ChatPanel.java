@@ -20,12 +20,12 @@ import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
-import javax.swing.text.html.HTMLEditorKit;
 
 import edu.asu.commons.event.ChatEvent;
 import edu.asu.commons.event.ChatRequest;
 import edu.asu.commons.event.EventTypeProcessor;
 import edu.asu.commons.net.Identifier;
+import edu.asu.commons.ui.UserInterfaceUtils;
 
 /**
  * $Id$
@@ -148,11 +148,7 @@ public class ChatPanel extends JPanel {
         messageScrollPane = new JScrollPane(messageWindow);
         addStylesToMessageWindow();
         textEntryPanel = new TextEntryPanel();
-        chatInstructionsPane = new JEditorPane();
-        chatInstructionsPane.setContentType("text/html");
-        chatInstructionsPane.setEditorKit(new HTMLEditorKit());
-        chatInstructionsPane.setEditable(false);
-        chatInstructionsPane.setBackground(Color.WHITE);
+        chatInstructionsPane = UserInterfaceUtils.createInstructionsEditorPane();
         JScrollPane chatInstructionsScrollPane = new JScrollPane(chatInstructionsPane);
         add(chatInstructionsScrollPane, BorderLayout.PAGE_START);
         add(messageScrollPane, BorderLayout.CENTER);
@@ -164,9 +160,9 @@ public class ChatPanel extends JPanel {
         //		String chatHandle = getChatHandle(source);
         final StyledDocument document = messageWindow.getStyledDocument();
         try {
-            document.insertString(document.getLength(), chatHandle, document.getStyle("bold"));
-            document.insertString(document.getLength(), message + "\n", document.getStyle("italic"));
-            messageWindow.setCaretPosition(document.getLength());
+            document.insertString(0, chatHandle, document.getStyle("bold"));
+            document.insertString(chatHandle.length(), message + "\n", document.getStyle("italic"));
+            messageWindow.setCaretPosition(0);
         } 
         catch (BadLocationException e) {
             e.printStackTrace();
