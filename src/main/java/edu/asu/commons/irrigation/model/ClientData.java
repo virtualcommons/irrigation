@@ -1,4 +1,4 @@
-package edu.asu.commons.irrigation.server;
+package edu.asu.commons.irrigation.model;
 
 import java.io.Serializable;
 
@@ -48,6 +48,9 @@ public class ClientData implements Serializable {
     private String quizEarnings;
     private String grandTotalIncome;
     private String totalDollarsEarnedThisRound;
+    
+    // represents whether or not this ClientData is for the client in question.
+    private transient boolean self = false;
 
     public ClientData(Identifier id) {
         this.id = id;
@@ -237,6 +240,14 @@ public class ClientData implements Serializable {
 
     public void setTotalDollarsEarnedThisRound(String totalDollarsEarnedThisRound) {
         this.totalDollarsEarnedThisRound = totalDollarsEarnedThisRound;
+    }
+
+    public boolean isSelf() {
+        return self;
+    }
+
+    public void setSelf(boolean current) {
+        this.self = current;
     }
 }
 

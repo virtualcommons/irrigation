@@ -13,7 +13,7 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import edu.asu.commons.irrigation.conf.RoundConfiguration;
-import edu.asu.commons.irrigation.server.GroupDataModel;
+import edu.asu.commons.irrigation.model.GroupDataModel;
 
 /**
  * $Id$

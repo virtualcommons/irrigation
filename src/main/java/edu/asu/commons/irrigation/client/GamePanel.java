@@ -26,7 +26,7 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import edu.asu.commons.irrigation.conf.ServerConfiguration;
-import edu.asu.commons.irrigation.server.ClientData;
+import edu.asu.commons.irrigation.model.ClientData;
 /**
  * $Id$
  * 

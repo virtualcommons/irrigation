@@ -17,9 +17,9 @@ import edu.asu.commons.experiment.Persister;
 import edu.asu.commons.experiment.SaveFileProcessor;
 import edu.asu.commons.experiment.SavedRoundData;
 import edu.asu.commons.irrigation.conf.RoundConfiguration;
-import edu.asu.commons.irrigation.server.ClientData;
-import edu.asu.commons.irrigation.server.GroupDataModel;
-import edu.asu.commons.irrigation.server.ServerDataModel;
+import edu.asu.commons.irrigation.model.ClientData;
+import edu.asu.commons.irrigation.model.GroupDataModel;
+import edu.asu.commons.irrigation.model.ServerDataModel;
 import edu.asu.commons.net.Identifier;
 
 /**

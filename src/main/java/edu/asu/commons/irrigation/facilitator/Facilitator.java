@@ -18,7 +18,7 @@ import edu.asu.commons.irrigation.conf.RoundConfiguration;
 import edu.asu.commons.irrigation.conf.ServerConfiguration;
 import edu.asu.commons.irrigation.events.FacilitatorEndRoundEvent;
 import edu.asu.commons.irrigation.events.RegistrationEvent;
-import edu.asu.commons.irrigation.server.ServerDataModel;
+import edu.asu.commons.irrigation.model.ServerDataModel;
 import edu.asu.commons.net.ClientDispatcher;
 import edu.asu.commons.net.DispatcherFactory;
 import edu.asu.commons.net.Identifier;

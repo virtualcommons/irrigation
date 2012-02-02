@@ -2,7 +2,7 @@ package edu.asu.commons.irrigation.events;
 
 import edu.asu.commons.event.AbstractEvent;
 import edu.asu.commons.event.FacilitatorRequest;
-import edu.asu.commons.irrigation.server.GroupDataModel;
+import edu.asu.commons.irrigation.model.GroupDataModel;
 import edu.asu.commons.net.Identifier;
 
 /**

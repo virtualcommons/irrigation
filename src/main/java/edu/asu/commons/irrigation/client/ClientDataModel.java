@@ -12,8 +12,8 @@ import edu.asu.commons.irrigation.conf.RoundConfiguration;
 import edu.asu.commons.irrigation.conf.ServerConfiguration;
 import edu.asu.commons.irrigation.events.ClientUpdateEvent;
 import edu.asu.commons.irrigation.events.RoundStartedEvent;
-import edu.asu.commons.irrigation.server.ClientData;
-import edu.asu.commons.irrigation.server.GroupDataModel;
+import edu.asu.commons.irrigation.model.ClientData;
+import edu.asu.commons.irrigation.model.GroupDataModel;
 import edu.asu.commons.net.Identifier;
 
 /**
@@ -109,8 +109,10 @@ public class ClientDataModel implements DataModel<ServerConfiguration, RoundConf
     }
     
     public List<ClientData> getClientDataSortedByPriority() {
-        ArrayList<ClientData> clientDataList = new ArrayList<ClientData>(getGroupDataModel().getClientDataMap().values());
-        // sort by position.
+        Map<Identifier, ClientData> clientDataMap = getGroupDataModel().getClientDataMap();
+        clientDataMap.get(getId()).setSelf(true);
+        ArrayList<ClientData> clientDataList = new ArrayList<ClientData>(clientDataMap.values());
+        // sort by priority
         Collections.sort(clientDataList, new Comparator<ClientData>() {
             public int compare(ClientData a, ClientData b) {
                 return Integer.valueOf(a.getPriority()).compareTo(b.getPriority());

@@ -3,7 +3,7 @@ package edu.asu.commons.irrigation.events;
 import edu.asu.commons.event.AbstractEvent;
 import edu.asu.commons.event.ExperimentUpdateEvent;
 import edu.asu.commons.irrigation.conf.RoundConfiguration;
-import edu.asu.commons.irrigation.server.ClientData;
+import edu.asu.commons.irrigation.model.ClientData;
 import edu.asu.commons.net.Identifier;
 
 /**

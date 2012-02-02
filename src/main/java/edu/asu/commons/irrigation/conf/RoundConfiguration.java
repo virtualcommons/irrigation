@@ -6,7 +6,7 @@ import org.stringtemplate.v4.ST;
 
 import edu.asu.commons.conf.ExperimentRoundParameters;
 import edu.asu.commons.irrigation.client.ClientDataModel;
-import edu.asu.commons.irrigation.server.ClientData;
+import edu.asu.commons.irrigation.model.ClientData;
 import edu.asu.commons.util.Duration;
 
 /**

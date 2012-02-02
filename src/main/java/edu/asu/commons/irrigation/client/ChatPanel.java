@@ -94,8 +94,7 @@ public class ChatPanel extends JPanel {
         private void sendMessage() {
             String message = chatField.getText();
             if (message != null && ! message.isEmpty() && targetIdentifier != null) {
-                displayMessage(String.format("%s : ", getChatHandle(getClientId())), 
-                        message);
+                displayMessage(getChatHandle(getClientId()), message);
             	chatField.setText("");
             	irrigationClient.transmit(new ChatRequest(getClientId(), message, targetIdentifier));
              }
@@ -157,8 +156,10 @@ public class ChatPanel extends JPanel {
     }
 
     public void displayMessage(String chatHandle, String message) {
-        //		String chatHandle = getChatHandle(source);
         final StyledDocument document = messageWindow.getStyledDocument();
+        if (!chatHandle.endsWith(":")) {
+            chatHandle = chatHandle.concat(":");
+        }
         try {
             document.insertString(0, chatHandle, document.getStyle("bold"));
             document.insertString(chatHandle.length(), message + "\n", document.getStyle("italic"));
@@ -170,7 +171,7 @@ public class ChatPanel extends JPanel {
     }
 
     public void initialize(List<Identifier> participants) {
-        displayMessage("", " ---- chat round starting ---- ");
+        displayMessage("System Message", " ---- chat round starting ---- ");
         if (HANDLES != null) {
             return;
         }
@@ -193,7 +194,7 @@ public class ChatPanel extends JPanel {
             public void handle(final ChatEvent chatEvent) {
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
-                        displayMessage(String.format("%s : ", getChatHandle(chatEvent.getSource()), getChatHandle(chatEvent.getTarget())),
+                        displayMessage(getChatHandle(chatEvent.getSource()),
                                 chatEvent.toString());
                     }
                 });

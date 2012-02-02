@@ -11,7 +11,7 @@ import java.util.Random;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import edu.asu.commons.irrigation.server.ClientData;
+import edu.asu.commons.irrigation.model.ClientData;
 
 /**
  * $Id$

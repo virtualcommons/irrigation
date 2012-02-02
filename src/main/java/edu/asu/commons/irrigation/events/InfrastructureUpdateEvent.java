@@ -4,8 +4,8 @@ import java.util.Map;
 
 import edu.asu.commons.event.AbstractEvent;
 import edu.asu.commons.event.ExperimentUpdateEvent;
-import edu.asu.commons.irrigation.server.ClientData;
-import edu.asu.commons.irrigation.server.GroupDataModel;
+import edu.asu.commons.irrigation.model.ClientData;
+import edu.asu.commons.irrigation.model.GroupDataModel;
 import edu.asu.commons.net.Identifier;
 
 /**

@@ -7,7 +7,7 @@ import java.awt.Rectangle;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import edu.asu.commons.irrigation.server.ClientData;
+import edu.asu.commons.irrigation.model.ClientData;
 
 /**
  * $Id$

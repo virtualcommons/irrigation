@@ -1,4 +1,4 @@
-package edu.asu.commons.irrigation.server;
+package edu.asu.commons.irrigation.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;

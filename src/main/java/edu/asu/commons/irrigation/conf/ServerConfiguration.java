@@ -9,7 +9,7 @@ import org.stringtemplate.v4.NumberRenderer;
 import org.stringtemplate.v4.ST;
 
 import edu.asu.commons.conf.ExperimentConfiguration;
-import edu.asu.commons.irrigation.server.ClientData;
+import edu.asu.commons.irrigation.model.ClientData;
 
 /**
  * $Id$
@@ -99,7 +99,8 @@ extends ExperimentConfiguration.Base<RoundConfiguration> {
     }
     
     public String getChatDurationInMinutes() {
-        return assistant.inMinutes(getChatDuration()) + " minutes";
+        long minutes = assistant.inMinutes(getChatDuration());
+        return String.format("%d minute%s", minutes, (minutes > 1) ? "s" : "");
     }
     
     public double getTotalIncome(ClientData data) {

@@ -1,7 +1,7 @@
 package edu.asu.commons.irrigation.events;
 
 import edu.asu.commons.event.AbstractEvent;
-import edu.asu.commons.irrigation.server.ServerDataModel;
+import edu.asu.commons.irrigation.model.ServerDataModel;
 import edu.asu.commons.net.Identifier;
 
 /**
