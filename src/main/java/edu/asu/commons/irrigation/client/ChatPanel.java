@@ -123,7 +123,8 @@ public class ChatPanel extends JPanel {
                 StyleContext.DEFAULT_STYLE);
         // Style regularStyle = styledDocument.addStyle("regular",
         // defaultStyle);
-        StyleConstants.setFontFamily(defaultStyle, "Helvetica");
+        StyleConstants.setFontSize(defaultStyle, 16);
+        StyleConstants.setFontFamily(defaultStyle, UserInterfaceUtils.getDefaultFont().getFamily());
         StyleConstants.setBold(styledDocument.addStyle("bold", defaultStyle), true);
         StyleConstants.setItalic(styledDocument.addStyle("italic", defaultStyle), true);
     }
@@ -145,6 +146,7 @@ public class ChatPanel extends JPanel {
         messageWindow.setEditable(false);
         messageWindow.setBackground(Color.WHITE);
         messageScrollPane = new JScrollPane(messageWindow);
+//        UserInterfaceUtils.addStyles(messageWindow, 16);
         addStylesToMessageWindow();
         textEntryPanel = new TextEntryPanel();
         chatInstructionsPane = UserInterfaceUtils.createInstructionsEditorPane();
@@ -158,7 +160,7 @@ public class ChatPanel extends JPanel {
     public void displayMessage(String chatHandle, String message) {
         final StyledDocument document = messageWindow.getStyledDocument();
         if (!chatHandle.endsWith(":")) {
-            chatHandle = chatHandle.concat(":");
+            chatHandle = chatHandle.concat(": ");
         }
         try {
             document.insertString(0, chatHandle, document.getStyle("bold"));

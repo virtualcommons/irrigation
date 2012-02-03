@@ -27,6 +27,7 @@
 <entry key="round20">round20.xml</entry>
 <entry key="round21">round21.xml</entry>
 
+<entry key='quiz-pages'>2</entry>
 <entry key="wait-for-participants">true</entry>
 <entry key="number-of-rounds">22</entry>
 

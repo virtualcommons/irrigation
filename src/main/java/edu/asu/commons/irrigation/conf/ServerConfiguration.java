@@ -39,15 +39,15 @@ extends ExperimentConfiguration.Base<RoundConfiguration> {
     }
 
     public String getLogFileDestination() {
-        return assistant.getStringProperty("log", DEFAULT_LOG_FILE_DESTINATION);
+        return getStringProperty("log", DEFAULT_LOG_FILE_DESTINATION);
     }
 
     public String getPersistenceDirectory() {
-        return assistant.getStringProperty("save-dir", "data");
+        return getStringProperty("save-dir", "data");
     }
 
     public boolean shouldUpdateFacilitator() {
-        return assistant.getBooleanProperty("update-facilitator");
+        return getBooleanProperty("update-facilitator");
     }
 
     @Override
@@ -73,19 +73,19 @@ extends ExperimentConfiguration.Base<RoundConfiguration> {
     }
 
     public boolean isUndisruptedFlowRequired(){
-        return assistant.getBooleanProperty("undisrupted-flow-required", false);
+        return getBooleanProperty("undisrupted-flow-required", false);
     }
 
     public String getUndisruptedFlowInstructions() {
-        return assistant.getProperty("undisrupted-flow-instructions", "");
+        return getProperty("undisrupted-flow-instructions", "");
     }
 
     public double getShowUpPayment() {
-        return assistant.getDoubleProperty("showup-payment", 5.0d);
+        return getDoubleProperty("showup-payment", 5.0d);
     }
 
     public String getInitialInstructions() {
-    	ST template = createStringTemplate(assistant.getProperty("initial-instructions"));
+    	ST template = createStringTemplate(getProperty("initial-instructions"));
     	template.groupThatCreatedThisInstance.registerRenderer(Number.class, new NumberRenderer());
     	NumberFormat formatter = NumberFormat.getCurrencyInstance();
     	template.add("showUpPayment", formatter.format(getShowUpPayment()));
@@ -95,11 +95,11 @@ extends ExperimentConfiguration.Base<RoundConfiguration> {
     }
     
     public String getChatInstructions() {
-        return createStringTemplate(assistant.getProperty("chat-instructions")).render();
+        return createStringTemplate(getProperty("chat-instructions")).render();
     }
     
     public String getChatDurationInMinutes() {
-        long minutes = assistant.inMinutes(getChatDuration());
+        long minutes = inMinutes(getChatDuration());
         return String.format("%d minute%s", minutes, (minutes > 1) ? "s" : "");
     }
     
@@ -124,7 +124,7 @@ extends ExperimentConfiguration.Base<RoundConfiguration> {
     }
     
     public double getQuizCorrectAnswerReward() {
-        return assistant.getDoubleProperty("quiz-correct-answer-reward", DEFAULT_QUIZ_CORRECT_ANSWER_REWARD);
+        return getDoubleProperty("quiz-correct-answer-reward", DEFAULT_QUIZ_CORRECT_ANSWER_REWARD);
     }
     
     public double getMaximumQuizEarnings() {
@@ -132,15 +132,15 @@ extends ExperimentConfiguration.Base<RoundConfiguration> {
     }
     
     public String getWelcomeInstructions() {
-        return assistant.getProperty("welcome-instructions");
+        return getProperty("welcome-instructions");
     }
     
     public int getNumberOfQuizQuestions() {
-        return assistant.getIntProperty("numberOfQuizQuestions", 6);
+        return getIntProperty("numberOfQuizQuestions", 6);
     }
 
     public Map<String, String> getQuizAnswers() {
-        Properties properties = assistant.getProperties();
+        Properties properties = getProperties();
         Map<String, String> answers = new HashMap<String, String>();
         for (int i = 1; properties.containsKey("q" + i); i++) {
             String key = "q" + i;
@@ -156,48 +156,48 @@ extends ExperimentConfiguration.Base<RoundConfiguration> {
     }
     
     public String getQuizQuestion(int pageNumber) {
-        return assistant.getProperty("general-instructionsq" + pageNumber);
+        return getProperty("general-instructionsq" + pageNumber);
     }
 
     public String getQuizPage(int pageNumber) {
-        return assistant.getProperty("quiz-page"+pageNumber); 
+        return getProperty("quiz-page"+pageNumber); 
     }
     
     public String getWaterCollectedToTokensTable() {
-    	return assistant.getProperty("water-collected-to-tokens-table");
+    	return getProperty("water-collected-to-tokens-table");
     }
 
     public String getFinalInstructions() {
-        return assistant.getProperty("final-instructions", "<b>The experiment is now over.  Thanks for participating!</b>");
+        return getProperty("final-instructions", "<b>The experiment is now over.  Thanks for participating!</b>");
     }
     
     public String getInvestmentInstructions() {
-        return assistant.getProperty("investment-instructions");
+        return getProperty("investment-instructions");
     }
     
     public int getNumberOfQuizPages() {
-        return assistant.getIntProperty("question-pages", 2);
+        return getIntProperty("quiz-pages", 2);
     }
     
     public int getChatDuration() {
-        return assistant.getIntProperty("chat-duration", 60);
+        return getIntProperty("chat-duration", 60);
     }
 
 
     public String getGameScreenshotInstructions() {
-        return assistant.getProperty("game-screenshot-instructions");
+        return getProperty("game-screenshot-instructions");
     }
     
     public String getSameAsPreviousRoundInstructions() {
-        return createStringTemplate(assistant.getProperty("same-as-previous-round-instructions")).render();
+        return createStringTemplate(getProperty("same-as-previous-round-instructions")).render();
     }
 
     public String getClientDebriefingTemplate() {
-        return assistant.getProperty("client-debriefing");
+        return getProperty("client-debriefing");
     }
 
     public double getDollarsPerToken() {
-        return assistant.getDoubleProperty("dollars-per-token", DEFAULT_DOLLARS_PER_TOKEN);
+        return getDoubleProperty("dollars-per-token", DEFAULT_DOLLARS_PER_TOKEN);
     }
 
     public static int getTokensEarned(int waterCollected) {

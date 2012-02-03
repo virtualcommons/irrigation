@@ -159,6 +159,7 @@
   </target>
 
   <target name='deploy'>
+    <fail message="Please verify that server.address is properly set in build.properties" unless="server.address"/>
     <antcall target='deploy-to'>
       <param name='deploy.dir' value='${web.dir}'/>
     </antcall>

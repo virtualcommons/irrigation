@@ -30,7 +30,9 @@ import edu.asu.commons.irrigation.model.ClientData;
 /**
  * $Id$
  * 
- * Primary game interface window for the irrigation game.
+ * Primary in-round game interface window for the irrigation game.  Displays the 
+ * 
+ * FIXME: refactor layout
  * 
  * @author <a href='mailto:Allen.Lee@asu.edu'>Allen Lee</a>, Sanket Joshi
  * @version $Rev$
