@@ -1,5 +1,7 @@
 package edu.asu.commons.irrigation.client;
 
+import java.awt.Dimension;
+
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -28,7 +30,6 @@ import edu.asu.commons.net.ClientDispatcher;
 import edu.asu.commons.net.DispatcherFactory;
 import edu.asu.commons.net.Identifier;
 import edu.asu.commons.net.SocketIdentifier;
-import edu.asu.commons.ui.UserInterfaceUtils;
 
 /**
  * $Id$
@@ -40,6 +41,8 @@ import edu.asu.commons.ui.UserInterfaceUtils;
  * @version $Rev$
  */
 public class IrrigationClient {
+
+    private static final Dimension DEFAULT_FRAME_DIMENSION = new Dimension(1200, 800);
 
     enum ClientState {
         UNCONNECTED, CONNECTED, READY, RUNNING, DENIED
@@ -104,9 +107,13 @@ public class IrrigationClient {
                 JFrame frame = new JFrame();
                 IrrigationClient client = new IrrigationClient();
                 client.initialize();
-                frame.setTitle("Client Window: " + client.getId());
-                frame.add(client.getExperimentGameWindow());
-                UserInterfaceUtils.maximize(frame);
+                frame.setTitle("Virtual Commons Experiment Client: " + client.id);
+                frame.setPreferredSize(DEFAULT_FRAME_DIMENSION);
+//                frame.setResizable(false);
+                frame.getContentPane().add(client.getExperimentGameWindow());
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.pack();
+                frame.setVisible(true);
             }
         };
         SwingUtilities.invokeLater(createGuiRunnable);

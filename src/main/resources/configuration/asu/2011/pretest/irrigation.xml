@@ -310,15 +310,15 @@ a progress bar above the text field at the bottom of the screen.
 <entry key="investment-instructions">
 <![CDATA[
 <p>
-You have been endowed with 10 tokens to invest. You must make a decision about
-how much you wish to invest [0,10] in the irrigation infrastructure.  You can
-see the relationship between total investment and irrigation infrastructure in
-the table below.  After you have entered the number of tokens you'd like to
-invest, hit the enter key or click the submit button to confirm your
-investment. When everybody has made their decision, the total investment will
-be calculated and the overall irrigation infrastructure will be displayed.
-Each token you invest corresponds to one percent of infrastructure efficiency,
-so if you invest 10 tokens you are contributing 10% to the overall
+You have been endowed with {self.tokenEndowment} tokens to invest. You must make a decision about
+how much you wish to invest in the irrigation infrastructure (choosing a number
+between 0 and {self.tokenEndowment}.  You can see the relationship between total
+investment and irrigation infrastructure in the table below.  After you have entered
+the number of tokens you'd like to invest, hit the enter key or click the submit
+button to confirm your investment. When everybody has made their decision, the total
+investment will be calculated and the overall irrigation infrastructure will be
+displayed. Each token you invest corresponds to one percent of infrastructure
+efficiency, so if you invest 10 tokens you are contributing 10% to the overall
 infrastructure efficiency.
 </p>
 <table border="1" cellspacing="2" cellpadding="2">
@@ -424,5 +424,25 @@ infrastructure efficiency.
     </p>
     ]]>
 </entry>
-
+<entry key="contribution-summary">
+<![CDATA[
+<h1>Contributions Summary</h1>
+<hr>
+<p>
+Your group invested a total of <b>{groupDataModel.totalContributedTokens} tokens</b> this round, resulting in an infrastructure efficiency of <b>{groupDataModel.infrastructureEfficiency}%</b> and a water delivery capacity of <b>{groupDataModel.irrigationCapacity} cubic feet per second</b>.  
+The amount of water available to pass through your canal is {groupDataModel.actualWaterDeliveryCapacity cubic feet per second}.
+</p>
+<table border=2 cellspacing=2 cellpadding=3>
+<tr>
+<th></th></th><th>Infrastructure Efficiency</th><th>Water Delivery Capacity</th><th>Water Availability</th>
+</tr>
+<tr>
+<td>Before Investment</td><td>{groupDataModel.infrastructureEfficiencyBeforeInvestment}%</td><td>{groupDataModel.irrigationCapacityBeforeInvestment} cubic feet per second</td><td>{groupDataModel.actualWaterDeliveryCapacity}</td>
+</tr>
+<tr>
+<td>After Investment</td><td>{groupDataModel.infrastructureEfficiency}%</td><td>{groupDataModel.irrigationCapacity} cubic feet per second</td><td>{groupDataModel.actualWaterDeliveryCapacity}</td>
+</tr>
+</table>
+]]>
+</entry>
 </properties>

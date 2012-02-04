@@ -5,7 +5,7 @@ vim:sts=2:sw=2:
 <ivy-module version="2.0">
   <info organisation="edu.asu.commons" module="irrigation"/>
   <dependencies>
-    <dependency org="edu.asu.commons" name="csidex" rev="0.3-SNAPSHOT"/>
+    <dependency org="edu.asu.commons" name="csidex" rev="0.4-SNAPSHOT"/>
     <dependency org="org.jfree" name="jfreechart" rev="1.0.14"/>
   </dependencies>
 </ivy-module>

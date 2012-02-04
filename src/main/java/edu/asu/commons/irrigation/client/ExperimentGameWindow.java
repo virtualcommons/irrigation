@@ -472,6 +472,7 @@ public class ExperimentGameWindow extends JPanel {
 
     }
 
+    // FIXME: replace with StringTemplate
     public void displayContributionInformation(final ClientData clientData) {
     	GroupDataModel groupDataModel = clientData.getGroupDataModel();
         int totalContributedTokens = groupDataModel.getTotalContributedTokens();

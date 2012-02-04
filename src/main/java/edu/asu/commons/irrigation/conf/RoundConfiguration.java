@@ -47,7 +47,7 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
     }
     
     public int getTokenEndowment() {
-        return getIntProperty("token-endowment", 10);
+        return getIntProperty("token-endowment");
     }
 
     /**
@@ -172,6 +172,17 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
         st.add("showUpPayment", formatter.format(getParentConfiguration().getShowUpPayment()));
         st.add("showExitInstructions", showExitInstructions);
         return st.render();
+    }
+    
+    public String generateContributionSummary(ClientData clientData) {
+        ST st = createStringTemplate(getContributionSummaryTemplate());
+        st.add("clientData", clientData);
+        st.add("groupDataModel", clientData.getGroupDataModel());
+        return st.render();
+    }
+
+    private String getContributionSummaryTemplate() {
+        return getProperty("contribution-summary");
     }
 
 }

@@ -172,7 +172,7 @@ extends ExperimentConfiguration.Base<RoundConfiguration> {
     }
     
     public String getInvestmentInstructions() {
-        return getProperty("investment-instructions");
+        return render(getProperty("investment-instructions"));
     }
     
     public int getNumberOfQuizPages() {
@@ -198,6 +198,10 @@ extends ExperimentConfiguration.Base<RoundConfiguration> {
 
     public double getDollarsPerToken() {
         return getDoubleProperty("dollars-per-token", DEFAULT_DOLLARS_PER_TOKEN);
+    }
+    
+    public int getTokenEndowment() {
+        return getIntProperty("token-endowment", 10);
     }
 
     public static int getTokensEarned(int waterCollected) {
