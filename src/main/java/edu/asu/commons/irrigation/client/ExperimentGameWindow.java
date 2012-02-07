@@ -472,30 +472,11 @@ public class ExperimentGameWindow extends JPanel {
 
     }
 
-    // FIXME: replace with StringTemplate
     public void displayContributionInformation(final ClientData clientData) {
-    	GroupDataModel groupDataModel = clientData.getGroupDataModel();
-        int totalContributedTokens = groupDataModel.getTotalContributedTokens();
-        final StringBuilder builder = new StringBuilder();
-        builder.append("<ul><li>Infrastructure efficiency before investment: ")
-        	.append(groupDataModel.getInfrastructureEfficiencyBeforeInvestment())
-        	.append("%</li>");
-        builder.append("<li>Water delivery capacity before investment: ").append(groupDataModel.getIrrigationCapacityBeforeInvestment()).append(" cubic feet per second</li>");
-        builder.append(
-        		String.format(
-        				"<li>Total group investment: %d tokens, increasing the infrastructure efficiency to %d%%</li>", 
-        				totalContributedTokens, groupDataModel.getInfrastructureEfficiency()));
-        if (groupDataModel.getIrrigationCapacity() > groupDataModel.getIrrigationCapacityBeforeInvestment()) {
-        	builder.append("<li><b>Your group's investment has increased the water delivery capacity to ");
-        }
-        else {
-        	builder.append("<li>Your group's investment was not enough to increase the water delivery capacity.  Your group's water delivery capacity is still ");
-        }
-        builder.append(groupDataModel.getIrrigationCapacity()).append(" cubic feet of water per second.</li><li>The amount of water available to pass through your irrigation canal is ")
-            .append(groupDataModel.getActualWaterDeliveryCapacity()).append(" cubic feet per second</li>");
+    	final String contributionSummary = clientDataModel.getRoundConfiguration().generateContributionSummary(clientData);
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                contributionInformationEditorPane.setText(builder.toString());
+                contributionInformationEditorPane.setText(contributionSummary);
                 infrastructureEfficiencyChartPanel.initialize();
                 pieChart.initialize(clientData);
                 addCenterComponent(getContributionInformationPanel());

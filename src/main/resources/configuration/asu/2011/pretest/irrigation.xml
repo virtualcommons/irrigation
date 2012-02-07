@@ -430,7 +430,7 @@ infrastructure efficiency.
 <hr>
 <p>
 Your group invested a total of <b>{groupDataModel.totalContributedTokens} tokens</b> this round, resulting in an infrastructure efficiency of <b>{groupDataModel.infrastructureEfficiency}%</b> and a water delivery capacity of <b>{groupDataModel.irrigationCapacity} cubic feet per second</b>.  
-The amount of water available to pass through your canal is {groupDataModel.actualWaterDeliveryCapacity cubic feet per second}.
+The amount of water available to pass through your canal is <b>{groupDataModel.actualWaterDeliveryCapacity} cubic feet per second</b>.
 </p>
 <table border=2 cellspacing=2 cellpadding=3>
 <tr>
