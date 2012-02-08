@@ -2,15 +2,6 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
 <comment>Irrigation experiment round configuration</comment>
+<entry key='field-of-vision'>1</entry>
 <entry key='infrastructure-degradation-factor'>20</entry>
-
-<entry key="instructions">
-<![CDATA[
-<h3>Round 14 Instructions</h3>
-<p>
-This round is the same as the previous round.
-</p>
-
-]]>
-</entry>
 </properties>

@@ -2,14 +2,13 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
 <comment>Irrigation experiment round configuration</comment>
-
+<entry key='field-of-vision'>1</entry>
 <entry key='initial-infrastructure-efficiency'>75</entry>
 <entry key='reset-infrastructure-efficiency'>true</entry>
 <entry key='infrastructure-degradation-factor'>20</entry>
-
 <entry key="instructions">
 <![CDATA[
-<h3>Round 11 Instructions</h3>
+<h3>Round {self.roundNumber} Instructions</h3>
 <p>
 In the past rounds the infrastructure efficiency declined from one round to
 the next at a constant amount of 25%. In the following rounds the <b>average
@@ -22,7 +21,6 @@ your investment contributions have been submitted the resulting level of
 infrastructure efficiency will be displayed and then the round will begin.  If
 you have any questions, please ask them now. 
 </p>
-
 ]]>
 </entry>
 </properties>

@@ -3,6 +3,7 @@
 <properties>
 <comment>Irrigation experiment round configuration</comment>
 <entry key="practice-round">true</entry>
+<entry key='field-of-vision'>1</entry>
 
 <entry key="instructions">
 <![CDATA[
