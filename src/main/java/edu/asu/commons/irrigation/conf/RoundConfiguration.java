@@ -84,7 +84,7 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
      * @return
      */
     public double getDollarsPerToken() {
-        return getDoubleProperty("dollars-per-token", getParentConfiguration().getDollarsPerToken()); 
+        return getDoubleProperty("dollars-per-token"); 
     }
 
     /**
@@ -149,11 +149,20 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
     }
 
     public boolean isRestrictedVisibility() {
-        return getBooleanProperty("restricted-visibility-enabled", getParentConfiguration().isRestrictedVisibility());
+        return getFieldOfVision() < 0;
+    }
+    
+    /**
+     * Returns the number of neighbors visible on both sides of the participant.  A negative value signifies that
+     * participants can see everything.
+     * @return the number of neighbors visible to either side of each participant.
+     */
+    public int getFieldOfVision() {
+        return getIntProperty("field-of-vision", -1);
     }
     
     public String getClientDebriefingTemplate() {
-        return getProperty("client-debriefing", getParentConfiguration().getClientDebriefingTemplate());
+        return getProperty("client-debriefing");
     }
     
     private void populateClientEarnings(ClientData data, ServerConfiguration serverConfiguration, NumberFormat currencyFormatter) {
