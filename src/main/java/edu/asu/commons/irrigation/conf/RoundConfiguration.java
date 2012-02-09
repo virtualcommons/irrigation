@@ -107,8 +107,15 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
         // and refer to them as self.durationInMinutes or self.dollarsPerTokenCurrencyString, etc.
         template.add("duration", inMinutes(getDuration()) + " minutes");
         template.add("dollarsPerToken", toCurrencyString(getDollarsPerToken()));
+        if (isRestrictedVisibility()) {
+            template.add("specialInstructions", getRestrictedVisibilityInstructions());
+        }
         return template.render();
-    }    
+    }
+    
+    private String getRestrictedVisibilityInstructions() {
+        return render(getProperty("restricted-visibility-instructions"));
+    }
 
     public boolean shouldDisplayGroupTokens() {
         return getBooleanProperty("display-group-tokens");
@@ -149,7 +156,7 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
     }
 
     public boolean isRestrictedVisibility() {
-        return getFieldOfVision() < 0;
+        return getFieldOfVision() > 0;
     }
     
     /**
