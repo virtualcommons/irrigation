@@ -112,6 +112,9 @@ public class CanalPanel extends JPanel {
 		}
 //		checkRestrictedVisibility();
 		for (ClientData clientData : clientDataModel.getClientDataSortedByPriority()) {
+			if (restrictedVisibility && ! clientDataModel.isImmediateNeighbor(clientData)) {
+				continue;
+			}
 			int priority = clientData.getPriority();
 			Gate gate = gates[priority];
 			graphics2D.setColor(Color.BLUE);
@@ -162,11 +165,11 @@ public class CanalPanel extends JPanel {
 		int upstreamNeighborIndex = thisClientIndex - 1;
 		int downstreamNeighborIndex = thisClientIndex + 1;
 		for (int i = 0; i < gates.length; i++) {
-			if (i < upstreamNeighborIndex) {
+			if (i < upstreamNeighborIndex && upstreamNeighborIndex > 0) {
 				ClientData upstreamNeighbor = sortedClients.get(upstreamNeighborIndex);
 				gates[i].setHeight(upstreamNeighbor.getAvailableFlowCapacity());
 			}
-			else if (i > downstreamNeighborIndex) {
+			else if (i > downstreamNeighborIndex && downstreamNeighborIndex < sortedClients.size()) {
 				ClientData downstreamNeighbor = sortedClients.get(downstreamNeighborIndex);
 				gates[i].setHeight(downstreamNeighbor.getAvailableFlowCapacity());
 			}
