@@ -2,6 +2,7 @@ package edu.asu.commons.irrigation.client;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.JPanel;
@@ -10,6 +11,9 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PiePlot;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.general.PieDataset;
 
@@ -25,19 +29,18 @@ import edu.asu.commons.net.Identifier;
  * @author <a href='mailto:Allen.Lee@asu.edu'>Allen Lee</a>
  * @version $Rev$
  */
-public class TokenInvestmentPieChartPanel extends JPanel {
+public class TokenContributionChartPanel extends JPanel {
 
 	private static final long serialVersionUID = -5382293105043214105L;
 
 	private ChartPanel chartPanel;
 	
-	public TokenInvestmentPieChartPanel() {
+	public TokenContributionChartPanel() {
 		setLayout(new BorderLayout());
 	}
 	
-    public void initialize(final ClientData clientData) {
-    	final PieDataset dataset = createPieDataset(clientData);
-    	final JFreeChart chart = createChart(dataset);
+    public void initialize(final ClientDataModel clientDataModel) {
+    	JFreeChart chart = createChart(clientDataModel);
     	if (chartPanel != null) {
     		remove(chartPanel);
     	}
@@ -45,19 +48,40 @@ public class TokenInvestmentPieChartPanel extends JPanel {
     	add(chartPanel, BorderLayout.CENTER);
     	revalidate();
     }
+    
+    private JFreeChart createChart(ClientDataModel clientDataModel) {
+    	boolean restrictedVisibility = clientDataModel.getRoundConfiguration().isRestrictedVisibility();
+    	if (restrictedVisibility) {
+    		final CategoryDataset dataset = createCategoryDataset(clientDataModel);
+    		return createBarChart(dataset);
+    	}
+    	else {
+    		final PieDataset dataset = createPieDataset(clientDataModel);
+    		return createPieChart(dataset);
+    	}
+    }
 
-    /**
-     * Creates a pie dataset out of the client 
-     * @return a sample dataset.
+    private CategoryDataset createCategoryDataset(ClientDataModel clientDataModel) {
+    	DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+    	List<ClientData> neighbors = clientDataModel.getNeighbors();
+    	for (ClientData neighbor: neighbors) {
+    		dataset.addValue(neighbor.getInvestedTokens(), "Tokens Invested", neighbor.getPriorityString());
+    	}
+    	return dataset;
+	}
+
+	/**
+     * Creates and returns a pie dataset from the token contributions for the entire group. 
+     * @return a pie dataset
      */
-    private PieDataset createPieDataset(ClientData thisClientData) {
+    private PieDataset createPieDataset(ClientDataModel clientDataModel) {
         final DefaultPieDataset defaultPieDataset = new DefaultPieDataset();
-        GroupDataModel groupDataModel = thisClientData.getGroupDataModel();
-        Map<Identifier,ClientData>clientDataMap = groupDataModel.getClientDataMap();
+        GroupDataModel groupDataModel = clientDataModel.getGroupDataModel();
+        Map<Identifier,ClientData> clientDataMap = groupDataModel.getClientDataMap();
         for (ClientData clientData : clientDataMap.values()) {
             StringBuilder labelBuilder = new StringBuilder();
             labelBuilder.append(clientData.getPriorityString());
-            if (clientData.getId().equals(thisClientData.getId())) {
+            if (clientData.getId().equals(clientDataModel.getId())) {
                 labelBuilder.append(" (You)");
             }
             labelBuilder.append(" invested ").append(clientData.getInvestedTokens()).append(" token(s)");
@@ -66,7 +90,13 @@ public class TokenInvestmentPieChartPanel extends JPanel {
         return defaultPieDataset;        
     }
     
-    private JFreeChart createChart(final PieDataset dataset) {
+    private JFreeChart createBarChart(final CategoryDataset dataset) {
+    	JFreeChart chart = ChartFactory.createBarChart("Tokens Contributed", "Participant", "Tokens Invested", dataset, 
+    			PlotOrientation.HORIZONTAL, false, false, false);
+    	return chart;
+    }
+    
+    private JFreeChart createPieChart(final PieDataset dataset) {
         
         final JFreeChart chart = ChartFactory.createPieChart(
             "Tokens Contributed",  // chart title

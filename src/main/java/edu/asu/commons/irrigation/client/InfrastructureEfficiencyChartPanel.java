@@ -71,8 +71,6 @@ public class InfrastructureEfficiencyChartPanel extends JPanel {
         for (int y = 0; y <= irrigationCapacityBeforeInvestment; y++) {
             preInvestmentInfrastructureEfficiencySeries.add(infrastructureEfficiencyBeforeInvestment, y);
         }
-        
-
         final XYSeriesCollection data = new XYSeriesCollection();
         data.addSeries(potentialInfrastructureEfficiencySeries);
         data.addSeries(waterSupplySeries);

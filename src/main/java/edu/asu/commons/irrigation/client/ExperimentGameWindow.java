@@ -86,7 +86,7 @@ public class ExperimentGameWindow extends JPanel {
 
     private int quizzesAnswered = 0;
 
-    private TokenInvestmentPieChartPanel pieChart;
+    private TokenContributionChartPanel tokenContributionChartPanel;
 
 //    private CanalAnimationPanel canalAnimationPanel;
 
@@ -473,12 +473,13 @@ public class ExperimentGameWindow extends JPanel {
     }
 
     public void displayContributionInformation(final ClientData clientData) {
-    	final String contributionSummary = clientDataModel.getRoundConfiguration().generateContributionSummary(clientData);
+    	final RoundConfiguration configuration = clientDataModel.getRoundConfiguration();
+    	final String contributionSummary = configuration.generateContributionSummary(clientData);
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 contributionInformationEditorPane.setText(contributionSummary);
                 infrastructureEfficiencyChartPanel.initialize();
-                pieChart.initialize(clientData);
+                tokenContributionChartPanel.initialize(clientDataModel);
                 addCenterComponent(getContributionInformationPanel());
             }
         });
@@ -490,7 +491,7 @@ public class ExperimentGameWindow extends JPanel {
             contributionInformationPanel = new JPanel();
             contributionInformationPanel.setName("Graph panel");
             contributionInformationPanel.setLayout(new BoxLayout(contributionInformationPanel, BoxLayout.Y_AXIS));
-            contributionInformationPanel.add(createPieChartPanel());
+            contributionInformationPanel.add(createTokenContributionChartPanel());
             contributionInformationPanel.add(Box.createVerticalStrut(15));
             contributionInformationEditorPane = UserInterfaceUtils.createInstructionsEditorPane();
             contributionInformationPanel.add(contributionInformationEditorPane);
@@ -498,16 +499,16 @@ public class ExperimentGameWindow extends JPanel {
         return contributionInformationPanel;
     }
 
-    private JPanel createPieChartPanel() {
+    private JPanel createTokenContributionChartPanel() {
         JPanel panel = new JPanel();
         infrastructureEfficiencyChartPanel = new InfrastructureEfficiencyChartPanel(client);
-        pieChart = new TokenInvestmentPieChartPanel();
+        tokenContributionChartPanel = new TokenContributionChartPanel();
         GridLayout gridLayout = new GridLayout();
         gridLayout.setRows(1);
         gridLayout.setColumns(2);
         panel.setLayout(gridLayout);
         panel.add(infrastructureEfficiencyChartPanel);
-        panel.add(pieChart);
+        panel.add(tokenContributionChartPanel);
         return panel;
     }
 

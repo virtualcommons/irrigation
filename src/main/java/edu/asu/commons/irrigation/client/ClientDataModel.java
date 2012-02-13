@@ -52,7 +52,6 @@ public class ClientDataModel implements DataModel<ServerConfiguration, RoundConf
     	return getClientData().getPriorityString();
     }
     
-
     public Identifier getId() {
         return client.getId();
     }
@@ -105,12 +104,15 @@ public class ClientDataModel implements DataModel<ServerConfiguration, RoundConf
     }
     
     public Map<Identifier, ClientData> getClientDataMap() {
-        return groupDataModel.getClientDataMap();
+    	Map<Identifier, ClientData> clientDataMap =  groupDataModel.getClientDataMap();
+        // used by StringTemplate to determine whether or not the ClientData it's rendering values for
+        // is this client.
+    	getClientData().setSelf(true);
+    	return clientDataMap;
     }
     
     public List<ClientData> getClientDataSortedByPriority() {
-        Map<Identifier, ClientData> clientDataMap = getGroupDataModel().getClientDataMap();
-        clientDataMap.get(getId()).setSelf(true);
+        Map<Identifier, ClientData> clientDataMap = getClientDataMap();
         ArrayList<ClientData> clientDataList = new ArrayList<ClientData>(clientDataMap.values());
         // sort by priority
         Collections.sort(clientDataList, new Comparator<ClientData>() {
@@ -141,6 +143,25 @@ public class ClientDataModel implements DataModel<ServerConfiguration, RoundConf
     public ServerConfiguration getExperimentConfiguration() {
         return serverConfiguration;
     }
+
+	public List<ClientData> getNeighbors() {
+		// FIXME: replace hard-coded immediate neighbor check with field of vision radius from RoundConfiguration
+		ArrayList<ClientData> neighbors = new ArrayList<ClientData>();
+		List<ClientData> sortedClients = getClientDataSortedByPriority();
+		ClientData thisClientData = getClientData();
+		int thisClientIndex = sortedClients.indexOf(thisClientData);
+		if (thisClientIndex > 0) {
+			// upstream neighbor
+			neighbors.add(sortedClients.get(thisClientIndex - 1));
+		}
+		// this is needed for the charts, but probably weird for general-purpose usage
+		neighbors.add(thisClientData);
+		if (thisClientIndex < sortedClients.size() - 1) {
+			// downstream neighbor
+			neighbors.add(sortedClients.get(thisClientIndex + 1));
+		}
+		return neighbors;
+	}
 
 
 }
