@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import edu.asu.commons.event.EventChannel;
 import edu.asu.commons.experiment.DataModel;
@@ -24,6 +25,8 @@ import edu.asu.commons.net.Identifier;
 public class ServerDataModel implements DataModel<ServerConfiguration, RoundConfiguration> {
 
     private static final long serialVersionUID = -2633842942700901843L;
+    
+    private final Logger logger = Logger.getLogger(getClass().getName());
 
     // maps client Identifiers to the Group that client belongs to.
     private final Map<Identifier, GroupDataModel> clientsToGroups = new HashMap<Identifier, GroupDataModel>();
@@ -87,6 +90,10 @@ public class ServerDataModel implements DataModel<ServerConfiguration, RoundConf
     
     public void removeClient(Identifier id) {
         GroupDataModel groupDataModel = clientsToGroups.remove(id);
+        if (groupDataModel == null) {
+        	logger.warning("No group data model associated with id: " + id);
+        	return;
+        }
     	groupDataModel.removeClient(id);
     }
 
