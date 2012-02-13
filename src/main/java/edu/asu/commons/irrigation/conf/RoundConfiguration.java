@@ -184,6 +184,7 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
         for (ClientData clientData: clientDataModel.getClientDataMap().values()) {
             populateClientEarnings(clientData, getParentConfiguration(), formatter);
         }
+        st.add("clientData", clientDataModel.getClientData());
         st.add("dataModel", clientDataModel);
         st.add("showUpPayment", formatter.format(getParentConfiguration().getShowUpPayment()));
         st.add("showExitInstructions", showExitInstructions);
@@ -199,6 +200,10 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
 
     private String getContributionSummaryTemplate() {
         return getProperty("contribution-summary");
+    }
+    
+    public int getChatDuration() {
+    	return getIntProperty("chat-duration");
     }
 
 }

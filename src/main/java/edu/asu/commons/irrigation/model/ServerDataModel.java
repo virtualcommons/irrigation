@@ -26,7 +26,7 @@ public class ServerDataModel implements DataModel<ServerConfiguration, RoundConf
 
     private static final long serialVersionUID = -2633842942700901843L;
     
-    private final Logger logger = Logger.getLogger(getClass().getName());
+    private transient final Logger logger = Logger.getLogger(getClass().getName());
 
     // maps client Identifiers to the Group that client belongs to.
     private final Map<Identifier, GroupDataModel> clientsToGroups = new HashMap<Identifier, GroupDataModel>();

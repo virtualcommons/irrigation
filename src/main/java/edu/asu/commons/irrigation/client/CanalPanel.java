@@ -99,6 +99,7 @@ public class CanalPanel extends JPanel {
 
 	protected void paintComponent(Graphics graphics) {
 		super.paintComponent(graphics); // needed!
+		checkRestrictedVisibility();
 		updateGates();
 		Graphics2D graphics2D = (Graphics2D) graphics;
 		graphics2D.setColor(Color.BLUE);
@@ -109,7 +110,7 @@ public class CanalPanel extends JPanel {
 			graphics2D.fillRect(gates[i].getX(), gates[i].getY(),
 					gates[i].getWidth(), gates[i].getHeight());
 		}
-		checkRestrictedVisibility();
+//		checkRestrictedVisibility();
 		for (ClientData clientData : clientDataModel.getClientDataSortedByPriority()) {
 			int priority = clientData.getPriority();
 			Gate gate = gates[priority];

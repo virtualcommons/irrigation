@@ -377,7 +377,7 @@ infrastructure efficiency.
             <th>Total dollars earned</th>
         </tr>
         {dataModel.clientDataSortedByPriority: {clientData|
-        <tr align='center' bgcolor='#{if (clientData.self)}FFFFCC{else}CCCCCC{endif}'>
+        <tr align='center' bgcolor='{if (clientData.self)}#FFFFCC{else}#CCCCCC{endif}'>
             <td>{clientData.priorityString}</td>
             <td>{self.tokenEndowment}</td>
             <td>{clientData.investedTokens}</td>
@@ -410,6 +410,7 @@ infrastructure efficiency.
         and <b>bring all your belongings with you</b> when you come up to receive
         your payment to help us speed up the payment process.
     </p>
+    {endif}
 ]]>
 </entry>
 <entry key="same-as-previous-round-instructions">
