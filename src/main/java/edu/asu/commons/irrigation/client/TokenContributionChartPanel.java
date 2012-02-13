@@ -1,6 +1,7 @@
 package edu.asu.commons.irrigation.client;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Font;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,8 @@ import javax.swing.JPanel;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PiePlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.CategoryDataset;
@@ -92,7 +95,10 @@ public class TokenContributionChartPanel extends JPanel {
     
     private JFreeChart createBarChart(final CategoryDataset dataset) {
     	JFreeChart chart = ChartFactory.createBarChart("Tokens Contributed", "Participant", "Tokens Invested", dataset, 
-    			PlotOrientation.HORIZONTAL, false, false, false);
+    			PlotOrientation.VERTICAL, false, false, false);
+    	CategoryPlot plot = chart.getCategoryPlot();
+    	plot.getRangeAxis().setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+    	plot.getRenderer().setSeriesPaint(0, Color.BLUE);
     	return chart;
     }
     
