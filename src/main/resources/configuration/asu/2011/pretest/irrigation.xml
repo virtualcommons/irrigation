@@ -376,7 +376,7 @@ infrastructure efficiency.
             <th>Quiz earnings</th>
             <th>Total dollars earned</th>
         </tr>
-        {dataModel.clientDataSortedByPriority: {clientData|
+        {dataModel.orderedVisibleClients: {clientData|
         <tr align='center' bgcolor='{if (clientData.self)}#FFFFCC{else}#CCCCCC{endif}'>
             <td>{clientData.priorityString}</td>
             <td>{self.tokenEndowment}</td>

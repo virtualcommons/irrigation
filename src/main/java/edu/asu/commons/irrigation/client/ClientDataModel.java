@@ -144,23 +144,28 @@ public class ClientDataModel implements DataModel<ServerConfiguration, RoundConf
         return serverConfiguration;
     }
 
-	public List<ClientData> getNeighbors() {
-		// FIXME: replace hard-coded immediate neighbor check with field of vision radius from RoundConfiguration
-		ArrayList<ClientData> neighbors = new ArrayList<ClientData>();
-		List<ClientData> sortedClients = getClientDataSortedByPriority();
-		ClientData thisClientData = getClientData();
-		int thisClientIndex = sortedClients.indexOf(thisClientData);
-		if (thisClientIndex > 0) {
-			// upstream neighbor
-			neighbors.add(sortedClients.get(thisClientIndex - 1));
-		}
-		// this is needed for the charts, but probably weird for general-purpose usage
-		neighbors.add(thisClientData);
-		if (thisClientIndex < sortedClients.size() - 1) {
-			// downstream neighbor
-			neighbors.add(sortedClients.get(thisClientIndex + 1));
-		}
-		return neighbors;
+	public List<ClientData> getOrderedVisibleClients() {
+	    if (getRoundConfiguration().isRestrictedVisibility()) {
+	        // FIXME: replace hard-coded immediate neighbor check with field of vision radius from RoundConfiguration
+	        ArrayList<ClientData> neighbors = new ArrayList<ClientData>();
+	        List<ClientData> sortedClients = getClientDataSortedByPriority();
+	        ClientData thisClientData = getClientData();
+	        int thisClientIndex = sortedClients.indexOf(thisClientData);
+	        if (thisClientIndex > 0) {
+	            // upstream neighbor
+	            neighbors.add(sortedClients.get(thisClientIndex - 1));
+	        }
+	        // this is needed for the charts, but probably weird for general-purpose usage
+	        neighbors.add(thisClientData);
+	        if (thisClientIndex < sortedClients.size() - 1) {
+	            // downstream neighbor
+	            neighbors.add(sortedClients.get(thisClientIndex + 1));
+	        }
+	        return neighbors;
+	    }
+	    else {
+	        return getClientDataSortedByPriority();
+	    }
 	}
 
 

@@ -66,7 +66,7 @@ public class TokenContributionChartPanel extends JPanel {
 
     private CategoryDataset createCategoryDataset(ClientDataModel clientDataModel) {
     	DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-    	List<ClientData> neighbors = clientDataModel.getNeighbors();
+    	List<ClientData> neighbors = clientDataModel.getOrderedVisibleClients();
     	for (ClientData neighbor: neighbors) {
     		dataset.addValue(neighbor.getInvestedTokens(), "Tokens Invested", neighbor.getPriorityString());
     	}
