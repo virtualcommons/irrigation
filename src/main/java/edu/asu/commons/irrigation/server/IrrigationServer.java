@@ -156,7 +156,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
             	if (request.getId().equals(getFacilitatorId())) {
             		synchronized (clients) {
             			for (Identifier id: clients.keySet()) {
-            				transmit(request.copy(id));
+            				transmit(request.clone(id));
             			}
             		}
             	}

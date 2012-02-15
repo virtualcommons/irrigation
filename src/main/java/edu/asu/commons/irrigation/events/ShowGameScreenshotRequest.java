@@ -13,7 +13,7 @@ public class ShowGameScreenshotRequest extends AbstractEvent implements ShowRequ
     }
 
 	@Override
-	public ShowGameScreenshotRequest copy(Identifier id) {
+	public ShowGameScreenshotRequest clone(Identifier id) {
 		return new ShowGameScreenshotRequest(id);
 	}
     
