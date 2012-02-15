@@ -67,7 +67,11 @@ public class TokenContributionChartPanel extends JPanel {
     	DefaultCategoryDataset dataset = new DefaultCategoryDataset();
     	List<ClientData> neighbors = clientDataModel.getOrderedVisibleClients();
     	for (ClientData neighbor: neighbors) {
-    		dataset.addValue(neighbor.getInvestedTokens(), "Tokens Invested", neighbor.getPriorityString());
+            StringBuilder participant = new StringBuilder(neighbor.getPriorityString());
+            if (neighbor.getId().equals(clientDataModel.getId())) {
+                participant.append(" (You)");
+            }
+            dataset.addValue(neighbor.getInvestedTokens(), "Tokens Invested", participant.toString());
     	}
     	return dataset;
 	}
