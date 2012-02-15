@@ -132,14 +132,17 @@ public class ChatPanel extends JPanel {
         StyledDocument styledDocument = messageWindow.getStyledDocument();
         // and why not have something like... StyleContext.getDefaultStyle() to
         // replace this junk
-        Style defaultStyle = StyleContext.getDefaultStyleContext().getStyle(
-                StyleContext.DEFAULT_STYLE);
-        // Style regularStyle = styledDocument.addStyle("regular",
-        // defaultStyle);
+        Style defaultStyle = getDefaultStyle();
         StyleConstants.setFontSize(defaultStyle, 16);
         StyleConstants.setFontFamily(defaultStyle, UserInterfaceUtils.getDefaultFont().getFamily());
         StyleConstants.setBold(styledDocument.addStyle("bold", defaultStyle), true);
         StyleConstants.setItalic(styledDocument.addStyle("italic", defaultStyle), true);
+        StyleConstants.setUnderline(styledDocument.addStyle("underline", defaultStyle), true);
+
+    }
+
+    private Style getDefaultStyle() {
+        return StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE);
     }
 
     public void setTimeLeft(long timeLeft) {
@@ -177,7 +180,7 @@ public class ChatPanel extends JPanel {
         }
         try {
             document.insertString(0, chatHandle, document.getStyle("bold"));
-            document.insertString(chatHandle.length(), message + "\n", null);
+            document.insertString(chatHandle.length(), message + "\n", getDefaultStyle());
             messageWindow.setCaretPosition(0);
         } 
         catch (BadLocationException e) {
