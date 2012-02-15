@@ -177,7 +177,7 @@ public class ChatPanel extends JPanel {
         }
         try {
             document.insertString(0, chatHandle, document.getStyle("bold"));
-            document.insertString(chatHandle.length(), message + "\n", document.getStyle("italic"));
+            document.insertString(chatHandle.length(), message + "\n", null);
             messageWindow.setCaretPosition(0);
         } 
         catch (BadLocationException e) {
