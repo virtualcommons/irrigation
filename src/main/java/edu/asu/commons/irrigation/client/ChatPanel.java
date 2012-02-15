@@ -2,6 +2,8 @@ package edu.asu.commons.irrigation.client;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.HashMap;
@@ -40,7 +42,7 @@ import edu.asu.commons.ui.UserInterfaceUtils;
  */
 
 @SuppressWarnings("serial")
-public class ChatPanel extends JPanel {
+public class ChatPanel extends JPanel implements FocusListener {
 
     private IrrigationClient irrigationClient;
 
@@ -171,6 +173,10 @@ public class ChatPanel extends JPanel {
         add(messageScrollPane, BorderLayout.CENTER);
 //        add(participantButtonPanel, BorderLayout.EAST);
         add(textEntryPanel, BorderLayout.PAGE_END);
+        addFocusListener(this);
+        messageScrollPane.addFocusListener(this);
+        textEntryPanel.addFocusListener(this);
+        chatInstructionsPane.addFocusListener(this);
     }
 
     public void displayMessage(String chatHandle, String message) {
@@ -208,5 +214,20 @@ public class ChatPanel extends JPanel {
 	public void setFocusInChatField() {
 		chatField.requestFocusInWindow();
 	}
+
+    @Override
+    public void focusGained(FocusEvent e) {
+        if (e.getComponent().equals(chatField)) {
+            System.err.println("chat field got focus, not setting focus again");
+            return;
+        }
+        System.err.println("gained focus, setting on chat field: " + e);
+        chatField.requestFocusInWindow();
+    }
+
+    @Override
+    public void focusLost(FocusEvent e) {
+
+    }
 
 }
