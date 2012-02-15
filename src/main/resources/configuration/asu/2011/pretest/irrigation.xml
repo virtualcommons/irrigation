@@ -380,7 +380,6 @@ infrastructure efficiency.
             <th>Tokens earned from growing crops</th>
             <th>Total tokens earned this round</th>
             <th>Dollars earned this round</th>
-            <th>Quiz earnings</th>
             <th>Total dollars earned</th>
         </tr>
         {dataModel.orderedVisibleClients: {clientData|
@@ -392,15 +391,17 @@ infrastructure efficiency.
             <td>{clientData.tokensEarnedFromWaterCollected}</td>
             <td>{clientData.allTokensEarnedThisRound}</td>
             <td>{clientData.totalDollarsEarnedThisRound}</td>
-            <td>{clientData.quizEarnings}</td>
             <td>{clientData.grandTotalIncome}</td>
         </tr>
         }}
     </table>
     <h2>Earnings</h2>
     <hr>
-        <p>You are in position {clientData.priorityString} and received {clientData.totalDollarsEarnedThisRound} this past round.
-            Your <b>total income</b> is <b>{clientData.grandTotalIncome}</b>, including the {showUpPayment} show-up bonus.</p>
+        <p>You are in position {clientData.priorityString} and received
+            {clientData.totalDollarsEarnedThisRound} this past round. Your 
+            <b>total income</b> is <b>{clientData.grandTotalIncome}</b>, including the
+            {showUpPayment} show-up bonus and {clientData.quizEarnings} for
+            answering {clientData.correctQuizAnswers} quiz questions correctly.</p>
     {if (showExitInstructions)}
     <h2>Exit Survey</h2>
     <hr>
