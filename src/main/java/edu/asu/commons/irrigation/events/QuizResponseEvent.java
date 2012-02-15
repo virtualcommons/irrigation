@@ -32,6 +32,10 @@ public class QuizResponseEvent extends AbstractPersistableEvent implements Clien
         this.responses = responses;
         this.incorrectAnswers = incorrectAnswers;
     }
+    
+    public boolean isComplete() {
+        return quizPage == 2;
+    }
 
     public int getQuizPage(){
         return quizPage;
@@ -47,5 +51,9 @@ public class QuizResponseEvent extends AbstractPersistableEvent implements Clien
 
     public String toString() {
         return id + " quiz page response: " + responses + "\n\t incorrect: " + incorrectAnswers;
+    }
+
+    public int getNumberOfCorrectQuizAnswers() {
+        return responses.size() - 1 - getIncorrectAnswers().size();
     }
 }
