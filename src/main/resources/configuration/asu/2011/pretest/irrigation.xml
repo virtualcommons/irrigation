@@ -447,7 +447,7 @@ The amount of water available to pass through your canal is <b>{groupDataModel.a
 <th></th></th><th>Infrastructure Efficiency</th><th>Water Delivery Capacity</th><th>Water Availability</th>
 </tr>
 <tr>
-<td>Before Investment</td><td>{groupDataModel.infrastructureEfficiencyBeforeInvestment}%</td><td>{groupDataModel.irrigationCapacityBeforeInvestment} cubic feet per second</td><td>{groupDataModel.actualWaterDeliveryCapacity}</td>
+<td>Before Investment</td><td>{groupDataModel.infrastructureEfficiencyBeforeInvestment}%</td><td>{groupDataModel.irrigationCapacityBeforeInvestment} cubic feet per second</td><td>{groupDataModel.actualWaterDeliveryCapacity} cubic feet per second</td>
 </tr>
 <tr>
 <td>After Investment</td><td>{groupDataModel.infrastructureEfficiency}%</td><td>{groupDataModel.irrigationCapacity} cubic feet per second</td><td>{groupDataModel.actualWaterDeliveryCapacity} cubic feet per second</td>
