@@ -209,9 +209,11 @@ public class ExperimentGameWindow extends JPanel {
                     }
                     else {
                         // this only works in between practice rounds #1 & #2 or after practice round 2
-                        setInstructions(instructionsBuilder.toString());
+                    	// should just regenerate all the instructions...
                         nextButton.setEnabled(false);
                         disableQuiz();
+                        showDebriefing(false);
+//                        setInstructions(instructionsBuilder.toString());
                     }
                 }
             });
@@ -220,13 +222,7 @@ public class ExperimentGameWindow extends JPanel {
         return nextButton;
     }
 
-//    private CanalAnimationPanel getCanalAnimationPanel() {
-//        if (canalAnimationPanel == null) {
-//            canalAnimationPanel = new CanalAnimationPanel(40);
-//        }
-//        return canalAnimationPanel;
-//    }
-
+    // FIXME: replace with StringTemplate
     private String getQuizPage() {
         StringBuilder builder = new StringBuilder();
         String quizPage = getServerConfiguration().getQuizPage(currentQuizPageNumber);
@@ -465,7 +461,10 @@ public class ExperimentGameWindow extends JPanel {
                     nextButton.setEnabled(true);
                 }
 //                quizzesAnswered++;
-                client.transmit(new QuizResponseEvent(client.getId(), currentQuizPageNumber, responses, incorrectAnswers));
+                QuizResponseEvent event = new QuizResponseEvent(client.getId(), currentQuizPageNumber, responses, incorrectAnswers);
+                System.err.println("Correct answers: " + event.getNumberOfCorrectQuizAnswers());
+                clientDataModel.getClientData().addCorrectQuizAnswers(event.getNumberOfCorrectQuizAnswers());
+                client.transmit(event);
                 setInstructions(getQuizPage(), true);
             }
         };
@@ -644,6 +643,11 @@ public class ExperimentGameWindow extends JPanel {
      * Invoked when the show instructions button is pressed.
      */
     public void showInstructions() {
-        displayInstructions(getServerConfiguration().getInitialInstructions());
+    	if (clientDataModel == null || clientDataModel.getRoundConfiguration().isFirstRound()) {
+            displayInstructions(getServerConfiguration().getInitialInstructions());    		
+    	}
+    	else {
+    		displayInstructions(clientDataModel.getRoundConfiguration().getInstructions());
+    	}
     }
 }
