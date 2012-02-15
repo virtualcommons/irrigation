@@ -84,7 +84,7 @@ public class ExperimentGameWindow extends JPanel {
 
     private HtmlEditorPane tokenInstructionsEditorPane;
 
-    private int quizzesAnswered = 0;
+//    private int quizzesAnswered = 0;
 
     private TokenContributionChartPanel tokenContributionChartPanel;
 
@@ -464,7 +464,7 @@ public class ExperimentGameWindow extends JPanel {
                 if (currentQuizPageNumber <= getServerConfiguration().getNumberOfQuizPages()) {
                     nextButton.setEnabled(true);
                 }
-                quizzesAnswered++;
+//                quizzesAnswered++;
                 client.transmit(new QuizResponseEvent(client.getId(), currentQuizPageNumber, responses, incorrectAnswers));
                 setInstructions(getQuizPage(), true);
             }
@@ -519,7 +519,7 @@ public class ExperimentGameWindow extends JPanel {
                 GroupDataModel group = clientDataModel.getGroupDataModel();
                 RoundConfiguration roundConfiguration = clientDataModel.getRoundConfiguration();
                 int infrastructureEfficiency = 0;
-                if (roundConfiguration.shouldResetInfrastructureEfficiency()) {
+                if (roundConfiguration.isInfrastructureEfficiencyReset()) {
                     infrastructureEfficiency = roundConfiguration.getInitialInfrastructureEfficiency();
                 }
                 else {
@@ -543,11 +543,12 @@ public class ExperimentGameWindow extends JPanel {
         SwingUtilities.invokeLater(runnable);
     }
 
+    // FIXME: replace with StringTemplate
     public void updateRoundInstructions(RoundConfiguration roundConfiguration) {
         if (! roundConfiguration.isFirstRound()) {
             instructionsBuilder.append(roundConfiguration.getInstructions());
             instructionsBuilder.append("<hr>");
-            if (roundConfiguration.shouldResetInfrastructureEfficiency()) {
+            if (roundConfiguration.isInfrastructureEfficiencyReset()) {
                 int initialInfrastructureEfficiency = roundConfiguration.getInitialInfrastructureEfficiency();
             	instructionsBuilder.append(
             	        String.format("The irrigation infrastructure efficiency has been reset to %d%% with a corresponding water delivery capacity of %d cfps.", 

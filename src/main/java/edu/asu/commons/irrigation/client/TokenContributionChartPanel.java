@@ -12,6 +12,7 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PiePlot;
 import org.jfree.chart.plot.PlotOrientation;
@@ -55,12 +56,10 @@ public class TokenContributionChartPanel extends JPanel {
     private JFreeChart createChart(ClientDataModel clientDataModel) {
     	boolean restrictedVisibility = clientDataModel.getRoundConfiguration().isRestrictedVisibility();
     	if (restrictedVisibility) {
-    		final CategoryDataset dataset = createCategoryDataset(clientDataModel);
-    		return createBarChart(dataset);
+    		return createBarChart(clientDataModel);
     	}
     	else {
-    		final PieDataset dataset = createPieDataset(clientDataModel);
-    		return createPieChart(dataset);
+    		return createPieChart(clientDataModel);
     	}
     }
 
@@ -93,17 +92,20 @@ public class TokenContributionChartPanel extends JPanel {
         return defaultPieDataset;        
     }
     
-    private JFreeChart createBarChart(final CategoryDataset dataset) {
-    	JFreeChart chart = ChartFactory.createBarChart("Tokens Contributed", "Participant", "Tokens Invested", dataset, 
+    private JFreeChart createBarChart(ClientDataModel clientDataModel) {
+        final CategoryDataset dataset = createCategoryDataset(clientDataModel);
+    	JFreeChart chart = ChartFactory.createBarChart("Tokens Contributed by your Neighbors", "Participant", "Tokens Invested", dataset, 
     			PlotOrientation.VERTICAL, false, false, false);
     	CategoryPlot plot = chart.getCategoryPlot();
-    	plot.getRangeAxis().setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+    	ValueAxis rangeAxis = plot.getRangeAxis();
+    	rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+    	rangeAxis.setUpperBound(clientDataModel.getRoundConfiguration().getTokenEndowment());
     	plot.getRenderer().setSeriesPaint(0, Color.BLUE);
     	return chart;
     }
     
-    private JFreeChart createPieChart(final PieDataset dataset) {
-        
+    private JFreeChart createPieChart(ClientDataModel clientDataModel) {
+        final PieDataset dataset = createPieDataset(clientDataModel);
         final JFreeChart chart = ChartFactory.createPieChart(
             "Tokens Contributed",  // chart title
             dataset,             // data

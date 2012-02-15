@@ -223,10 +223,6 @@ public class IrrigationClient {
       	return clientDataModel.getRoundConfiguration();
     }
 
-    public void setRoundConfiguration(RoundConfiguration roundConfiguration) {
-        clientDataModel.setRoundConfiguration(roundConfiguration);
-    }
-
     public ServerConfiguration getServerConfiguration() {
         return serverConfiguration;
     }

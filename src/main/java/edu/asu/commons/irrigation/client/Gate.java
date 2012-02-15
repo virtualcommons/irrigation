@@ -146,6 +146,10 @@ public class Gate {
 		return open;
 	}
 	
+	public boolean isClosed() {
+	    return ! open;
+	}
+	
 	public void open() {
 	    setOpen(true);
 	}

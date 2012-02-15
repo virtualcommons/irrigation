@@ -55,8 +55,20 @@ public class ChatPanel extends JPanel {
     private JTextField chatField;
 
     public ChatPanel(IrrigationClient irrigationClient) {
+        this.irrigationClient = irrigationClient;
         initGuiComponents();
-        setIrrigationClient(irrigationClient);
+        chatInstructionsPane.setText(irrigationClient.getServerConfiguration().getChatInstructions());
+        irrigationClient.getEventChannel().add(this, new EventTypeProcessor<ChatEvent>(ChatEvent.class) {
+            public void handle(final ChatEvent chatEvent) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        displayMessage(getChatHandle(chatEvent.getSource()),
+                                chatEvent.toString());
+                    }
+                });
+            }
+
+        });
     }
 
     private class TextEntryPanel extends JPanel {
@@ -81,7 +93,8 @@ public class ChatPanel extends JPanel {
 //                }
 //            });
             JPanel timeLeftPanel = new JPanel();
-            timeLeftProgressBar = new JProgressBar(0, 60);
+            int chatDuration = irrigationClient.getServerConfiguration().getChatDuration();
+            timeLeftProgressBar = new JProgressBar(0, chatDuration);
             timeLeftProgressBar.setStringPainted(true);
             timeLeftPanel.setLayout(new BorderLayout());
             timeLeftPanel.add(timeLeftProgressBar, BorderLayout.CENTER);
@@ -180,29 +193,13 @@ public class ChatPanel extends JPanel {
         HANDLES = new String[participants.size()];
         // FIXME: shuffle handles?
         for (int i = HANDLES.length; --i >= 0;) {
-            HANDLES[i] = " " + HANDLE_STRING.charAt(i) + " ";
+            HANDLES[i] = String.valueOf(HANDLE_STRING.charAt(i));
             chatHandles.put(participants.get(i), HANDLES[i]);
         }
     }
     
     public Identifier getClientId() {
     	return irrigationClient.getId();
-    }
-
-    public void setIrrigationClient(IrrigationClient client) {
-        this.irrigationClient = client;
-        chatInstructionsPane.setText(irrigationClient.getServerConfiguration().getChatInstructions());
-        client.getEventChannel().add(this, new EventTypeProcessor<ChatEvent>(ChatEvent.class) {
-            public void handle(final ChatEvent chatEvent) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        displayMessage(getChatHandle(chatEvent.getSource()),
-                                chatEvent.toString());
-                    }
-                });
-            }
-
-        });
     }
 
 	public void setFocusInChatField() {

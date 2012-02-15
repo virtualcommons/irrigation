@@ -27,6 +27,8 @@
 <entry key="round20">round20.xml</entry>
 <entry key="round21">round21.xml</entry>
 
+<entry key='token-endowment'>10</entry>
+<entry key='field-of-vision'>1</entry>
 <entry key='quiz-pages'>2</entry>
 <entry key="wait-for-participants">true</entry>
 <entry key="number-of-rounds">22</entry>
@@ -94,9 +96,11 @@ the irrigation infrastructure for growing crops.
 
 <p>
 We will now start a practice round to help illustrate the experiment.  Before each
-round in this experiment you will have a chat period of {self.chatDurationInMinutes}
-where you can send text messages to the other participants. You may discuss any
-aspect of the exercise with two important exceptions:
+round in this experiment you will have a chat period of {self.chatDuration} seconds
+where you can send text messages to the other participants. 
+{self.restrictedVisibilityInstructions}
+
+You may discuss any aspect of the exercise with two important exceptions:
 </p>
 <ol>
 <li>You are <b>not allowed</b> to promise the other participants
@@ -283,8 +287,11 @@ the round?<br>
 <entry key='chat-instructions'>
 <![CDATA[
 <h3>Chat Instructions</h3>
-You may now chat for {self.chatDurationInMinutes} with the other members of your group.  You may
-discuss any aspect of the exercise with two important exceptions:
+<hr>
+<p>
+You may now chat for {self.chatDuration} seconds with the other members of your group.
+{self.restrictedVisibilityInstructions}
+You may discuss any aspect of the exercise with two important exceptions:
 </p>
 <ol>
 <li>You are <b>not allowed</b> to promise the other participants
@@ -447,7 +454,19 @@ The amount of water available to pass through your canal is <b>{groupDataModel.a
 </table>
 ]]>
 </entry>
+<entry key="special-instructions">
+<![CDATA[
+<h2>Special Instructions</h2>
+<hr>
+{if (self.restrictedVisibility)}
+<p>You can only communicate with and observe the actions of your immediate neighbors.</p>
+{endif}
+{if (self.infrastructureEfficiencyReset)}
+<p>The irrigation infrastructure efficiency has been <b>reset to {self.initialInfrastructureEfficiency}%</b>.</p>
+{endif}
+]]>
+</entry>
 <entry key="restricted-visibility-instructions">
-    <![CDATA[<p><b>You can only communicate with and observe the actions of your immediate neighbors.</b></p>]]>
+<![CDATA[{if (self.restrictedVisibility)}<b>NOTE:</b> In this experiment you can <b>only communicate with and observe the actions of your immediate neighbors</b>.{endif}]]>
 </entry>
 </properties>
