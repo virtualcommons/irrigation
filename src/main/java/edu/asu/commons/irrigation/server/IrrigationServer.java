@@ -150,7 +150,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
                 }
             }
         });
-        addEventProcessor(new EventTypeProcessor<ShowRequest>(ShowRequest.class) {
+        addEventProcessor(new EventTypeProcessor<ShowRequest>(ShowRequest.class, true) {
             @Override
             public void handle(ShowRequest request) {
             	if (request.getId().equals(getFacilitatorId())) {
@@ -404,8 +404,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
                         process(group); 
                     }
                     catch (RuntimeException exception) {
-                        exception.printStackTrace();
-                        getLogger().throwing(IrrigationServerStateMachine.class.getName(), "processRound", exception);
+                        sendFacilitatorMessage("Couldn't process group: " + exception.getMessage(), exception);
                     }
                 }
 //                lastTime = System.currentTimeMillis();
