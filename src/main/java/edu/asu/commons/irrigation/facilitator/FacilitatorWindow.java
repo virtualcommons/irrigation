@@ -13,10 +13,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
+import edu.asu.commons.event.ShowInstructionsRequest;
 import edu.asu.commons.irrigation.events.BeginChatRoundRequest;
 import edu.asu.commons.irrigation.events.FacilitatorEndRoundEvent;
 import edu.asu.commons.irrigation.events.ShowGameScreenshotRequest;
-import edu.asu.commons.irrigation.events.ShowInstructionsRequest;
 import edu.asu.commons.irrigation.events.ShowQuizRequest;
 import edu.asu.commons.irrigation.model.ClientData;
 import edu.asu.commons.irrigation.model.GroupDataModel;

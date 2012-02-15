@@ -15,6 +15,7 @@ import edu.asu.commons.event.EndRoundRequest;
 import edu.asu.commons.event.EventTypeProcessor;
 import edu.asu.commons.event.FacilitatorRegistrationRequest;
 import edu.asu.commons.event.RoundStartedMarkerEvent;
+import edu.asu.commons.event.ShowRequest;
 import edu.asu.commons.event.SocketIdentifierUpdateRequest;
 import edu.asu.commons.experiment.AbstractExperiment;
 import edu.asu.commons.experiment.IPersister;
@@ -32,10 +33,6 @@ import edu.asu.commons.irrigation.events.OpenGateEvent;
 import edu.asu.commons.irrigation.events.QuizResponseEvent;
 import edu.asu.commons.irrigation.events.RegistrationEvent;
 import edu.asu.commons.irrigation.events.RoundStartedEvent;
-import edu.asu.commons.irrigation.events.ShowGameScreenshotRequest;
-import edu.asu.commons.irrigation.events.ShowInstructionsRequest;
-import edu.asu.commons.irrigation.events.ShowQuizRequest;
-import edu.asu.commons.irrigation.events.ShowTokenInvestmentScreenRequest;
 import edu.asu.commons.irrigation.model.ClientData;
 import edu.asu.commons.irrigation.model.GroupDataModel;
 import edu.asu.commons.irrigation.model.ServerDataModel;
@@ -88,27 +85,8 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
         initializeClientHandlers();
     }
 
+    @SuppressWarnings("rawtypes")
     private void initializeFacilitatorHandlers() {
-        addEventProcessor(new EventTypeProcessor<ShowGameScreenshotRequest>(ShowGameScreenshotRequest.class) {
-            public void handle(ShowGameScreenshotRequest request) {
-                // FIXME: check request id against facilitator id?
-                synchronized (clients) {
-                    for (Identifier id: clients.keySet()) {
-                        transmit(new ShowGameScreenshotRequest(id));
-                    }
-                }
-            }
-        });
-        addEventProcessor(new EventTypeProcessor<ShowQuizRequest>(ShowQuizRequest.class) {
-            public void handle(ShowQuizRequest request) {
-                // FIXME: check request id against facilitator id?
-                synchronized (clients) {
-                    for (Identifier id: clients.keySet()) {
-                        transmit(new ShowQuizRequest(id));
-                    }
-                }
-            }
-        });
         addEventProcessor(new EventTypeProcessor<FacilitatorRegistrationRequest>(FacilitatorRegistrationRequest.class) {
             @Override
             public void handle(FacilitatorRegistrationRequest event) {
@@ -172,24 +150,19 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
                 }
             }
         });
-        addEventProcessor(new EventTypeProcessor<ShowInstructionsRequest>(ShowInstructionsRequest.class) {
+        addEventProcessor(new EventTypeProcessor<ShowRequest>(ShowRequest.class) {
             @Override
-            public void handle(ShowInstructionsRequest request) {
-                synchronized (clients) {
-                    for (Identifier id: clients.keySet()) {
-                        transmit(new ShowInstructionsRequest(id));
-                    }
-                }
-            }
-        });
-        addEventProcessor(new EventTypeProcessor<ShowTokenInvestmentScreenRequest>(ShowTokenInvestmentScreenRequest.class) {
-            @Override
-            public void handle(ShowTokenInvestmentScreenRequest request) {
-                synchronized (clients) {
-                    for (Identifier id: clients.keySet()) {
-                        transmit(new ShowTokenInvestmentScreenRequest(id));
-                    }
-                }
+            public void handle(ShowRequest request) {
+            	if (request.getId().equals(getFacilitatorId())) {
+            		synchronized (clients) {
+            			for (Identifier id: clients.keySet()) {
+            				transmit(request.copy(id));
+            			}
+            		}
+            	}
+            	else {
+            		sendFacilitatorMessage("Received invalid show request " + request + " from " + getFacilitatorId());
+            	}
             }
         });
     }
