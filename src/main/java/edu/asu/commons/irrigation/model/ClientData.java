@@ -249,6 +249,10 @@ public class ClientData implements Serializable {
     public void setSelf(boolean current) {
         this.self = current;
     }
+
+    public void addCorrectQuizAnswers(int numberOfCorrectQuizAnswers) {
+        this.correctQuizAnswers += numberOfCorrectQuizAnswers;
+    }
 }
 
 
