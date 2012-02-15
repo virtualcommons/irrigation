@@ -110,7 +110,7 @@ public class GroupDataModel implements DataModel<ServerConfiguration, RoundConfi
     private void updateInfrastructureEfficiency(int totalContributedTokens) {
     	RoundConfiguration roundConfiguration = getRoundConfiguration();
         // initialize infrastructure efficiency
-        if ( roundConfiguration.shouldResetInfrastructureEfficiency() ) {
+        if ( roundConfiguration.isInfrastructureEfficiencyReset() ) {
             infrastructureEfficiency = roundConfiguration.getInitialInfrastructureEfficiency();
         }
         else {
@@ -191,6 +191,11 @@ public class GroupDataModel implements DataModel<ServerConfiguration, RoundConfi
     }
 
     public void allocateWater(ClientData clientData) {
+        if (clientData.isGateClosed()) {
+            // reset the available flow to this client
+            clientData.setAvailableFlowCapacity(getAvailableClientFlowCapacity());
+            return;
+        }
     	int maximumClientFlowCapacity = getRoundConfiguration().getMaximumClientFlowCapacity();
         if (currentlyAvailableFlowCapacity >= maximumClientFlowCapacity) {
             currentlyAvailableFlowCapacity -= maximumClientFlowCapacity;

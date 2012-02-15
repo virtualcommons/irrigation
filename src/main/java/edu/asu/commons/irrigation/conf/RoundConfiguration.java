@@ -94,7 +94,7 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
         getProperties().list(System.err);
     }
     
-    public boolean shouldResetInfrastructureEfficiency() {
+    public boolean isInfrastructureEfficiencyReset() {
     	return isFirstRound() || getBooleanProperty("reset-infrastructure-efficiency", false);
     }
 
@@ -107,14 +107,11 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
         // and refer to them as self.durationInMinutes or self.dollarsPerTokenCurrencyString, etc.
         template.add("duration", inMinutes(getDuration()) + " minutes");
         template.add("dollarsPerToken", toCurrencyString(getDollarsPerToken()));
-        if (isRestrictedVisibility()) {
-            template.add("specialInstructions", getRestrictedVisibilityInstructions());
-        }
         return template.render();
     }
     
-    private String getRestrictedVisibilityInstructions() {
-        return render(getProperty("restricted-visibility-instructions"));
+    public String getSpecialInstructions() {
+        return render(getProperty("special-instructions"));
     }
 
     public boolean shouldDisplayGroupTokens() {
@@ -165,7 +162,7 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
      * @return the number of neighbors visible to either side of each participant.
      */
     public int getFieldOfVision() {
-        return getIntProperty("field-of-vision", -1);
+        return getIntProperty("field-of-vision", getParentConfiguration().getFieldOfVision());
     }
     
     public String getClientDebriefingTemplate() {
@@ -204,6 +201,10 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
     
     public int getChatDuration() {
     	return getIntProperty("chat-duration");
+    }
+    
+    public String getRestrictedVisibilityInstructions() {
+        return render(getProperty("restricted-visibility-instructions"));
     }
 
 }

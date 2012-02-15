@@ -17,8 +17,7 @@ import edu.asu.commons.irrigation.model.ClientData;
  * @author <a href='mailto:Allen.Lee@asu.edu'>Allen Lee</a>
  * @version $Revision$
  */
-public class ServerConfiguration 
-extends ExperimentConfiguration.Base<RoundConfiguration> {
+public class ServerConfiguration extends ExperimentConfiguration.Base<RoundConfiguration> {
 
     private static final double DEFAULT_QUIZ_CORRECT_ANSWER_REWARD = 0.50d;
 
@@ -116,11 +115,20 @@ extends ExperimentConfiguration.Base<RoundConfiguration> {
     }
     
     public String getRestrictedVisibilityInstructions() {
-        return getProperty("restrictedVisibilityInstructions");
+        return render(getProperty("restricted-visibility-instructions"));
     }
     
     public boolean isRestrictedVisibility() {
-        return getBooleanProperty("restrictedVisibility");
+        return getFieldOfVision() > 0;
+    }
+    
+    /**
+     * Returns the number of neighbors visible on both sides of the participant.  A negative value signifies that
+     * participants can see everything.
+     * @return the number of neighbors visible to either side of each participant.
+     */
+    public int getFieldOfVision() {
+        return getIntProperty("field-of-vision", -1);
     }
     
     public double getQuizCorrectAnswerReward() {
@@ -182,7 +190,6 @@ extends ExperimentConfiguration.Base<RoundConfiguration> {
     public int getChatDuration() {
         return getIntProperty("chat-duration", 60);
     }
-
 
     public String getGameScreenshotInstructions() {
         return getProperty("game-screenshot-instructions");

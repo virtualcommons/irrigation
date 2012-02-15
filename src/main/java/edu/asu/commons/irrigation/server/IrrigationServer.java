@@ -13,7 +13,6 @@ import edu.asu.commons.event.ChatEvent;
 import edu.asu.commons.event.ChatRequest;
 import edu.asu.commons.event.EndRoundRequest;
 import edu.asu.commons.event.EventTypeProcessor;
-import edu.asu.commons.event.FacilitatorMessageEvent;
 import edu.asu.commons.event.FacilitatorRegistrationRequest;
 import edu.asu.commons.event.RoundStartedMarkerEvent;
 import edu.asu.commons.event.SocketIdentifierUpdateRequest;
@@ -72,16 +71,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
 
     private IrrigationPersister persister;
 
-    private int numberOfCompletedQuizzes = 0;
-
     private IrrigationServerStateMachine stateMachine = new IrrigationServerStateMachine();
-
-    /**
-     * this is the variable that would be reset to Bt for 
-     * every loop of the client traversal.
-     */
-
-    private Identifier facilitatorId;
 
     public IrrigationServer() {
         this(new ServerConfiguration());
@@ -124,10 +114,10 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
             public void handle(FacilitatorRegistrationRequest event) {
                 getLogger().info("facilitator registered: " + event.getId());
                 // remap the facilitator ID and remove from the clients list.
-                facilitatorId = event.getId();
+                setFacilitatorId(event.getId());
                 synchronized (clients) {
-                    clients.remove(facilitatorId);
-                    serverDataModel.removeClient(facilitatorId);
+                    clients.remove(getFacilitatorId());
+                    serverDataModel.removeClient(getFacilitatorId());
                 }
             }
         });
@@ -143,9 +133,9 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
         addEventProcessor(new EventTypeProcessor<BeginRoundRequest>(BeginRoundRequest.class) {
             @Override
             public void handle(BeginRoundRequest event) {
-                if (! event.getId().equals(facilitatorId)) {
+                if (! event.getId().equals(getFacilitatorId())) {
                     getLogger().warning(
-                            String.format("facilitator is [%s] but received begin round request from non-facilitator [%s]", facilitatorId, event.getId()));
+                            String.format("facilitator is [%s] but received begin round request from non-facilitator [%s]", getFacilitatorId(), event.getId()));
                     return;
                 }
                 // ignore the request if not every group has submit their tokens.
@@ -244,9 +234,9 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
             public void handle(DisconnectionRequest request) {
                 getLogger().warning("irrigation server handling disconnection request: " + request);
                 Identifier disconnectedClientId = request.getId();
-                if (disconnectedClientId.equals(facilitatorId)) {
+                if (disconnectedClientId.equals(getFacilitatorId())) {
                     getLogger().warning("Disconnecting facilitator.");
-                    facilitatorId = null;
+                    setFacilitatorId(null);
                     return;
                 }
                 synchronized (clients) {
@@ -303,11 +293,19 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
             }
         });
         addEventProcessor(new EventTypeProcessor<QuizResponseEvent>(QuizResponseEvent.class) {
+            private int numberOfCompletedQuizzes = 0;
             @Override
-            public void handle(QuizResponseEvent event) {
-                getLogger().info("Completed quizzes: " + numberOfCompletedQuizzes);
-                numberOfCompletedQuizzes++;
-                persister.store(event);
+            public void handle(QuizResponseEvent quizResponseEvent) {
+                sendFacilitatorMessage("Received quiz response: " + quizResponseEvent);
+                clients.get(quizResponseEvent.getId()).addCorrectQuizAnswers(quizResponseEvent.getNumberOfCorrectQuizAnswers());
+                if (quizResponseEvent.isComplete()) {
+                    numberOfCompletedQuizzes++;
+                }
+                if (numberOfCompletedQuizzes >= clients.size()) {
+                    sendFacilitatorMessage("All quizzes completed: " + numberOfCompletedQuizzes);
+                    numberOfCompletedQuizzes = 0;
+                }
+                persister.store(quizResponseEvent);
             }
         });
         addEventProcessor(new EventTypeProcessor<OpenGateEvent>(OpenGateEvent.class) {
@@ -321,10 +319,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
             }
         });
     }
-    private void sendFacilitatorMessage(String message) {
-        getLogger().info(message);
-        transmit(new FacilitatorMessageEvent(facilitatorId, message));
-    }
+
     private boolean isTokenInvestmentComplete() {
         return submittedClients >= clients.size();
     }
@@ -353,31 +348,22 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
 
 
     /**
-     * Processes all the clients message queues. The main loop of the game while
-     * the server is running, notifies clients of the current state of affairs.
+     * Processes the given GroupDataModel and re-allocates water to each participant in the group
+     * based on each participants gate open/closed status.  
      * 
-     * This method is very important as in it tries to process all the clients in one 
-     * group, every second. Then checks the clientData field and transmits the event accordingly
-     * At present dont know whether this would be a scalable solution, but there is a scope of 
-     * improvement here
      * @param group 
      */
     private void process(GroupDataModel group) {
-        // reset group's available bandwidth and re-allocate client delivery bandwidths.
+        // reset group's available flow and re-allocate water to each participant in this group
         group.resetCurrentlyAvailableFlowCapacity();
         int timeLeft = (int) (currentRoundDuration.getTimeLeft() / 1000);
-        // allocate bandwidth to each client
+        // allocate flow to each participant
         for (ClientData clientData : group.getClientDataMap().values()) {
             // for undisrupted flow extensions, disabled for the time being.
 //            if (clientData.getAvailableFlowCapacity() <= 0 && getConfiguration().isUndisruptedFlowRequired()){
 //                clientData.init(group.getCurrentlyAvailableFlowCapacity());
 //            }
-            if (clientData.isGateOpen()) {
-                group.allocateWater(clientData);
-            }
-            else {
-                clientData.init(group.getAvailableClientFlowCapacity());
-            }
+            group.allocateWater(clientData);
         }
         for (Identifier id: group.getAllClientIdentifiers()) {
             ClientUpdateEvent clientUpdateEvent = new ClientUpdateEvent(id, group, timeLeft);
@@ -482,7 +468,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
                             getConfiguration().isLastRound()));    
                 }
             }
-            transmit(new FacilitatorEndRoundEvent(facilitatorId, serverDataModel));
+            transmit(new FacilitatorEndRoundEvent(getFacilitatorId(), serverDataModel));
 
         }
 
@@ -521,7 +507,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
                 }
             }
             // send new round configuration to the facilitator
-            transmit(new RegistrationEvent(facilitatorId, nextRoundConfiguration));
+            transmit(new RegistrationEvent(getFacilitatorId(), nextRoundConfiguration));
             persister.initialize(nextRoundConfiguration);
         }
 
