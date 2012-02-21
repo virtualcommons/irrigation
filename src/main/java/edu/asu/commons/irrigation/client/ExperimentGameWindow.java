@@ -585,7 +585,6 @@ public class ExperimentGameWindow extends JPanel {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 startTimer(getServerConfiguration().getChatDuration() * 1000L);
-//                ChatPanel chatPanel = getChatPanel();
                 chatPanel.initialize(clientDataModel.getAllClientIdentifiers());
                 addCenterComponent( chatPanel );
                 chatPanel.setFocusInChatField();

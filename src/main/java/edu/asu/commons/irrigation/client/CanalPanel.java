@@ -17,7 +17,7 @@ import edu.asu.commons.irrigation.model.ClientData;
 /**
  * $Id$
  * 
- * FIXME: completely rewrite horrifyingly convoluted animation logic
+ * FIXME: convoluted gate and animation logic is in dire need of refactoring / rewrite
  * 
  * @author Sanket Joshi, Allen Lee
  */
@@ -30,7 +30,7 @@ public class CanalPanel extends JPanel {
 
     private final static int DELAY = 20;
 
-    private Ball[] balls;
+    private Ball[] particles;
 
     private final static int BALLCOUNT = 500;
     private final static int NUMBER_OF_GATES = 6;
@@ -104,11 +104,7 @@ public class CanalPanel extends JPanel {
             graphics2D.fillRect(gates[i].getX(), gates[i].getY(),
                     gates[i].getWidth(), gates[i].getHeight());
         }
-        // checkRestrictedVisibility();
         for (ClientData clientData : sortedClientDataList) {
-//            if (restrictedVisibility && !clientDataModel.isImmediateNeighbor(clientData)) {
-//                continue;
-//            }
             int priority = clientData.getPriority();
             Gate gate = gates[priority];
             graphics2D.setColor(Color.BLUE);
@@ -127,22 +123,22 @@ public class CanalPanel extends JPanel {
         graphics.setColor(Color.WHITE);
         // int ballCounter = 0;
         for (int i = 0; i < BALLCOUNT; i++) {
-            if ((balls[i].getPosition() == 1) || (balls[i].getPosition() == 2)
-                    || (balls[i].getPosition() == 3)
-                    || (balls[i].getPosition() == 4)
-                    || (balls[i].getPosition() == 5)) {
-                if (!((gates[balls[i].getPosition() - 1].isClosed()) 
-                        && balls[i].getY() >= (gates[balls[i].getPosition() - 1].getY() + gates[balls[i].getPosition() - 1].getHeight())))
-                    graphics.fillOval(balls[i].x, balls[i].y,
-                            balls[i].getBallSize(), balls[i].getBallSize());
+            if ((particles[i].getPosition() == 1) || (particles[i].getPosition() == 2)
+                    || (particles[i].getPosition() == 3)
+                    || (particles[i].getPosition() == 4)
+                    || (particles[i].getPosition() == 5)) {
+                if (!((gates[particles[i].getPosition() - 1].isClosed()) 
+                        && particles[i].getY() >= (gates[particles[i].getPosition() - 1].getY() + gates[particles[i].getPosition() - 1].getHeight())))
+                    graphics.fillOval(particles[i].x, particles[i].y,
+                            particles[i].getBallSize(), particles[i].getBallSize());
             } else {
-                if (balls[i].getPosition() != 0) {
-                    if (gates[balls[i].getPosition() - 6].getHeight() != 0)
-                        graphics.fillOval(balls[i].x, balls[i].y,
-                                balls[i].getBallSize(), balls[i].getBallSize());
+                if (particles[i].getPosition() != 0) {
+                    if (gates[particles[i].getPosition() - 6].getHeight() != 0)
+                        graphics.fillOval(particles[i].x, particles[i].y,
+                                particles[i].getBallSize(), particles[i].getBallSize());
                 } else {
-                    graphics.fillOval(balls[i].x, balls[i].y,
-                            balls[i].getBallSize(), balls[i].getBallSize());
+                    graphics.fillOval(particles[i].x, particles[i].y,
+                            particles[i].getBallSize(), particles[i].getBallSize());
                 }
             }
         }
@@ -233,9 +229,9 @@ public class CanalPanel extends JPanel {
      * initialize the Balls
      */
     private void initializeBalls() {
-        balls = new Ball[BALLCOUNT];
+        particles = new Ball[BALLCOUNT];
         for (int i = 0; i < BALLCOUNT; i++) {
-            balls[i] = new Ball(generator);
+            particles[i] = new Ball(generator);
         }
     }
 
@@ -246,8 +242,8 @@ public class CanalPanel extends JPanel {
             ClientData thisClientData = clientDataModel.getClientData();
             for (int i = 0; i < BALLCOUNT; i++) {
                 // updateGUI();
-                balls[i].x += balls[i].moveX;
-                balls[i].y += balls[i].moveY;
+                particles[i].x += particles[i].moveX;
+                particles[i].y += particles[i].moveY;
                 process(i, sortedClients, thisClientData);
             }
             repaint();
@@ -259,40 +255,40 @@ public class CanalPanel extends JPanel {
      */
     private void process(int i, List<ClientData> sortedClients, ClientData thisClientData) {
         
-        switch (balls[i].getPosition()) {
+        switch (particles[i].getPosition()) {
 
             case 0:
-                if ((balls[i].x >= (reservoirWidth - gateBuffer) && balls[i].x <= reservoirWidth)
-                        && (balls[i].y >= reservoirHeight - (int) (maximumIrrigationCapacity * canalHeightMultiplier) && balls[i].y <= reservoirHeight)) 
+                if ((particles[i].x >= (reservoirWidth - gateBuffer) && particles[i].x <= reservoirWidth)
+                        && (particles[i].y >= reservoirHeight - (int) (maximumIrrigationCapacity * canalHeightMultiplier) && particles[i].y <= reservoirHeight)) 
                 {
-                    balls[i].setPosition(1);
+                    particles[i].setPosition(1);
                     setBounds(i);
                 }
                 // still in server
                 else {
                     setBounds(i);
-                    if (balls[i].x <= balls[i].xLowerBound
-                            || balls[i].x >= balls[i].xUpperBound
-                                    - balls[i].getBallSize()) {
-                        balls[i].moveX = balls[i].moveX * -1;
+                    if (particles[i].x <= particles[i].xLowerBound
+                            || particles[i].x >= particles[i].xUpperBound
+                                    - particles[i].getBallSize()) {
+                        particles[i].moveX = particles[i].moveX * -1;
                     }
-                    if (balls[i].y <= balls[i].yLowerBound
-                            || balls[i].y >= balls[i].yUpperBound
-                                    - balls[i].getBallSize())
-                        balls[i].moveY = balls[i].moveY * -1;
+                    if (particles[i].y <= particles[i].yLowerBound
+                            || particles[i].y >= particles[i].yUpperBound
+                                    - particles[i].getBallSize())
+                        particles[i].moveY = particles[i].moveY * -1;
                 }
                 break;
 
             case 1:
                 if (gates[0].isOpen()
-                        && (balls[i].x >= gates[0].getOpeningsX() && balls[i].x <= (gates[0].getOpeningsX() + gateBuffer))
-                        && (balls[i].y >= reservoirHeight - gateBuffer && balls[i].y <= reservoirHeight)) 
+                        && (particles[i].x >= gates[0].getOpeningsX() && particles[i].x <= (gates[0].getOpeningsX() + gateBuffer))
+                        && (particles[i].y >= reservoirHeight - gateBuffer && particles[i].y <= reservoirHeight)) 
                 {
                     if (restrictedVisibility && sortedClients.get(0).isImmediateNeighbor(thisClientData) || ! restrictedVisibility) 
                     {
                         // if we are in the restricted visibility condition AND gate 0 is an immediate neighbor of this client OR we are not in a restricted visibility condition at all, put this ball in the
                         // gate (or at least I *think* this is what Sanket's god-awful code is doing).  
-                        balls[i].setPosition(7);
+                        particles[i].setPosition(7);
                         // directly pass in the information
                         setBounds(i);
                         break;
@@ -300,190 +296,189 @@ public class CanalPanel extends JPanel {
                 }
                 // otherwise the gate is closed or we don't know enough about the gate, pass it on down
                 setBounds(i);
-                if (balls[i].getX() > balls[i].xUpperBound) {
-                    balls[i].setPosition(2);
+                if (particles[i].getX() > particles[i].xUpperBound) {
+                    particles[i].setPosition(2);
                 }
-                if (balls[i].getY() >= balls[i].yUpperBound
-                        - balls[i].getBallSize()
-                        || balls[i].getY() <= balls[i].yLowerBound) {
-                    balls[i].moveY = balls[i].moveY * -1;
+                if (particles[i].getY() >= particles[i].yUpperBound
+                        - particles[i].getBallSize()
+                        || particles[i].getY() <= particles[i].yLowerBound) {
+                    particles[i].moveY = particles[i].moveY * -1;
                 }
                 break;
 
             case 2:
                 if (gates[1].isOpen()
-                        && (balls[i].x >= gates[1].getOpeningsX() && balls[i].x <= (gates[1]
+                        && (particles[i].x >= gates[1].getOpeningsX() && particles[i].x <= (gates[1]
                                 .getOpeningsX() + gateBuffer))
-                        && (balls[i].y >= reservoirHeight - gateBuffer && balls[i].y <= reservoirHeight)) 
+                        && (particles[i].y >= reservoirHeight - gateBuffer && particles[i].y <= reservoirHeight)) 
                 {
                     if (!restrictedVisibility || (restrictedVisibility && sortedClients.get(1).isImmediateNeighbor(thisClientData))) {
-                        balls[i].setPosition(8);
+                        particles[i].setPosition(8);
                         // directly pass in the information
                         setBounds(i);
                         break;
                     }
                 } 
                 setBounds(i);
-                if (balls[i].getX() > balls[i].xUpperBound) {
-                    balls[i].setPosition(3);
+                if (particles[i].getX() > particles[i].xUpperBound) {
+                    particles[i].setPosition(3);
                 }
-                if (balls[i].getY() >= balls[i].yUpperBound
-                        - balls[i].getBallSize()
-                        || balls[i].getY() <= balls[i].yLowerBound) {
-                    balls[i].moveY = balls[i].moveY * -1;
+                if (particles[i].getY() >= particles[i].yUpperBound
+                        - particles[i].getBallSize()
+                        || particles[i].getY() <= particles[i].yLowerBound) {
+                    particles[i].moveY = particles[i].moveY * -1;
                 }
                 break;
             case 3:
                 if (gates[2].isOpen()
-                        && (balls[i].x >= gates[2].getOpeningsX() && balls[i].x <= (gates[2]
+                        && (particles[i].x >= gates[2].getOpeningsX() && particles[i].x <= (gates[2]
                                 .getOpeningsX() + gateBuffer))
-                        && (balls[i].y >= reservoirHeight - gateBuffer && balls[i].y <= reservoirHeight))
+                        && (particles[i].y >= reservoirHeight - gateBuffer && particles[i].y <= reservoirHeight))
                 {
                     if (!restrictedVisibility || (restrictedVisibility && sortedClients.get(2).isImmediateNeighbor(thisClientData))) {
-                        balls[i].setPosition(9);
+                        particles[i].setPosition(9);
                         // directly pass in the information
                         setBounds(i);
                         break;
                     }
                 }
                 setBounds(i);
-                if (balls[i].getX() > balls[i].xUpperBound) {
-                    balls[i].setPosition(4);
+                if (particles[i].getX() > particles[i].xUpperBound) {
+                    particles[i].setPosition(4);
                 }
-                if (balls[i].getY() >= balls[i].yUpperBound
-                        - balls[i].getBallSize()
-                        || balls[i].getY() <= balls[i].yLowerBound) {
-                    balls[i].moveY = balls[i].moveY * -1;
+                if (particles[i].getY() >= particles[i].yUpperBound
+                        - particles[i].getBallSize()
+                        || particles[i].getY() <= particles[i].yLowerBound) {
+                    particles[i].moveY = particles[i].moveY * -1;
                 }
                 break;
             case 4:
                 if (gates[3].isOpen() 
-                        && (balls[i].x >= gates[3].getOpeningsX() && balls[i].x <= (gates[3]
+                        && (particles[i].x >= gates[3].getOpeningsX() && particles[i].x <= (gates[3]
                                 .getOpeningsX() + gateBuffer))
-                        && (balls[i].y >= reservoirHeight - gateBuffer && balls[i].y <= reservoirHeight)) 
+                        && (particles[i].y >= reservoirHeight - gateBuffer && particles[i].y <= reservoirHeight)) 
                 {
                     if (!restrictedVisibility || (restrictedVisibility && !sortedClients.get(3).isImmediateNeighbor(thisClientData))) {
-                        balls[i].setPosition(10);
+                        particles[i].setPosition(10);
                         // directly pass in the information
                         setBounds(i);
                         break;
                     }
                 } 
                 setBounds(i);
-                if (balls[i].getX() > balls[i].xUpperBound) {
-                    balls[i].setPosition(5);
+                if (particles[i].getX() > particles[i].xUpperBound) {
+                    particles[i].setPosition(5);
                 }
-                if (balls[i].getY() >= balls[i].yUpperBound
-                        - balls[i].getBallSize()
-                        || balls[i].getY() <= balls[i].yLowerBound) {
-                    balls[i].moveY = balls[i].moveY * -1;
+                if (particles[i].getY() >= particles[i].yUpperBound
+                        - particles[i].getBallSize()
+                        || particles[i].getY() <= particles[i].yLowerBound) {
+                    particles[i].moveY = particles[i].moveY * -1;
                 }
                 break;
             case 5:
                 if (gates[4].isOpen()
-                        && (balls[i].x >= gates[4].getOpeningsX() && balls[i].x <= (gates[4]
+                        && (particles[i].x >= gates[4].getOpeningsX() && particles[i].x <= (gates[4]
                                 .getOpeningsX() + gateBuffer))
-                        && (balls[i].y >= reservoirHeight - gateBuffer && balls[i].y <= reservoirHeight)) 
+                        && (particles[i].y >= reservoirHeight - gateBuffer && particles[i].y <= reservoirHeight)) 
                 {
                     if (!restrictedVisibility || (restrictedVisibility && !sortedClients.get(4).isImmediateNeighbor(thisClientData))) {
-                        balls[i].setPosition(11);
+                        particles[i].setPosition(11);
                         // directly pass in the information
                         setBounds(i);
                         break;
                     }
                 } 
                 setBounds(i);
-                if (balls[i].getX() > balls[i].xUpperBound) {
-                    balls[i].setPosition(6);
+                if (particles[i].getX() > particles[i].xUpperBound) {
+                    particles[i].setPosition(6);
                 }
-                if (balls[i].getY() >= balls[i].yUpperBound
-                        - balls[i].getBallSize()
-                        || balls[i].getY() <= balls[i].yLowerBound) {
-                    balls[i].moveY = balls[i].moveY * -1;
+                if (particles[i].getY() >= particles[i].yUpperBound
+                        - particles[i].getBallSize()
+                        || particles[i].getY() <= particles[i].yLowerBound) {
+                    particles[i].moveY = particles[i].moveY * -1;
                 }
                 break;
             case 6:
                 setBounds(i);
-                if (balls[i].getX() > balls[i].xUpperBound) {
-                    setBallInServer(i);
+                if (particles[i].getX() > particles[i].xUpperBound) {
+                    returnParticleToReservoir(i);
                 }
 
-                if (balls[i].getY() >= balls[i].yUpperBound
-                        - balls[i].getBallSize()
-                        || balls[i].getY() <= balls[i].yLowerBound) {
-                    balls[i].moveY = balls[i].moveY * -1;
+                if (particles[i].getY() >= particles[i].yUpperBound
+                        - particles[i].getBallSize()
+                        || particles[i].getY() <= particles[i].yLowerBound) {
+                    particles[i].moveY = particles[i].moveY * -1;
                 }
                 break;
         }
 
         // set balls back to the server when they complete their flow in the
         // gates
-        if ((balls[i].getPosition() == 11) || (balls[i].getPosition() == 7)
-                || (balls[i].getPosition() == 8)
-                || (balls[i].getPosition() == 9)
-                || (balls[i].getPosition() == 10)) {
-            if (balls[i].getY() >= 150) {
-                setBallInServer(i);
+        if ((particles[i].getPosition() == 11) || (particles[i].getPosition() == 7)
+                || (particles[i].getPosition() == 8)
+                || (particles[i].getPosition() == 9)
+                || (particles[i].getPosition() == 10)) {
+            if (particles[i].getY() >= 150) {
+                returnParticleToReservoir(i);
             } else {
                 setBounds(i);
             }
         }
     }
 
-    private void setBallInServer(int i) {
+    private void returnParticleToReservoir(int i) {
         generator.setSeed(i * (i + 1));
-        balls[i].setX(generator.nextInt(reservoirWidth));
-        balls[i].setY(generator.nextInt(reservoirHeight));
-        balls[i].setPosition(0);
-        if (balls[i].moveX == 0)
-            balls[i].moveX = generator.nextInt(15);
+        particles[i].setX(generator.nextInt(reservoirWidth));
+        particles[i].setY(generator.nextInt(reservoirHeight));
+        particles[i].setPosition(0);
+        if (particles[i].moveX == 0)
+            particles[i].moveX = generator.nextInt(15);
         setBounds(i);
     }
 
-    private void setBounds(int ballIndex) {
-        // TODO Auto-generated method stub
+    private void setBounds(int index) {
         // ball is in the server
-        if (balls[ballIndex].getPosition() == 0) {
-            balls[ballIndex].xUpperBound = reservoirWidth;
-            balls[ballIndex].xLowerBound = 0;
-            balls[ballIndex].yUpperBound = reservoirHeight;
-            balls[ballIndex].yLowerBound = 0;
+        if (particles[index].getPosition() == 0) {
+            particles[index].xUpperBound = reservoirWidth;
+            particles[index].xLowerBound = 0;
+            particles[index].yUpperBound = reservoirHeight;
+            particles[index].yLowerBound = 0;
             // balls[ballIndex].moveX = generator.nextInt(6);
             // balls[ballIndex].moveY = generator.nextInt(6);
             // balls[ballIndex].moveX = 3;
             // balls[ballIndex].moveY = 3;
         } else {
-            if ((balls[ballIndex].getPosition() == 1)
-                    || (balls[ballIndex].getPosition() == 2)
-                    || (balls[ballIndex].getPosition() == 3)
-                    || (balls[ballIndex].getPosition() == 4)
-                    || (balls[ballIndex].getPosition() == 5)
-                    || (balls[ballIndex].getPosition() == 6)) {
+            if ((particles[index].getPosition() == 1)
+                    || (particles[index].getPosition() == 2)
+                    || (particles[index].getPosition() == 3)
+                    || (particles[index].getPosition() == 4)
+                    || (particles[index].getPosition() == 5)
+                    || (particles[index].getPosition() == 6)) {
 
-                balls[ballIndex].xUpperBound = gates[balls[ballIndex].getPosition() - 1].getX()
-                        + gates[balls[ballIndex].getPosition() - 1].getWidth();
-                balls[ballIndex].xLowerBound = gates[balls[ballIndex].getPosition() - 1].getX();
-                balls[ballIndex].yUpperBound = gates[balls[ballIndex].getPosition() - 1].getY()
+                particles[index].xUpperBound = gates[particles[index].getPosition() - 1].getX()
+                        + gates[particles[index].getPosition() - 1].getWidth();
+                particles[index].xLowerBound = gates[particles[index].getPosition() - 1].getX();
+                particles[index].yUpperBound = gates[particles[index].getPosition() - 1].getY()
                 /*
                  * +gate[balls[ballIndex].
                  * getPosition() -
                  * 1].getHeight()
                  */;
-                balls[ballIndex].yLowerBound = gates[balls[ballIndex].getPosition() - 1].getY();
+                particles[index].yLowerBound = gates[particles[index].getPosition() - 1].getY();
             }
             // the ball is in one of the openings
             else {
-                balls[ballIndex].xUpperBound = gates[balls[ballIndex]
+                particles[index].xUpperBound = gates[particles[index]
                         .getPosition() - 7].getOpeningsX()
-                        + gates[balls[ballIndex].getPosition() - 7].getGateWidth();
-                balls[ballIndex].xLowerBound = gates[balls[ballIndex].getPosition() - 7].getOpeningsX();
-                balls[ballIndex].yUpperBound = gates[balls[ballIndex].getPosition() - 7].getOpeningsY()
-                        + gates[balls[ballIndex].getPosition() - 7].getOpeningsHeight();
-                balls[ballIndex].yLowerBound = gates[balls[ballIndex].getPosition() - 7].getOpeningsY();
+                        + gates[particles[index].getPosition() - 7].getGateWidth();
+                particles[index].xLowerBound = gates[particles[index].getPosition() - 7].getOpeningsX();
+                particles[index].yUpperBound = gates[particles[index].getPosition() - 7].getOpeningsY()
+                        + gates[particles[index].getPosition() - 7].getOpeningsHeight();
+                particles[index].yLowerBound = gates[particles[index].getPosition() - 7].getOpeningsY();
                 // X change in motion
-                balls[ballIndex].moveX = 0;
+                particles[index].moveX = 0;
                 // Y change in motion
-                balls[ballIndex].moveY = 3;
+                particles[index].moveY = 3;
             }
         }
     }

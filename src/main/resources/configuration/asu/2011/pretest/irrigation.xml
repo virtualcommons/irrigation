@@ -397,11 +397,15 @@ infrastructure efficiency.
     </table>
     <h2>Earnings</h2>
     <hr>
-        <p>You are in position {clientData.priorityString} and received
+        <p>
+            You are in position {clientData.priorityString} and received
             {clientData.totalDollarsEarnedThisRound} this past round. Your 
-            <b>total income</b> is <b>{clientData.grandTotalIncome}</b>, including the
-            {showUpPayment} show-up bonus and {clientData.quizEarnings} for
-            answering {clientData.correctQuizAnswers} quiz questions correctly.</p>
+            <b>total income</b> is <b>{clientData.grandTotalIncome}</b>, including 
+            the {showUpPayment} show-up bonus 
+            {if (clientData.quizEarnings)}
+            and {clientData.quizEarnings} for answering {clientData.correctQuizAnswers} quiz questions correctly
+            {endif}
+        </p>
     {if (showExitInstructions)}
     <h2>Exit Survey</h2>
     <hr>
@@ -446,10 +450,10 @@ The amount of water available to pass through your canal is <b>{groupDataModel.a
 <tr>
 <th></th></th><th>Infrastructure Efficiency</th><th>Water Delivery Capacity</th><th>Water Availability</th>
 </tr>
-<tr>
+<tr align='center'>
 <td>Before Investment</td><td>{groupDataModel.infrastructureEfficiencyBeforeInvestment}%</td><td>{groupDataModel.irrigationCapacityBeforeInvestment} cubic feet per second</td><td>{groupDataModel.actualWaterDeliveryCapacity} cubic feet per second</td>
 </tr>
-<tr>
+<tr align='center'>
 <td>After Investment</td><td>{groupDataModel.infrastructureEfficiency}%</td><td>{groupDataModel.irrigationCapacity} cubic feet per second</td><td>{groupDataModel.actualWaterDeliveryCapacity} cubic feet per second</td>
 </tr>
 </table>
