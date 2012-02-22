@@ -32,7 +32,6 @@ import edu.asu.commons.irrigation.conf.ServerConfiguration;
 import edu.asu.commons.irrigation.events.EndRoundEvent;
 import edu.asu.commons.irrigation.events.QuizResponseEvent;
 import edu.asu.commons.irrigation.model.ClientData;
-import edu.asu.commons.irrigation.model.GroupDataModel;
 import edu.asu.commons.ui.HtmlEditorPane;
 import edu.asu.commons.ui.HtmlEditorPane.FormActionEvent;
 import edu.asu.commons.ui.UserInterfaceUtils;
@@ -515,60 +514,19 @@ public class ExperimentGameWindow extends JPanel {
     public void showTokenInvestmentScreen() {
         Runnable runnable = new Runnable() {
             public void run() {
-                GroupDataModel group = clientDataModel.getGroupDataModel();
                 RoundConfiguration roundConfiguration = clientDataModel.getRoundConfiguration();
-                int infrastructureEfficiency = 0;
-                if (roundConfiguration.isInfrastructureEfficiencyReset()) {
-                    infrastructureEfficiency = roundConfiguration.getInitialInfrastructureEfficiency();
-                }
-                else {
-                    infrastructureEfficiency = Math.max(0, group.getInfrastructureEfficiency() - roundConfiguration.getInfrastructureDegradationFactor());
-                }
+                tokenInstructionsEditorPane.setText(roundConfiguration.generateInvestmentInstructions(clientDataModel));
                 addCenterComponent(getTokenInvestmentPanel());
-                StringBuilder builder = new StringBuilder(
-                        String.format(
-                                "<h2>Current infrastructure efficiency: %d%%</h2>" 
-                        + "<h2>Current water delivery capacity: %d cubic feet per second</h2>" 
-                        + "<h2>Available water supply: %d cubic feet per second</h2>",
-                        infrastructureEfficiency,
-                        group.calculateIrrigationCapacity(infrastructureEfficiency),
-                        roundConfiguration.getWaterSupplyCapacity()
-                                ));
-                builder.append(getServerConfiguration().getInvestmentInstructions());
-                tokenInstructionsEditorPane.setText(builder.toString());
                 getInvestedTokensTextField().requestFocusInWindow();
             }
         };
         SwingUtilities.invokeLater(runnable);
     }
 
-    // FIXME: replace with StringTemplate
-    public void updateRoundInstructions(RoundConfiguration roundConfiguration) {
+    public void updateRoundInstructions() {
+        RoundConfiguration roundConfiguration = clientDataModel.getRoundConfiguration();
         if (! roundConfiguration.isFirstRound()) {
-            instructionsBuilder.append(roundConfiguration.getInstructions());
-            instructionsBuilder.append("<hr>");
-            if (roundConfiguration.isInfrastructureEfficiencyReset()) {
-                int initialInfrastructureEfficiency = roundConfiguration.getInitialInfrastructureEfficiency();
-            	instructionsBuilder.append(
-            	        String.format("The irrigation infrastructure efficiency has been reset to %d%% with a corresponding water delivery capacity of %d cfps.", 
-            	                initialInfrastructureEfficiency,
-            	                clientDataModel.getGroupDataModel().calculateIrrigationCapacity(initialInfrastructureEfficiency)));
-            	                
-            }
-            else {
-                int initialInfrastructureEfficiency = clientDataModel.getGroupDataModel().getInfrastructureEfficiency();
-                int degradationFactor = roundConfiguration.getInfrastructureDegradationFactor();
-                int actualInfrastructureEfficiency = initialInfrastructureEfficiency - degradationFactor;
-            	instructionsBuilder.append(
-            			String.format("<p>The irrigation infrastructure efficiency carried over from the previous round is %d%% but has declined by %d and is now %d%% (%d cfps) at the start of this round.  " +
-            					"The <b>available water supply is %d cfps</b>.</p><br><hr>",
-            					initialInfrastructureEfficiency,
-            					degradationFactor,
-            					actualInfrastructureEfficiency,
-            					clientDataModel.getGroupDataModel().calculateIrrigationCapacity(actualInfrastructureEfficiency),
-            					roundConfiguration.getWaterSupplyCapacity()
-            					));
-            }
+            instructionsBuilder.append(roundConfiguration.generateUpdatedInstructions(clientDataModel));
             displayInstructions(instructionsBuilder.toString());
         }
     }

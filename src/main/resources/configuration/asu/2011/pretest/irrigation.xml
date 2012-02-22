@@ -316,6 +316,13 @@ a progress bar above the text field at the bottom of the screen.
 
 <entry key="investment-instructions">
 <![CDATA[
+<h1>Current infrastructure condition</h1>
+    <hr>
+    <h2>Current infrastructure efficiency: {actualInfrastructureEfficiency}%</h2>
+    <h2>Current water delivery capacity: {waterDeliveryCapacity} cubic feet per second</h2> 
+    <h2>Available water supply: {self.waterSupplyCapacity} cubic feet per second</h2>    
+<h1>Investment Instructions</h1>
+<hr>
 <p>
 You have been endowed with {self.tokenEndowment} tokens to invest. You must make a decision about
 how much you wish to invest in the irrigation infrastructure by choosing a number
@@ -464,11 +471,19 @@ The amount of water available to pass through your canal is <b>{groupDataModel.a
 <h2>Special Instructions</h2>
 <hr>
 {if (self.restrictedVisibility)}
-<p>You can only communicate with and observe the actions of your immediate neighbors.</p>
+<p>You can only <b>communicate with and observe the actions</b> of your <b>immediate neighbors</b>.</p>
 {endif}
+<p>
 {if (self.infrastructureEfficiencyReset)}
-<p>The irrigation infrastructure efficiency has been <b>reset to {self.initialInfrastructureEfficiency}%</b>.</p>
+The irrigation infrastructure efficiency has been <b>reset to {initialInfrastructureEfficiency}%</b> with a corresponding <b>water delivery capacity of {waterDeliveryCapacity} cubic feet per second</b>.
+{else}
+The irrigation infrastructure efficiency carried over from the previous round is
+{initialInfrastructureEfficiency}% but has declined by
+{self.infrastructureDegradationFactor} and is now <b>{actualInfrastructureEfficiency}%</b>
+with a corresponding <b>water delivery capacity of {waterDeliveryCapacity} cubic feet per second</b>.
 {endif}
+</p>
+<p>The <b>available water supply is {self.waterSupplyCapacity} cubic feet per second</b>.</p>
 ]]>
 </entry>
 <entry key="restricted-visibility-instructions">

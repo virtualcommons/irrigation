@@ -21,6 +21,7 @@ import edu.asu.commons.util.Duration;
 public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerConfiguration> {
 
     private static final long serialVersionUID = -5053624886508752562L;
+    private String specialInstructions;
 
     public RoundConfiguration(String resource) {
         super(resource);
@@ -109,9 +110,14 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
         template.add("dollarsPerToken", toCurrencyString(getDollarsPerToken()));
         return template.render();
     }
-    
+
+    /**
+     * FIXME: convoluted flow of control; specialInstructions is set by generateUpdatedInstructions before invoking getInstructions().  This means
+     * that showInstructions will never 
+     * @return
+     */
     public String getSpecialInstructions() {
-        return render(getProperty("special-instructions"));
+        return specialInstructions;
     }
 
     public boolean shouldDisplayGroupTokens() {
@@ -205,6 +211,33 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
     
     public String getRestrictedVisibilityInstructions() {
         return render(getProperty("restricted-visibility-instructions"));
+    }
+
+    public String generateUpdatedInstructions(ClientDataModel clientDataModel) {
+        ST specialInstructionsTemplate = createStringTemplate(getProperty("special-instructions"));
+        populateInfrastructureEfficiencyAttributes(clientDataModel, specialInstructionsTemplate);
+        this.specialInstructions = specialInstructionsTemplate.render();
+        return getInstructions();
+    }
+    
+    private void populateInfrastructureEfficiencyAttributes(ClientDataModel clientDataModel, ST template) {
+        int initialInfrastructureEfficiency = clientDataModel.getGroupDataModel().getInfrastructureEfficiency();
+        int actualInfrastructureEfficiency = initialInfrastructureEfficiency - getInfrastructureDegradationFactor();
+        if (isInfrastructureEfficiencyReset()) {
+            // reset everything
+            initialInfrastructureEfficiency = actualInfrastructureEfficiency = getInitialInfrastructureEfficiency();
+        }
+        int waterDeliveryCapacity = clientDataModel.getGroupDataModel().calculateIrrigationCapacity(actualInfrastructureEfficiency);
+        template.add("initialInfrastructureEfficiency", initialInfrastructureEfficiency);
+        template.add("actualInfrastructureEfficiency", actualInfrastructureEfficiency);
+        template.add("waterDeliveryCapacity", waterDeliveryCapacity);
+        
+    }
+
+    public String generateInvestmentInstructions(ClientDataModel clientDataModel) {
+        ST template = createStringTemplate(getProperty("investment-instructions"));
+        populateInfrastructureEfficiencyAttributes(clientDataModel, template);
+        return template.render();
     }
 
 }

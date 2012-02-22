@@ -188,7 +188,7 @@ public class ServerConfiguration extends ExperimentConfiguration.Base<RoundConfi
     }
     
     public int getChatDuration() {
-        return getIntProperty("chat-duration", 5);
+        return getIntProperty("chat-duration", 60);
     }
 
     public String getGameScreenshotInstructions() {

@@ -160,7 +160,7 @@ public class IrrigationClient {
                 clientDataModel.setRoundConfiguration(configuration);
                 // FIXME: will need to replace this with an explicit ShowInstructionsRequest if we end up needing
                 // explicit last-round show exit instructions behavior
-                experimentGameWindow.updateRoundInstructions(configuration);
+                experimentGameWindow.updateRoundInstructions();
             }
         });
         channel.add(this, new EventTypeProcessor<InfrastructureUpdateEvent>(InfrastructureUpdateEvent.class) {
