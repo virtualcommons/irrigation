@@ -2,7 +2,6 @@ package edu.asu.commons.irrigation.client;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -114,12 +113,7 @@ public class ClientDataModel implements DataModel<ServerConfiguration, RoundConf
     public List<ClientData> getClientDataSortedByPriority() {
         Map<Identifier, ClientData> clientDataMap = getClientDataMap();
         ArrayList<ClientData> clientDataList = new ArrayList<ClientData>(clientDataMap.values());
-        // sort by priority
-        Collections.sort(clientDataList, new Comparator<ClientData>() {
-            public int compare(ClientData a, ClientData b) {
-                return Integer.valueOf(a.getPriority()).compareTo(b.getPriority());
-            }
-        });
+        Collections.sort(clientDataList);
         return clientDataList;
     }
 
