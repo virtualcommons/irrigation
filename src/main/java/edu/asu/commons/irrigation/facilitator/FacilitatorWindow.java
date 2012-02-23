@@ -1,6 +1,7 @@
 package edu.asu.commons.irrigation.facilitator;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
@@ -9,9 +10,12 @@ import java.util.TreeSet;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
+import javax.swing.text.BadLocationException;
 
 import edu.asu.commons.event.ShowInstructionsRequest;
 import edu.asu.commons.irrigation.events.BeginChatRoundRequest;
@@ -43,8 +47,9 @@ public class FacilitatorWindow extends JPanel {
 
     private JButton beginChatButton;
 
-    private HtmlEditorPane editorPane;
-    private JScrollPane scrollPane;
+    private HtmlEditorPane informationEditorPane;
+    private HtmlEditorPane messageEditorPane;
+    private JScrollPane informationScrollPane;
 
     private JButton showInstructionsButton;
     
@@ -78,12 +83,36 @@ public class FacilitatorWindow extends JPanel {
         buttonPanel.add(getShowQuizButton());
         buttonPanel.add(getStartRoundOverrideButton());
         add(buttonPanel, BorderLayout.NORTH);
-        editorPane = UserInterfaceUtils.createInstructionsEditorPane();
-        scrollPane = new JScrollPane(editorPane);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        add(scrollPane, BorderLayout.CENTER);
+        informationEditorPane = UserInterfaceUtils.createInstructionsEditorPane();
+        informationScrollPane = new JScrollPane(informationEditorPane);
+        informationScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        informationScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        
+        JPanel messagePanel = new JPanel(new BorderLayout());
+        JLabel messagePanelLabel = new JLabel("System messages");
+        messagePanelLabel.setFont(UserInterfaceUtils.DEFAULT_PLAIN_FONT);
+        messagePanel.add(messagePanelLabel, BorderLayout.NORTH);
+        Dimension minimumSize = new Dimension(600, 50);
+        messagePanel.setMinimumSize(minimumSize);
+        informationScrollPane.setMinimumSize(minimumSize);
+        messageEditorPane = UserInterfaceUtils.createInstructionsEditorPane();
+        JScrollPane messageScrollPane = new JScrollPane(messageEditorPane);
+        messagePanel.add(messageScrollPane, BorderLayout.CENTER);
+        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, informationScrollPane, messagePanel);
+        add(splitPane, BorderLayout.CENTER);
+        double proportion = 0.7d;
+        splitPane.setDividerLocation(proportion);
+        splitPane.setResizeWeight(proportion);
     }
+    
+    public void addMessage(String message) {
+        try {
+            messageEditorPane.getDocument().insertString(0, "-----\n" + message + "\n", null);
+        } catch (BadLocationException exception) {
+            exception.printStackTrace();
+        }
+    }
+
 
     private JButton getShowInstructionsButton() {
         if (showInstructionsButton == null) {
@@ -174,16 +203,16 @@ public class FacilitatorWindow extends JPanel {
     public void setText(final String text) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                editorPane.setText(text);
-                scrollPane.revalidate();
+                informationEditorPane.setText(text);
+                informationScrollPane.revalidate();
             }
         });
     }
 
     /**
-     * This method initializes Stop_Round_Button1	
+     * FIXME: replace with StringTemplate
      * 	
-     * @return javax.swing.JButton	
+     * @return 
      */
     public void endRound(FacilitatorEndRoundEvent event) {
         builder = new StringBuilder();
@@ -207,10 +236,9 @@ public class FacilitatorWindow extends JPanel {
                     clientId.toString(), 
                     data.getAllTokensEarnedThisRound(), 
                     data.getAllTokensEarnedThisRound() * model.getRoundConfiguration().getDollarsPerToken(),
-                    data.getTotalTokens() * model.getRoundConfiguration().getDollarsPerToken()+ facilitator.getConfiguration().getShowUpPayment()));
+                    data.getTotalTokens() * model.getRoundConfiguration().getDollarsPerToken()+ facilitator.getServerConfiguration().getShowUpPayment()));
         }
         builder.append("</tbody></table><hr>");
-        //FIXME: Could not understand how to evaluate .isLastRound(), hence using the 
         if (event.isLastRound()) {
             builder.append("<h2><font color='blue'>The experiment is over.  Please prepare payments.</font></h2>");
         }
