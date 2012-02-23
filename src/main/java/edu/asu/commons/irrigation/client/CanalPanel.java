@@ -49,7 +49,7 @@ public class CanalPanel extends JPanel {
 
     private int reservoirWidth = 100;
 
-    private double canalHeightMultiplier = 0.8;
+    private double canalHeightMultiplier = 1.2d;
 
     private int gateBuffer = 20;
 
@@ -102,13 +102,13 @@ public class CanalPanel extends JPanel {
         // draws the canal leading up to the gates
         for (int i = 0; i < NUMBER_OF_GATES - 1; i++) {
             ClientData clientData = sortedClientDataList.get(i);
-            if (clientDataModel.getClientData().isImmediateNeighbor(clientData)) {
-                graphics2D.setColor(Color.BLUE);
+            if (clientDataModel.getClientData().isDownstreamAndOutOfRange(clientData)) {
+                graphics2D.setColor(Color.WHITE);
                 graphics2D.fillRect(gates[i].getX(), gates[i].getY(),
                         gates[i].getWidth(), gates[i].getHeight());
             }
             else {
-                graphics2D.setColor(Color.GRAY);
+                graphics2D.setColor(Color.BLUE);
                 graphics2D.fillRect(gates[i].getX(), gates[i].getY(),
                         gates[i].getWidth(), gates[i].getHeight());
             }
@@ -126,9 +126,11 @@ public class CanalPanel extends JPanel {
             }
         }
 
-        graphics2D.setColor(Color.BLUE);
-        graphics2D.fillRect(gates[5].getX(), gates[5].getY(), 10,
-                gates[5].getHeight());
+        // FIXME: hard coded check for last downstream participant
+        if (clientDataModel.getClientData().getPriority() == 4) {
+            graphics2D.setColor(Color.BLUE);
+            graphics2D.fillRect(gates[5].getX(), gates[5].getY(), 10, gates[5].getHeight());
+        }
 
         // particle system animation logic for the balls
         graphics.setColor(Color.WHITE);
