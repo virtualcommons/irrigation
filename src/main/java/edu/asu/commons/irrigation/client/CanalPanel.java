@@ -98,21 +98,32 @@ public class CanalPanel extends JPanel {
         Graphics2D graphics2D = (Graphics2D) graphics;
         graphics2D.setColor(Color.BLUE);
         graphics2D.fillRect(0, 0, reservoirHeight, reservoirWidth);
-        // draw gates
+
+        // draws the canal leading up to the gates
         for (int i = 0; i < NUMBER_OF_GATES - 1; i++) {
-            graphics2D.setColor(Color.BLUE);
-            graphics2D.fillRect(gates[i].getX(), gates[i].getY(),
-                    gates[i].getWidth(), gates[i].getHeight());
+            ClientData clientData = sortedClientDataList.get(i);
+            if (clientDataModel.getClientData().isImmediateNeighbor(clientData)) {
+                graphics2D.setColor(Color.BLUE);
+                graphics2D.fillRect(gates[i].getX(), gates[i].getY(),
+                        gates[i].getWidth(), gates[i].getHeight());
+            }
+            else {
+                graphics2D.setColor(Color.GRAY);
+                graphics2D.fillRect(gates[i].getX(), gates[i].getY(),
+                        gates[i].getWidth(), gates[i].getHeight());
+            }
         }
         for (ClientData clientData : sortedClientDataList) {
             int priority = clientData.getPriority();
             Gate gate = gates[priority];
-            graphics2D.setColor(Color.BLUE);
-            graphics2D.fillRect(gate.getOpeningsX(), gate.getOpeningsY(),
-                    gate.getOpeningsWidth(), gate.getOpeningsHeight());
-            graphics2D.setColor(Gate.DEFAULT_COLOR);
-            graphics2D.drawLine(gate.getx1(), gate.gety1(), gate.getx2(),
-                    gate.gety2());
+            if (clientDataModel.getClientData().isImmediateNeighbor(clientData)) {
+                graphics2D.setColor(Color.BLUE);
+                graphics2D.fillRect(gate.getOpeningsX(), gate.getOpeningsY(),
+                        gate.getOpeningsWidth(), gate.getOpeningsHeight());
+                graphics2D.setColor(Gate.DEFAULT_COLOR);
+                graphics2D.drawLine(gate.getx1(), gate.gety1(), gate.getx2(),
+                        gate.gety2());
+            }
         }
 
         graphics2D.setColor(Color.BLUE);

@@ -9,7 +9,7 @@ import java.awt.Color;
  */
 public class Gate {
     
-    public final static Color DEFAULT_COLOR = Color.black;
+    public final static Color DEFAULT_COLOR = Color.WHITE;
 
 	private boolean open = false;
 	
