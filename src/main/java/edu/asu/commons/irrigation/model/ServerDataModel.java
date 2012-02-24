@@ -79,6 +79,16 @@ public class ServerDataModel implements DataModel<ServerConfiguration, RoundConf
         GroupDataModel group = clientsToGroups.get(clientId);
         return group.getClientDataMap();
     }
+    
+    public Map<Identifier, ClientData> getClientDataMap() {
+        Map<Identifier, ClientData> clientDataMap = new HashMap<Identifier, ClientData>();
+        for (Map.Entry<Identifier, GroupDataModel> entry : clientsToGroups.entrySet()) {
+            Identifier id = entry.getKey();
+            GroupDataModel group = entry.getValue();
+            clientDataMap.put(id, group.getClientData(id));
+        }
+        return clientDataMap;
+    }
 
     public void clear() {
         for (Iterator<GroupDataModel> iter = clientsToGroups.values().iterator(); iter.hasNext(); ) {
@@ -113,5 +123,9 @@ public class ServerDataModel implements DataModel<ServerConfiguration, RoundConf
     @Override
     public ServerConfiguration getExperimentConfiguration() {
         return roundConfiguration.getParentConfiguration();
+    }
+
+    public String generateFacilitatorDebriefing() {
+        return roundConfiguration.generateFacilitatorDebriefing(this);
     }
 }

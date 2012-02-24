@@ -4,9 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeSet;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -22,10 +19,7 @@ import edu.asu.commons.irrigation.events.BeginChatRoundRequest;
 import edu.asu.commons.irrigation.events.FacilitatorEndRoundEvent;
 import edu.asu.commons.irrigation.events.ShowGameScreenshotRequest;
 import edu.asu.commons.irrigation.events.ShowQuizRequest;
-import edu.asu.commons.irrigation.model.ClientData;
-import edu.asu.commons.irrigation.model.GroupDataModel;
 import edu.asu.commons.irrigation.model.ServerDataModel;
-import edu.asu.commons.net.Identifier;
 import edu.asu.commons.ui.HtmlEditorPane;
 import edu.asu.commons.ui.UserInterfaceUtils;
 
@@ -215,33 +209,9 @@ public class FacilitatorWindow extends JPanel {
      * @return 
      */
     public void endRound(FacilitatorEndRoundEvent event) {
-        builder = new StringBuilder();
         ServerDataModel model = event.getServerDataModel();
-        builder.append("<h3>Facilitator Debriefing:</h3>");
-        builder.append("<table><thead><th>Participant</th><th>Current tokens</th><th>Current Income</th><th>Total Income</th></thead><tbody>");
-        Map<Identifier, ClientData> clientDataMap = new HashMap<Identifier, ClientData>();
-        for (GroupDataModel group: model.getAllGroupDataModels()) {
-            clientDataMap.putAll(group.getClientDataMap());
-        }
-        TreeSet<Identifier> orderedSet = new TreeSet<Identifier>(clientDataMap.keySet());
-        for (Identifier clientId : orderedSet) {
-            ClientData data = clientDataMap.get(clientId);
-            // FIXME: hack... inject the configuration into the client data so that getIncome() will return something appropriate.
-            // should just refactor getIncome or remove it from ClientData entirely.
-            builder.append(String.format(
-                    "<tr><td>%s</td>" +
-                    "<td align='center'>%d</td>" +
-                    "<td align='center'>$%3.2f</td>" +
-                    "<td align='center'>$%3.2f</td></tr>",
-                    clientId.toString(), 
-                    data.getAllTokensEarnedThisRound(), 
-                    data.getAllTokensEarnedThisRound() * model.getRoundConfiguration().getDollarsPerToken(),
-                    data.getTotalTokens() * model.getRoundConfiguration().getDollarsPerToken()+ facilitator.getServerConfiguration().getShowUpPayment()));
-        }
-        builder.append("</tbody></table><hr>");
-        if (event.isLastRound()) {
-            builder.append("<h2><font color='blue'>The experiment is over.  Please prepare payments.</font></h2>");
-        }
+        builder = new StringBuilder(model.generateFacilitatorDebriefing());
+ 
         setText(builder.toString());
     }
     

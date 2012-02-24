@@ -408,11 +408,12 @@ infrastructure efficiency.
             You are in position {clientData.priorityString} and received
             {clientData.totalDollarsEarnedThisRound} this past round. Your 
             <b>total income</b> is <b>{clientData.grandTotalIncome}</b>, including 
-            the {showUpPayment} show-up bonus 
-            {if (clientData.quizEarnings)}
-            and {clientData.quizEarnings} for answering {clientData.correctQuizAnswers} quiz questions correctly
-            {endif}
+            the {showUpPayment} show-up bonus and {clientData.quizEarnings} for 
+            answering {clientData.correctQuizAnswers} quiz questions correctly.
         </p>
+    {if (self.practiceRound)}  
+    <p><b>NOTE: this was a practice round and did not contribute to your earnings.</b></p> 
+    {endif}
     {if (showExitInstructions)}
     <h2>Exit Survey</h2>
     <hr>
@@ -488,5 +489,20 @@ with a corresponding <b>water delivery capacity of {waterDeliveryCapacity} cubic
 </entry>
 <entry key="restricted-visibility-instructions">
 <![CDATA[{if (self.restrictedVisibility)}<b>NOTE:</b> In this experiment you can <b>only communicate with and observe the actions of your immediate neighbors</b>.{endif}]]>
+</entry>
+<entry key="facilitator-debriefing">
+<![CDATA[
+<h3>Round {self.roundNumber} results</h3>
+<hr>
+<table border=1 cellspacing=3 cellpadding=3>
+<tr><th>Participant</th><th>Current tokens</th><th>Current income</th><th>Quiz earnings</th><th>Total income</th></tr>
+{clientDataList: {data | 
+<tr align="RIGHT"><td>{data.id}</td><td>{data.allTokensEarnedThisRound}</td><td>{data.totalDollarsEarnedThisRound}</td><td>{data.quizEarnings}</td><td>{data.grandTotalIncome}</td></tr>
+}}
+</table>
+{if (self.lastRound)}
+<h2><font color='blue'>The experiment is over.  Please prepare payments.</font></h2>
+{endif}       
+]]>
 </entry>
 </properties>
