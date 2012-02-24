@@ -1,7 +1,5 @@
 package edu.asu.commons.irrigation.facilitator;
 
-import java.awt.Dimension;
-
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
@@ -9,12 +7,14 @@ import edu.asu.commons.event.BeginExperimentRequest;
 import edu.asu.commons.event.BeginRoundRequest;
 import edu.asu.commons.event.EndRoundRequest;
 import edu.asu.commons.event.EventTypeProcessor;
+import edu.asu.commons.event.FacilitatorMessageEvent;
 import edu.asu.commons.facilitator.BaseFacilitator;
 import edu.asu.commons.irrigation.conf.RoundConfiguration;
 import edu.asu.commons.irrigation.conf.ServerConfiguration;
 import edu.asu.commons.irrigation.events.FacilitatorEndRoundEvent;
 import edu.asu.commons.irrigation.events.RegistrationEvent;
 import edu.asu.commons.irrigation.model.ServerDataModel;
+import edu.asu.commons.ui.UserInterfaceUtils;
 
 /**
  * $Id$
@@ -38,14 +38,22 @@ public class Facilitator extends BaseFacilitator<ServerConfiguration, RoundConfi
     
     private void initializeEventProcessors() {
        addEventProcessor(new EventTypeProcessor<RegistrationEvent>(RegistrationEvent.class) {
+           @Override
             public void handle(RegistrationEvent registrationEvent) {
                 facilitatorWindow.addInstructions(registrationEvent.getRoundConfiguration().getInstructions());
             }
         });
         addEventProcessor(new EventTypeProcessor<FacilitatorEndRoundEvent>(FacilitatorEndRoundEvent.class) {
+            @Override
             public void handle(FacilitatorEndRoundEvent event) {
                 facilitatorWindow.endRound(event);
                 getServerConfiguration().nextRound();
+            }
+        });
+        addEventProcessor(new EventTypeProcessor<FacilitatorMessageEvent>(FacilitatorMessageEvent.class) {
+            @Override
+            public void handle(FacilitatorMessageEvent event) {
+                facilitatorWindow.addMessage(event.toString());
             }
         });
     }
@@ -59,18 +67,13 @@ public class Facilitator extends BaseFacilitator<ServerConfiguration, RoundConfi
     public static void main(String[] args) {
         Runnable createGuiRunnable = new Runnable() {
             public void run() {
-                Dimension dimension = new Dimension(800, 600);
                 Facilitator facilitator = new Facilitator();
                 facilitator.initialize();
                 facilitator.connect();
                 JFrame frame = new JFrame();
                 frame.setTitle("Facilitator window: " + facilitator.getId());
-                frame.setPreferredSize(dimension);
-
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frame.getContentPane().add(facilitator.getFacilitatorWindow());
-                frame.pack();
-                frame.setVisible(true);
+                frame.add(facilitator.getFacilitatorWindow());
+                UserInterfaceUtils.maximize(frame);
             }
         };
         SwingUtilities.invokeLater(createGuiRunnable);

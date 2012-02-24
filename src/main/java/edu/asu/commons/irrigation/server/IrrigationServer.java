@@ -112,15 +112,22 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
             @Override
             public void handle(BeginRoundRequest event) {
                 if (! event.getId().equals(getFacilitatorId())) {
-                    getLogger().warning(
-                            String.format("facilitator is [%s] but received begin round request from non-facilitator [%s]", getFacilitatorId(), event.getId()));
+                    sendFacilitatorMessage(
+                            String.format("facilitator is [%s] but received begin round request from non-facilitator [%s]", 
+                                    getFacilitatorId(), event.getId()));
                     return;
                 }
                 // ignore the request if not every group has submit their tokens.
                 if (isTokenInvestmentComplete()) {
+                    sendFacilitatorMessage("Starting round.");
                     synchronized (roundSignal) {
                         roundSignal.notifyAll();
                     }
+                }
+                else {
+                    sendFacilitatorMessage(
+                            String.format("Cannot start round, %d of %d clients have submitted token investments", 
+                                    submittedClients, clients.size()));
                 }
             }
         });
@@ -176,12 +183,9 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
             @Override
             public void handle(SocketIdentifierUpdateRequest request) {
                 SocketIdentifier socketId = request.getSocketIdentifier();
-                //getLogger().info("socket id from client: " + socketId);
-                //getLogger().info("station number from client: " + socketId.getStationNumber());
-                //getLogger().info("station number from event: " + request.getStationNumber());
                 ClientData clientData = clients.get(socketId);
                 if (clientData == null) {
-                    getLogger().warning("No client data available for socket: " + socketId);
+                    sendFacilitatorMessage("No client data available for socket: " + socketId);
                     return;
                 }
                 SocketIdentifier clientSocketId = (SocketIdentifier) clientData.getId();
@@ -191,7 +195,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
         addEventProcessor(new EventTypeProcessor<ConnectionEvent>(ConnectionEvent.class) {
             @Override
             public void handle(ConnectionEvent event) {
-                getLogger().info("incoming connection: " + event);
+                sendFacilitatorMessage("incoming connection: " + event);
                 // handle incoming connections
                 Identifier identifier = event.getId();
                 ClientData clientData = new ClientData(identifier);
@@ -205,7 +209,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
         addEventProcessor(new EventTypeProcessor<DisconnectionRequest>(DisconnectionRequest.class) {
             @Override
             public void handle(DisconnectionRequest request) {
-                getLogger().warning("irrigation server handling disconnection request: " + request);
+                sendFacilitatorMessage("irrigation server handling disconnection request: " + request);
                 Identifier disconnectedClientId = request.getId();
                 if (disconnectedClientId.equals(getFacilitatorId())) {
                     getLogger().warning("Disconnecting facilitator.");
@@ -226,7 +230,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
                 ClientData sendingClient = clients.get(source);
                 if (Identifier.ALL.equals(target)) {
                     // relay to all clients in this client's group.
-                    sendFacilitatorMessage(String.format("%s sending [ %s ] to all group participants", request.getSource(), request));
+                    sendFacilitatorMessage(String.format("%s -> ALL: [ %s ]", request.getSource(), request));
                     boolean restrictedVisibility = getRoundConfiguration().isRestrictedVisibility();
                     for (ClientData clientData: clients.get(source).getGroupDataModel().getClientDataMap().values()) {
                         Identifier targetId = clientData.getId();
@@ -234,7 +238,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
                             continue;
                         }
                         if (restrictedVisibility && ! sendingClient.isImmediateNeighbor(clientData)) {
-                            sendFacilitatorMessage(String.format("%s out of range of %s, not sending message [%s]", clientData, sendingClient, request.getMessage()));
+                            sendFacilitatorMessage(String.format("%s was out of range of %s, not sending message [%s]", clientData, sendingClient, request.getMessage()));
                             continue;
                         }
                         ChatEvent chatEvent = new ChatEvent(targetId, request.getMessage(), source, true);
@@ -242,7 +246,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
                     }
                 }
                 else {
-                    getLogger().info(String.format("%s sending [%s] to target [%s]", request.getSource(), request, request.getTarget()));
+                    sendFacilitatorMessage(String.format("%s->%s: [%s]", request.getSource(), request.getTarget(), request.toString()));
                     ChatEvent chatEvent = new ChatEvent(request.getTarget(), request.getMessage(), request.getSource());                  
                     transmit(chatEvent);
                 }
@@ -253,7 +257,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
             @Override
             public void handle(InvestedTokensEvent event) {
                 if (isTokenInvestmentComplete()) {
-                    getLogger().severe("Trying to invest more tokens but token investment is already complete:" + event);
+                    sendFacilitatorMessage("Trying to invest more tokens but token investment is already complete:" + event);
                     return;
                 }
                 clients.get(event.getId()).setInvestedTokens(event.getInvestedTokens());
@@ -262,6 +266,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
                     // everyone's submitted their tokens so we can calculate the available bandwidth and 
                     // notify each client
                     initializeInfrastructureEfficiency();
+                    sendFacilitatorMessage("Token investment is complete, ready to start the round.");
                 }
             }
         });
