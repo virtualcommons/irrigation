@@ -7,6 +7,7 @@ import org.stringtemplate.v4.ST;
 import edu.asu.commons.conf.ExperimentRoundParameters;
 import edu.asu.commons.irrigation.client.ClientDataModel;
 import edu.asu.commons.irrigation.model.ClientData;
+import edu.asu.commons.irrigation.model.ServerDataModel;
 import edu.asu.commons.util.Duration;
 
 /**
@@ -177,7 +178,7 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
     
     private void populateClientEarnings(ClientData data, ServerConfiguration serverConfiguration, NumberFormat currencyFormatter) {
         data.setGrandTotalIncome(currencyFormatter.format(serverConfiguration.getTotalIncome(data)));
-        data.setTotalDollarsEarnedThisRound(currencyFormatter.format(serverConfiguration.getTotalTokenEarnings(data)));
+        data.setTotalDollarsEarnedThisRound(currencyFormatter.format(serverConfiguration.getTokenEarningsThisRound(data)));
         data.setQuizEarnings(currencyFormatter.format(serverConfiguration.getQuizEarnings(data)));
     }
 
@@ -237,6 +238,17 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
     public String generateInvestmentInstructions(ClientDataModel clientDataModel) {
         ST template = createStringTemplate(getProperty("investment-instructions"));
         populateInfrastructureEfficiencyAttributes(clientDataModel, template);
+        return template.render();
+    }
+
+    public String generateFacilitatorDebriefing(ServerDataModel serverDataModel) {
+        ST template = createStringTemplate(getProperty("facilitator-debriefing"));
+        ServerConfiguration serverConfiguration = getParentConfiguration();
+        NumberFormat formatter = NumberFormat.getCurrencyInstance();
+        for (ClientData data: serverDataModel.getClientDataMap().values()) {
+            populateClientEarnings(data, serverConfiguration, formatter);
+        }
+        template.add("clientDataList", serverDataModel.getClientDataMap().values());
         return template.render();
     }
 

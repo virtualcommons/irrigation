@@ -61,9 +61,7 @@ public class ServerConfiguration extends ExperimentConfiguration.Base<RoundConfi
     
     private final static String[] PRIORITY_STRINGS = { "A", "B", "C", "D", "E" };
 
-
-
-    public String toPriorityString(int clientPriority) {
+    public static String toPriorityString(int clientPriority) {
         // bounds check
         if (clientPriority >= 0 && clientPriority < PRIORITY_STRINGS.length) {
             return PRIORITY_STRINGS[clientPriority];
@@ -108,6 +106,10 @@ public class ServerConfiguration extends ExperimentConfiguration.Base<RoundConfi
     
     public double getTotalTokenEarnings(ClientData data) {
         return data.getTotalTokens() * getDollarsPerToken();
+    }
+    
+    public double getTokenEarningsThisRound(ClientData data) {
+        return data.getAllTokensEarnedThisRound() * getDollarsPerToken();
     }
     
     public double getQuizEarnings(ClientData data) {
