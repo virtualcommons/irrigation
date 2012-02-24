@@ -79,16 +79,8 @@ public class ClientData implements Serializable, Comparable<ClientData> {
         return getAssignedNumber() - 1;
     }
     
-    // FIXME: logic duplicated with ServerConfiguration.toPriorityString(int priority);
-    private final static String[] PRIORITY_STRINGS = { "A", "B", "C", "D", "E" };
-
     public String getPriorityString() {
-        // bounds check
-        int priority = getPriority();
-        if (priority >= 0 && priority < PRIORITY_STRINGS.length) {
-            return PRIORITY_STRINGS[priority];
-        }
-        return "Position not found";
+        return ServerConfiguration.toPriorityString(getPriority());
     }
 
     public void openGate(){
@@ -261,6 +253,11 @@ public class ClientData implements Serializable, Comparable<ClientData> {
     @Override
     public int compareTo(ClientData o) {
         return Integer.valueOf(assignedNumber).compareTo(o.assignedNumber);
+    }
+    
+    @Override
+    public String toString() {
+        return String.format("%s Position %s", id, getPriorityString());
     }
 }
 
