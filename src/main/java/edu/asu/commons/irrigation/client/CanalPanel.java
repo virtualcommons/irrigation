@@ -49,7 +49,7 @@ public class CanalPanel extends JPanel {
 
     private int reservoirWidth = 100;
 
-    private double canalHeightMultiplier = 1.2d;
+    private double canalHeightMultiplier = 0.8d;
 
     private int gateBuffer = 20;
 
@@ -99,23 +99,21 @@ public class CanalPanel extends JPanel {
         graphics2D.setColor(Color.BLUE);
         graphics2D.fillRect(0, 0, reservoirHeight, reservoirWidth);
 
-        // draws the canal leading up to the gates
-        for (int i = 0; i < NUMBER_OF_GATES - 1; i++) {
-            ClientData clientData = sortedClientDataList.get(i);
-            if (clientDataModel.getClientData().isDownstreamAndOutOfRange(clientData)) {
-                graphics2D.setColor(Color.WHITE);
-                graphics2D.fillRect(gates[i].getX(), gates[i].getY(),
-                        gates[i].getWidth(), gates[i].getHeight());
-            }
-            else {
-                graphics2D.setColor(Color.BLUE);
-                graphics2D.fillRect(gates[i].getX(), gates[i].getY(),
-                        gates[i].getWidth(), gates[i].getHeight());
-            }
-        }
         for (ClientData clientData : sortedClientDataList) {
             int priority = clientData.getPriority();
             Gate gate = gates[priority];
+            // draw the irrigation canal
+            if (clientDataModel.getClientData().isDownstreamAndOutOfRange(clientData)) {
+                graphics2D.setColor(Color.WHITE);
+                graphics2D.fillRect(gate.getX(), gate.getY(),
+                        gate.getWidth(), gate.getHeight());
+            }
+            else {
+                graphics2D.setColor(Color.BLUE);
+                graphics2D.fillRect(gate.getX(), gate.getY(),
+                        gate.getWidth(), gate.getHeight());
+            }
+            // draw the irrigation gate inlets
             if (clientDataModel.getClientData().isImmediateNeighbor(clientData)) {
                 graphics2D.setColor(Color.BLUE);
                 graphics2D.fillRect(gate.getOpeningsX(), gate.getOpeningsY(),
