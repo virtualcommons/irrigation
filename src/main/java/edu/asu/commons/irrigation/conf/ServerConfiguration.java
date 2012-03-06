@@ -2,6 +2,7 @@ package edu.asu.commons.irrigation.conf;
 
 import java.text.NumberFormat;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -169,8 +170,8 @@ public class ServerConfiguration extends ExperimentConfiguration.Base<RoundConfi
         return getProperty("general-instructionsq" + pageNumber);
     }
 
-    public String getQuizPage(int pageNumber) {
-        return getProperty("quiz-page"+pageNumber); 
+    public String getQuizInstructions() {
+        return render(getProperty("quiz-instructions")); 
     }
     
     public String getWaterCollectedToTokensTable() {
@@ -259,6 +260,21 @@ public class ServerConfiguration extends ExperimentConfiguration.Base<RoundConfi
     	else {
     		return 0;
     	}
+    }
+
+    public String getQuizResults(List<String> incorrectQuestionNumbers, Map<Object, Object> actualAnswers) {
+        ST template = createStringTemplate(getProperty("quiz-results"));
+        // FIXME: actual answers includes the submit button, so there's an off-by-one that we need to deal with.
+        int totalQuestions = actualAnswers.size() - 1;
+        int numberCorrect = totalQuestions - incorrectQuestionNumbers.size();
+        template.add("allCorrect", incorrectQuestionNumbers.isEmpty());
+        template.add("numberCorrect", numberCorrect);
+        template.add("totalQuestions", totalQuestions);
+        template.add("totalQuizEarnings", toCurrencyString(getQuizCorrectAnswerReward() * numberCorrect));
+        for (String incorrectQuestionNumber : incorrectQuestionNumbers) {
+            template.add("incorrect_" + incorrectQuestionNumber, String.format("Your answer, %s, was incorrect.", actualAnswers.get(incorrectQuestionNumber)));
+        }
+        return template.render();
     }
 
 }
