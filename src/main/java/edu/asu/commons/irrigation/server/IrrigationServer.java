@@ -276,9 +276,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
             public void handle(QuizResponseEvent quizResponseEvent) {
                 sendFacilitatorMessage("Received quiz response: " + quizResponseEvent);
                 clients.get(quizResponseEvent.getId()).addCorrectQuizAnswers(quizResponseEvent.getNumberOfCorrectQuizAnswers());
-                if (quizResponseEvent.isComplete()) {
-                    numberOfCompletedQuizzes++;
-                }
+                numberOfCompletedQuizzes++;
                 if (numberOfCompletedQuizzes >= clients.size()) {
                     sendFacilitatorMessage("All quizzes completed: " + numberOfCompletedQuizzes);
                     numberOfCompletedQuizzes = 0;
