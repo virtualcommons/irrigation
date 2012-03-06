@@ -195,7 +195,6 @@ E?<br>
 The final two questions cover the number of tokens you can earn in within a round.
 <b>Please refer to table 2 of your handout</b>.
 </p>
-<form>
 Question 5:<br>
 If you invest 7 of the 10 tokens you start with and you apply 202 cubic feet of
 water to your fields, what is the total number of tokens you will have earned at the
@@ -210,7 +209,7 @@ the round?<br>
 <br><br>
 
 <input type="submit" name="submit" value="Submit"><br>
-<br>
+</form>
 ]]>
 </entry>
 
@@ -562,9 +561,8 @@ If you invest 7 of the 10 tokens you start with and you apply 202 cubic feet of
 water to your fields, what is the total number of tokens you will have earned at the
 end of the round?<br>
     <b>{incorrect_q5}
-        If you invest 7 out of 10 tokens, you keep 3 tokens for yourself. If you apply 202 cubic feet of water to your field you
-        will earn 4 tokens. 3 + 4 = 7 tokens 
-        <br><br>
+    If you invest 7 out of 10 tokens, you keep 3 tokens for yourself. If you apply 202 cubic feet of water to your field you will earn 4 tokens. 3 + 4 = 7 tokens</b>
+    <br><br>
 <span class='q6'>Question 6:</span><br>
 If you invest all 10 tokens you start with and you apply 555 cubic feet of water to
 your fields, what is the total number of tokens you will have earned at the end of

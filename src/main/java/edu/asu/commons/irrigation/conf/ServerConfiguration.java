@@ -157,11 +157,6 @@ public class ServerConfiguration extends ExperimentConfiguration.Base<RoundConfi
             String key = "q" + i;
             String answer = properties.getProperty(key);
             answers.put(key, answer);
-            String quizExplanationKey = "explanation" + i;
-            String quizExplanation = properties.getProperty(quizExplanationKey);
-            answers.put(quizExplanationKey, quizExplanation);
-            String descriptiveAnswerKey = "a" + i;
-            answers.put(descriptiveAnswerKey, properties.getProperty(descriptiveAnswerKey));
         }
         return answers;
     }
@@ -191,7 +186,7 @@ public class ServerConfiguration extends ExperimentConfiguration.Base<RoundConfi
     }
     
     public int getChatDuration() {
-        return getIntProperty("chat-duration", 60);
+        return getIntProperty("chat-duration", 5);
     }
 
     public String getGameScreenshotInstructions() {

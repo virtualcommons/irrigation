@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -270,18 +271,30 @@ public class ExperimentGameWindow extends JPanel {
             public synchronized void actionPerformed(ActionEvent e) {
                 FormActionEvent formEvent = (FormActionEvent) e;
                 Properties actualAnswers = formEvent.getData();
+                System.err.println("actual answers: " + actualAnswers);
                 List<String> incorrectQuestionNumbers = new ArrayList<String>();
                 List<String> correctQuestionNumbers = new ArrayList<String>();
+                List<String> missingQuestions = new ArrayList<String>();
                 for (Map.Entry<String, String> entry : quizAnswers.entrySet()) {
                     String questionNumber = entry.getKey();
                     String number = questionNumber.substring(1);
                     String correctAnswer = entry.getValue();
                     String actualAnswer = actualAnswers.getProperty(questionNumber);
-                    if (actualAnswer == null) {
-                        JOptionPane.showMessageDialog(ExperimentGameWindow.this, "Please enter a quiz answer for question " + number + ".");
-                        return;
+                    if (actualAnswer == null || actualAnswer.trim().isEmpty()) {
+                    	missingQuestions.add(number);
+                    	continue;
                     }
                     ((correctAnswer.equals(actualAnswer)) ? correctQuestionNumbers : incorrectQuestionNumbers).add(questionNumber); 
+                }
+                int numberOfMissingQuestions = missingQuestions.size();
+                if (numberOfMissingQuestions > 0) {
+                	Collections.sort(missingQuestions);
+                	JOptionPane.showMessageDialog(ExperimentGameWindow.this, "Please enter a quiz answer for questions " + missingQuestions);
+                	return;
+                }
+                else if (numberOfMissingQuestions == 1) {
+                	JOptionPane.showMessageDialog(ExperimentGameWindow.this, "Please enter a quiz answer for question " + missingQuestions.get(0));
+                	return;
                 }
                 setQuestionColors(correctQuestionNumbers, "blue");
                 setQuestionColors(incorrectQuestionNumbers, "red");
