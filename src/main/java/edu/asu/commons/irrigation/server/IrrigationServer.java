@@ -271,7 +271,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
             }
         });
         addEventProcessor(new EventTypeProcessor<QuizResponseEvent>(QuizResponseEvent.class) {
-            private int numberOfCompletedQuizzes = 0;
+            private volatile int numberOfCompletedQuizzes = 0;
             @Override
             public void handle(QuizResponseEvent quizResponseEvent) {
                 sendFacilitatorMessage("Received quiz response: " + quizResponseEvent);

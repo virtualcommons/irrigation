@@ -18,7 +18,7 @@ import edu.asu.commons.irrigation.model.ClientData;
  * @author <a href='mailto:Allen.Lee@asu.edu'>Allen Lee</a>
  * @version $Revision$
  */
-public class ServerConfiguration extends ExperimentConfiguration.Base<RoundConfiguration> {
+public class ServerConfiguration extends ExperimentConfiguration.Base<ServerConfiguration, RoundConfiguration> {
 
     private static final double DEFAULT_QUIZ_CORRECT_ANSWER_REWARD = 0.50d;
 

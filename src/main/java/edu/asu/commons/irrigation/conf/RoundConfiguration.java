@@ -19,7 +19,7 @@ import edu.asu.commons.util.Duration;
  * @author <a href='mailto:Allen.Lee@asu.edu'>Allen Lee</a>
  * @version $Rev$
  */
-public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerConfiguration> {
+public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerConfiguration, RoundConfiguration> {
 
     private static final long serialVersionUID = -5053624886508752562L;
     private String specialInstructions;
