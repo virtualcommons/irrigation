@@ -4,6 +4,7 @@
 <comment>Irrigation experiment round configuration</comment>
 
 <entry key='infrastructure-degradation-factor'>25</entry>
+<entry key='field-of-vision'>1</entry>
 
 <entry key="instructions">
 <![CDATA[
