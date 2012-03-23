@@ -93,7 +93,7 @@ public class ServerConfiguration extends ExperimentConfiguration.Base<ServerConf
     }
     
     public String getChatInstructions() {
-        return createStringTemplate(getProperty("chat-instructions")).render();
+        return render(getProperty("chat-instructions"));
     }
     
     public String getChatDurationInMinutes() {
@@ -190,11 +190,11 @@ public class ServerConfiguration extends ExperimentConfiguration.Base<ServerConf
     }
 
     public String getGameScreenshotInstructions() {
-        return getProperty("game-screenshot-instructions");
+        return render(getProperty("game-screenshot-instructions"));
     }
     
     public String getSameAsPreviousRoundInstructions() {
-        return createStringTemplate(getProperty("same-as-previous-round-instructions")).render();
+        return render(getProperty("same-as-previous-round-instructions"));
     }
 
     public String getClientDebriefingTemplate() {
