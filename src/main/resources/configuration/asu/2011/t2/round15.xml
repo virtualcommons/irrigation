@@ -4,14 +4,5 @@
 <comment>Irrigation experiment round configuration</comment>
 
 <entry key='infrastructure-degradation-factor'>80</entry>
-
-<entry key="instructions">
-<![CDATA[
-<h3>Round 14 Instructions</h3>
-<p>
-This round is the same as the previous round.
-</p>
-
-]]>
-</entry>
+<entry key='field-of-vision'>1</entry>
 </properties>
