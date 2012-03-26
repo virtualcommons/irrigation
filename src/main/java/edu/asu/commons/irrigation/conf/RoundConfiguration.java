@@ -126,7 +126,7 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
     }
 
     public boolean isQuizEnabled() {
-        return getBooleanProperty("quiz");
+        return getBooleanProperty("quiz.enabled");
     }
 
     public String getQuizPage() {
