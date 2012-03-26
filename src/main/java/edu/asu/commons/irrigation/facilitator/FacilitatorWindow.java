@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -19,7 +20,6 @@ import edu.asu.commons.irrigation.events.BeginChatRoundRequest;
 import edu.asu.commons.irrigation.events.FacilitatorEndRoundEvent;
 import edu.asu.commons.irrigation.events.ShowGameScreenshotRequest;
 import edu.asu.commons.irrigation.events.ShowQuizRequest;
-import edu.asu.commons.irrigation.model.ServerDataModel;
 import edu.asu.commons.ui.HtmlEditorPane;
 import edu.asu.commons.ui.UserInterfaceUtils;
 
@@ -27,7 +27,7 @@ import edu.asu.commons.ui.UserInterfaceUtils;
  * $Id$
  * 
  * Basic facilitator interface for driving the experiment.
- *
+ * 
  * @author <a href='mailto:Allen.Lee@asu.edu'>Allen Lee</a>
  * @version $Rev$
  */
@@ -37,7 +37,7 @@ public class FacilitatorWindow extends JPanel {
 
     private Facilitator facilitator;
 
-    private JButton startRoundButton = null;
+    private JButton startRoundButton;
 
     private JButton beginChatButton;
 
@@ -46,16 +46,19 @@ public class FacilitatorWindow extends JPanel {
     private JScrollPane informationScrollPane;
 
     private JButton showInstructionsButton;
-    
+
     private JButton showQuizButton;
-    
+
     private JButton showScreenshotButton;
-    
-//    private JButton displayInvestmentButton;
-    
+
+    // private JButton displayInvestmentButton;
+
     private StringBuilder builder = new StringBuilder();
 
-	private JButton overrideButton;
+    private JButton overrideButton;
+
+    private JButton stopRoundButton;
+
     /**
      * This is the default constructor
      */
@@ -69,19 +72,21 @@ public class FacilitatorWindow extends JPanel {
         setLayout(new BorderLayout());
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
-        buttonPanel.add(getShowInstructionsButton());
-        buttonPanel.add(getShowScreenshotButton());
-        buttonPanel.add(getBeginChatButton());
-//        buttonPanel.add(getDisplayInvestmentButton());
-        buttonPanel.add(getStartRoundButton());
-        buttonPanel.add(getShowQuizButton());
-        buttonPanel.add(getStartRoundOverrideButton());
+        addToBoxLayout(buttonPanel, getShowInstructionsButton());
+        addToBoxLayout(buttonPanel, getShowInstructionsButton());
+        addToBoxLayout(buttonPanel, getShowScreenshotButton());
+        addToBoxLayout(buttonPanel, getBeginChatButton());
+        // addToBoxLayout(buttonPanel, getDisplayInvestmentButton());
+        addToBoxLayout(buttonPanel, getStartRoundButton());
+        addToBoxLayout(buttonPanel, getShowQuizButton());
+        addToBoxLayout(buttonPanel, getStartRoundOverrideButton());
+        addToBoxLayout(buttonPanel, getStopRoundButton());
         add(buttonPanel, BorderLayout.NORTH);
         informationEditorPane = UserInterfaceUtils.createInstructionsEditorPane();
         informationScrollPane = new JScrollPane(informationEditorPane);
         informationScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         informationScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        
+
         JPanel messagePanel = new JPanel(new BorderLayout());
         JLabel messagePanelLabel = new JLabel("System messages");
         messagePanelLabel.setFont(UserInterfaceUtils.DEFAULT_PLAIN_FONT);
@@ -98,7 +103,12 @@ public class FacilitatorWindow extends JPanel {
         splitPane.setDividerLocation(proportion);
         splitPane.setResizeWeight(proportion);
     }
-    
+
+    private void addToBoxLayout(JPanel buttonPanel, JButton button) {
+        buttonPanel.add(button);
+        buttonPanel.add(Box.createHorizontalStrut(5));
+    }
+
     public void addMessage(String message) {
         try {
             messageEditorPane.getDocument().insertString(0, "-----\n" + message + "\n", null);
@@ -107,13 +117,12 @@ public class FacilitatorWindow extends JPanel {
         }
     }
 
-
     private JButton getShowInstructionsButton() {
         if (showInstructionsButton == null) {
             showInstructionsButton = new JButton("Show Instructions");
             showInstructionsButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent event) {
-//                    enableInstructionButton.setEnabled(false);
+                    // enableInstructionButton.setEnabled(false);
                     facilitator.transmit(new ShowInstructionsRequest(facilitator.getId()));
                 }
             });
@@ -122,9 +131,9 @@ public class FacilitatorWindow extends JPanel {
     }
 
     /**
-     * This method initializes Start_Facilitator_Button	
-     * 	
-     * @return javax.swing.JButton	
+     * This method initializes Start_Facilitator_Button
+     * 
+     * @return javax.swing.JButton
      */
 
     private JButton getBeginChatButton() {
@@ -132,7 +141,7 @@ public class FacilitatorWindow extends JPanel {
             beginChatButton = new JButton("Begin Chat");
             beginChatButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent event) {
-                    //At present default isChatEnabledBeforeRound() value isscreen false
+                    // At present default isChatEnabledBeforeRound() value isscreen false
                     if (facilitator.getCurrentRoundConfiguration().isChatEnabledBeforeRound()) {
                         facilitator.transmit(new BeginChatRoundRequest(facilitator.getId()));
                     }
@@ -141,36 +150,36 @@ public class FacilitatorWindow extends JPanel {
         }
         return beginChatButton;
     }
-    
+
     private JButton getStartRoundOverrideButton() {
-    	if (overrideButton == null) {
-    		overrideButton = new JButton("Override");
-    		overrideButton.addActionListener(new ActionListener() {
-    			public void actionPerformed(ActionEvent event) {
-    				facilitator.sendStartRoundOverride();
-    			}
-    		});
-    	}
-    	return overrideButton;
+        if (overrideButton == null) {
+            overrideButton = new JButton("Override");
+            overrideButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent event) {
+                    facilitator.sendStartRoundOverride();
+                }
+            });
+        }
+        return overrideButton;
     }
-    
-//    private JButton getDisplayInvestmentButton() {
-//        if (displayInvestmentButton == null) {
-//            displayInvestmentButton = new JButton("Show Investment Screen");
-//            displayInvestmentButton.addActionListener(new ActionListener() {
-//                public void actionPerformed(ActionEvent event) {
-//                    facilitator.transmit(new ShowTokenInvestmentScreenRequest(facilitator.getId()));
-//                }
-//            });
-//        }
-//        return displayInvestmentButton;
-//    }
+
+    // private JButton getDisplayInvestmentButton() {
+    // if (displayInvestmentButton == null) {
+    // displayInvestmentButton = new JButton("Show Investment Screen");
+    // displayInvestmentButton.addActionListener(new ActionListener() {
+    // public void actionPerformed(ActionEvent event) {
+    // facilitator.transmit(new ShowTokenInvestmentScreenRequest(facilitator.getId()));
+    // }
+    // });
+    // }
+    // return displayInvestmentButton;
+    // }
 
     public Facilitator getFacilitator() {
         return facilitator;
     }
 
-     private JButton getStartRoundButton() {
+    private JButton getStartRoundButton() {
         if (startRoundButton == null) {
             startRoundButton = new JButton("Start round");
             startRoundButton.addActionListener(new ActionListener() {
@@ -181,7 +190,19 @@ public class FacilitatorWindow extends JPanel {
         }
         return startRoundButton;
     }
-    
+
+    private JButton getStopRoundButton() {
+        if (stopRoundButton == null) {
+            stopRoundButton = new JButton("Stop round");
+            stopRoundButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    facilitator.sendEndRoundRequest();
+                }
+            });
+        }
+        return stopRoundButton;
+    }
+
     private JButton getShowQuizButton() {
         if (showQuizButton == null) {
             showQuizButton = new JButton("Show quiz");
@@ -193,8 +214,8 @@ public class FacilitatorWindow extends JPanel {
         }
         return showQuizButton;
     }
-    
-    public void setText(final String text) {
+
+    public void setInstructions(final String text) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 informationEditorPane.setText(text);
@@ -204,20 +225,16 @@ public class FacilitatorWindow extends JPanel {
     }
 
     /**
-     * FIXME: replace with StringTemplate
-     * 	
-     * @return 
+     * 
+     * @param event
      */
     public void endRound(FacilitatorEndRoundEvent event) {
-        ServerDataModel model = event.getServerDataModel();
-        builder = new StringBuilder(model.generateFacilitatorDebriefing());
- 
-        setText(builder.toString());
+        setInstructions(event.getServerDataModel().generateFacilitatorDebriefing());
     }
-    
+
     public void addInstructions(String instructions) {
         builder.append(instructions);
-        setText(builder.toString());
+        setInstructions(builder.toString());
     }
 
     private JButton getShowScreenshotButton() {

@@ -218,10 +218,8 @@ public class ChatPanel extends JPanel implements FocusListener {
     @Override
     public void focusGained(FocusEvent e) {
         if (e.getComponent().equals(chatField)) {
-            System.err.println("chat field got focus, not setting focus again");
             return;
         }
-        System.err.println("gained focus, setting on chat field: " + e);
         chatField.requestFocusInWindow();
     }
 

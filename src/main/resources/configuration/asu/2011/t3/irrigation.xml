@@ -424,7 +424,7 @@ infrastructure efficiency.
 </entry>
 <entry key="same-as-previous-round-instructions">
     <![CDATA[
-    <h3>Round {self.roundNumber} Instructions</h3>
+    <h2>Round {self.roundNumber} Instructions</h2>
     <hr>
     <p>Round {self.roundNumber} is the same as the previous round.</p>
     <p>{self.specialInstructions}</p>
@@ -506,6 +506,7 @@ with a corresponding <b>water delivery capacity of {waterDeliveryCapacity} cubic
             incorrectly are highlighted in red.  Please see below for more details.
             {endif}
         </p>
+        <br>
         <hr>
         <p><span class='q1'>Question 1:</span><br>
             Given an existing infrastructure efficiency of 20%, if the five participants invest

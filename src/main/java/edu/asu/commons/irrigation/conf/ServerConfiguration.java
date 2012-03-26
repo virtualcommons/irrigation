@@ -27,7 +27,7 @@ public class ServerConfiguration extends ExperimentConfiguration.Base<ServerConf
     private static final String CONFIGURATION_FILE_NAME = "irrigation.xml";
 
     private static final String DEFAULT_LOG_FILE_DESTINATION = "irrigation.log";
-    
+
     private static final double DEFAULT_DOLLARS_PER_TOKEN = 0.05d;
 
     public ServerConfiguration() {
@@ -59,7 +59,7 @@ public class ServerConfiguration extends ExperimentConfiguration.Base<ServerConf
     protected String getServerConfigurationFilename() {
         return CONFIGURATION_FILE_NAME;
     }
-    
+
     private final static String[] PRIORITY_STRINGS = { "A", "B", "C", "D", "E" };
 
     public static String toPriorityString(int clientPriority) {
@@ -70,7 +70,7 @@ public class ServerConfiguration extends ExperimentConfiguration.Base<ServerConf
         return "Position not found";
     }
 
-    public boolean isUndisruptedFlowRequired(){
+    public boolean isUndisruptedFlowRequired() {
         return getBooleanProperty("undisrupted-flow-required", false);
     }
 
@@ -83,69 +83,70 @@ public class ServerConfiguration extends ExperimentConfiguration.Base<ServerConf
     }
 
     public String getInitialInstructions() {
-    	ST template = createStringTemplate(getProperty("initial-instructions"));
-    	template.groupThatCreatedThisInstance.registerRenderer(Number.class, new NumberRenderer());
-    	NumberFormat formatter = NumberFormat.getCurrencyInstance();
-    	template.add("showUpPayment", formatter.format(getShowUpPayment()));
+        ST template = createStringTemplate(getProperty("initial-instructions"));
+        template.groupThatCreatedThisInstance.registerRenderer(Number.class, new NumberRenderer());
+        NumberFormat formatter = NumberFormat.getCurrencyInstance();
+        template.add("showUpPayment", formatter.format(getShowUpPayment()));
         template.add("dollarsPerToken", formatter.format(getDollarsPerToken()));
         template.add("quizCorrectAnswerReward", formatter.format(getQuizCorrectAnswerReward()));
-    	return template.render();
+        return template.render();
     }
-    
+
     public String getChatInstructions() {
         return render(getProperty("chat-instructions"));
     }
-    
+
     public String getChatDurationInMinutes() {
         long minutes = inMinutes(getChatDuration());
         return String.format("%d minute%s", minutes, (minutes > 1) ? "s" : "");
     }
-    
+
     public double getTotalIncome(ClientData data) {
         return getTotalTokenEarnings(data) + getShowUpPayment() + getQuizEarnings(data);
     }
-    
+
     public double getTotalTokenEarnings(ClientData data) {
         return data.getTotalTokens() * getDollarsPerToken();
     }
-    
+
     public double getTokenEarningsThisRound(ClientData data) {
         return data.getAllTokensEarnedThisRound() * getDollarsPerToken();
     }
-    
+
     public double getQuizEarnings(ClientData data) {
         return data.getCorrectQuizAnswers() * getQuizCorrectAnswerReward();
     }
-    
+
     public String getRestrictedVisibilityInstructions() {
         return render(getProperty("restricted-visibility-instructions"));
     }
-    
+
     public boolean isRestrictedVisibility() {
         return getFieldOfVision() > 0;
     }
-    
+
     /**
-     * Returns the number of neighbors visible on both sides of the participant.  A negative value signifies that
+     * Returns the number of neighbors visible on both sides of the participant. A negative value signifies that
      * participants can see everything.
+     * 
      * @return the number of neighbors visible to either side of each participant.
      */
     public int getFieldOfVision() {
         return getIntProperty("field-of-vision", -1);
     }
-    
+
     public double getQuizCorrectAnswerReward() {
         return getDoubleProperty("quiz-correct-answer-reward", DEFAULT_QUIZ_CORRECT_ANSWER_REWARD);
     }
-    
+
     public double getMaximumQuizEarnings() {
         return getQuizCorrectAnswerReward() * getNumberOfQuizQuestions();
     }
-    
+
     public String getWelcomeInstructions() {
         return getProperty("welcome-instructions");
     }
-    
+
     public int getNumberOfQuizQuestions() {
         return getIntProperty("numberOfQuizQuestions", 6);
     }
@@ -160,39 +161,43 @@ public class ServerConfiguration extends ExperimentConfiguration.Base<ServerConf
         }
         return answers;
     }
-    
+
     public String getQuizQuestion(int pageNumber) {
         return getProperty("general-instructionsq" + pageNumber);
     }
 
     public String getQuizInstructions() {
-        return render(getProperty("quiz-instructions")); 
+        return render(getProperty("quiz-instructions"));
     }
-    
+
     public String getWaterCollectedToTokensTable() {
-    	return getProperty("water-collected-to-tokens-table");
+        return getProperty("water-collected-to-tokens-table");
     }
 
     public String getFinalInstructions() {
         return getProperty("final-instructions", "<b>The experiment is now over.  Thanks for participating!</b>");
     }
-    
+
     public String getInvestmentInstructions() {
         return render(getProperty("investment-instructions"));
     }
-    
+
     public int getNumberOfQuizPages() {
         return getIntProperty("quiz-pages", 2);
     }
-    
+
     public int getChatDuration() {
         return getIntProperty("chat-duration", 60);
+    }
+
+    public int getRoundDuration() {
+        return getIntProperty("round-duration", 50);
     }
 
     public String getGameScreenshotInstructions() {
         return render(getProperty("game-screenshot-instructions"));
     }
-    
+
     public String getSameAsPreviousRoundInstructions() {
         return getProperty("same-as-previous-round-instructions");
     }
@@ -204,57 +209,57 @@ public class ServerConfiguration extends ExperimentConfiguration.Base<ServerConf
     public double getDollarsPerToken() {
         return getDoubleProperty("dollars-per-token", DEFAULT_DOLLARS_PER_TOKEN);
     }
-    
+
     public int getTokenEndowment() {
         return getIntProperty("token-endowment", 10);
     }
 
     public static int getTokensEarned(int waterCollected) {
-    	if (waterCollected < 150) {
-    		return 0;
-    	}
-    	else if (waterCollected < 200) {
-    		return 1;
-    	}
-    	else if (waterCollected < 250) {
-    		return 4;
-    	}
-    	else if (waterCollected < 300) {
-    		return 10;
-    	}
-    	else if (waterCollected < 350) {
-    		return 15;
-    	}
-    	else if (waterCollected < 400) {
-    		return 18;
-    	}
-    	else if (waterCollected < 500) {
-    		return 19;
-    	}
-    	else if (waterCollected < 550) {
-    		return 20;
-    	}
-    	else if (waterCollected < 650) {
-    		return 19;
-    	}
-    	else if (waterCollected < 700) {
-    		return 18;
-    	}
-    	else if (waterCollected < 750) {
-    		return 15;
-    	}
-    	else if (waterCollected < 800) {
-    		return 10;
-    	}
-    	else if (waterCollected < 850) {
-    		return 4;
-    	}
-    	else if (waterCollected < 900) {
-    		return 1;
-    	}
-    	else {
-    		return 0;
-    	}
+        if (waterCollected < 150) {
+            return 0;
+        }
+        else if (waterCollected < 200) {
+            return 1;
+        }
+        else if (waterCollected < 250) {
+            return 4;
+        }
+        else if (waterCollected < 300) {
+            return 10;
+        }
+        else if (waterCollected < 350) {
+            return 15;
+        }
+        else if (waterCollected < 400) {
+            return 18;
+        }
+        else if (waterCollected < 500) {
+            return 19;
+        }
+        else if (waterCollected < 550) {
+            return 20;
+        }
+        else if (waterCollected < 650) {
+            return 19;
+        }
+        else if (waterCollected < 700) {
+            return 18;
+        }
+        else if (waterCollected < 750) {
+            return 15;
+        }
+        else if (waterCollected < 800) {
+            return 10;
+        }
+        else if (waterCollected < 850) {
+            return 4;
+        }
+        else if (waterCollected < 900) {
+            return 1;
+        }
+        else {
+            return 0;
+        }
     }
 
     public String getQuizResults(List<String> incorrectQuestionNumbers, Map<Object, Object> actualAnswers) {

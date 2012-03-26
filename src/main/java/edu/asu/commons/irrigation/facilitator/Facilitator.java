@@ -19,7 +19,7 @@ import edu.asu.commons.ui.UserInterfaceUtils;
 /**
  * $Id$
  * 
- *
+ * 
  * @author <a href='mailto:Allen.Lee@asu.edu'>Allen Lee</a>, Sanket Joshi
  * @version $Rev$
  */
@@ -27,7 +27,7 @@ public class Facilitator extends BaseFacilitator<ServerConfiguration, RoundConfi
 
     private ServerDataModel serverDataModel;
     private FacilitatorWindow facilitatorWindow;
-    
+
     private Facilitator() {
         this(new ServerConfiguration());
     }
@@ -35,10 +35,10 @@ public class Facilitator extends BaseFacilitator<ServerConfiguration, RoundConfi
     public Facilitator(ServerConfiguration configuration) {
         super(configuration);
     }
-    
+
     private void initializeEventProcessors() {
-       addEventProcessor(new EventTypeProcessor<RegistrationEvent>(RegistrationEvent.class) {
-           @Override
+        addEventProcessor(new EventTypeProcessor<RegistrationEvent>(RegistrationEvent.class) {
+            @Override
             public void handle(RegistrationEvent registrationEvent) {
                 facilitatorWindow.addInstructions(registrationEvent.getRoundConfiguration().getInstructions());
             }
@@ -60,7 +60,7 @@ public class Facilitator extends BaseFacilitator<ServerConfiguration, RoundConfi
 
     void initialize() {
         facilitatorWindow = new FacilitatorWindow(this);
-        facilitatorWindow.setText(getServerConfiguration().getFacilitatorInstructions());
+        facilitatorWindow.setInstructions(getServerConfiguration().getFacilitatorInstructions());
         initializeEventProcessors();
     }
 
@@ -79,14 +79,14 @@ public class Facilitator extends BaseFacilitator<ServerConfiguration, RoundConfi
         SwingUtilities.invokeLater(createGuiRunnable);
     }
 
-    void sendStartRoundOverride(){
+    void sendStartRoundOverride() {
         transmit(new BeginExperimentRequest(getId()));
     }
 
     /*
      * Send a request to start a round
      */
-    public void sendBeginRoundRequest()	{
+    public void sendBeginRoundRequest() {
         transmit(new BeginRoundRequest(getId()));
     }
 
@@ -98,7 +98,7 @@ public class Facilitator extends BaseFacilitator<ServerConfiguration, RoundConfi
         return facilitatorWindow;
     }
 
-    public ServerDataModel getServerDataModel(){
+    public ServerDataModel getServerDataModel() {
         return serverDataModel;
     }
 
