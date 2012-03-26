@@ -428,7 +428,7 @@ infrastructure efficiency.
     <hr>
     <p>Round {self.roundNumber} is the same as the previous round.</p>
     <p>{self.specialInstructions}</p>
-    <p>The length of this round is {duration}.</p>
+    <p>The length of this round is {self.roundDurationInSeconds} seconds.</p>
     <p><b>Do you have any questions?</b> If you have any questions at this time
         please raise your hand and someone will come over to your station and
         answer it.

@@ -194,7 +194,7 @@ public class ServerConfiguration extends ExperimentConfiguration.Base<ServerConf
     }
     
     public String getSameAsPreviousRoundInstructions() {
-        return render(getProperty("same-as-previous-round-instructions"));
+        return getProperty("same-as-previous-round-instructions");
     }
 
     public String getClientDebriefingTemplate() {

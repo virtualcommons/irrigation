@@ -107,7 +107,6 @@ public class RoundConfiguration extends ExperimentRoundParameters.Base<ServerCon
         ST template = createStringTemplate(getProperty("instructions", getParentConfiguration().getSameAsPreviousRoundInstructions()));
         // FIXME: probably should just lift these out into methods on RoundConfiguration
         // and refer to them as self.durationInMinutes or self.dollarsPerTokenCurrencyString, etc.
-        template.add("duration", inMinutes(getDuration()) + " minutes");
         template.add("dollarsPerToken", toCurrencyString(getDollarsPerToken()));
         return template.render();
     }
