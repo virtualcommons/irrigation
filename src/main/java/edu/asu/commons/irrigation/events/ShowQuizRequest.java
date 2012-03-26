@@ -21,7 +21,7 @@ public class ShowQuizRequest extends AbstractEvent implements ShowRequest<ShowQu
     }
 
 	@Override
-	public ShowQuizRequest copy(Identifier id) {
+	public ShowQuizRequest clone(Identifier id) {
 		return new ShowQuizRequest(id);
 	}
     

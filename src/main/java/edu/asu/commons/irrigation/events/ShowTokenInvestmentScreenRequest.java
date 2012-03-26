@@ -13,7 +13,7 @@ public class ShowTokenInvestmentScreenRequest extends AbstractEvent implements S
     }
 
 	@Override
-	public ShowTokenInvestmentScreenRequest copy(Identifier id) {
+	public ShowTokenInvestmentScreenRequest clone(Identifier id) {
 		return new ShowTokenInvestmentScreenRequest(id);
 	}
 }

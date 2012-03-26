@@ -29,7 +29,6 @@
 
 <entry key='token-endowment'>10</entry>
 <entry key='field-of-vision'>1</entry>
-<entry key='quiz-pages'>2</entry>
 <entry key="wait-for-participants">true</entry>
 <entry key="number-of-rounds">22</entry>
 
@@ -69,7 +68,7 @@ template-language-pluggable
 <hr>
 <p>
 You have already earned {showUpPayment} dollars by showing up for this exercise. You
-can earn more, up to a maximum of about 25 dollars, by participating in this
+can earn more, up to a maximum of about 45 dollars, by participating in this
 experiment which will take about an hour to an hour and a half. The amount of money
 you earn depends on your decisions AND the decisions of other people in this room
 over the course of the experiment.
@@ -120,7 +119,7 @@ finished to receive payment.
 
 <entry key='game-screenshot-instructions'>
 <![CDATA[
-<img src="http://dev.commons.asu.edu/irrigation/images/game-interface-screenshot.jpg">
+<img src="http://dev.commons.asu.edu/irrigation/images/limited-vision-screenshot.jpg">
 ]]>
 </entry>
 
@@ -151,33 +150,33 @@ Please <b>wait quietly</b> and <b>do not close this window, open any other appli
 ]]>
 </entry>
 
-<entry key="quiz-page1">
+<entry key="quiz-instructions">
 <![CDATA[
+<h2>Quiz</h2>
+<hr>
 <p>
 The first two questions deal with irrigation infrastructure investment.  
 <b>Please refer to Table 1 of your handout</b>.
 </p>
-
 <form>
-Question 1:<br>
+<p>Question 1:<br>
 Given an existing infrastructure efficiency of 20%, if the five participants invest
 a <b>total of 29 additional tokens</b>, what is the new irrigation infrastructure
 efficiency?<br>
 <input type="text" name="q1" value = "">%
-<br><br>
-
-Question 2:<br>
+</p>
+<p>Question 2:<br>
 Suppose the infrastructure efficiency in the last round was 60%.  For the current
 round, the efficiency will decline by an amount of 25% for a resulting
 infrastructure efficiency of 35%.  If the members of your group invest a total of 15
 tokens, what will be your group's resulting water delivery capacity?<br>
-
 <input type="text" name="q2" value = ""> cubic feet per second
-<br><br>
-
-<b>The next two questions deal with the capacity of the irrigation system in relation
-to the actual amount of water available.</b>
-<br><br>
+</p>
+<p>
+The next two questions deal with the capacity of the irrigation system in relation
+to the actual amount of water available.
+</p>
+<p>
 Question 3:<br>
 If the irrigation efficiency is between 71 and 80%, the water delivery capacity of
 the irrigation system is 35 cubic feet per second.  Suppose the water supply
@@ -186,40 +185,30 @@ diverting water at 25 cubic feet per second.  What is the available water flow f
 B?
 <br>
 <input type='text' name='q3' value=''> cubic feet per second
-<br><br>
-Question 4:
+</p>
+<p>Question 4:<br>
 If the available water delivery capacity is 25 cubic feet per second and A, B, C,
 and D are not using water, how much cubic feet of water per second is available for
 E?<br>
 <input type='text' name='q4' value=''> cubic feet per second
-<br><br>
-
-<input type="submit" name="submit" value="Submit"><br>
-<br>
-
-]]>
-</entry>
-
-<entry key="quiz-page2">
-<![CDATA[
+</p>
 <p>
 The final two questions cover the number of tokens you can earn in within a round.
-<b>Please refer to table 2 of your handout</b>.
+<b>Please refer to Table 2 of your handout</b>.
 </p>
-<form>
-Question 5:<br>
+<p>Question 5:<br>
 If you invest 7 of the 10 tokens you start with and you apply 202 cubic feet of
 water to your fields, what is the total number of tokens you will have earned at the
 end of the round?<br>
 <input type="text" name="q5" value="">tokens
-<br><br>
-Question 6:<br>
+</p>
+<p>Question 6:<br>
 If you invest all 10 tokens you start with and you apply 555 cubic feet of water to
 your fields, what is the total number of tokens you will have earned at the end of
 the round?<br>
 <input type="text" name="q6" value="">tokens
-<br><br>
-<input type="submit" name="submit" value="Submit">
+</p>
+<input type="submit" name="submit" value="Submit"><br>
 </form>
 ]]>
 </entry>
@@ -316,6 +305,13 @@ a progress bar above the text field at the bottom of the screen.
 
 <entry key="investment-instructions">
 <![CDATA[
+<h1>Current infrastructure condition</h1>
+    <hr>
+    <h2>Current infrastructure efficiency: {actualInfrastructureEfficiency}%</h2>
+    <h2>Current water delivery capacity: {waterDeliveryCapacity} cubic feet per second</h2> 
+    <h2>Available water supply: {self.waterSupplyCapacity} cubic feet per second</h2>    
+<h1>Investment Instructions</h1>
+<hr>
 <p>
 You have been endowed with {self.tokenEndowment} tokens to invest. You must make a decision about
 how much you wish to invest in the irrigation infrastructure by choosing a number
@@ -380,7 +376,6 @@ infrastructure efficiency.
             <th>Tokens earned from growing crops</th>
             <th>Total tokens earned this round</th>
             <th>Dollars earned this round</th>
-            <th>Quiz earnings</th>
             <th>Total dollars earned</th>
         </tr>
         {dataModel.orderedVisibleClients: {clientData|
@@ -392,15 +387,22 @@ infrastructure efficiency.
             <td>{clientData.tokensEarnedFromWaterCollected}</td>
             <td>{clientData.allTokensEarnedThisRound}</td>
             <td>{clientData.totalDollarsEarnedThisRound}</td>
-            <td>{clientData.quizEarnings}</td>
             <td>{clientData.grandTotalIncome}</td>
         </tr>
         }}
     </table>
     <h2>Earnings</h2>
     <hr>
-        <p>You are in position {clientData.priorityString} and received {clientData.totalDollarsEarnedThisRound} this past round.
-            Your <b>total income</b> is <b>{clientData.grandTotalIncome}</b>, including the {showUpPayment} show-up bonus.</p>
+        <p>
+            You are in position {clientData.priorityString} and received
+            {clientData.totalDollarsEarnedThisRound} this past round. Your 
+            <b>total income</b> is <b>{clientData.grandTotalIncome}</b>, including 
+            the {showUpPayment} show-up bonus and {clientData.quizEarnings} for 
+            answering {clientData.correctQuizAnswers} quiz questions correctly.
+        </p>
+    {if (self.practiceRound)}  
+    <p><b>NOTE: this was a practice round and did not contribute to your earnings.</b></p> 
+    {endif}
     {if (showExitInstructions)}
     <h2>Exit Survey</h2>
     <hr>
@@ -422,11 +424,11 @@ infrastructure efficiency.
 </entry>
 <entry key="same-as-previous-round-instructions">
     <![CDATA[
-    <h3>Round {self.roundNumber} Instructions</h3>
+    <h2>Round {self.roundNumber} Instructions</h2>
     <hr>
     <p>Round {self.roundNumber} is the same as the previous round.</p>
     <p>{self.specialInstructions}</p>
-    <p>The length of this round is {duration}.</p>
+    <p>The length of this round is {self.roundDurationInSeconds} seconds.</p>
     <p><b>Do you have any questions?</b> If you have any questions at this time
         please raise your hand and someone will come over to your station and
         answer it.
@@ -445,11 +447,11 @@ The amount of water available to pass through your canal is <b>{groupDataModel.a
 <tr>
 <th></th></th><th>Infrastructure Efficiency</th><th>Water Delivery Capacity</th><th>Water Availability</th>
 </tr>
-<tr>
-<td>Before Investment</td><td>{groupDataModel.infrastructureEfficiencyBeforeInvestment}%</td><td>{groupDataModel.irrigationCapacityBeforeInvestment} cubic feet per second</td><td>{groupDataModel.actualWaterDeliveryCapacity}</td>
+<tr align='center'>
+<td>Before Investment</td><td>{groupDataModel.infrastructureEfficiencyBeforeInvestment}%</td><td>{groupDataModel.irrigationCapacityBeforeInvestment} cubic feet per second</td><td>{groupDataModel.actualWaterDeliveryCapacity} cubic feet per second</td>
 </tr>
-<tr>
-<td>After Investment</td><td>{groupDataModel.infrastructureEfficiency}%</td><td>{groupDataModel.irrigationCapacity} cubic feet per second</td><td>{groupDataModel.actualWaterDeliveryCapacity}</td>
+<tr align='center'>
+<td>After Investment</td><td>{groupDataModel.infrastructureEfficiency}%</td><td>{groupDataModel.irrigationCapacity} cubic feet per second</td><td>{groupDataModel.actualWaterDeliveryCapacity} cubic feet per second</td>
 </tr>
 </table>
 ]]>
@@ -459,14 +461,104 @@ The amount of water available to pass through your canal is <b>{groupDataModel.a
 <h2>Special Instructions</h2>
 <hr>
 {if (self.restrictedVisibility)}
-<p>You can only communicate with and observe the actions of your immediate neighbors.</p>
+<p>You can only <b>communicate with and observe the actions</b> of your <b>immediate neighbors</b>.</p>
 {endif}
+<p>
 {if (self.infrastructureEfficiencyReset)}
-<p>The irrigation infrastructure efficiency has been <b>reset to {self.initialInfrastructureEfficiency}%</b>.</p>
+The irrigation infrastructure efficiency has been <b>reset to {initialInfrastructureEfficiency}%</b> with a corresponding <b>water delivery capacity of {waterDeliveryCapacity} cubic feet per second</b>.
+{else}
+The irrigation infrastructure efficiency carried over from the previous round is
+{initialInfrastructureEfficiency}% but has declined by
+{self.infrastructureDegradationFactor} and is now <b>{actualInfrastructureEfficiency}%</b>
+with a corresponding <b>water delivery capacity of {waterDeliveryCapacity} cubic feet per second</b>.
 {endif}
+</p>
+<p>The <b>available water supply is {self.waterSupplyCapacity} cubic feet per second</b>.</p>
 ]]>
 </entry>
 <entry key="restricted-visibility-instructions">
 <![CDATA[{if (self.restrictedVisibility)}<b>NOTE:</b> In this experiment you can <b>only communicate with and observe the actions of your immediate neighbors</b>.{endif}]]>
+</entry>
+<entry key="facilitator-debriefing">
+<![CDATA[
+<h3>Round {self.roundNumber} results</h3>
+<hr>
+<table border=1 cellspacing=3 cellpadding=3>
+<tr><th>Participant</th><th>Current tokens</th><th>Current income</th><th>Quiz earnings</th><th>Total income</th></tr>
+{clientDataList: {data | 
+<tr align="RIGHT"><td>{data.id}</td><td>{data.allTokensEarnedThisRound}</td><td>{data.totalDollarsEarnedThisRound}</td><td>{data.quizEarnings}</td><td>{data.grandTotalIncome}</td></tr>
+}}
+</table>
+{if (self.lastRound)}
+<h2><font color='blue'>The experiment is over.  Please prepare payments.</font></h2>
+{endif}       
+]]>
+</entry>
+<entry key='quiz-results'>
+    <![CDATA[
+    <h2>Quiz Results</h2>
+    <hr>
+        <p>
+            {if (allCorrect)}
+            You have answered all the questions correctly and earned <b>{totalQuizEarnings}</b>.  
+            {else}
+            You answered {numberCorrect} out of {totalQuestions} questions correctly and earned <b>{totalQuizEarnings}</b>.  Questions you've answered
+            incorrectly are highlighted in red.  Please see below for more details.
+            {endif}
+        </p>
+        <br>
+        <hr>
+        <p><span class='q1'>Question 1:</span><br>
+            Given an existing infrastructure efficiency of 20%, if the five participants invest
+            a <b>total of 29 additional tokens</b>, what is the new irrigation infrastructure
+            efficiency?
+            <br><b>{incorrect_q1}
+                    An existing infrastructure efficiency of 20% + 29 tokens invested = 49% infrastructure efficiency.</b>
+        </p>
+        <p><span class='q2'>Question 2:</span><br>
+                Suppose the infrastructure efficiency in the last round was 60%.  For the current
+                round, the efficiency will decline by an amount of 25% for a resulting
+                infrastructure efficiency of 35%.  If the members of your group invest a total of 15
+                tokens, what will be your group's resulting water delivery capacity?<br>
+            <b>{incorrect_q2}
+                An existing infrastructure efficiency of 35% + 15 tokens invested = 50% infrastructure efficiency for the current round.  
+                An infrastructure efficiency of 50% corresponds to a water delivery capacity of 5 cubic feet per second.</b>
+        </p>
+        <p><span class='q3'>Question 3:</span><br>
+            If the irrigation efficiency is between 71 and 80%, the water delivery capacity of
+            the irrigation system is 35 cubic feet per second.  Suppose the water supply
+            available to your group is 30 cubic feet per second and A opens their gate,
+            diverting water at 25 cubic feet per second.  What is the available water flow for
+            B?<br>
+            <b>{incorrect_q3}
+                Since there is only 30 cubic feet per second of water available, the irrigation infrastructure capacity of 35 cubic feet
+                per second will not be fully used.  When A opens their gate, they take 25 of the 30 cubic feet per second out of the
+                canal, leaving 5 cubic feet per second for B.</b>
+        </p>
+        <p><span class='q4'>Question 4:</span><br>
+        If the available water delivery capacity is 25 cubic feet per second and A, B, C, and D are not using water, how much cubic feet of water per second is available for E?<br>
+            <b>{incorrect_q4}
+                If A has 25 cfps available and does not take any water, the same amount is available for the people
+                downstream. Since B, C and D do not take water, 25 cfps is available for E.
+            </b>
+        </p>
+        <p>
+        <span class='q5'>Question 5:</span><br>
+            If you invest 7 of the 10 tokens you start with and you apply 202 cubic feet of
+            water to your fields, what is the total number of tokens you will have earned at the
+            end of the round?<br>
+                <b>{incorrect_q5}
+                    If you invest 7 out of 10 tokens, you keep 3 tokens for yourself. If you apply 202 cubic feet of water to your field you will earn 4 tokens. 3 + 4 = 7 tokens</b>
+        </p>
+        <p><span class='q6'>Question 6:</span><br>
+                If you invest all 10 tokens you start with and you apply 555 cubic feet of water to
+                your fields, what is the total number of tokens you will have earned at the end of
+                the round?<br>
+                    <b>{incorrect_q6}
+                        If you invest all 10 tokens, you keep 0 tokens from your initial endowment.  If you apply 555 cubic feet of
+                        water to your field you will earn 19 tokens. 0 + 19 = 19 tokens.
+                    </b>
+        </p>
+    ]]>
 </entry>
 </properties>

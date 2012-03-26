@@ -20,25 +20,15 @@ public class QuizResponseEvent extends AbstractPersistableEvent implements Clien
 
     private static final long serialVersionUID = -7081410122722056083L;
 
-    private int quizPage;
 
     private Properties responses;
 
     private List<String> incorrectAnswers;
 
-    public QuizResponseEvent(Identifier id, int quizPage, Properties responses, List<String> incorrectAnswers) {
+    public QuizResponseEvent(Identifier id, Properties responses, List<String> incorrectAnswers) {
         super(id);
-        this.quizPage = quizPage;
         this.responses = responses;
         this.incorrectAnswers = incorrectAnswers;
-    }
-    
-    public boolean isComplete() {
-        return quizPage == 2;
-    }
-
-    public int getQuizPage(){
-        return quizPage;
     }
 
     public Properties getResponses() {
@@ -50,7 +40,7 @@ public class QuizResponseEvent extends AbstractPersistableEvent implements Clien
     }
 
     public String toString() {
-        return id + " quiz page response: " + responses + "\n\t incorrect: " + incorrectAnswers;
+        return id + " quiz responses: " + responses + "\n\t incorrect: " + incorrectAnswers;
     }
 
     public int getNumberOfCorrectQuizAnswers() {

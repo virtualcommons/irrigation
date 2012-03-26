@@ -67,7 +67,11 @@ public class TokenContributionChartPanel extends JPanel {
     	DefaultCategoryDataset dataset = new DefaultCategoryDataset();
     	List<ClientData> neighbors = clientDataModel.getOrderedVisibleClients();
     	for (ClientData neighbor: neighbors) {
-    		dataset.addValue(neighbor.getInvestedTokens(), "Tokens Invested", neighbor.getPriorityString());
+            StringBuilder participant = new StringBuilder(neighbor.getPriorityString());
+            if (neighbor.getId().equals(clientDataModel.getId())) {
+                participant.append(" (You)");
+            }
+            dataset.addValue(neighbor.getInvestedTokens(), "Tokens Invested", participant.toString());
     	}
     	return dataset;
 	}
@@ -94,7 +98,7 @@ public class TokenContributionChartPanel extends JPanel {
     
     private JFreeChart createBarChart(ClientDataModel clientDataModel) {
         final CategoryDataset dataset = createCategoryDataset(clientDataModel);
-    	JFreeChart chart = ChartFactory.createBarChart("Tokens Contributed by your Neighbors", "Participant", "Tokens Invested", dataset, 
+    	JFreeChart chart = ChartFactory.createBarChart("Tokens Invested by You and Your Neighbors", "Participant", "Tokens Invested", dataset, 
     			PlotOrientation.VERTICAL, false, false, false);
     	CategoryPlot plot = chart.getCategoryPlot();
     	ValueAxis rangeAxis = plot.getRangeAxis();

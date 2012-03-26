@@ -1,166 +1,109 @@
 package edu.asu.commons.irrigation.facilitator;
 
-import java.awt.Dimension;
-import java.net.InetSocketAddress;
-
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 import edu.asu.commons.event.BeginExperimentRequest;
 import edu.asu.commons.event.BeginRoundRequest;
 import edu.asu.commons.event.EndRoundRequest;
-import edu.asu.commons.event.Event;
-import edu.asu.commons.event.EventChannel;
-import edu.asu.commons.event.EventChannelFactory;
 import edu.asu.commons.event.EventTypeProcessor;
-import edu.asu.commons.event.FacilitatorRegistrationRequest;
+import edu.asu.commons.event.FacilitatorMessageEvent;
+import edu.asu.commons.facilitator.BaseFacilitator;
 import edu.asu.commons.irrigation.conf.RoundConfiguration;
 import edu.asu.commons.irrigation.conf.ServerConfiguration;
 import edu.asu.commons.irrigation.events.FacilitatorEndRoundEvent;
 import edu.asu.commons.irrigation.events.RegistrationEvent;
 import edu.asu.commons.irrigation.model.ServerDataModel;
-import edu.asu.commons.net.ClientDispatcher;
-import edu.asu.commons.net.DispatcherFactory;
-import edu.asu.commons.net.Identifier;
-import edu.asu.commons.net.SocketIdentifier;
+import edu.asu.commons.ui.UserInterfaceUtils;
 
 /**
  * $Id$
  * 
- *
+ * 
  * @author <a href='mailto:Allen.Lee@asu.edu'>Allen Lee</a>, Sanket Joshi
  * @version $Rev$
  */
-public class Facilitator {
+public class Facilitator extends BaseFacilitator<ServerConfiguration, RoundConfiguration> {
 
-    private Identifier id; 
-
-    private ClientDispatcher dispatcher;
-
-    private ServerConfiguration configuration;
-
-    private ServerDataModel serverDataModel;  //  @jve:decl-index=0:
-
+    private ServerDataModel serverDataModel;
     private FacilitatorWindow facilitatorWindow;
-
-    private final EventChannel channel = EventChannelFactory.create();
 
     private Facilitator() {
         this(new ServerConfiguration());
     }
 
     public Facilitator(ServerConfiguration configuration) {
-        dispatcher = DispatcherFactory.getInstance().createClientDispatcher(channel, configuration);
-        setConfiguration(configuration);
+        super(configuration);
     }
-    
+
     private void initializeEventProcessors() {
-        channel.add(this, new EventTypeProcessor<RegistrationEvent>(RegistrationEvent.class) {
+        addEventProcessor(new EventTypeProcessor<RegistrationEvent>(RegistrationEvent.class) {
+            @Override
             public void handle(RegistrationEvent registrationEvent) {
                 facilitatorWindow.addInstructions(registrationEvent.getRoundConfiguration().getInstructions());
             }
         });
-        channel.add(this, new EventTypeProcessor<FacilitatorEndRoundEvent>(FacilitatorEndRoundEvent.class) {
+        addEventProcessor(new EventTypeProcessor<FacilitatorEndRoundEvent>(FacilitatorEndRoundEvent.class) {
+            @Override
             public void handle(FacilitatorEndRoundEvent event) {
                 facilitatorWindow.endRound(event);
-                configuration.nextRound();
+                getServerConfiguration().nextRound();
+            }
+        });
+        addEventProcessor(new EventTypeProcessor<FacilitatorMessageEvent>(FacilitatorMessageEvent.class) {
+            @Override
+            public void handle(FacilitatorMessageEvent event) {
+                facilitatorWindow.addMessage(event.toString());
             }
         });
     }
 
-    public void setConfiguration(ServerConfiguration configuration) {
-        if (configuration == null) {
-            System.err.println("attempt to setConfiguration with null, ignoring");
-            return;
-        } 
-        else {
-            this.configuration = configuration;
-        }
-    }
-
-    /*
-     * Connects facilitator to the server and registers with the server as a facilitator.
-     * 
-     * If the connection was successful, configures the FacilitatorWindow to manage experiments,
-     * otherwise configures the FacilitatorWindow to replay experiments and view configuration 
-     * for those experiments.
-     */
-    public void connect() {
-        connect(configuration.getServerAddress());
-    }
-
-    public void connect(InetSocketAddress address) {
-        id = dispatcher.connect(address);
-        SocketIdentifier socketId = (SocketIdentifier) id;
-        transmit(new FacilitatorRegistrationRequest(socketId));
-    }
-
     void initialize() {
         facilitatorWindow = new FacilitatorWindow(this);
-        facilitatorWindow.setText(configuration.getFacilitatorInstructions());
+        facilitatorWindow.setInstructions(getServerConfiguration().getFacilitatorInstructions());
         initializeEventProcessors();
-    }
-
-    /*
-     * Sends requests to the server
-     */
-    public void transmit(Event event) {
-        dispatcher.transmit(event);
     }
 
     public static void main(String[] args) {
         Runnable createGuiRunnable = new Runnable() {
             public void run() {
-                Dimension dimension = new Dimension(800, 600);
                 Facilitator facilitator = new Facilitator();
                 facilitator.initialize();
                 facilitator.connect();
                 JFrame frame = new JFrame();
-                frame.setTitle("Facilitator window: " + facilitator.id);
-                frame.setPreferredSize(dimension);
-
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frame.getContentPane().add(facilitator.getFacilitatorWindow());
-                frame.pack();
-                frame.setVisible(true);
+                frame.setTitle("Facilitator window: " + facilitator.getId());
+                frame.add(facilitator.getFacilitatorWindow());
+                UserInterfaceUtils.maximize(frame);
             }
         };
         SwingUtilities.invokeLater(createGuiRunnable);
     }
 
-    void sendStartRoundOverride(){
-        transmit(new BeginExperimentRequest(id));
+    void sendStartRoundOverride() {
+        transmit(new BeginExperimentRequest(getId()));
     }
 
     /*
      * Send a request to start a round
      */
-    public void sendBeginRoundRequest()	{
-        transmit(new BeginRoundRequest(id));
+    public void sendBeginRoundRequest() {
+        transmit(new BeginRoundRequest(getId()));
     }
 
     public void sendEndRoundRequest() {
-        transmit(new EndRoundRequest(id));
+        transmit(new EndRoundRequest(getId()));
     }
 
     public FacilitatorWindow getFacilitatorWindow() {
         return facilitatorWindow;
     }
 
-    public Identifier getId(){
-        return id;
-    }
-
-    public ServerDataModel getServerDataModel(){
+    public ServerDataModel getServerDataModel() {
         return serverDataModel;
     }
 
-    public ServerConfiguration getConfiguration(){
-        return configuration;
-    }
-
     public RoundConfiguration getCurrentRoundConfiguration() {
-        return configuration.getCurrentParameters();
+        return getServerConfiguration().getCurrentParameters();
     }
 
     public void setServerDataModel(ServerDataModel serverGameState) {

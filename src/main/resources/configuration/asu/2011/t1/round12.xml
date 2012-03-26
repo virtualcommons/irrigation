@@ -6,6 +6,7 @@
 <entry key='initial-infrastructure-efficiency'>75</entry>
 <entry key='reset-infrastructure-efficiency'>true</entry>
 <entry key='infrastructure-degradation-factor'>20</entry>
+<entry key='field-of-vision'>1</entry>
 
 <entry key="instructions">
 <![CDATA[

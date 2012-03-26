@@ -396,9 +396,14 @@ public class GamePanel extends JPanel {
 				// FIXME: figure out how to reliably set the progress bar colors regardless of OS.
 //				setProgressBarColor(timeLeft);
 				// only show open gates for immediately neighboring clients.
+				boolean restrictedVisibility = clientDataModel.getRoundConfiguration().isRestrictedVisibility();
+				final ClientData thisClientData = clientDataModel.getClientData();
 
 				for (final ClientData clientData : clientDataModel.getClientDataMap().values()) {
 					if (clientData.isGateOpen()) {
+					    if (restrictedVisibility && ! thisClientData.isImmediateNeighbor(clientData)) {
+					        continue;
+					    }
 					    canalPanel.openGate(clientData.getPriority());
 					}
 					else {

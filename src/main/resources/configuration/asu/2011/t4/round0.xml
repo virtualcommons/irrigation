@@ -6,6 +6,8 @@
 <entry key="practice-round">true</entry>
 <entry key='reset-infrastructure-efficiency'>true</entry>
 <entry key='initial-infrastructure-efficiency'>50</entry>
+<entry key='field-of-vision'>1</entry>
+
 
 <entry key="instructions">
 <![CDATA[
@@ -14,6 +16,7 @@ We will now start with two practice rounds. This practice round will not contrib
 to your earnings.  If you have any questions feel free to raise your hand and to ask
 your question.
 <br> 
+{self.specialInstructions}
 <b>Do you have any questions?</b>
 </p>
 ]]>

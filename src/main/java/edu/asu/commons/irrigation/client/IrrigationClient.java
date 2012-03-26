@@ -158,7 +158,9 @@ public class IrrigationClient {
                 RoundConfiguration configuration = event.getRoundConfiguration();
                 clientDataModel.setGroupDataModel(event.getClientData().getGroupDataModel());
                 clientDataModel.setRoundConfiguration(configuration);
-                experimentGameWindow.updateRoundInstructions(configuration);
+                // FIXME: will need to replace this with an explicit ShowInstructionsRequest if we end up needing
+                // explicit last-round show exit instructions behavior
+                experimentGameWindow.updateRoundInstructions();
             }
         });
         channel.add(this, new EventTypeProcessor<InfrastructureUpdateEvent>(InfrastructureUpdateEvent.class) {

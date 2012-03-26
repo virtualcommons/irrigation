@@ -10,29 +10,30 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.TreeMap;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
+import javax.swing.text.html.HTMLEditorKit;
+import javax.swing.text.html.StyleSheet;
 
 import edu.asu.commons.irrigation.conf.RoundConfiguration;
 import edu.asu.commons.irrigation.conf.ServerConfiguration;
 import edu.asu.commons.irrigation.events.EndRoundEvent;
 import edu.asu.commons.irrigation.events.QuizResponseEvent;
 import edu.asu.commons.irrigation.model.ClientData;
-import edu.asu.commons.irrigation.model.GroupDataModel;
 import edu.asu.commons.ui.HtmlEditorPane;
 import edu.asu.commons.ui.HtmlEditorPane.FormActionEvent;
 import edu.asu.commons.ui.UserInterfaceUtils;
@@ -70,21 +71,11 @@ public class ExperimentGameWindow extends JPanel {
 
     private JEditorPane contributionInformationEditorPane;
 
-    private JButton nextButton;
-
-    private JPanel instructionsNavigationPanel;
-
-    private JButton previousButton;
-
     private JPanel instructionsPanel;
-
-    private int currentQuizPageNumber = 1;
 
     private JPanel submitTokenPanel;
 
     private HtmlEditorPane tokenInstructionsEditorPane;
-
-//    private int quizzesAnswered = 0;
 
     private TokenContributionChartPanel tokenContributionChartPanel;
 
@@ -92,8 +83,6 @@ public class ExperimentGameWindow extends JPanel {
 
     private CardLayout cardLayout;
     
-    private Map<Integer, String> quizPageResponses = new HashMap<Integer, String>();
-
     private JLabel investedTokensLabel;
 
     public ExperimentGameWindow(IrrigationClient client) {
@@ -164,79 +153,7 @@ public class ExperimentGameWindow extends JPanel {
         }
         return instructionsPanel;
     }
-    
-    private JPanel getQuizNavigationPanel() {
-        if (instructionsNavigationPanel == null) {
-            instructionsNavigationPanel = new JPanel();
-            instructionsNavigationPanel.setLayout(new BorderLayout());
-            instructionsNavigationPanel.add(getPreviousButton(), BorderLayout.LINE_START);
-            instructionsNavigationPanel.add(getNextButton(), BorderLayout.LINE_END);
-        }
-        return instructionsNavigationPanel;
-    }
 
-    private JButton getPreviousButton() {
-        if (previousButton == null) {
-            previousButton = new JButton();
-            previousButton.setText("Previous");
-            previousButton.setEnabled(false);
-            previousButton.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    // getting the next instruction Number
-                    if (currentQuizPageNumber > 1) {
-                        currentQuizPageNumber--;
-                        setInstructions(getQuizPage());
-                    }
-                    previousButton.setEnabled(currentQuizPageNumber > 1);
-                    nextButton.setEnabled(true);
-                }
-            });
-        }
-        return previousButton;
-    }
-
-    private JButton getNextButton() {
-        if (nextButton == null) {
-            nextButton = new JButton();
-            nextButton.setText("Next");
-            nextButton.setEnabled(false);
-            nextButton.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    previousButton.setEnabled(true);
-                    currentQuizPageNumber++;
-                    if (currentQuizPageNumber <= getServerConfiguration().getNumberOfQuizPages()) {
-                        setInstructions(getQuizPage());
-                    }
-                    else {
-                        // this only works in between practice rounds #1 & #2 or after practice round 2
-                    	// should just regenerate all the instructions...
-                        nextButton.setEnabled(false);
-                        disableQuiz();
-                        showDebriefing(false);
-//                        setInstructions(instructionsBuilder.toString());
-                    }
-                }
-            });
-
-        }
-        return nextButton;
-    }
-
-    // FIXME: replace with StringTemplate
-    private String getQuizPage() {
-        StringBuilder builder = new StringBuilder();
-        String quizPage = getServerConfiguration().getQuizPage(currentQuizPageNumber);
-        String quizPageResponse = quizPageResponses.get(currentQuizPageNumber);
-        if (quizPageResponse == null) {
-            builder.append(quizPage);
-        }
-        else {
-            quizPage = quizPage.replace("<input type=\"submit\" name=\"submit\" value=\"Submit\">", "");
-            builder.append(quizPage).append(quizPageResponse);
-        }
-        return builder.toString();
-    }
-    
     private ServerConfiguration getServerConfiguration() {
         return clientDataModel.getServerConfiguration();
     }
@@ -334,65 +251,9 @@ public class ExperimentGameWindow extends JPanel {
         instructionsBuilder.append(clientDataModel.getRoundConfiguration().generateClientDebriefing(clientDataModel, showExitInstructions));
         setInstructions(instructionsBuilder.toString());
     }
-
-//    /**
-//     * FIXME: refactor to use StringTemplate
-//     * @param event
-//     */
-//    private void addDebriefingText(EndRoundEvent event) {
-//        double showUpPayment = clientDataModel.getServerConfiguration().getShowUpPayment();
-//        RoundConfiguration roundConfiguration = clientDataModel.getRoundConfiguration();
-//        // FIXME: move this to RoundConfiguration instead and then templatize using
-//        // StringTemplate
-//        instructionsBuilder.delete(0, instructionsBuilder.length());
-//        instructionsBuilder.append("<b>Results from the previous round</b>");
-//        instructionsBuilder.append(
-//                "<table border='3' cellpadding='5'><thead><th>Position</th><th>Initial token endowment</th><th>Tokens invested</th><th>Tokens not invested</th>" +
-//                "<th>Tokens earned from growing crops</th><th>Total tokens earned during this round</th>" +
-//                "<th>Dollars earned during this round</th><th>Total dollars earned (including show-up bonus)</th></thead>" +
-//                "<tbody>");
-//
-//        for(ClientData clientData : clientDataModel.getClientDataSortedByPriority()) {
-//            String backgroundColor = clientData.getPriority() == clientDataModel.getPriority() ? "#FFFFCC" : "CCCCCC"; 
-//        	instructionsBuilder.append(
-//        			String.format("<tr align='center' bgcolor='%s'><td>%s</td><td>%d</td><td>%d</td><td>%d</td><td>%d</td><td>%d</td><td>$%3.2f</td><td>$%3.2f</td></tr>",
-//        			        backgroundColor,
-//        			        clientData.getPriorityString(),
-//        					roundConfiguration.getMaximumTokenInvestment(),
-//        					clientData.getInvestedTokens(),
-//        					clientData.getUninvestedTokens(),
-//        					clientData.getTokensEarnedFromWaterCollected(),
-//        					clientData.getAllTokensEarnedThisRound(),
-//        					clientData.getTotalDollarsEarnedThisRound(),
-//        					clientData.getTotalDollarsEarned() + showUpPayment
-//        					));
-//        }
-//        
-//        ClientData clientData = clientDataModel.getClientData();
-//        instructionsBuilder.append("</tbody></table><hr>");
-//        instructionsBuilder.append(String.format("<h3>You (position %s) received $%3.2f this past round.  Your total earnings are $%3.2f, including the $%3.2f show up bonus.</h3>",
-//        		clientData.getPriorityString(), clientData.getTotalDollarsEarnedThisRound(), clientData.getTotalDollarsEarned()+showUpPayment, showUpPayment));
-//        //append the added practice round instructions
-//        
-//        if (roundConfiguration.isPracticeRound()) {
-//            instructionsBuilder.append(roundConfiguration.getPracticeRoundPaymentInstructions());
-//        }
-//        else if (event.isLastRound()) {
-//            instructionsBuilder.append(getServerConfiguration().getFinalInstructions());
-//        }
-//        instructionsBuilder.append("<hr>");
-//        displayInstructions(instructionsBuilder.toString());
-//    }
-
-    // adding the instructions into the instruction Panel
-    private void setInstructions(final String instructions) {
-        setInstructions(instructions, false);
-    }
     
-    private void setInstructions(String instructions, boolean caretToEnd) {
+    private void setInstructions(String instructions) {
         instructionsEditorPane.setText(instructions);
-        int caretPosition = caretToEnd ? instructionsEditorPane.getDocument().getLength() - 1 : 0;
-        instructionsEditorPane.setCaretPosition(caretPosition);
     }
     
     private void displayInstructions(final String instructions) {
@@ -408,67 +269,52 @@ public class ExperimentGameWindow extends JPanel {
         return new ActionListener() {
             private Map<String, String> quizAnswers = configuration.getQuizAnswers();
             public synchronized void actionPerformed(ActionEvent e) {
-                if (quizPageResponses.containsKey(currentQuizPageNumber)) {
-                    // this form has already been submit.
-                    // shouldn't happen
-                    // FIXME: report to user?
-                    return;
-                }
                 FormActionEvent formEvent = (FormActionEvent) e;
-                Properties responses = formEvent.getData();
-                List<String> incorrectAnswers = new ArrayList<String>();
-                responses.list(System.err);
-                StringBuilder builder = new StringBuilder();
-                TreeMap<String, String> sortedResponses = new TreeMap<String, String>();
-                // sort responses so we can put them in order.
-                for (Map.Entry<Object, Object> entry : responses.entrySet()) {
-                    sortedResponses.put((String) entry.getKey(), (String) entry.getValue());
-                }
-                builder.append("<hr><h2>Results</h2><hr>");
-                for (Map.Entry<String, String> entry : sortedResponses.entrySet()) {
-                    String questionNumber = (String) entry.getKey();
-                    if (questionNumber.charAt(0) == 'q') {
-                        String number = questionNumber.substring(1, questionNumber.length());
-                        String response = (String) entry.getValue();
-                        if (response == null || response.trim().isEmpty()) {
-                            // if any responses are empty, abort.
-                            
-                            return;
-                        }
-                        String correctAnswer = quizAnswers.get(questionNumber);
-                        builder.append(String.format("<p><b>Question %s</b><br/>", number));
-                        String color = "blue";
-                        if (! response.equals(correctAnswer)) {
-                            incorrectAnswers.add(questionNumber);
-                            color = "red";
-                        }
-                        builder.append(String.format("Your answer: <font color='%s'>%s</font><br/>", color, response));
-                        builder.append(String.format("Correct answer: %s<br/>", quizAnswers.get("a" + number)));
-                        builder.append(quizAnswers.get( "explanation" + number )).append("</p>");
+                Properties actualAnswers = formEvent.getData();
+                System.err.println("actual answers: " + actualAnswers);
+                List<String> incorrectQuestionNumbers = new ArrayList<String>();
+                List<String> correctQuestionNumbers = new ArrayList<String>();
+                List<String> missingQuestions = new ArrayList<String>();
+                for (Map.Entry<String, String> entry : quizAnswers.entrySet()) {
+                    String questionNumber = entry.getKey();
+                    String number = questionNumber.substring(1);
+                    String correctAnswer = entry.getValue();
+                    String actualAnswer = actualAnswers.getProperty(questionNumber);
+                    if (actualAnswer == null || actualAnswer.trim().isEmpty()) {
+                    	missingQuestions.add(number);
+                    	continue;
                     }
+                    ((correctAnswer.equals(actualAnswer)) ? correctQuestionNumbers : incorrectQuestionNumbers).add(questionNumber); 
                 }
-                if (incorrectAnswers.isEmpty()) {
-                	builder.append("<p>Congratulations, you got all of the questions correct.</p>");
+                int numberOfMissingQuestions = missingQuestions.size();
+                if (numberOfMissingQuestions > 0) {
+                	Collections.sort(missingQuestions);
+                	JOptionPane.showMessageDialog(ExperimentGameWindow.this, "Please enter a quiz answer for questions " + missingQuestions);
+                	return;
                 }
-                else {
-                	builder.append(String.format("<p>You answered %d questions incorrectly.  Please review the correct answers.</p>", incorrectAnswers.size()));
+                else if (numberOfMissingQuestions == 1) {
+                	JOptionPane.showMessageDialog(ExperimentGameWindow.this, "Please enter a quiz answer for question " + missingQuestions.get(0));
+                	return;
                 }
-                builder.append("<p><b>Please click the 'Next' button at the bottom right of the screen to continue.</b></p>");
-                quizPageResponses.put(currentQuizPageNumber, builder.toString());
-                // no matter what we move on to the next question page
-                // tell them what was right and what was wrong.
-                if (currentQuizPageNumber <= getServerConfiguration().getNumberOfQuizPages()) {
-                    nextButton.setEnabled(true);
-                }
-//                quizzesAnswered++;
-                QuizResponseEvent event = new QuizResponseEvent(client.getId(), currentQuizPageNumber, responses, incorrectAnswers);
+                setQuestionColors(correctQuestionNumbers, "blue");
+                setQuestionColors(incorrectQuestionNumbers, "red");
+                QuizResponseEvent event = new QuizResponseEvent(client.getId(), actualAnswers, incorrectQuestionNumbers);
                 System.err.println("Correct answers: " + event.getNumberOfCorrectQuizAnswers());
                 clientDataModel.getClientData().addCorrectQuizAnswers(event.getNumberOfCorrectQuizAnswers());
                 client.transmit(event);
-                setInstructions(getQuizPage(), true);
+                setInstructions(getServerConfiguration().getQuizResults(incorrectQuestionNumbers, actualAnswers));
             }
         };
 
+    }
+    
+    private void setQuestionColors(List<String> questionNumbers, String color) {
+        HTMLEditorKit editorKit = (HTMLEditorKit) instructionsEditorPane.getEditorKit();
+        StyleSheet styleSheet = editorKit.getStyleSheet();
+        for (String questionNumber : questionNumbers) {
+            String styleString = String.format(".%s { color: %s; }", questionNumber, color);
+            styleSheet.addRule(styleString);
+        }
     }
 
     public void displayContributionInformation(final ClientData clientData) {
@@ -515,60 +361,19 @@ public class ExperimentGameWindow extends JPanel {
     public void showTokenInvestmentScreen() {
         Runnable runnable = new Runnable() {
             public void run() {
-                GroupDataModel group = clientDataModel.getGroupDataModel();
                 RoundConfiguration roundConfiguration = clientDataModel.getRoundConfiguration();
-                int infrastructureEfficiency = 0;
-                if (roundConfiguration.isInfrastructureEfficiencyReset()) {
-                    infrastructureEfficiency = roundConfiguration.getInitialInfrastructureEfficiency();
-                }
-                else {
-                    infrastructureEfficiency = Math.max(0, group.getInfrastructureEfficiency() - roundConfiguration.getInfrastructureDegradationFactor());
-                }
+                tokenInstructionsEditorPane.setText(roundConfiguration.generateInvestmentInstructions(clientDataModel));
                 addCenterComponent(getTokenInvestmentPanel());
-                StringBuilder builder = new StringBuilder(
-                        String.format(
-                                "<h2>Current infrastructure efficiency: %d%%</h2>" 
-                        + "<h2>Current water delivery capacity: %d cubic feet per second</h2>" 
-                        + "<h2>Available water supply: %d cubic feet per second</h2>",
-                        infrastructureEfficiency,
-                        group.calculateIrrigationCapacity(infrastructureEfficiency),
-                        roundConfiguration.getWaterSupplyCapacity()
-                                ));
-                builder.append(getServerConfiguration().getInvestmentInstructions());
-                tokenInstructionsEditorPane.setText(builder.toString());
                 getInvestedTokensTextField().requestFocusInWindow();
             }
         };
         SwingUtilities.invokeLater(runnable);
     }
 
-    // FIXME: replace with StringTemplate
-    public void updateRoundInstructions(RoundConfiguration roundConfiguration) {
+    public void updateRoundInstructions() {
+        RoundConfiguration roundConfiguration = clientDataModel.getRoundConfiguration();
         if (! roundConfiguration.isFirstRound()) {
-            instructionsBuilder.append(roundConfiguration.getInstructions());
-            instructionsBuilder.append("<hr>");
-            if (roundConfiguration.isInfrastructureEfficiencyReset()) {
-                int initialInfrastructureEfficiency = roundConfiguration.getInitialInfrastructureEfficiency();
-            	instructionsBuilder.append(
-            	        String.format("The irrigation infrastructure efficiency has been reset to %d%% with a corresponding water delivery capacity of %d cfps.", 
-            	                initialInfrastructureEfficiency,
-            	                clientDataModel.getGroupDataModel().calculateIrrigationCapacity(initialInfrastructureEfficiency)));
-            	                
-            }
-            else {
-                int initialInfrastructureEfficiency = clientDataModel.getGroupDataModel().getInfrastructureEfficiency();
-                int degradationFactor = roundConfiguration.getInfrastructureDegradationFactor();
-                int actualInfrastructureEfficiency = initialInfrastructureEfficiency - degradationFactor;
-            	instructionsBuilder.append(
-            			String.format("<p>The irrigation infrastructure efficiency carried over from the previous round is %d%% but has declined by %d and is now %d%% (%d cfps) at the start of this round.  " +
-            					"The <b>available water supply is %d cfps</b>.</p><br><hr>",
-            					initialInfrastructureEfficiency,
-            					degradationFactor,
-            					actualInfrastructureEfficiency,
-            					clientDataModel.getGroupDataModel().calculateIrrigationCapacity(actualInfrastructureEfficiency),
-            					roundConfiguration.getWaterSupplyCapacity()
-            					));
-            }
+            instructionsBuilder.append(roundConfiguration.generateUpdatedInstructions(clientDataModel));
             displayInstructions(instructionsBuilder.toString());
         }
     }
@@ -585,7 +390,6 @@ public class ExperimentGameWindow extends JPanel {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 startTimer(getServerConfiguration().getChatDuration() * 1000L);
-//                ChatPanel chatPanel = getChatPanel();
                 chatPanel.initialize(clientDataModel.getAllClientIdentifiers());
                 addCenterComponent( chatPanel );
                 chatPanel.setFocusInChatField();
@@ -619,20 +423,10 @@ public class ExperimentGameWindow extends JPanel {
     public void showQuiz() {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                setInstructions(getQuizPage());
-                getInstructionsPanel().add(getQuizNavigationPanel(), BorderLayout.PAGE_END);
+                setInstructions(getServerConfiguration().getQuizInstructions());
                 getInstructionsPanel().revalidate();
             }
         });
-    }
-    
-    /**
-     * Should only be invoked when the instructions navigation panel is done.  
-     * How do we know when it's done?        
-     */
-    private void disableQuiz() {
-        getInstructionsPanel().remove(getQuizNavigationPanel());
-        getInstructionsPanel().revalidate();
     }
     
     public void showGameScreenshot() {

@@ -20,7 +20,7 @@ import edu.asu.commons.net.Identifier;
  * @version $Revision$
  */
 
-public class ClientData implements Serializable {
+public class ClientData implements Serializable, Comparable<ClientData> {
 
     private static final long serialVersionUID = 5281922601551921005L;
 
@@ -79,16 +79,8 @@ public class ClientData implements Serializable {
         return getAssignedNumber() - 1;
     }
     
-    // FIXME: logic duplicated with ServerConfiguration.toPriorityString(int priority);
-    private final static String[] PRIORITY_STRINGS = { "A", "B", "C", "D", "E" };
-
     public String getPriorityString() {
-        // bounds check
-        int priority = getPriority();
-        if (priority >= 0 && priority < PRIORITY_STRINGS.length) {
-            return PRIORITY_STRINGS[priority];
-        }
-        return "Position not found";
+        return ServerConfiguration.toPriorityString(getPriority());
     }
 
     public void openGate(){
@@ -209,9 +201,13 @@ public class ClientData implements Serializable {
 	}
 	
     public boolean isImmediateNeighbor(ClientData otherClientData) {
-        int thisPosition = getPriority();
-        int otherPosition = otherClientData.getPriority();
+        int thisPosition = getAssignedNumber();
+        int otherPosition = otherClientData.getAssignedNumber();
         return (thisPosition == otherPosition) || (thisPosition == otherPosition + 1) || (thisPosition == otherPosition - 1);
+    }
+    
+    public boolean isDownstreamAndOutOfRange(ClientData other) {
+        return assignedNumber < other.assignedNumber - 1; 
     }
 
     public int getCorrectQuizAnswers() {
@@ -252,6 +248,16 @@ public class ClientData implements Serializable {
 
     public void addCorrectQuizAnswers(int numberOfCorrectQuizAnswers) {
         this.correctQuizAnswers += numberOfCorrectQuizAnswers;
+    }
+
+    @Override
+    public int compareTo(ClientData o) {
+        return Integer.valueOf(assignedNumber).compareTo(o.assignedNumber);
+    }
+    
+    @Override
+    public String toString() {
+        return String.format("%s Position %s", id, getPriorityString());
     }
 }
 

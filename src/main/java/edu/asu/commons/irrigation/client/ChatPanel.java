@@ -2,6 +2,8 @@ package edu.asu.commons.irrigation.client;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.HashMap;
@@ -40,7 +42,7 @@ import edu.asu.commons.ui.UserInterfaceUtils;
  */
 
 @SuppressWarnings("serial")
-public class ChatPanel extends JPanel {
+public class ChatPanel extends JPanel implements FocusListener {
 
     private IrrigationClient irrigationClient;
 
@@ -132,14 +134,17 @@ public class ChatPanel extends JPanel {
         StyledDocument styledDocument = messageWindow.getStyledDocument();
         // and why not have something like... StyleContext.getDefaultStyle() to
         // replace this junk
-        Style defaultStyle = StyleContext.getDefaultStyleContext().getStyle(
-                StyleContext.DEFAULT_STYLE);
-        // Style regularStyle = styledDocument.addStyle("regular",
-        // defaultStyle);
+        Style defaultStyle = getDefaultStyle();
         StyleConstants.setFontSize(defaultStyle, 16);
         StyleConstants.setFontFamily(defaultStyle, UserInterfaceUtils.getDefaultFont().getFamily());
         StyleConstants.setBold(styledDocument.addStyle("bold", defaultStyle), true);
         StyleConstants.setItalic(styledDocument.addStyle("italic", defaultStyle), true);
+        StyleConstants.setUnderline(styledDocument.addStyle("underline", defaultStyle), true);
+
+    }
+
+    private Style getDefaultStyle() {
+        return StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE);
     }
 
     public void setTimeLeft(long timeLeft) {
@@ -168,6 +173,10 @@ public class ChatPanel extends JPanel {
         add(messageScrollPane, BorderLayout.CENTER);
 //        add(participantButtonPanel, BorderLayout.EAST);
         add(textEntryPanel, BorderLayout.PAGE_END);
+        addFocusListener(this);
+        messageScrollPane.addFocusListener(this);
+        textEntryPanel.addFocusListener(this);
+        chatInstructionsPane.addFocusListener(this);
     }
 
     public void displayMessage(String chatHandle, String message) {
@@ -177,7 +186,7 @@ public class ChatPanel extends JPanel {
         }
         try {
             document.insertString(0, chatHandle, document.getStyle("bold"));
-            document.insertString(chatHandle.length(), message + "\n", null);
+            document.insertString(chatHandle.length(), message + "\n", getDefaultStyle());
             messageWindow.setCaretPosition(0);
         } 
         catch (BadLocationException e) {
@@ -205,5 +214,18 @@ public class ChatPanel extends JPanel {
 	public void setFocusInChatField() {
 		chatField.requestFocusInWindow();
 	}
+
+    @Override
+    public void focusGained(FocusEvent e) {
+        if (e.getComponent().equals(chatField)) {
+            return;
+        }
+        chatField.requestFocusInWindow();
+    }
+
+    @Override
+    public void focusLost(FocusEvent e) {
+
+    }
 
 }
