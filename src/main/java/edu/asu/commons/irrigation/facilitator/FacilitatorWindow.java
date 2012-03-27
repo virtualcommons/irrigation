@@ -230,7 +230,7 @@ public class FacilitatorWindow extends JPanel {
      */
     public void endRound(FacilitatorEndRoundEvent event) {
         // reset the StringBuilder as it will be appended to
-        builder = new StringBuilder(event.getServerDataModel());
+        builder = new StringBuilder(event.getServerDataModel().generateFacilitatorDebriefing());
         setInstructions(builder.toString());
     }
 
