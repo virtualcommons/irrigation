@@ -82,13 +82,17 @@ public class ServerConfiguration extends ExperimentConfiguration.Base<ServerConf
         return getDoubleProperty("showup-payment", 5.0d);
     }
 
+    public double getMaximumPayment() {
+        return getDoubleProperty("maximum-payment", 40.0d);
+    }
+
     public String getInitialInstructions() {
         ST template = createStringTemplate(getProperty("initial-instructions"));
-        template.groupThatCreatedThisInstance.registerRenderer(Number.class, new NumberRenderer());
         NumberFormat formatter = NumberFormat.getCurrencyInstance();
         template.add("showUpPayment", formatter.format(getShowUpPayment()));
         template.add("dollarsPerToken", formatter.format(getDollarsPerToken()));
         template.add("quizCorrectAnswerReward", formatter.format(getQuizCorrectAnswerReward()));
+        template.add("maximumPayment", formatter.format(getMaximumPayment()));
         return template.render();
     }
 

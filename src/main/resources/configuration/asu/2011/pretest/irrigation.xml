@@ -31,6 +31,7 @@
 <entry key='field-of-vision'>1</entry>
 <entry key="wait-for-participants">true</entry>
 <entry key="number-of-rounds">22</entry>
+<entry key='round-duration'>50</entry>
 
 <entry key="q1">49</entry>
 <entry key="a1">49%</entry>
@@ -67,8 +68,8 @@ template-language-pluggable
 <h1>Instructions</h1>
 <hr>
 <p>
-You have already earned {showUpPayment} dollars by showing up for this exercise. You
-can earn more, up to a maximum of about 45 dollars, by participating in this
+You have already earned {showUpPayment} by showing up for this exercise. You
+can earn more, up to a maximum of about {maximumPayment}, by participating in this
 experiment which will take about an hour to an hour and a half. The amount of money
 you earn depends on your decisions AND the decisions of other people in this room
 over the course of the experiment.
