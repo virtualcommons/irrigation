@@ -174,7 +174,7 @@ public class ChatPanel extends JPanel implements FocusListener {
 
     public void displayMessage(String chatHandle, String message) {
         final StyledDocument document = messageWindow.getStyledDocument();
-        if (!chatHandle.endsWith(":")) {
+        if (!chatHandle.trim().endsWith(":")) {
             chatHandle = chatHandle.concat(": ");
         }
         try {
