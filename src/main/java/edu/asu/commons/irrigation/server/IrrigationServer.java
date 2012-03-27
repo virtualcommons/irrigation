@@ -228,28 +228,28 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
                 Identifier source = request.getSource();
                 Identifier target = request.getTarget();
                 ClientData sendingClient = clients.get(source);
+                ArrayList<ClientData> allTargets = new ArrayList<ClientData>();
                 if (Identifier.ALL.equals(target)) {
                     // relay to all clients in this client's group.
-                    sendFacilitatorMessage(String.format("%s -> ALL: [ %s ]", request.getSource(), request));
                     boolean restrictedVisibility = getRoundConfiguration().isRestrictedVisibility();
                     for (ClientData clientData: clients.get(source).getGroupDataModel().getClientDataMap().values()) {
                         Identifier targetId = clientData.getId();
-                        if (targetId.equals(source)) {
+                        if (targetId.equals(source) || (restrictedVisibility && ! sendingClient.isImmediateNeighbor(clientData))) {
+                            // don't send the message if the target is the source or we're in a restricted visibility
+                            // condition and the client isn't an immediate neighbor.
                             continue;
                         }
-                        if (restrictedVisibility && ! sendingClient.isImmediateNeighbor(clientData)) {
-                            sendFacilitatorMessage(String.format("%s was out of range of %s, not sending message [%s]", clientData, sendingClient, request.getMessage()));
-                            continue;
-                        }
+                        allTargets.add(clientData);
                         ChatEvent chatEvent = new ChatEvent(targetId, request.getMessage(), source, true);
                         transmit(chatEvent);
                     }
                 }
                 else {
-                    sendFacilitatorMessage(String.format("%s->%s: [%s]", request.getSource(), request.getTarget(), request.toString()));
-                    ChatEvent chatEvent = new ChatEvent(request.getTarget(), request.getMessage(), request.getSource());                  
+                    allTargets.add(clients.get(target));
+                    ChatEvent chatEvent = new ChatEvent(target, request.getMessage(), source);                  
                     transmit(chatEvent);
                 }
+                sendFacilitatorMessage(String.format("%s->%s: %s", source, allTargets, request.toString()));
                 persister.store(request);
             }
         });
