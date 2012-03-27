@@ -44,6 +44,6 @@ public class QuizResponseEvent extends AbstractPersistableEvent implements Clien
     }
 
     public int getNumberOfCorrectQuizAnswers() {
-        return responses.size() - 1 - getIncorrectAnswers().size();
+        return responses.size() - getIncorrectAnswers().size();
     }
 }
