@@ -338,10 +338,12 @@
      </junit>
    </target>
 
-  <property name='savefile.converter.class' value='edu.asu.commons.irrigation.util.SaveFileConverter'/>
-   <target name='convert-savefiles' depends='compile'>
+  <property name='savefile.converter.class' value='edu.asu.commons.irrigation.data.IrrigationSaveFileConverter'/>
+  <!-- default savefile directory is the raw-data directory -->
+  <property name="savefile.dir" value="raw-data"/>
+  <target name='convert' depends='compile'>
     <java classname='${savefile.converter.class}' classpathref='project.classpath' fork='yes'>
-      <arg value='raw-data'/>
+      <arg value='${savefile.dir}'/>
     </java>
    </target>
 
