@@ -64,8 +64,7 @@ public class ChatPanel extends JPanel implements FocusListener {
             public void handle(final ChatEvent chatEvent) {
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
-                        displayMessage(getChatHandle(chatEvent.getSource()),
-                                chatEvent.toString());
+                        displayMessage(getChatHandle(chatEvent.getSource()), chatEvent.toString());
                     }
                 });
             }
@@ -88,12 +87,6 @@ public class ChatPanel extends JPanel implements FocusListener {
                     }
                 }
             });
-//            final JButton sendButton = new JButton("Send");
-//            sendButton.addActionListener(new ActionListener() {
-//                public void actionPerformed(ActionEvent event) {
-//                    sendMessage();
-//                }
-//            });
             JPanel timeLeftPanel = new JPanel();
             int chatDuration = irrigationClient.getServerConfiguration().getChatDuration();
             timeLeftProgressBar = new JProgressBar(0, chatDuration);
@@ -109,7 +102,7 @@ public class ChatPanel extends JPanel implements FocusListener {
         private void sendMessage() {
             String message = chatField.getText();
             if (message != null && ! message.isEmpty() && targetIdentifier != null) {
-                displayMessage(getChatHandle(getClientId()), message);
+                displayMessage(getChatHandle(getClientId()) + " (you):", message);
             	chatField.setText("");
             	irrigationClient.transmit(new ChatRequest(getClientId(), message, targetIdentifier));
              }
