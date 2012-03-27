@@ -271,6 +271,8 @@ public class ExperimentGameWindow extends JPanel {
             public synchronized void actionPerformed(ActionEvent e) {
                 FormActionEvent formEvent = (FormActionEvent) e;
                 Properties actualAnswers = formEvent.getData();
+                // remove the submit button if it exists
+                actualAnswers.remove("submit");
                 System.err.println("actual answers: " + actualAnswers);
                 List<String> incorrectQuestionNumbers = new ArrayList<String>();
                 List<String> correctQuestionNumbers = new ArrayList<String>();

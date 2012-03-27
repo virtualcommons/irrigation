@@ -269,7 +269,7 @@ public class ServerConfiguration extends ExperimentConfiguration.Base<ServerConf
     public String getQuizResults(List<String> incorrectQuestionNumbers, Map<Object, Object> actualAnswers) {
         ST template = createStringTemplate(getProperty("quiz-results"));
         // FIXME: actual answers includes the submit button, so there's an off-by-one that we need to deal with.
-        int totalQuestions = actualAnswers.size() - 1;
+        int totalQuestions = actualAnswers.size();
         int numberCorrect = totalQuestions - incorrectQuestionNumbers.size();
         template.add("allCorrect", incorrectQuestionNumbers.isEmpty());
         template.add("numberCorrect", numberCorrect);

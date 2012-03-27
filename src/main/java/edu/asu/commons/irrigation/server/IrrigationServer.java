@@ -249,7 +249,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
                     ChatEvent chatEvent = new ChatEvent(target, request.getMessage(), source);                  
                     transmit(chatEvent);
                 }
-                sendFacilitatorMessage(String.format("%s->%s: %s", source, allTargets, request.toString()));
+                sendFacilitatorMessage(String.format("%s->%s: %s", sendingClient, allTargets, request.toString()));
                 persister.store(request);
             }
         });

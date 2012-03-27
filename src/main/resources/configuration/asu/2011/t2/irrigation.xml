@@ -83,15 +83,13 @@ selecting you and four other participants in the room.
 <h2>How to participate</h2>
 <hr>
 <p>
-This exercise mimics decisions people make in irrigation systems. In each round you
-will receive {self.tokenEndowment} tokens which you can invest in the irrigation
-infrastructure. Based on the <b>water delivery capacity</b> of the irrigation
-infrastructure and the availability of water you will be able to grow crops. Tokens
-earned in a round is the sum of tokens not invested plus tokens earned by growing
-crops. Each token is worth {dollarsPerToken}. In each round you will first decide how much to
-invest in the irrigation infrastructure.  Based on the combined contributions of all
-5 participants in your group in each round, your group can maintain the capacity of
-the irrigation infrastructure for growing crops. 
+This exercise mimics decisions people make in irrigation systems. In each round you will receive {self.tokenEndowment}
+tokens.  You can choose to invest in the irrigation infrastructure or keep the tokens. Based on the <b>water delivery
+capacity</b> of the irrigation infrastructure and the availability of water you will be able to grow crops. The total
+number of tokens you can earn in a round is the sum of your tokens not invested plus the tokens you earn from growing
+crops. Each token is worth {dollarsPerToken}. In each round you will first decide how much to invest in the irrigation
+infrastructure.  Based on the combined contributions of all 5 participants in your group in each round, your group can
+maintain the capacity of the irrigation infrastructure for growing crops. 
 </p>
 
 <p>
