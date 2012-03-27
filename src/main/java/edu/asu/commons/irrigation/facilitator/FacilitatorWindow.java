@@ -9,6 +9,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -21,6 +22,7 @@ import edu.asu.commons.irrigation.events.FacilitatorEndRoundEvent;
 import edu.asu.commons.irrigation.events.ShowGameScreenshotRequest;
 import edu.asu.commons.irrigation.events.ShowQuizRequest;
 import edu.asu.commons.ui.HtmlEditorPane;
+import edu.asu.commons.ui.HtmlSelection;
 import edu.asu.commons.ui.UserInterfaceUtils;
 
 /**
@@ -59,6 +61,8 @@ public class FacilitatorWindow extends JPanel {
 
     private JButton stopRoundButton;
 
+    private JButton copyToClipboardButton;
+
     /**
      * This is the default constructor
      */
@@ -81,6 +85,7 @@ public class FacilitatorWindow extends JPanel {
         addToBoxLayout(buttonPanel, getShowQuizButton());
         addToBoxLayout(buttonPanel, getStartRoundOverrideButton());
         addToBoxLayout(buttonPanel, getStopRoundButton());
+        addToBoxLayout(buttonPanel, getCopyToClipboardButton());
         add(buttonPanel, BorderLayout.NORTH);
         informationEditorPane = UserInterfaceUtils.createInstructionsEditorPane();
         informationScrollPane = new JScrollPane(informationEditorPane);
@@ -102,6 +107,36 @@ public class FacilitatorWindow extends JPanel {
         double proportion = 0.7d;
         splitPane.setDividerLocation(proportion);
         splitPane.setResizeWeight(proportion);
+    }
+
+    private JButton getCopyToClipboardButton() {
+        // create copy to clipboard menu item
+        if (copyToClipboardButton == null) {
+            copyToClipboardButton = new JButton("Copy to clipboard");
+            copyToClipboardButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    String text = informationEditorPane.getSelectedText();
+                    if (text == null || text.trim().isEmpty()) {
+                        addMessage("No text selected, copying all text in the editor pane to the clipboard.");
+                        text = informationEditorPane.getText();
+                        if (text == null || text.trim().isEmpty()) {
+                            // if text is still empty, give up
+                            JOptionPane.showMessageDialog(FacilitatorWindow.this, "Unable to find any text to copy to the clipboard.");
+                            return;
+                        }
+                    }
+                    if (UserInterfaceUtils.getClipboardService() != null) {
+                        HtmlSelection selection = new HtmlSelection(text);
+                        UserInterfaceUtils.getClipboardService().setContents(selection);
+                    }
+                    else {
+                        addMessage("Clipboard service is not available.");
+                    }
+                }
+            });
+        }
+        return copyToClipboardButton;
     }
 
     private void addToBoxLayout(JPanel buttonPanel, JButton button) {

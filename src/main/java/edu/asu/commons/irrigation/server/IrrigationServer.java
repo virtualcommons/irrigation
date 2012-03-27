@@ -119,7 +119,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
                 }
                 // ignore the request if not every group has submit their tokens.
                 if (isTokenInvestmentComplete()) {
-                    sendFacilitatorMessage("Starting round.");
+                    sendFacilitatorMessage("Starting actual round.");
                     synchronized (roundSignal) {
                         roundSignal.notifyAll();
                     }
@@ -274,7 +274,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
             private volatile int numberOfCompletedQuizzes = 0;
             @Override
             public void handle(QuizResponseEvent quizResponseEvent) {
-                sendFacilitatorMessage("Received quiz response: " + quizResponseEvent);
+                sendFacilitatorMessage(String.format("%d/%d quiz response: %s", numberOfCompletedQuizzes, clients.size(), quizResponseEvent));
                 clients.get(quizResponseEvent.getId()).addCorrectQuizAnswers(quizResponseEvent.getNumberOfCorrectQuizAnswers());
                 numberOfCompletedQuizzes++;
                 if (numberOfCompletedQuizzes >= clients.size()) {
@@ -443,6 +443,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
                             getConfiguration().isLastRound()));    
                 }
             }
+            sendFacilitatorMessage("Round ended, ready to begin chat again");
             transmit(new FacilitatorEndRoundEvent(getFacilitatorId(), serverDataModel));
 
         }
