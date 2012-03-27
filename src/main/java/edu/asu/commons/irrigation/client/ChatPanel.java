@@ -102,7 +102,7 @@ public class ChatPanel extends JPanel implements FocusListener {
         private void sendMessage() {
             String message = chatField.getText();
             if (message != null && ! message.isEmpty() && targetIdentifier != null) {
-                displayMessage(getChatHandle(getClientId()) + " (you):", message);
+                displayMessage(getChatHandle(getClientId()) + " (you): ", message);
             	chatField.setText("");
             	irrigationClient.transmit(new ChatRequest(getClientId(), message, targetIdentifier));
              }
