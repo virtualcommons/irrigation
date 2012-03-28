@@ -54,6 +54,12 @@ vim:sts=2:sw=2
       <artifactId>forms</artifactId>
       <version>1.1.0</version>
     </dependency>
+    <dependency>
+      <groupId>javax.jnlp</groupId>
+      <artifactId>javaws</artifactId>
+      <version>1.6.0_30</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
   <build>
     <finalName>irrigation</finalName>

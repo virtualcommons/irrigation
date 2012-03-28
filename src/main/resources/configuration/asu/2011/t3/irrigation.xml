@@ -4,6 +4,8 @@
 <comment>Irrigation experiment server configuration</comment>
 <entry key="hostname">@SERVER_ADDRESS@</entry>
 <entry key="port">@PORT_NUMBER@</entry>
+
+<entry key="number-of-rounds">22</entry>
 <entry key="round0">round0.xml</entry>
 <entry key="round1">round1.xml</entry>
 <entry key="round2">round2.xml</entry>
@@ -30,7 +32,8 @@
 <entry key='token-endowment'>10</entry>
 <entry key='field-of-vision'>1</entry>
 <entry key="wait-for-participants">true</entry>
-<entry key="number-of-rounds">22</entry>
+
+<entry key='chat-duration'>60</entry>
 <entry key='round-duration'>50</entry>
 
 <entry key="q1">49</entry>
@@ -408,13 +411,14 @@ infrastructure efficiency.
     <p>
         This was the last round, but not the end of the experiment. We ask that you please carefully fill out a brief survey as we prepare your payments.
     </p>
-    <h2>Payment</h2>
+    <h2>Payment: You Are Computer Number {clientData.id.stationNumber}</h2>
     <hr>
     <p>
+        <b>Please note the computer number listed above and write it on your survey.</b>
         When payments are ready we will call you up one by one. Please wait until
-        your computer number, <b>{clientData.id}</b>, is called to turn in your
+        your computer number, <b>{clientData.id.stationNumber}</b>, is called to turn in your
         survey and receive payment.  
-        NOTE: Please <b>answer the survey completely (there may be a back side)</b>
+        <b>NOTE: Please answer the survey completely (there may be a back side)</b>
         and <b>bring all your belongings with you</b> when you come up to receive
         your payment to help us speed up the payment process.
     </p>
@@ -485,7 +489,7 @@ with a corresponding <b>water delivery capacity of {waterDeliveryCapacity} cubic
 <table border=1 cellspacing=3 cellpadding=3>
 <tr><th>Participant</th><th>Current tokens</th><th>Current income</th><th>Quiz earnings</th><th>Total income</th></tr>
 {clientDataList: {data | 
-<tr align="RIGHT"><td>{data.id}</td><td>{data.allTokensEarnedThisRound}</td><td>{data.totalDollarsEarnedThisRound}</td><td>{data.quizEarnings}</td><td>{data.grandTotalIncome}</td></tr>
+<tr align="RIGHT"><td>{data}</td><td>{data.allTokensEarnedThisRound}</td><td>{data.totalDollarsEarnedThisRound}</td><td>{data.quizEarnings}</td><td>{data.grandTotalIncome}</td></tr>
 }}
 </table>
 {if (self.lastRound)}
