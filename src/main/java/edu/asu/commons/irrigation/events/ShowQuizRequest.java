@@ -8,7 +8,7 @@ import edu.asu.commons.net.Identifier;
  * $Id$
  * 
  * Facilitator request to display the quiz.
- *
+ * 
  * @author <a href='mailto:Allen.Lee@asu.edu'>Allen Lee</a>
  * @version $Rev$
  */
@@ -20,9 +20,9 @@ public class ShowQuizRequest extends AbstractEvent implements ShowRequest<ShowQu
         super(id);
     }
 
-	@Override
-	public ShowQuizRequest clone(Identifier id) {
-		return new ShowQuizRequest(id);
-	}
-    
+    @Override
+    public ShowQuizRequest clone(Identifier id) {
+        return new ShowQuizRequest(id);
+    }
+
 }

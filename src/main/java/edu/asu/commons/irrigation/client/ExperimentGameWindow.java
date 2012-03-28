@@ -41,8 +41,8 @@ import edu.asu.commons.ui.UserInterfaceUtils;
 /**
  * $Id$
  * 
- * The root experiment window placed in the client's JFrame.  
- *
+ * The root experiment window placed in the client's JFrame.
+ * 
  * @author <a href='mailto:Allen.Lee@asu.edu'>Allen Lee</a>
  * @version $Rev$
  */
@@ -51,7 +51,7 @@ public class ExperimentGameWindow extends JPanel {
     private static final long serialVersionUID = -5636795631355367711L;
 
     private ClientDataModel clientDataModel;
-    
+
     private ChatPanel chatPanel;
 
     private HtmlEditorPane instructionsEditorPane;
@@ -64,7 +64,7 @@ public class ExperimentGameWindow extends JPanel {
     private InfrastructureEfficiencyChartPanel infrastructureEfficiencyChartPanel;
 
     private IrrigationClient client;
-    
+
     private GamePanel irrigationGamePanel;
 
     private StringBuilder instructionsBuilder = new StringBuilder();
@@ -79,10 +79,10 @@ public class ExperimentGameWindow extends JPanel {
 
     private TokenContributionChartPanel tokenContributionChartPanel;
 
-//    private CanalAnimationPanel canalAnimationPanel;
+    // private CanalAnimationPanel canalAnimationPanel;
 
     private CardLayout cardLayout;
-    
+
     private JLabel investedTokensLabel;
 
     public ExperimentGameWindow(IrrigationClient client) {
@@ -90,7 +90,7 @@ public class ExperimentGameWindow extends JPanel {
         this.clientDataModel = client.getClientDataModel();
         initialize();
     }
-    
+
     private void initialize() {
         cardLayout = new CardLayout();
         setLayout(cardLayout);
@@ -102,7 +102,7 @@ public class ExperimentGameWindow extends JPanel {
         addToCardLayout(getContributionInformationPanel());
         setInstructions(getServerConfiguration().getWelcomeInstructions());
     }
-    
+
     private void addToCardLayout(Component component) {
         add(component, component.getName());
     }
@@ -149,7 +149,7 @@ public class ExperimentGameWindow extends JPanel {
             instructionsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
             instructionsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
             instructionsPanel.add(instructionsScrollPane, BorderLayout.CENTER);
-//            instructionsPanel.add(getQuizNavigationPanel(), BorderLayout.PAGE_END);
+            // instructionsPanel.add(getQuizNavigationPanel(), BorderLayout.PAGE_END);
         }
         return instructionsPanel;
     }
@@ -157,12 +157,12 @@ public class ExperimentGameWindow extends JPanel {
     private ServerConfiguration getServerConfiguration() {
         return clientDataModel.getServerConfiguration();
     }
-    
+
     private JLabel getInvestedTokensLabel() {
         if (investedTokensLabel == null) {
             investedTokensLabel = new JLabel();
         }
-        return investedTokensLabel; 
+        return investedTokensLabel;
     }
 
     private JTextField getInvestedTokensTextField() {
@@ -188,12 +188,11 @@ public class ExperimentGameWindow extends JPanel {
                 investedTokensLabel.setText("");
                 setInstructions("Please wait while the server computes your total flow capacity based on your group's total token contribution investment.");
                 addCenterComponent(getInstructionsPanel());
-            } 
+            }
             else {
                 investedTokensLabel.setText("Please enter a number between 0 and 10");
             }
-        }
-        catch(NumberFormatException e){
+        } catch (NumberFormatException e) {
             investedTokensLabel.setText("Please enter a number between 0 and 10");
         }
     }
@@ -245,17 +244,17 @@ public class ExperimentGameWindow extends JPanel {
     private void info(String message) {
         System.err.println(message);
     }
-    
+
     public void showDebriefing(boolean showExitInstructions) {
         instructionsBuilder.delete(0, instructionsBuilder.length());
         instructionsBuilder.append(clientDataModel.getRoundConfiguration().generateClientDebriefing(clientDataModel, showExitInstructions));
         setInstructions(instructionsBuilder.toString());
     }
-    
+
     private void setInstructions(String instructions) {
         instructionsEditorPane.setText(instructions);
     }
-    
+
     private void displayInstructions(final String instructions) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
@@ -264,10 +263,11 @@ public class ExperimentGameWindow extends JPanel {
             }
         });
     }
-    
+
     private ActionListener createQuizListener(final ServerConfiguration configuration) {
         return new ActionListener() {
             private Map<String, String> quizAnswers = configuration.getQuizAnswers();
+
             public synchronized void actionPerformed(ActionEvent e) {
                 FormActionEvent formEvent = (FormActionEvent) e;
                 Properties actualAnswers = formEvent.getData();
@@ -283,20 +283,20 @@ public class ExperimentGameWindow extends JPanel {
                     String correctAnswer = entry.getValue();
                     String actualAnswer = actualAnswers.getProperty(questionNumber);
                     if (actualAnswer == null || actualAnswer.trim().isEmpty()) {
-                    	missingQuestions.add(number);
-                    	continue;
+                        missingQuestions.add(number);
+                        continue;
                     }
-                    ((correctAnswer.equals(actualAnswer)) ? correctQuestionNumbers : incorrectQuestionNumbers).add(questionNumber); 
+                    ((correctAnswer.equals(actualAnswer)) ? correctQuestionNumbers : incorrectQuestionNumbers).add(questionNumber);
                 }
                 int numberOfMissingQuestions = missingQuestions.size();
                 if (numberOfMissingQuestions > 0) {
-                	Collections.sort(missingQuestions);
-                	JOptionPane.showMessageDialog(ExperimentGameWindow.this, "Please enter a quiz answer for questions " + missingQuestions);
-                	return;
+                    Collections.sort(missingQuestions);
+                    JOptionPane.showMessageDialog(ExperimentGameWindow.this, "Please enter a quiz answer for questions " + missingQuestions);
+                    return;
                 }
                 else if (numberOfMissingQuestions == 1) {
-                	JOptionPane.showMessageDialog(ExperimentGameWindow.this, "Please enter a quiz answer for question " + missingQuestions.get(0));
-                	return;
+                    JOptionPane.showMessageDialog(ExperimentGameWindow.this, "Please enter a quiz answer for question " + missingQuestions.get(0));
+                    return;
                 }
                 setQuestionColors(correctQuestionNumbers, "blue");
                 setQuestionColors(incorrectQuestionNumbers, "red");
@@ -309,7 +309,7 @@ public class ExperimentGameWindow extends JPanel {
         };
 
     }
-    
+
     private void setQuestionColors(List<String> questionNumbers, String color) {
         HTMLEditorKit editorKit = (HTMLEditorKit) instructionsEditorPane.getEditorKit();
         StyleSheet styleSheet = editorKit.getStyleSheet();
@@ -320,8 +320,8 @@ public class ExperimentGameWindow extends JPanel {
     }
 
     public void displayContributionInformation(final ClientData clientData) {
-    	final RoundConfiguration configuration = clientDataModel.getRoundConfiguration();
-    	final String contributionSummary = configuration.generateContributionSummary(clientData);
+        final RoundConfiguration configuration = clientDataModel.getRoundConfiguration();
+        final String contributionSummary = configuration.generateContributionSummary(clientData);
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 contributionInformationEditorPane.setText(contributionSummary);
@@ -332,7 +332,7 @@ public class ExperimentGameWindow extends JPanel {
         });
         irrigationGamePanel.setClientDataModel(clientDataModel);
     }
-    
+
     public JPanel getContributionInformationPanel() {
         if (contributionInformationPanel == null) {
             contributionInformationPanel = new JPanel();
@@ -359,7 +359,6 @@ public class ExperimentGameWindow extends JPanel {
         return panel;
     }
 
-
     public void showTokenInvestmentScreen() {
         Runnable runnable = new Runnable() {
             public void run() {
@@ -374,7 +373,7 @@ public class ExperimentGameWindow extends JPanel {
 
     public void updateRoundInstructions() {
         RoundConfiguration roundConfiguration = clientDataModel.getRoundConfiguration();
-        if (! roundConfiguration.isFirstRound()) {
+        if (!roundConfiguration.isFirstRound()) {
             instructionsBuilder.append(roundConfiguration.generateUpdatedInstructions(clientDataModel));
             displayInstructions(instructionsBuilder.toString());
         }
@@ -393,13 +392,14 @@ public class ExperimentGameWindow extends JPanel {
             public void run() {
                 startTimer(getServerConfiguration().getChatDuration() * 1000L);
                 chatPanel.initialize(clientDataModel.getAllClientIdentifiers());
-                addCenterComponent( chatPanel );
+                addCenterComponent(chatPanel);
                 chatPanel.setFocusInChatField();
             }
         });
     }
 
     private Timer timer;
+
     private void startTimer(final long waitTime) {
         final long endTime = waitTime + System.currentTimeMillis();
         if (timer == null) {
@@ -407,9 +407,9 @@ public class ExperimentGameWindow extends JPanel {
                 public void actionPerformed(ActionEvent event) {
                     final long timeRemaining = endTime - System.currentTimeMillis();
                     if (timeRemaining < 0) {
-                    	showTokenInvestmentScreen();
+                        showTokenInvestmentScreen();
                         getInvestedTokensTextField().requestFocusInWindow();
-//                        chatPanel.displayMessage("", "---- chat round ending ----");
+                        // chatPanel.displayMessage("", "---- chat round ending ----");
                         timer.stop();
                         timer = null;
                     }
@@ -421,7 +421,7 @@ public class ExperimentGameWindow extends JPanel {
             timer.start();
         }
     }
-    
+
     public void showQuiz() {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
@@ -430,20 +430,20 @@ public class ExperimentGameWindow extends JPanel {
             }
         });
     }
-    
+
     public void showGameScreenshot() {
         displayInstructions(getServerConfiguration().getGameScreenshotInstructions());
     }
 
-    /** 
+    /**
      * Invoked when the show instructions button is pressed.
      */
     public void showInstructions() {
-    	if (clientDataModel == null || clientDataModel.getRoundConfiguration().isFirstRound()) {
-            displayInstructions(getServerConfiguration().getInitialInstructions());    		
-    	}
-    	else {
-    		displayInstructions(clientDataModel.getRoundConfiguration().getInstructions());
-    	}
+        if (clientDataModel == null || clientDataModel.getRoundConfiguration().isFirstRound()) {
+            displayInstructions(getServerConfiguration().getInitialInstructions());
+        }
+        else {
+            displayInstructions(clientDataModel.getRoundConfiguration().getInstructions());
+        }
     }
 }

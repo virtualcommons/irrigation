@@ -8,12 +8,12 @@ import edu.asu.commons.net.Identifier;
 
 /**
  * @author Sanket
- *
+ * 
  */
 public class RegistrationEvent extends AbstractEvent implements ExperimentUpdateEvent {
 
     private static final long serialVersionUID = 3065215773124456718L;
-    
+
     private RoundConfiguration roundConfiguration;
     private final ClientData clientData;
 
@@ -26,17 +26,17 @@ public class RegistrationEvent extends AbstractEvent implements ExperimentUpdate
     public RegistrationEvent(Identifier id, RoundConfiguration roundConfiguration) {
         this(id, roundConfiguration, null);
     }
-    
+
     public RegistrationEvent(Identifier id, RoundConfiguration roundConfiguration, ClientData clientData) {
         super(id, roundConfiguration.getInstructions());
         this.clientData = clientData;
         this.roundConfiguration = roundConfiguration;
     }
-    
+
     public RegistrationEvent(ClientData clientData, RoundConfiguration roundConfiguration) {
         this(clientData.getId(), roundConfiguration, clientData);
     }
- 
+
     public RoundConfiguration getRoundConfiguration() {
         return roundConfiguration;
     }

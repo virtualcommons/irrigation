@@ -8,17 +8,17 @@ import edu.asu.commons.net.Identifier;
 /**
  * $Id$
  * 
- * Updates a specific client (identified by getId()) with an up-to-date GroupDataModel and the 
+ * Updates a specific client (identified by getId()) with an up-to-date GroupDataModel and the
  * number of seconds left in the round.
  * 
  * @author <a href='mailto:Allen.Lee@asu.edu'>Allen Lee</a>
  * @version $Rev$
  */
 public class ClientUpdateEvent extends AbstractEvent
-implements ExperimentUpdateEvent {
+        implements ExperimentUpdateEvent {
 
     private static final long serialVersionUID = -128693557750400520L;
-    
+
     private final GroupDataModel groupDataModel;
     private final int timeLeft;
 

@@ -79,7 +79,8 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
         super(configuration);
         serverDataModel = new ServerDataModel();
         serverDataModel.setEventChannel(getEventChannel());
-        serverDataModel.setRoundConfiguration(configuration.getCurrentParameters());
+        serverDataModel.setRoundConfiguration(configuration
+                .getCurrentParameters());
         persister = new IrrigationPersister(getEventChannel(), configuration);
         initializeFacilitatorHandlers();
         initializeClientHandlers();
@@ -87,7 +88,8 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
 
     @SuppressWarnings("rawtypes")
     private void initializeFacilitatorHandlers() {
-        addEventProcessor(new EventTypeProcessor<FacilitatorRegistrationRequest>(FacilitatorRegistrationRequest.class) {
+        addEventProcessor(new EventTypeProcessor<FacilitatorRegistrationRequest>(
+                FacilitatorRegistrationRequest.class) {
             @Override
             public void handle(FacilitatorRegistrationRequest event) {
                 getLogger().info("facilitator registered: " + event.getId());
@@ -99,105 +101,117 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
                 }
             }
         });
-        addEventProcessor(new EventTypeProcessor<BeginExperimentRequest>(BeginExperimentRequest.class) {
+        addEventProcessor(new EventTypeProcessor<BeginExperimentRequest>(
+                BeginExperimentRequest.class) {
             @Override
             public void handle(BeginExperimentRequest event) {
-            	// sends override and immediately starts the round.
+                // sends override and immediately starts the round.
                 synchronized (roundSignal) {
                     roundSignal.notifyAll();
                 }
             }
         });
-        addEventProcessor(new EventTypeProcessor<BeginRoundRequest>(BeginRoundRequest.class) {
+        addEventProcessor(new EventTypeProcessor<BeginRoundRequest>(
+                BeginRoundRequest.class) {
             @Override
             public void handle(BeginRoundRequest event) {
-                if (! event.getId().equals(getFacilitatorId())) {
-                    sendFacilitatorMessage(
-                            String.format("facilitator is [%s] but received begin round request from non-facilitator [%s]", 
+                if (!event.getId().equals(getFacilitatorId())) {
+                    sendFacilitatorMessage(String
+                            .format("facilitator is [%s] but received begin round request from non-facilitator [%s]",
                                     getFacilitatorId(), event.getId()));
                     return;
                 }
-                // ignore the request if not every group has submit their tokens.
+                // ignore the request if not every group has submit their
+                // tokens.
                 if (isTokenInvestmentComplete()) {
                     sendFacilitatorMessage("Starting actual round.");
                     synchronized (roundSignal) {
                         roundSignal.notifyAll();
                     }
-                }
-                else {
-                    sendFacilitatorMessage(
-                            String.format("Cannot start round, %d of %d clients have submitted token investments", 
+                } else {
+                    sendFacilitatorMessage(String
+                            .format("Cannot start round, %d of %d clients have submitted token investments",
                                     submittedClients, clients.size()));
                 }
             }
         });
-        addEventProcessor(new EventTypeProcessor<EndRoundRequest>(EndRoundRequest.class) {
+        addEventProcessor(new EventTypeProcessor<EndRoundRequest>(
+                EndRoundRequest.class) {
             @Override
             public void handleInExperimentThread(EndRoundRequest request) {
                 currentRoundDuration.stop();
             }
 
         });
-        addEventProcessor(new EventTypeProcessor<BeginChatRoundRequest>(BeginChatRoundRequest.class) {
+        addEventProcessor(new EventTypeProcessor<BeginChatRoundRequest>(
+                BeginChatRoundRequest.class) {
             @Override
             public void handle(BeginChatRoundRequest request) {
-                // XXX: the participants have already been added to the data model at this point
-                // so we shuffle them around right before the first practice round's chat.
-            	if (getRoundConfiguration().isFirstRound()) {
-            		shuffleParticipants();
-            	}
-            	else {
-            	    persister.clearChatData();
-            	}
+                // XXX: the participants have already been added to the data
+                // model at this point
+                // so we shuffle them around right before the first practice
+                // round's chat.
+                if (getRoundConfiguration().isFirstRound()) {
+                    shuffleParticipants();
+                } else {
+                    persister.clearChatData();
+                }
                 // pass it on to all the clients
                 synchronized (clients) {
-                    for (Identifier id: clients.keySet()) {
-                        transmit(new BeginChatRoundRequest(id, serverDataModel.getGroupDataModel(id)));
+                    for (Identifier id : clients.keySet()) {
+                        transmit(new BeginChatRoundRequest(id,
+                                serverDataModel.getGroupDataModel(id)));
                     }
                 }
             }
         });
-        addEventProcessor(new EventTypeProcessor<ShowRequest>(ShowRequest.class, true) {
+        addEventProcessor(new EventTypeProcessor<ShowRequest>(
+                ShowRequest.class, true) {
             @Override
             public void handle(ShowRequest request) {
                 /*
-                if (stateMachine.state == IrrigationServerState.ROUND_IN_PROGRESS) {
-                    sendFacilitatorMessage("Ignoring request: " + request + " - round is currently running");
+                 * if (stateMachine.state ==
+                 * IrrigationServerState.ROUND_IN_PROGRESS) {
+                 * sendFacilitatorMessage("Ignoring request: " + request +
+                 * " - round is currently running"); }
+                 */
+                if (request.getId().equals(getFacilitatorId())) {
+                    synchronized (clients) {
+                        for (Identifier id : clients.keySet()) {
+                            transmit(request.clone(id));
+                        }
+                    }
+                } else {
+                    sendFacilitatorMessage("Received invalid show request "
+                            + request + " from " + getFacilitatorId());
                 }
-                */
-            	if (request.getId().equals(getFacilitatorId())) {
-            		synchronized (clients) {
-            			for (Identifier id: clients.keySet()) {
-            				transmit(request.clone(id));
-            			}
-            		}
-            	}
-            	else {
-            		sendFacilitatorMessage("Received invalid show request " + request + " from " + getFacilitatorId());
-            	}
             }
         });
     }
 
     /**
-     * Registers client handling EventTypeProcessors.  
-     * Each EventTypeProcessor encapsulates the handling of a specific kind of message event.
+     * Registers client handling EventTypeProcessors. Each EventTypeProcessor
+     * encapsulates the handling of a specific kind of message event.
      */
     private void initializeClientHandlers() {
-        addEventProcessor(new EventTypeProcessor<SocketIdentifierUpdateRequest>(SocketIdentifierUpdateRequest.class) {
+        addEventProcessor(new EventTypeProcessor<SocketIdentifierUpdateRequest>(
+                SocketIdentifierUpdateRequest.class) {
             @Override
             public void handle(SocketIdentifierUpdateRequest request) {
                 SocketIdentifier socketId = request.getSocketIdentifier();
                 ClientData clientData = clients.get(socketId);
                 if (clientData == null) {
-                    sendFacilitatorMessage("No client data available for socket: " + socketId);
+                    sendFacilitatorMessage("No client data available for socket: "
+                            + socketId);
                     return;
                 }
-                SocketIdentifier clientSocketId = (SocketIdentifier) clientData.getId();
+                SocketIdentifier clientSocketId = (SocketIdentifier) clientData
+                        .getId();
                 clientSocketId.setStationNumber(request.getStationNumber());
             }
         });
-        addEventProcessor(new EventTypeProcessor<ConnectionEvent>(ConnectionEvent.class) {
+        addEventProcessor(new EventTypeProcessor<ConnectionEvent>(
+                ConnectionEvent.class) {
             @Override
             public void handle(ConnectionEvent event) {
                 sendFacilitatorMessage("incoming connection: " + event);
@@ -208,13 +222,16 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
                     clients.put(identifier, clientData);
                     serverDataModel.addClient(clientData);
                 }
-                transmit(new RegistrationEvent(clientData, getRoundConfiguration()));
+                transmit(new RegistrationEvent(clientData,
+                        getRoundConfiguration()));
             }
         });
-        addEventProcessor(new EventTypeProcessor<DisconnectionRequest>(DisconnectionRequest.class) {
+        addEventProcessor(new EventTypeProcessor<DisconnectionRequest>(
+                DisconnectionRequest.class) {
             @Override
             public void handle(DisconnectionRequest request) {
-                sendFacilitatorMessage("irrigation server handling disconnection request: " + request);
+                sendFacilitatorMessage("irrigation server handling disconnection request: "
+                        + request);
                 Identifier disconnectedClientId = request.getId();
                 if (disconnectedClientId.equals(getFacilitatorId())) {
                     getLogger().warning("Disconnecting facilitator.");
@@ -236,65 +253,85 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
                 ArrayList<ClientData> allTargets = new ArrayList<ClientData>();
                 if (Identifier.ALL.equals(target)) {
                     // relay to all clients in this client's group.
-                    boolean restrictedVisibility = getRoundConfiguration().isRestrictedVisibility();
-                    for (ClientData clientData: clients.get(source).getGroupDataModel().getClientDataMap().values()) {
+                    boolean restrictedVisibility = getRoundConfiguration()
+                            .isRestrictedVisibility();
+                    for (ClientData clientData : clients.get(source)
+                            .getGroupDataModel().getClientDataMap().values()) {
                         Identifier targetId = clientData.getId();
-                        if (targetId.equals(source) || (restrictedVisibility && ! sendingClient.isImmediateNeighbor(clientData))) {
-                            // don't send the message if the target is the source or we're in a restricted visibility
-                            // condition and the client isn't an immediate neighbor.
+                        if (targetId.equals(source)
+                                || (restrictedVisibility && !sendingClient
+                                        .isImmediateNeighbor(clientData))) {
+                            // don't send the message if the target is the
+                            // source or we're in a restricted visibility
+                            // condition and the client isn't an immediate
+                            // neighbor.
                             continue;
                         }
                         allTargets.add(clientData);
-                        ChatEvent chatEvent = new ChatEvent(targetId, request.getMessage(), source, true);
+                        ChatEvent chatEvent = new ChatEvent(targetId,
+                                request.getMessage(), source, true);
                         transmit(chatEvent);
                     }
-                }
-                else {
+                } else {
                     allTargets.add(clients.get(target));
-                    ChatEvent chatEvent = new ChatEvent(target, request.getMessage(), source);                  
+                    ChatEvent chatEvent = new ChatEvent(target,
+                            request.getMessage(), source);
                     transmit(chatEvent);
                 }
-                sendFacilitatorMessage(String.format("%s->%s: %s", sendingClient, allTargets, request.toString()));
+                sendFacilitatorMessage(String.format("%s->%s: %s",
+                        sendingClient, allTargets, request.toString()));
                 persister.store(request);
             }
         });
-        addEventProcessor(new EventTypeProcessor<InvestedTokensEvent>(InvestedTokensEvent.class) {
+        addEventProcessor(new EventTypeProcessor<InvestedTokensEvent>(
+                InvestedTokensEvent.class) {
             @Override
             public void handle(InvestedTokensEvent event) {
                 if (isTokenInvestmentComplete()) {
-                    sendFacilitatorMessage("Trying to invest more tokens but token investment is already complete:" + event);
+                    sendFacilitatorMessage("Trying to invest more tokens but token investment is already complete:"
+                            + event);
                     return;
                 }
-                clients.get(event.getId()).setInvestedTokens(event.getInvestedTokens());
+                clients.get(event.getId()).setInvestedTokens(
+                        event.getInvestedTokens());
                 submittedClients++;
                 if (isTokenInvestmentComplete()) {
-                    // everyone's submitted their tokens so we can calculate the available bandwidth and 
+                    // everyone's submitted their tokens so we can calculate the
+                    // available bandwidth and
                     // notify each client
                     initializeInfrastructureEfficiency();
                     sendFacilitatorMessage("Token investment is complete, ready to start the round.");
                 }
             }
         });
-        addEventProcessor(new EventTypeProcessor<QuizResponseEvent>(QuizResponseEvent.class) {
+        addEventProcessor(new EventTypeProcessor<QuizResponseEvent>(
+                QuizResponseEvent.class) {
             private volatile int numberOfCompletedQuizzes = 0;
+
             @Override
             public void handle(QuizResponseEvent quizResponseEvent) {
-                clients.get(quizResponseEvent.getId()).addCorrectQuizAnswers(quizResponseEvent.getNumberOfCorrectQuizAnswers());
+                clients.get(quizResponseEvent.getId()).addCorrectQuizAnswers(
+                        quizResponseEvent.getNumberOfCorrectQuizAnswers());
                 numberOfCompletedQuizzes++;
-                sendFacilitatorMessage(String.format("%d/%d quiz response: %s", numberOfCompletedQuizzes, clients.size(), quizResponseEvent));
+                sendFacilitatorMessage(String.format("%d/%d quiz response: %s",
+                        numberOfCompletedQuizzes, clients.size(),
+                        quizResponseEvent));
                 if (numberOfCompletedQuizzes >= clients.size()) {
-                    sendFacilitatorMessage("All quizzes completed: " + numberOfCompletedQuizzes);
+                    sendFacilitatorMessage("All quizzes completed: "
+                            + numberOfCompletedQuizzes);
                     numberOfCompletedQuizzes = 0;
                 }
                 persister.store(quizResponseEvent);
             }
         });
-        addEventProcessor(new EventTypeProcessor<OpenGateEvent>(OpenGateEvent.class) {
+        addEventProcessor(new EventTypeProcessor<OpenGateEvent>(
+                OpenGateEvent.class) {
             public void handle(OpenGateEvent event) {
                 clients.get(event.getId()).openGate();
             }
         });
-        addEventProcessor(new EventTypeProcessor<CloseGateEvent>(CloseGateEvent.class) {
+        addEventProcessor(new EventTypeProcessor<CloseGateEvent>(
+                CloseGateEvent.class) {
             public void handle(CloseGateEvent event) {
                 clients.get(event.getId()).closeGate();
             }
@@ -307,79 +344,90 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
 
     /**
      * Invoked after every client has submit their tokens
-     *
+     * 
      */
     public void initializeInfrastructureEfficiency() {
-        // clients are added to the ServerDataModel as they register and then reallocated if necessary in 
+        // clients are added to the ServerDataModel as they register and then
+        // reallocated if necessary in
         // post round cleanup
-        /////////////////////////////////////////////////////////////////////////////////
-        for(GroupDataModel group : serverDataModel.getAllGroupDataModels()){
-            group.initializeInfrastructure();            
-            // iterate through all groups and send back their contribution status
+        // ///////////////////////////////////////////////////////////////////////////////
+        for (GroupDataModel group : serverDataModel.getAllGroupDataModels()) {
+            group.initializeInfrastructure();
+            // iterate through all groups and send back their contribution
+            // status
             for (Identifier id : group.getClientDataMap().keySet()) {
-                InfrastructureUpdateEvent infrastructureUpdateEvent = new InfrastructureUpdateEvent(id, group);
+                InfrastructureUpdateEvent infrastructureUpdateEvent = new InfrastructureUpdateEvent(
+                        id, group);
                 transmit(infrastructureUpdateEvent);
             }
         }
-    }       
+    }
 
     private RoundConfiguration getRoundConfiguration() {
         return getConfiguration().getCurrentParameters();
     }
 
-
     /**
-     * Processes the given GroupDataModel and re-allocates water to each participant in the group
-     * based on each participants gate open/closed status.  
+     * Processes the given GroupDataModel and re-allocates water to each
+     * participant in the group based on each participants gate open/closed
+     * status.
      * 
-     * @param group 
+     * @param group
      */
     private void process(GroupDataModel group) {
-        // reset group's available flow and re-allocate water to each participant in this group
+        // reset group's available flow and re-allocate water to each
+        // participant in this group
         group.resetCurrentlyAvailableFlowCapacity();
         int timeLeft = (int) (currentRoundDuration.getTimeLeft() / 1000);
-        // allocate flow to each participant - this works because GroupDataModel uses a LinkedHashMap that preserves
-        // iteration order (initial order of participants added to the group), otherwise we'd have to sort by priority
+        // allocate flow to each participant - this works because GroupDataModel
+        // uses a LinkedHashMap that preserves
+        // iteration order (initial order of participants added to the group),
+        // otherwise we'd have to sort by priority
         // string
         for (ClientData clientData : group.getClientDataMap().values()) {
             // for undisrupted flow extensions, disabled for the time being.
-//            if (clientData.getAvailableFlowCapacity() <= 0 && getConfiguration().isUndisruptedFlowRequired()){
-//                clientData.init(group.getCurrentlyAvailableFlowCapacity());
-//            }
+            // if (clientData.getAvailableFlowCapacity() <= 0 &&
+            // getConfiguration().isUndisruptedFlowRequired()){
+            // clientData.init(group.getCurrentlyAvailableFlowCapacity());
+            // }
             group.allocateWater(clientData);
         }
-        for (Identifier id: group.getAllClientIdentifiers()) {
-            ClientUpdateEvent clientUpdateEvent = new ClientUpdateEvent(id, group, timeLeft);
+        for (Identifier id : group.getAllClientIdentifiers()) {
+            ClientUpdateEvent clientUpdateEvent = new ClientUpdateEvent(id,
+                    group, timeLeft);
             transmit(clientUpdateEvent);
         }
     }
 
     public static void main(String[] args) {
-        IrrigationServer server = new IrrigationServer(new ServerConfiguration()); 
+        IrrigationServer server = new IrrigationServer(
+                new ServerConfiguration());
         server.start();
         server.repl();
     }
 
     private void shuffleParticipants() {
         serverDataModel.clear();
-        List<ClientData> clientDataList = new ArrayList<ClientData>(clients.values());
-        // randomize the client data list 
+        List<ClientData> clientDataList = new ArrayList<ClientData>(
+                clients.values());
+        // randomize the client data list
         Collections.shuffle(clientDataList);
-        // re-add each the clients to the server data model 
-        for (ClientData data: clientDataList) {
+        // re-add each the clients to the server data model
+        for (ClientData data : clientDataList) {
             serverDataModel.addClient(data);
         }
     }
-    
 
-    enum IrrigationServerState { WAITING, ROUND_IN_PROGRESS };
+    enum IrrigationServerState {
+        WAITING, ROUND_IN_PROGRESS
+    };
 
     private class IrrigationServerStateMachine implements StateMachine {
 
         private IrrigationServerState state;
-        
-//        private long lastTime;
-        
+
+        // private long lastTime;
+
         private Duration secondTick = Duration.create(1000L);
 
         public void initialize() {
@@ -401,23 +449,25 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
             state = IrrigationServerState.ROUND_IN_PROGRESS;
             secondTick.start();
             persister.store(new RoundStartedMarkerEvent());
-//            lastTime = System.currentTimeMillis();
+            // lastTime = System.currentTimeMillis();
         }
 
         private void processRound() {
-//            if ((System.currentTimeMillis() - lastTime) / 1000 > 1) {
+            // if ((System.currentTimeMillis() - lastTime) / 1000 > 1) {
             if (secondTick.hasExpired()) {
-                for (GroupDataModel group: serverDataModel.getAllGroupDataModels()) {
-                    // reset available bandwidth for this group to calculate new allocations for the group
+                for (GroupDataModel group : serverDataModel
+                        .getAllGroupDataModels()) {
+                    // reset available bandwidth for this group to calculate new
+                    // allocations for the group
                     // perform bandwidth calculations
-                    try{
-                        process(group); 
-                    }
-                    catch (RuntimeException exception) {
-                        sendFacilitatorMessage("Couldn't process group: " + exception.getMessage(), exception);
+                    try {
+                        process(group);
+                    } catch (RuntimeException exception) {
+                        sendFacilitatorMessage("Couldn't process group: "
+                                + exception.getMessage(), exception);
                     }
                 }
-//                lastTime = System.currentTimeMillis();
+                // lastTime = System.currentTimeMillis();
                 secondTick.restart();
             }
         }
@@ -432,43 +482,43 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
 
         private void sendEndRoundEvents() {
             // need to send instructions
-            //Send the end round event to the facilitator
-            //Send the end round event to all the clients
+            // Send the end round event to the facilitator
+            // Send the end round event to all the clients
             synchronized (clients) {
                 // add collected tokens to total if this isn't a practice round.
-                if (! getRoundConfiguration().isPracticeRound()) {
+                if (!getRoundConfiguration().isPracticeRound()) {
                     // first add tokens
                     for (ClientData data : clients.values()) {
                         data.addTokensEarnedThisRoundToTotal();
                     }
                 }
                 for (ClientData data : clients.values()) {
-                    transmit(new EndRoundEvent(data.getId(), 
-                            data.getGroupDataModel(), 
-                            getConfiguration().isLastRound()));    
+                    transmit(new EndRoundEvent(data.getId(),
+                            data.getGroupDataModel(),
+                            getConfiguration().isLastRound()));
                 }
             }
             sendFacilitatorMessage("Round ended, ready to begin chat again");
-            transmit(new FacilitatorEndRoundEvent(getFacilitatorId(), serverDataModel));
+            transmit(new FacilitatorEndRoundEvent(getFacilitatorId(),
+                    serverDataModel));
 
         }
 
         private void persistRound() {
-            logger.debug("Saving round data");
+            getLogger().info("Saving round data");
             persister.persist(serverDataModel);
         }
 
-        private void cleanupRound() {            
+        private void cleanupRound() {
             // reset client data values
             synchronized (clients) {
-                for (ClientData clientData: clients.values()) {
+                for (ClientData clientData : clients.values()) {
                     clientData.resetEndRound();
                 }
             }
             submittedClients = 0;
             persister.clear();
         }
-        
 
         private void advanceToNextRound() {
             if (getConfiguration().isLastRound()) {
@@ -480,11 +530,10 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
             // set up the next round
             synchronized (clients) {
                 if (nextRoundConfiguration.shouldRandomizeGroup()) {
-                	shuffleParticipants();
-
-                }      
+                    shuffleParticipants();
+                }
                 // send registration events to all participants.
-                for (ClientData data: clients.values()) {
+                for (ClientData data : clients.values()) {
                     transmit(new RegistrationEvent(data, nextRoundConfiguration));
                 }
             }
@@ -495,26 +544,25 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
 
         public void execute(Dispatcher dispatcher) {
             switch (state) {
-            case ROUND_IN_PROGRESS:
-                // process incoming information
-                synchronized (serverDataModel) {
-                    if (currentRoundDuration.hasExpired()) {
-                        // end round
-                        stopRound();
+                case ROUND_IN_PROGRESS:
+                    // process incoming information
+                    synchronized (serverDataModel) {
+                        if (currentRoundDuration.hasExpired()) {
+                            // end round
+                            stopRound();
+                        } else {
+                            processRound();
+                        }
                     }
-                    else {
-                        processRound();
-                    }
-                }
-                Utils.sleep(SERVER_SLEEP_INTERVAL);
-                break;
-            case WAITING:
-                getLogger().info("Waiting for facilitator signal to start next round.");
-                Utils.waitOn(roundSignal);
-                initializeRound();
-                break;
-            default:
-                throw new RuntimeException("Should never get here.");
+                    Utils.sleep(SERVER_SLEEP_INTERVAL);
+                    break;
+                case WAITING:
+                    getLogger().info("Waiting for facilitator signal to start next round.");
+                    Utils.waitOn(roundSignal);
+                    initializeRound();
+                    break;
+                default:
+                    throw new RuntimeException("Should never get here.");
             }
         }
     }
@@ -523,6 +571,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
     protected StateMachine getStateMachine() {
         return stateMachine;
     }
+
     @Override
     public void processReplInput(String input, BufferedReader reader) {
         if ("clients".equals(input)) {

@@ -138,8 +138,8 @@ public class CanalPanel extends JPanel {
                     || (particles[i].getPosition() == 3)
                     || (particles[i].getPosition() == 4)
                     || (particles[i].getPosition() == 5)) {
-                if (!((gates[particles[i].getPosition() - 1].isClosed()) 
-                        && particles[i].getY() >= (gates[particles[i].getPosition() - 1].getY() + gates[particles[i].getPosition() - 1].getHeight())))
+                if (!((gates[particles[i].getPosition() - 1].isClosed())
+                && particles[i].getY() >= (gates[particles[i].getPosition() - 1].getY() + gates[particles[i].getPosition() - 1].getHeight())))
                     graphics.fillOval(particles[i].x, particles[i].y,
                             particles[i].getBallSize(), particles[i].getBallSize());
             } else {
@@ -180,10 +180,10 @@ public class CanalPanel extends JPanel {
      * FIXME: needs major refactoring
      */
     private void updateGates(List<ClientData> sortedClientDataList) {
-        ClientData thisClientData= clientDataModel.getClientData();
+        ClientData thisClientData = clientDataModel.getClientData();
         for (int i = 1; i < 6; i++) {
             if (gates[i - 1].isOpen()) {
-                if (restrictedVisibility && ! thisClientData.isImmediateNeighbor(sortedClientDataList.get(i-1))) {
+                if (restrictedVisibility && !thisClientData.isImmediateNeighbor(sortedClientDataList.get(i - 1))) {
                     continue;
                 }
                 if (!(gates[i - 1].getHeight() - gateHeight < 0)) {
@@ -203,7 +203,7 @@ public class CanalPanel extends JPanel {
 
                 // opening gate logic
                 if (gates[i].isOpen()) {
-                    if (restrictedVisibility && ! thisClientData.isImmediateNeighbor(sortedClientDataList.get(i))) {
+                    if (restrictedVisibility && !thisClientData.isImmediateNeighbor(sortedClientDataList.get(i))) {
                         continue;
                     }
                     gates[i].setx1(gates[i].getx2());
@@ -217,7 +217,7 @@ public class CanalPanel extends JPanel {
                 }
 
                 if (gates[0].isOpen()) {
-                    if (restrictedVisibility && ! thisClientData.isImmediateNeighbor(sortedClientDataList.get(0))) {
+                    if (restrictedVisibility && !thisClientData.isImmediateNeighbor(sortedClientDataList.get(0))) {
                         continue;
                     }
                     gates[0].setx1(gates[0].getx2());
@@ -265,12 +265,12 @@ public class CanalPanel extends JPanel {
      * This will process the balls according to their position
      */
     private void process(int i, List<ClientData> sortedClients, ClientData thisClientData) {
-        
+
         switch (particles[i].getPosition()) {
 
             case 0:
                 if ((particles[i].x >= (reservoirWidth - gateBuffer) && particles[i].x <= reservoirWidth)
-                        && (particles[i].y >= reservoirHeight - (int) (maximumIrrigationCapacity * canalHeightMultiplier) && particles[i].y <= reservoirHeight)) 
+                        && (particles[i].y >= reservoirHeight - (int) (maximumIrrigationCapacity * canalHeightMultiplier) && particles[i].y <= reservoirHeight))
                 {
                     particles[i].setPosition(1);
                     setBounds(i);
@@ -293,12 +293,13 @@ public class CanalPanel extends JPanel {
             case 1:
                 if (gates[0].isOpen()
                         && (particles[i].x >= gates[0].getOpeningsX() && particles[i].x <= (gates[0].getOpeningsX() + gateBuffer))
-                        && (particles[i].y >= reservoirHeight - gateBuffer && particles[i].y <= reservoirHeight)) 
+                        && (particles[i].y >= reservoirHeight - gateBuffer && particles[i].y <= reservoirHeight))
                 {
-                    if (restrictedVisibility && sortedClients.get(0).isImmediateNeighbor(thisClientData) || ! restrictedVisibility) 
+                    if (restrictedVisibility && sortedClients.get(0).isImmediateNeighbor(thisClientData) || !restrictedVisibility)
                     {
-                        // if we are in the restricted visibility condition AND gate 0 is an immediate neighbor of this client OR we are not in a restricted visibility condition at all, put this ball in the
-                        // gate (or at least I *think* this is what Sanket's god-awful code is doing).  
+                        // if we are in the restricted visibility condition AND gate 0 is an immediate neighbor of this client OR we are not in a restricted
+                        // visibility condition at all, put this ball in the
+                        // gate (or at least I *think* this is what Sanket's god-awful code is doing).
                         particles[i].setPosition(7);
                         // directly pass in the information
                         setBounds(i);
@@ -321,7 +322,7 @@ public class CanalPanel extends JPanel {
                 if (gates[1].isOpen()
                         && (particles[i].x >= gates[1].getOpeningsX() && particles[i].x <= (gates[1]
                                 .getOpeningsX() + gateBuffer))
-                        && (particles[i].y >= reservoirHeight - gateBuffer && particles[i].y <= reservoirHeight)) 
+                        && (particles[i].y >= reservoirHeight - gateBuffer && particles[i].y <= reservoirHeight))
                 {
                     if (!restrictedVisibility || (restrictedVisibility && sortedClients.get(1).isImmediateNeighbor(thisClientData))) {
                         particles[i].setPosition(8);
@@ -329,7 +330,7 @@ public class CanalPanel extends JPanel {
                         setBounds(i);
                         break;
                     }
-                } 
+                }
                 setBounds(i);
                 if (particles[i].getX() > particles[i].xUpperBound) {
                     particles[i].setPosition(3);
@@ -364,10 +365,10 @@ public class CanalPanel extends JPanel {
                 }
                 break;
             case 4:
-                if (gates[3].isOpen() 
+                if (gates[3].isOpen()
                         && (particles[i].x >= gates[3].getOpeningsX() && particles[i].x <= (gates[3]
                                 .getOpeningsX() + gateBuffer))
-                        && (particles[i].y >= reservoirHeight - gateBuffer && particles[i].y <= reservoirHeight)) 
+                        && (particles[i].y >= reservoirHeight - gateBuffer && particles[i].y <= reservoirHeight))
                 {
                     if (!restrictedVisibility || (restrictedVisibility && !sortedClients.get(3).isImmediateNeighbor(thisClientData))) {
                         particles[i].setPosition(10);
@@ -375,7 +376,7 @@ public class CanalPanel extends JPanel {
                         setBounds(i);
                         break;
                     }
-                } 
+                }
                 setBounds(i);
                 if (particles[i].getX() > particles[i].xUpperBound) {
                     particles[i].setPosition(5);
@@ -390,7 +391,7 @@ public class CanalPanel extends JPanel {
                 if (gates[4].isOpen()
                         && (particles[i].x >= gates[4].getOpeningsX() && particles[i].x <= (gates[4]
                                 .getOpeningsX() + gateBuffer))
-                        && (particles[i].y >= reservoirHeight - gateBuffer && particles[i].y <= reservoirHeight)) 
+                        && (particles[i].y >= reservoirHeight - gateBuffer && particles[i].y <= reservoirHeight))
                 {
                     if (!restrictedVisibility || (restrictedVisibility && !sortedClients.get(4).isImmediateNeighbor(thisClientData))) {
                         particles[i].setPosition(11);
@@ -398,7 +399,7 @@ public class CanalPanel extends JPanel {
                         setBounds(i);
                         break;
                     }
-                } 
+                }
                 setBounds(i);
                 if (particles[i].getX() > particles[i].xUpperBound) {
                     particles[i].setPosition(6);

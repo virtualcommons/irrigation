@@ -32,7 +32,7 @@ import edu.asu.commons.ui.UserInterfaceUtils;
 /**
  * $Id$
  * 
- * Chat panel used to communicate with other players.  
+ * Chat panel used to communicate with other players.
  * 
  * FIXME: randomize mappings from handle (e.g., A -> 1, B -> 2, C -> 3 ...) so that it's
  * not linear.
@@ -53,7 +53,7 @@ public class ChatPanel extends JPanel implements FocusListener {
     private TextEntryPanel textEntryPanel;
 
     private JEditorPane chatInstructionsPane;
-    
+
     private JTextField chatField;
 
     public ChatPanel(IrrigationClient irrigationClient) {
@@ -96,16 +96,16 @@ public class ChatPanel extends JPanel implements FocusListener {
 
             add(timeLeftPanel, BorderLayout.PAGE_START);
             add(chatField, BorderLayout.CENTER);
-//            add(sendButton, BorderLayout.PAGE_END);
+            // add(sendButton, BorderLayout.PAGE_END);
         }
 
         private void sendMessage() {
             String message = chatField.getText();
-            if (message != null && ! message.isEmpty() && targetIdentifier != null) {
+            if (message != null && !message.isEmpty() && targetIdentifier != null) {
                 displayMessage(getChatHandle(getClientId()) + " (you): ", message);
-            	chatField.setText("");
-            	irrigationClient.transmit(new ChatRequest(getClientId(), message, targetIdentifier));
-             }
+                chatField.setText("");
+                irrigationClient.transmit(new ChatRequest(getClientId(), message, targetIdentifier));
+            }
             chatField.requestFocusInWindow();
         }
 
@@ -120,7 +120,7 @@ public class ChatPanel extends JPanel implements FocusListener {
     private final static String HANDLE_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     private static String[] HANDLES;
-    
+
     private Map<Identifier, String> chatHandles = new HashMap<Identifier, String>();
 
     private void addStylesToMessageWindow() {
@@ -157,14 +157,14 @@ public class ChatPanel extends JPanel implements FocusListener {
         messageWindow.setEditable(false);
         messageWindow.setBackground(Color.WHITE);
         messageScrollPane = new JScrollPane(messageWindow);
-//        UserInterfaceUtils.addStyles(messageWindow, 16);
+        // UserInterfaceUtils.addStyles(messageWindow, 16);
         addStylesToMessageWindow();
         textEntryPanel = new TextEntryPanel();
         chatInstructionsPane = UserInterfaceUtils.createInstructionsEditorPane();
         JScrollPane chatInstructionsScrollPane = new JScrollPane(chatInstructionsPane);
         add(chatInstructionsScrollPane, BorderLayout.PAGE_START);
         add(messageScrollPane, BorderLayout.CENTER);
-//        add(participantButtonPanel, BorderLayout.EAST);
+        // add(participantButtonPanel, BorderLayout.EAST);
         add(textEntryPanel, BorderLayout.PAGE_END);
         addFocusListener(this);
         messageScrollPane.addFocusListener(this);
@@ -181,8 +181,7 @@ public class ChatPanel extends JPanel implements FocusListener {
             document.insertString(0, chatHandle, document.getStyle("bold"));
             document.insertString(chatHandle.length(), message + "\n", getDefaultStyle());
             messageWindow.setCaretPosition(0);
-        } 
-        catch (BadLocationException e) {
+        } catch (BadLocationException e) {
             e.printStackTrace();
         }
     }
@@ -199,14 +198,14 @@ public class ChatPanel extends JPanel implements FocusListener {
             chatHandles.put(participants.get(i), HANDLES[i]);
         }
     }
-    
+
     public Identifier getClientId() {
-    	return irrigationClient.getId();
+        return irrigationClient.getId();
     }
 
-	public void setFocusInChatField() {
-		chatField.requestFocusInWindow();
-	}
+    public void setFocusInChatField() {
+        chatField.requestFocusInWindow();
+    }
 
     @Override
     public void focusGained(FocusEvent e) {
