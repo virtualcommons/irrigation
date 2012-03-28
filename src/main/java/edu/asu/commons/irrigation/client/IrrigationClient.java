@@ -34,9 +34,9 @@ import edu.asu.commons.net.SocketIdentifier;
 /**
  * $Id$
  * 
- * Irrigation client main entry point / controller that ties together the GUI component, networking logic via the Dispatcher, 
+ * Irrigation client main entry point / controller that ties together the GUI component, networking logic via the Dispatcher,
  * and general game logic.
- *
+ * 
  * @author <a href='mailto:Allen.Lee@asu.edu'>Allen Lee</a>, Sanket Joshi
  * @version $Rev$
  */
@@ -72,9 +72,9 @@ public class IrrigationClient {
         this.clientDispatcher = DispatcherFactory.getInstance().createClientDispatcher(channel, serverConfiguration);
         initEventProcessors();
     }
-    
+
     private void initialize() {
-    	clientDataModel = new ClientDataModel(channel, this);
+        clientDataModel = new ClientDataModel(channel, this);
         experimentGameWindow = new ExperimentGameWindow(this);
         connect();
     }
@@ -82,12 +82,12 @@ public class IrrigationClient {
     public void connect() {
         if (state != ClientState.UNCONNECTED)
             return;
-        
+
         id = clientDispatcher.connect(serverConfiguration.getServerAddress());
         if (id == null) {
             throw new RuntimeException(
-            		"Null ID from Dispatcher.  Server: <"
-            		+ serverConfiguration.getServerAddress() + "> is probably down.");
+                    "Null ID from Dispatcher.  Server: <"
+                            + serverConfiguration.getServerAddress() + "> is probably down.");
         }
         // send back id
         SocketIdentifier socketId = (SocketIdentifier) id;
@@ -98,8 +98,7 @@ public class IrrigationClient {
     public static void main(String[] args) {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        }
-        catch (Exception exception) {
+        } catch (Exception exception) {
             exception.printStackTrace();
         }
         Runnable createGuiRunnable = new Runnable() {
@@ -109,7 +108,7 @@ public class IrrigationClient {
                 client.initialize();
                 frame.setTitle("Virtual Commons Experiment Client: " + client.id);
                 frame.setPreferredSize(DEFAULT_FRAME_DIMENSION);
-//                frame.setResizable(false);
+                // frame.setResizable(false);
                 frame.getContentPane().add(client.getExperimentGameWindow());
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.pack();
@@ -141,7 +140,7 @@ public class IrrigationClient {
         CloseGateEvent closeGateEvent = new CloseGateEvent(getId());
         transmit(closeGateEvent);
     }
-    
+
     public void transmit(Event event) {
         clientDispatcher.transmit(event);
     }
@@ -178,7 +177,7 @@ public class IrrigationClient {
         });
         channel.add(this, new EventTypeProcessor<EndRoundEvent>(EndRoundEvent.class) {
             public void handle(EndRoundEvent event) {
-            	clientDataModel.setGroupDataModel(event.getGroupDataModel());
+                clientDataModel.setGroupDataModel(event.getGroupDataModel());
                 experimentGameWindow.endRound(event);
             }
         });
@@ -222,13 +221,13 @@ public class IrrigationClient {
     }
 
     public RoundConfiguration getRoundConfiguration() {
-      	return clientDataModel.getRoundConfiguration();
+        return clientDataModel.getRoundConfiguration();
     }
 
     public ServerConfiguration getServerConfiguration() {
         return serverConfiguration;
     }
-    
+
     public void setServerConfiguration(ServerConfiguration serverConfiguration) {
         this.serverConfiguration = serverConfiguration;
     }

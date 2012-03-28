@@ -18,31 +18,31 @@ import edu.asu.commons.net.Identifier;
 /**
  * $Id$
  * 
- *
+ * 
  * @author <a href='mailto:Allen.Lee@asu.edu'>Allen Lee</a>
  * @version $Rev$
  */
 public class ServerDataModel implements DataModel<ServerConfiguration, RoundConfiguration> {
 
     private static final long serialVersionUID = -2633842942700901843L;
-    
+
     private transient final Logger logger = Logger.getLogger(getClass().getName());
 
     // maps client Identifiers to the Group that client belongs to.
     private final Map<Identifier, GroupDataModel> clientsToGroups = new HashMap<Identifier, GroupDataModel>();
 
     private RoundConfiguration roundConfiguration;
-    
+
     private transient EventChannel eventChannel;
-    
+
     public RoundConfiguration getRoundConfiguration() {
         return roundConfiguration;
     }
 
     public void setRoundConfiguration(RoundConfiguration roundConfiguration) {
         this.roundConfiguration = roundConfiguration;
-        for (GroupDataModel group: clientsToGroups.values()) {
-        	group.setRoundConfiguration(roundConfiguration);
+        for (GroupDataModel group : clientsToGroups.values()) {
+            group.setRoundConfiguration(roundConfiguration);
         }
     }
 
@@ -67,7 +67,6 @@ public class ServerDataModel implements DataModel<ServerConfiguration, RoundConf
         return clientsToGroups.get(id);
     }
 
-
     private void addClientToGroup(ClientData clientData, GroupDataModel group) {
         clientData.setRoundConfiguration(roundConfiguration);
         group.addClient(clientData);
@@ -79,7 +78,7 @@ public class ServerDataModel implements DataModel<ServerConfiguration, RoundConf
         GroupDataModel group = clientsToGroups.get(clientId);
         return group.getClientDataMap();
     }
-    
+
     public Map<Identifier, ClientData> getClientDataMap() {
         Map<Identifier, ClientData> clientDataMap = new HashMap<Identifier, ClientData>();
         for (Map.Entry<Identifier, GroupDataModel> entry : clientsToGroups.entrySet()) {
@@ -91,20 +90,20 @@ public class ServerDataModel implements DataModel<ServerConfiguration, RoundConf
     }
 
     public void clear() {
-        for (Iterator<GroupDataModel> iter = clientsToGroups.values().iterator(); iter.hasNext(); ) {
+        for (Iterator<GroupDataModel> iter = clientsToGroups.values().iterator(); iter.hasNext();) {
             GroupDataModel group = iter.next();
             group.clear();
             iter.remove();
         }
     }
-    
+
     public void removeClient(Identifier id) {
         GroupDataModel groupDataModel = clientsToGroups.remove(id);
         if (groupDataModel == null) {
-        	logger.warning("No group data model associated with id: " + id);
-        	return;
+            logger.warning("No group data model associated with id: " + id);
+            return;
         }
-    	groupDataModel.removeClient(id);
+        groupDataModel.removeClient(id);
     }
 
     public EventChannel getEventChannel() {

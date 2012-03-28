@@ -12,14 +12,13 @@ import edu.asu.commons.net.Identifier;
  * 
  * A client's quiz responses for a given quiz page.
  * 
- *
+ * 
  * @author <a href='mailto:Allen.Lee@asu.edu'>Allen Lee</a>
  * @version $Rev$
  */
 public class QuizResponseEvent extends AbstractPersistableEvent implements ClientRequest {
 
     private static final long serialVersionUID = -7081410122722056083L;
-
 
     private Properties responses;
 

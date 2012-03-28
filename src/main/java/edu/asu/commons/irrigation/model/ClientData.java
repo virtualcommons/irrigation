@@ -9,9 +9,9 @@ import edu.asu.commons.net.Identifier;
 /**
  * $Id$
  * 
- * Stores client-specific information used by the server. 
- *
- * FIXME: need additional fields:  
+ * Stores client-specific information used by the server.
+ * 
+ * FIXME: need additional fields:
  * total tokens collected in a round
  * minus tokens subtracted by others
  * minus tokens subtracted by sanctioning others
@@ -25,7 +25,7 @@ public class ClientData implements Serializable, Comparable<ClientData> {
     private static final long serialVersionUID = 5281922601551921005L;
 
     private Identifier id;
-    
+
     private GroupDataModel groupDataModel;
 
     private int waterCollected = 0;
@@ -35,9 +35,9 @@ public class ClientData implements Serializable, Comparable<ClientData> {
     private int investedTokens;
 
     private int assignedNumber;
-    
+
     private int correctQuizAnswers = 0;
-    
+
     private RoundConfiguration roundConfiguration;
 
     private int totalTokens;
@@ -48,7 +48,7 @@ public class ClientData implements Serializable, Comparable<ClientData> {
     private String quizEarnings;
     private String grandTotalIncome;
     private String totalDollarsEarnedThisRound;
-    
+
     // represents whether or not this ClientData is for the client in question.
     private transient boolean self = false;
 
@@ -56,11 +56,11 @@ public class ClientData implements Serializable, Comparable<ClientData> {
         this.id = id;
     }
 
-    public boolean isGateClosed(){
-        return ! gateOpen;
+    public boolean isGateClosed() {
+        return !gateOpen;
     }
 
-    public boolean isGateOpen(){
+    public boolean isGateOpen() {
         return gateOpen;
     }
 
@@ -71,38 +71,38 @@ public class ClientData implements Serializable, Comparable<ClientData> {
         this.availableFlowCapacity = availableFlowCapacity;
     }
 
-    public int getAvailableFlowCapacity(){
+    public int getAvailableFlowCapacity() {
         return availableFlowCapacity;
     }
 
     public int getPriority() {
         return getAssignedNumber() - 1;
     }
-    
+
     public String getPriorityString() {
         return ServerConfiguration.toPriorityString(getPriority());
     }
 
-    public void openGate(){
+    public void openGate() {
         gateOpen = true;
     }
 
-    public void closeGate(){
+    public void closeGate() {
         gateOpen = false;
     }
 
     /**
      * get and set the Tokens that are contributed by this client.
-     *     * @param contributedTokens
+     * * @param contributedTokens
      */
     public void setInvestedTokens(int investedTokens) {
         this.investedTokens = investedTokens;
     }
 
-    public int getInvestedTokens(){
+    public int getInvestedTokens() {
         return investedTokens;
     }
-    
+
     public int getUninvestedTokens() {
         return roundConfiguration.getMaximumTokenInvestment() - investedTokens;
     }
@@ -110,9 +110,11 @@ public class ClientData implements Serializable, Comparable<ClientData> {
     public GroupDataModel getGroupDataModel() {
         return groupDataModel;
     }
+
     public void setGroupDataModel(GroupDataModel group) {
         this.groupDataModel = group;
     }
+
     public Identifier getId() {
         return id;
     }
@@ -148,33 +150,34 @@ public class ClientData implements Serializable, Comparable<ClientData> {
         return totalTokens;
     }
 
-
-    public RoundConfiguration getRoundConfiguration(){
+    public RoundConfiguration getRoundConfiguration() {
         return roundConfiguration;
     }
+
     /**
      * This would initialize the clientData before the start of each download.
-     *
+     * 
      */
     public void init(int availableFlowCapacity) {
-    	closeGate();
-    	setAvailableFlowCapacity(availableFlowCapacity);
+        closeGate();
+        setAvailableFlowCapacity(availableFlowCapacity);
     }
-    
+
     public void addTokensEarnedThisRoundToTotal() {
         totalTokens += getAllTokensEarnedThisRound();
     }
 
     /**
-     * Returns the current number of tokens given to this participant. 
+     * Returns the current number of tokens given to this participant.
+     * 
      * @return
      */
-    public int getAllTokensEarnedThisRound(){
+    public int getAllTokensEarnedThisRound() {
         return getTokensEarnedFromWaterCollected() + getUninvestedTokens();
     }
-    
+
     public String getTotalDollarsEarnedThisRound() {
-    	return totalDollarsEarnedThisRound;
+        return totalDollarsEarnedThisRound;
     }
 
     /**
@@ -184,30 +187,29 @@ public class ClientData implements Serializable, Comparable<ClientData> {
      * @return
      */
     public int getTokensEarnedFromWaterCollected() {
-    	return ServerConfiguration.getTokensEarned(waterCollected);
+        return ServerConfiguration.getTokensEarned(waterCollected);
     }
-
 
     public void collectWater() {
-    	waterCollected += availableFlowCapacity;
+        waterCollected += availableFlowCapacity;
     }
-    
-    public int getWaterCollected(){
+
+    public int getWaterCollected() {
         return waterCollected;
     }
-	
-	public void setId(Identifier id) {
-	    this.id = id;
-	}
-	
+
+    public void setId(Identifier id) {
+        this.id = id;
+    }
+
     public boolean isImmediateNeighbor(ClientData otherClientData) {
         int thisPosition = getAssignedNumber();
         int otherPosition = otherClientData.getAssignedNumber();
         return (thisPosition == otherPosition) || (thisPosition == otherPosition + 1) || (thisPosition == otherPosition - 1);
     }
-    
+
     public boolean isDownstreamAndOutOfRange(ClientData other) {
-        return assignedNumber < other.assignedNumber - 1; 
+        return assignedNumber < other.assignedNumber - 1;
     }
 
     public int getCorrectQuizAnswers() {
@@ -254,11 +256,9 @@ public class ClientData implements Serializable, Comparable<ClientData> {
     public int compareTo(ClientData o) {
         return Integer.valueOf(assignedNumber).compareTo(o.assignedNumber);
     }
-    
+
     @Override
     public String toString() {
         return String.format("%s Position %s", id, getPriorityString());
     }
 }
-
-

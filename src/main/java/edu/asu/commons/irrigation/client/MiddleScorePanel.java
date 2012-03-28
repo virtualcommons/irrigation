@@ -13,7 +13,7 @@ import edu.asu.commons.irrigation.model.ClientData;
  * $Id$
  * 
  * FIXME: needs some refactoring to get this to look proper.
- *
+ * 
  * @author Sanket Joshi
  * @version $Rev$
  */
@@ -28,15 +28,15 @@ public class MiddleScorePanel extends JPanel {
     private JLabel waterCollectedLabel;
 
     private JLabel tokensEarnedLabel;
-    
-//    private JLabel tokensNotInvestedLabel;
-//    private JLabel totalTokensEarnedLabel;
+
+    // private JLabel tokensNotInvestedLabel;
+    // private JLabel totalTokensEarnedLabel;
 
     private int priority;
 
-    private ClientData clientData; 
+    private ClientData clientData;
 
-    public MiddleScorePanel(int priority, ClientData clientData){
+    public MiddleScorePanel(int priority, ClientData clientData) {
         super();
         this.priority = priority;
         initialize(clientData);
@@ -45,61 +45,60 @@ public class MiddleScorePanel extends JPanel {
     private void initialize(ClientData clientData) {
         this.setLayout(null);
         this.clientData = clientData;
-        setBackground( clientData.getPriority() == priority ? Color.GREEN : Color.YELLOW);
-        this.setPreferredSize(new Dimension(60,200));
-        this.add(getPositionLabel(),null);
-        this.add(getWaterCollectedLabel(),null);
-        this.add(getAvailableWaterLabel(),null);
-        this.add(getTokensEarnedLabel(),null);
-//        this.add(getTokensNotInvestedLabel(),null);
-//        this.add(getTotalTokensEarnedLabel(),null);
+        setBackground(clientData.getPriority() == priority ? Color.GREEN : Color.YELLOW);
+        this.setPreferredSize(new Dimension(60, 200));
+        this.add(getPositionLabel(), null);
+        this.add(getWaterCollectedLabel(), null);
+        this.add(getAvailableWaterLabel(), null);
+        this.add(getTokensEarnedLabel(), null);
+        // this.add(getTokensNotInvestedLabel(),null);
+        // this.add(getTotalTokensEarnedLabel(),null);
     }
-    
-//    private JLabel getTotalTokensEarnedLabel() {
-//    	if (totalTokensEarnedLabel == null) {
-//    		totalTokensEarnedLabel = new JLabel();
-//    		totalTokensEarnedLabel.setBounds(new Rectangle(5,10+32+10+20+10+20+10+20+10+30+30,30,20));
-//    	}
-//    	return totalTokensEarnedLabel;
-//    }
-    
-//    private JLabel getTokensNotInvestedLabel() {
-//    	if (tokensNotInvestedLabel == null) {
-//    		tokensNotInvestedLabel = new JLabel(String.valueOf(clientData.getUninvestedTokens()));
-//    		tokensNotInvestedLabel.setBounds(new Rectangle(5,10+32+10+20+10+20+10+20+10+30,30,20));
-//    	}
-//    	return tokensNotInvestedLabel;
-//    }
+
+    // private JLabel getTotalTokensEarnedLabel() {
+    // if (totalTokensEarnedLabel == null) {
+    // totalTokensEarnedLabel = new JLabel();
+    // totalTokensEarnedLabel.setBounds(new Rectangle(5,10+32+10+20+10+20+10+20+10+30+30,30,20));
+    // }
+    // return totalTokensEarnedLabel;
+    // }
+
+    // private JLabel getTokensNotInvestedLabel() {
+    // if (tokensNotInvestedLabel == null) {
+    // tokensNotInvestedLabel = new JLabel(String.valueOf(clientData.getUninvestedTokens()));
+    // tokensNotInvestedLabel.setBounds(new Rectangle(5,10+32+10+20+10+20+10+20+10+30,30,20));
+    // }
+    // return tokensNotInvestedLabel;
+    // }
 
     private JLabel getTokensEarnedLabel() {
-        if(tokensEarnedLabel == null){
+        if (tokensEarnedLabel == null) {
             tokensEarnedLabel = new JLabel("?");
-            tokensEarnedLabel.setBounds(new Rectangle(5,10+32+10+20+10+20+10+20+10,30,20));
+            tokensEarnedLabel.setBounds(new Rectangle(5, 10 + 32 + 10 + 20 + 10 + 20 + 10 + 20 + 10, 30, 20));
         }
         return tokensEarnedLabel;
     }
 
     private JLabel getAvailableWaterLabel() {
-        if(availableWaterLabel == null){
+        if (availableWaterLabel == null) {
             availableWaterLabel = new JLabel("?");
-            availableWaterLabel.setBounds(new Rectangle(5,10+32+10+20+10,30,20));
+            availableWaterLabel.setBounds(new Rectangle(5, 10 + 32 + 10 + 20 + 10, 30, 20));
         }
         return availableWaterLabel;
     }
 
     private JLabel getPositionLabel() {
-        if (positionText == null){
+        if (positionText == null) {
             positionText = new JLabel(clientData.getPriorityString());
-            positionText.setBounds(new Rectangle(5,10+32+10,30,20));
+            positionText.setBounds(new Rectangle(5, 10 + 32 + 10, 30, 20));
         }
         return positionText;
     }
 
-
     private JLabel getWaterCollectedLabel() {
-        if(waterCollectedLabel == null){
+        if (waterCollectedLabel == null) {
             waterCollectedLabel = new JLabel("?");
-            waterCollectedLabel.setBounds(new Rectangle(5,10+32+10+20+10+20+10,30,20));
+            waterCollectedLabel.setBounds(new Rectangle(5, 10 + 32 + 10 + 20 + 10 + 20 + 10, 30, 20));
         }
         return waterCollectedLabel;
     }
@@ -110,7 +109,7 @@ public class MiddleScorePanel extends JPanel {
         waterCollectedLabel.setText(clientData.getWaterCollected() + "");
         tokensEarnedLabel.setText(String.valueOf(clientData.getTokensEarnedFromWaterCollected()));
 
-        if(clientData.isGateOpen() && clientData.getAvailableFlowCapacity() > 0) {
+        if (clientData.isGateOpen() && clientData.getAvailableFlowCapacity() > 0) {
             // animation displaying active crop growing?
 
         }
