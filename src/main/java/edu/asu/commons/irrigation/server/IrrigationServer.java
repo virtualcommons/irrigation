@@ -274,9 +274,9 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
             private volatile int numberOfCompletedQuizzes = 0;
             @Override
             public void handle(QuizResponseEvent quizResponseEvent) {
-                sendFacilitatorMessage(String.format("%d/%d quiz response: %s", numberOfCompletedQuizzes, clients.size(), quizResponseEvent));
                 clients.get(quizResponseEvent.getId()).addCorrectQuizAnswers(quizResponseEvent.getNumberOfCorrectQuizAnswers());
                 numberOfCompletedQuizzes++;
+                sendFacilitatorMessage(String.format("%d/%d quiz response: %s", numberOfCompletedQuizzes, clients.size(), quizResponseEvent));
                 if (numberOfCompletedQuizzes >= clients.size()) {
                     sendFacilitatorMessage("All quizzes completed: " + numberOfCompletedQuizzes);
                     numberOfCompletedQuizzes = 0;
