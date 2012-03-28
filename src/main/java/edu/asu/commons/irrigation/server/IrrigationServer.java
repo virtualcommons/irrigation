@@ -160,6 +160,11 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
         addEventProcessor(new EventTypeProcessor<ShowRequest>(ShowRequest.class, true) {
             @Override
             public void handle(ShowRequest request) {
+                /*
+                if (stateMachine.state == IrrigationServerState.ROUND_IN_PROGRESS) {
+                    sendFacilitatorMessage("Ignoring request: " + request + " - round is currently running");
+                }
+                */
             	if (request.getId().equals(getFacilitatorId())) {
             		synchronized (clients) {
             			for (Identifier id: clients.keySet()) {
@@ -333,7 +338,9 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
         // reset group's available flow and re-allocate water to each participant in this group
         group.resetCurrentlyAvailableFlowCapacity();
         int timeLeft = (int) (currentRoundDuration.getTimeLeft() / 1000);
-        // allocate flow to each participant
+        // allocate flow to each participant - this works because GroupDataModel uses a LinkedHashMap that preserves
+        // iteration order (initial order of participants added to the group), otherwise we'd have to sort by priority
+        // string
         for (ClientData clientData : group.getClientDataMap().values()) {
             // for undisrupted flow extensions, disabled for the time being.
 //            if (clientData.getAvailableFlowCapacity() <= 0 && getConfiguration().isUndisruptedFlowRequired()){
@@ -416,13 +423,11 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
         }
 
         private void stopRound() {
-            state = IrrigationServerState.WAITING;
             sendEndRoundEvents();
             persistRound();
             cleanupRound();
-            // FIXME: have to wait for .... some reason?
-            Utils.sleep(2000);
             advanceToNextRound();
+            state = IrrigationServerState.WAITING;
         }
 
         private void sendEndRoundEvents() {
@@ -449,6 +454,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
         }
 
         private void persistRound() {
+            logger.debug("Saving round data");
             persister.persist(serverDataModel);
         }
 
