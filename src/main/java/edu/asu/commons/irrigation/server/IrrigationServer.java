@@ -79,8 +79,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
         super(configuration);
         serverDataModel = new ServerDataModel();
         serverDataModel.setEventChannel(getEventChannel());
-        serverDataModel.setRoundConfiguration(configuration
-                .getCurrentParameters());
+        serverDataModel.setRoundConfiguration(configuration.getCurrentParameters());
         persister = new IrrigationPersister(getEventChannel(), configuration);
         initializeFacilitatorHandlers();
         initializeClientHandlers();
@@ -88,8 +87,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
 
     @SuppressWarnings("rawtypes")
     private void initializeFacilitatorHandlers() {
-        addEventProcessor(new EventTypeProcessor<FacilitatorRegistrationRequest>(
-                FacilitatorRegistrationRequest.class) {
+        addEventProcessor(new EventTypeProcessor<FacilitatorRegistrationRequest>(FacilitatorRegistrationRequest.class) {
             @Override
             public void handle(FacilitatorRegistrationRequest event) {
                 getLogger().info("facilitator registered: " + event.getId());
@@ -116,9 +114,8 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
             @Override
             public void handle(BeginRoundRequest event) {
                 if (!event.getId().equals(getFacilitatorId())) {
-                    sendFacilitatorMessage(String
-                            .format("facilitator is [%s] but received begin round request from non-facilitator [%s]",
-                                    getFacilitatorId(), event.getId()));
+                    sendFacilitatorMessage(String.format("facilitator is [%s] but received begin round request from non-facilitator [%s]",
+                            getFacilitatorId(), event.getId()));
                     return;
                 }
                 // ignore the request if not every group has submit their
@@ -129,22 +126,18 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
                         roundSignal.notifyAll();
                     }
                 } else {
-                    sendFacilitatorMessage(String
-                            .format("Cannot start round, %d of %d clients have submitted token investments",
-                                    submittedClients, clients.size()));
+                    sendFacilitatorMessage(String.format("Cannot start round, %d of %d clients have submitted token investments",
+                            submittedClients, clients.size()));
                 }
             }
         });
-        addEventProcessor(new EventTypeProcessor<EndRoundRequest>(
-                EndRoundRequest.class) {
+        addEventProcessor(new EventTypeProcessor<EndRoundRequest>(EndRoundRequest.class) {
             @Override
             public void handleInExperimentThread(EndRoundRequest request) {
                 currentRoundDuration.stop();
             }
-
         });
-        addEventProcessor(new EventTypeProcessor<BeginChatRoundRequest>(
-                BeginChatRoundRequest.class) {
+        addEventProcessor(new EventTypeProcessor<BeginChatRoundRequest>(BeginChatRoundRequest.class) {
             @Override
             public void handle(BeginChatRoundRequest request) {
                 // XXX: the participants have already been added to the data
@@ -165,8 +158,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
                 }
             }
         });
-        addEventProcessor(new EventTypeProcessor<ShowRequest>(
-                ShowRequest.class, true) {
+        addEventProcessor(new EventTypeProcessor<ShowRequest>(ShowRequest.class, true) {
             @Override
             public void handle(ShowRequest request) {
                 /*
@@ -182,8 +174,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
                         }
                     }
                 } else {
-                    sendFacilitatorMessage("Received invalid show request "
-                            + request + " from " + getFacilitatorId());
+                    sendFacilitatorMessage("Received invalid show request " + request + " from " + getFacilitatorId());
                 }
             }
         });
@@ -194,8 +185,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
      * encapsulates the handling of a specific kind of message event.
      */
     private void initializeClientHandlers() {
-        addEventProcessor(new EventTypeProcessor<SocketIdentifierUpdateRequest>(
-                SocketIdentifierUpdateRequest.class) {
+        addEventProcessor(new EventTypeProcessor<SocketIdentifierUpdateRequest>(SocketIdentifierUpdateRequest.class) {
             @Override
             public void handle(SocketIdentifierUpdateRequest request) {
                 SocketIdentifier socketId = request.getSocketIdentifier();
@@ -205,13 +195,11 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
                             + socketId);
                     return;
                 }
-                SocketIdentifier clientSocketId = (SocketIdentifier) clientData
-                        .getId();
+                SocketIdentifier clientSocketId = (SocketIdentifier) clientData.getId();
                 clientSocketId.setStationNumber(request.getStationNumber());
             }
         });
-        addEventProcessor(new EventTypeProcessor<ConnectionEvent>(
-                ConnectionEvent.class) {
+        addEventProcessor(new EventTypeProcessor<ConnectionEvent>(ConnectionEvent.class) {
             @Override
             public void handle(ConnectionEvent event) {
                 sendFacilitatorMessage("incoming connection: " + event);
@@ -222,12 +210,10 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
                     clients.put(identifier, clientData);
                     serverDataModel.addClient(clientData);
                 }
-                transmit(new RegistrationEvent(clientData,
-                        getRoundConfiguration()));
+                transmit(new RegistrationEvent(clientData, getRoundConfiguration()));
             }
         });
-        addEventProcessor(new EventTypeProcessor<DisconnectionRequest>(
-                DisconnectionRequest.class) {
+        addEventProcessor(new EventTypeProcessor<DisconnectionRequest>(DisconnectionRequest.class) {
             @Override
             public void handle(DisconnectionRequest request) {
                 sendFacilitatorMessage("irrigation server handling disconnection request: "
@@ -255,12 +241,10 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
                     // relay to all clients in this client's group.
                     boolean restrictedVisibility = getRoundConfiguration()
                             .isRestrictedVisibility();
-                    for (ClientData clientData : clients.get(source)
-                            .getGroupDataModel().getClientDataMap().values()) {
+                    for (ClientData clientData : clients.get(source).getGroupDataModel().getClientDataMap().values()) {
                         Identifier targetId = clientData.getId();
                         if (targetId.equals(source)
-                                || (restrictedVisibility && !sendingClient
-                                        .isImmediateNeighbor(clientData))) {
+                                || (restrictedVisibility && !sendingClient.isImmediateNeighbor(clientData))) {
                             // don't send the message if the target is the
                             // source or we're in a restricted visibility
                             // condition and the client isn't an immediate
@@ -274,8 +258,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
                     }
                 } else {
                     allTargets.add(clients.get(target));
-                    ChatEvent chatEvent = new ChatEvent(target,
-                            request.getMessage(), source);
+                    ChatEvent chatEvent = new ChatEvent(target, request.getMessage(), source);
                     transmit(chatEvent);
                 }
                 sendFacilitatorMessage(String.format("%s->%s: %s",
@@ -283,8 +266,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
                 persister.store(request);
             }
         });
-        addEventProcessor(new EventTypeProcessor<InvestedTokensEvent>(
-                InvestedTokensEvent.class) {
+        addEventProcessor(new EventTypeProcessor<InvestedTokensEvent>(InvestedTokensEvent.class) {
             @Override
             public void handle(InvestedTokensEvent event) {
                 if (isTokenInvestmentComplete()) {
@@ -292,8 +274,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
                             + event);
                     return;
                 }
-                clients.get(event.getId()).setInvestedTokens(
-                        event.getInvestedTokens());
+                clients.get(event.getId()).setInvestedTokens(event.getInvestedTokens());
                 submittedClients++;
                 if (isTokenInvestmentComplete()) {
                     // everyone's submitted their tokens so we can calculate the
@@ -304,8 +285,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
                 }
             }
         });
-        addEventProcessor(new EventTypeProcessor<QuizResponseEvent>(
-                QuizResponseEvent.class) {
+        addEventProcessor(new EventTypeProcessor<QuizResponseEvent>(QuizResponseEvent.class) {
             private volatile int numberOfCompletedQuizzes = 0;
 
             @Override
@@ -324,14 +304,12 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
                 persister.store(quizResponseEvent);
             }
         });
-        addEventProcessor(new EventTypeProcessor<OpenGateEvent>(
-                OpenGateEvent.class) {
+        addEventProcessor(new EventTypeProcessor<OpenGateEvent>(OpenGateEvent.class) {
             public void handle(OpenGateEvent event) {
                 clients.get(event.getId()).openGate();
             }
         });
-        addEventProcessor(new EventTypeProcessor<CloseGateEvent>(
-                CloseGateEvent.class) {
+        addEventProcessor(new EventTypeProcessor<CloseGateEvent>(CloseGateEvent.class) {
             public void handle(CloseGateEvent event) {
                 clients.get(event.getId()).closeGate();
             }
@@ -400,18 +378,17 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
     }
 
     public static void main(String[] args) {
-        IrrigationServer server = new IrrigationServer(
-                new ServerConfiguration());
+        IrrigationServer server = new IrrigationServer(new ServerConfiguration());
         server.start();
         server.repl();
     }
 
     private void shuffleParticipants() {
         serverDataModel.clear();
-        List<ClientData> clientDataList = new ArrayList<ClientData>(
-                clients.values());
+        List<ClientData> clientDataList = new ArrayList<ClientData>(clients.values());
         // randomize the client data list
         Collections.shuffle(clientDataList);
+        sendFacilitatorMessage("shuffling participants: " + clientDataList);
         // re-add each the clients to the server data model
         for (ClientData data : clientDataList) {
             serverDataModel.addClient(data);
@@ -575,7 +552,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
     @Override
     public void processReplInput(String input, BufferedReader reader) {
         if ("clients".equals(input)) {
-            System.err.println("clients: " + clients);
+            sendFacilitatorMessage(String.format("%d clients: %s", clients.size(), clients));
         }
     }
 
