@@ -408,10 +408,10 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
 
     private void shuffleParticipants() {
         serverDataModel.clear();
-        List<ClientData> clientDataList = new ArrayList<ClientData>(
-                clients.values());
+        List<ClientData> clientDataList = new ArrayList<ClientData>(clients.values());
         // randomize the client data list
         Collections.shuffle(clientDataList);
+        sendFacilitatorMessage("shuffling participants: " + clientDataList);
         // re-add each the clients to the server data model
         for (ClientData data : clientDataList) {
             serverDataModel.addClient(data);
