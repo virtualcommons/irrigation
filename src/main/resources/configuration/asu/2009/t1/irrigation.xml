@@ -105,7 +105,7 @@ for growing crops.
 
 <p>
 We will now start a practice round to help illustrate the experiment.  Before each
-round in this experiment you will have a chat period of %d seconds where you can
+round in this experiment you will have a chat period of {self.chatDuration} seconds where you can
 send text messages to the other participants. You may discuss any aspect of the
 exercise with two important exceptions:
 </p>
@@ -296,7 +296,7 @@ the round?<br>
 <entry key='chat-instructions'>
 <![CDATA[
 <h3>Chat Instructions</h3>
-You may now chat for %d seconds with the other members of your group.  You may
+You may now chat for {self.chatDuration} seconds with the other members of your group.  You may
 discuss any aspect of the exercise with two important exceptions:
 </p>
 <ol>

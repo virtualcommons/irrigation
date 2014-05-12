@@ -37,12 +37,12 @@ vim:sts=2:sw=2
     <dependency>
       <groupId>edu.asu.commons</groupId>
       <artifactId>csidex</artifactId>
-      <version>0.5-SNAPSHOT</version>
+      <version>0.7-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.jfree</groupId>
       <artifactId>jfreechart</artifactId>
-      <version>1.0.14</version>
+      <version>1.0.17</version>
     </dependency>
     <dependency>
       <groupId>net.java.dev.jgoodies</groupId>
@@ -54,22 +54,16 @@ vim:sts=2:sw=2
       <artifactId>forms</artifactId>
       <version>1.1.0</version>
     </dependency>
-    <dependency>
-      <groupId>javax.jnlp</groupId>
-      <artifactId>javaws</artifactId>
-      <version>1.6.0_30</version>
-      <scope>provided</scope>
-    </dependency>
   </dependencies>
   <build>
     <finalName>irrigation</finalName>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.3.2</version>
+        <version>3.1</version>
         <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
+          <source>1.7</source>
+          <target>1.7</target>
         </configuration>
       </plugin>
       <plugin>
