@@ -63,9 +63,6 @@ D do not take water, 25 cfps is available for E.</entry>
 <entry key="explanation6">If you invest all 10 tokens, you keep 0 tokens from your initial endowment.  If you apply 555 cubic feet of water to your field you will earn 19 tokens. 0 + 19 = 19 tokens.</entry>
 
 
-<!-- FIXME: lots of parameterizable fields here.  should make instructions
-template-language-pluggable 
--->
 <entry key="initial-instructions">
 <![CDATA[
 <h1>Instructions</h1>
