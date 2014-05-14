@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Irrigation experiment round configuration</comment>
+
+<entry key="instructions">
+<![CDATA[
+<h3>Round 9 Instructions</h3>
+<p>
+This round is the same as the previous round.  
+</p>
+]]>
+</entry>
+</properties>
