@@ -7,7 +7,7 @@
 
 <entry key="instructions">
 <![CDATA[
-<h3>Round 1 Instructions</h3>
+<h2>Round {self.roundNumber} Instructions</h2>
 <p>
 This is the first actual round of the experiment.  Before this round begins
 you will have the opportunity to text chat with the other participants in your
@@ -16,6 +16,7 @@ infrastructure.  After the total irrigation infrastructure investment has been
 determined you will begin the experiment and make decisions on when to open
 your irrigation gates and grow crops.
 </p>
+{self.specialInstructions}
 ]]>
 </entry>
 </properties>

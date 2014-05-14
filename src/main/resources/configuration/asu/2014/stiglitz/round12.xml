@@ -20,7 +20,7 @@ your investment contributions have been submitted the resulting level of
 infrastructure efficiency will be displayed and then the round will begin.  If
 you have any questions, please ask them now. 
 </p>
-
+{self.specialInstructions}
 ]]>
 </entry>
 </properties>
