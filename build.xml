@@ -89,6 +89,11 @@
     <pathelement location='${resources.dir}' />
   </path>
 
+  <path id='runtime.classpath'>
+    <path refid='project.classpath' />
+    <pathelement location='${java.home}/lib/javaws.jar' />
+  </path>
+
   <target name="help">
     <echo>
     NOTE: At minimum you will need to modify the default web.dir and
@@ -284,13 +289,13 @@
   <!-- RUN TARGETS -->
   <target name='client' depends='compile'>
     <java classname='${client.class}'
-          classpathref='project.classpath'
+          classpathref='runtime.classpath'
           fork='yes'/>
   </target>
 
   <target name='fac' depends='compile'>
     <java classname='${facilitator.class}'
-          classpathref='project.classpath'
+          classpathref='runtime.classpath'
           fork='yes'/>
   </target>
 
@@ -306,7 +311,7 @@
         <filter token='CODEBASE_URL' value='${codebase.url}'/>
       </filterset>
     </copy>
-    <java classname='${server.class}' classpathref='project.classpath' fork='yes'>
+    <java classname='${server.class}' classpathref='runtime.classpath' fork='yes'>
       <jvmarg value="-server"/>
     </java>
   </target>

@@ -31,6 +31,7 @@
 <entry key="wait-for-participants">true</entry>
 <entry key='chat-duration'>20</entry>
 <entry key='round-duration'>50</entry>
+<entry key='field-of-vision'>0</entry>
 
 <entry key="q1">49</entry>
 <entry key="a1">49%</entry>
