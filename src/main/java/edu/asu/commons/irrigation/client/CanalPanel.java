@@ -103,7 +103,7 @@ public class CanalPanel extends JPanel {
             int priority = clientData.getPriority();
             Gate gate = gates[priority];
             // draw the irrigation canal
-            if (clientDataModel.getClientData().isDownstreamAndOutOfRange(clientData)) {
+            if (restrictedVisibility && clientDataModel.getClientData().isDownstreamAndOutOfRange(clientData)) {
                 graphics2D.setColor(Color.WHITE);
                 graphics2D.fillRect(gate.getX(), gate.getY(),
                         gate.getWidth(), gate.getHeight());
@@ -114,7 +114,7 @@ public class CanalPanel extends JPanel {
                         gate.getWidth(), gate.getHeight());
             }
             // draw the irrigation gate inlets
-            if (clientDataModel.getClientData().isImmediateNeighbor(clientData)) {
+            if (!restrictedVisibility || (restrictedVisibility && clientDataModel.getClientData().isImmediateNeighbor(clientData))) {
                 graphics2D.setColor(Color.BLUE);
                 graphics2D.fillRect(gate.getOpeningsX(), gate.getOpeningsY(),
                         gate.getOpeningsWidth(), gate.getOpeningsHeight());
@@ -295,7 +295,7 @@ public class CanalPanel extends JPanel {
                         && (particles[i].x >= gates[0].getOpeningsX() && particles[i].x <= (gates[0].getOpeningsX() + gateBuffer))
                         && (particles[i].y >= reservoirHeight - gateBuffer && particles[i].y <= reservoirHeight))
                 {
-                    if (restrictedVisibility && sortedClients.get(0).isImmediateNeighbor(thisClientData) || !restrictedVisibility)
+                    if ((restrictedVisibility && sortedClients.get(0).isImmediateNeighbor(thisClientData)) || !restrictedVisibility)
                     {
                         // if we are in the restricted visibility condition AND gate 0 is an immediate neighbor of this client OR we are not in a restricted
                         // visibility condition at all, put this ball in the

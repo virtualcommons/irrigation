@@ -239,8 +239,7 @@ public class IrrigationServer extends AbstractExperiment<ServerConfiguration, Ro
                 ArrayList<ClientData> allTargets = new ArrayList<ClientData>();
                 if (Identifier.ALL.equals(target)) {
                     // relay to all clients in this client's group.
-                    boolean restrictedVisibility = getRoundConfiguration()
-                            .isRestrictedVisibility();
+                    boolean restrictedVisibility = getRoundConfiguration().isRestrictedVisibility();
                     for (ClientData clientData : clients.get(source).getGroupDataModel().getClientDataMap().values()) {
                         Identifier targetId = clientData.getId();
                         if (targetId.equals(source)

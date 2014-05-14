@@ -172,6 +172,7 @@ public class IrrigationClient {
         channel.add(this, new EventTypeProcessor<RoundStartedEvent>(RoundStartedEvent.class) {
             public void handle(RoundStartedEvent event) {
                 clientDataModel.initialize(event);
+                System.err.println("restricted visibility? " + getRoundConfiguration().isRestrictedVisibility());
                 experimentGameWindow.startRound();
             }
         });
