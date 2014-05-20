@@ -19,25 +19,18 @@ Pick one:
 
 ### how to run
 
-- download the software
-- `cp build.properties.example build.properties` and then customize `build.properties`
-- copy experiment configuration files to `src/main/resources/configuration`. For a quick demo, try `cp src/main/resources/configuration/demo/* src/main/resources/configuration`
-- run `ant deploy`
+Quickstart:
 
-After a successful deployment you can:
-
-- start the server via `ant server` or `java -jar -server server.jar`.
-
-- start a facilitator via `ant fac`, `java -jar facilitator.jar`, or visiting `${codebase.url}/facilitator.jnlp` in your
-  browser for Java WebStart.
-
-- start a client via `ant client`, `java -jar client.jar`, or visiting `${codebase.url}` in your browser to use Java
-  WebStart.
-
-NOTE: Java WebStart deployment requires security overrides, either trusted signed jars or adding an exception to the site list on each
-client machine for the server hosting the webstart JNLP files and jars.
+* [install and setup Java, Ant, and Maven](https://bitbucket.org/virtualcommons/csidex/wiki/Home)
+* [download and unpack the foraging codebase](https://bitbucket.org/virtualcommons/irrigation/downloads)
+* From the command-line (e.g., Windows PowerShell or Command Prompt, Mac OSX Terminal.app, or any Linux terminal program)
+```
+#!bash
+% ant prepare-demo
+% ant demo
+```
+For more detailed instructions, please see the [installation instructions on our wiki](https://bitbucket.org/virtualcommons/irrigation/wiki/Installation).
 
 ### how to contribute
-This experiment is in dire need of a thorough UI refactor and is _not under active development_.
-
-Past development has been supported by the [Center for the Study of Institutional Diversity](http://csid.asu.edu) and the [National Science Foundation](http://nsf.gov).
+This experiment is not under active development. If you'd like to use it to run experiments or want to extend the
+software, [please let us know](http://vcweb.asu.edu/contact). 
