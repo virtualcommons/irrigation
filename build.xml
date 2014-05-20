@@ -35,6 +35,9 @@
   <property name="javadoc.dir" value="docs/javadoc"/>
   <property name="javadoc.private.dir" value="docs/private"/>
   <property name="lib.dir" value="lib"/>
+  <!-- configuration properties and conditions -->
+  <available file="${conf.dir}/irrigation.xml" property="configuration.exists"/>
+  <available file="${basedir}/build.properties" property="build.properties.exists"/>
   <!-- Set up the CLASSPATH, includes all jars in the lib
        directory and all built files for both the main project
        and the tests -->
@@ -119,17 +122,15 @@
   </target>
   <!-- fails if requisite build.properties or src/main/resources/configuration/irrigation.xml do not exist -->
   <target name="check-configuration">
-    <available file="${conf.dir}/irrigation.xml" property="configuration.exists"/>
-    <available file="${basedir}/build.properties" property="build.properties.exists"/>
-    <fail message="Did not find any configuration files in ${conf.dir}, please copy over an appropriate set of configuration files into ${conf.dir}" unless="configuration.exists"/>
+    <fail message="Did not find any configuration files in ${conf.dir}, please copy over an appropriate set of configuration files into ${conf.dir}" unless="${configuration.exists}"/>
     <fail message="Please copy build.properties.example to build.properties and edit before proceeding." unless="build.properties.exists"/>
   </target>
-  <target name='demo-configuration' depends='check-configuration,compile' unless='configuration.exists'>
+  <target name='demo-configuration' unless='${configuration.exists}'>
     <copy todir="${conf.dir}">
       <fileset dir="${conf.dir}/demo"/>
     </copy>
   </target>
-  <target name='demo-build-properties' depends='check-configuration,compile' unless='build.properties.exists'>
+  <target name='demo-build-properties' unless='${build.properties.exists}'>
     <copy tofile='${basedir}/build.properties' file='${basedir}/build.properties.example'/>
   </target>
   <target name='prepare-demo' depends='demo-configuration,demo-build-properties,compile'>
@@ -142,15 +143,31 @@
       </daemons>
       <sequential>
         <sleep seconds='5'/>
-        <antcall target='client'/>
+        <antcall target='fac'/>
       </sequential>
       <sequential>
         <sleep seconds='5'/>
-        <antcall target='fac'/>
+        <antcall target='client'/>
+      </sequential>
+      <sequential>
+        <sleep seconds='6'/>
+        <antcall target='client'/>
+      </sequential>
+      <sequential>
+        <sleep seconds='7'/>
+        <antcall target='client'/>
+      </sequential>
+      <sequential>
+        <sleep seconds='8'/>
+        <antcall target='client'/>
+      </sequential>
+      <sequential>
+        <sleep seconds='8'/>
+        <antcall target='client'/>
       </sequential>
     </parallel>
   </target>
-  <target name="deploy" depends='check-configuration,configure' if='configuration.exists'>
+  <target name="deploy" depends='check-configuration,configure' if='${configuration.exists}'>
     <fail message="Please verify that server.address is properly set in build.properties" unless="server.address"/>
     <antcall target="deploy-to">
       <param name="deploy.dir" value="${web.dir}"/>
@@ -206,10 +223,13 @@
     <mkdir dir="${dist.dir}"/>
   </target>
   <!-- Clean up build by deleting build directories -->
-  <target name="clean">
+  <target name="purge">
     <echo message="Removing ${user.home}/.ant/cache"/>
     <delete dir="${user.home}/.ant/cache"/>
     <delete dir="${user.home}/.m2/repository/edu/asu/commons"/>
+    <antcall target='clean' />
+  </target>
+  <target name='clean'>
     <delete dir="${build.dir}"/>
     <delete dir="${test.build.dir}"/>
     <delete dir="${lib.dir}"/>
