@@ -1,35 +1,29 @@
 ### irrigation
-A Java Swing collective action / [public goods experiment](http://en.wikipedia.org/wiki/Public_goods_game) that places
-participants in an upstream-downstream scenario. Participants choose when to open or close their irrigation gates and
-how much to invest in their common infrastructure.
+A collective action / [public goods experiment](http://en.wikipedia.org/wiki/Public_goods_game) implemented using Java
+Swing and the [csidex](http://bitbucket.org/virtualcommons/csidex) framework that places
+participants in an upstream-downstream scenario. Participants are randomly partitioned into groups and can choose when
+to open or close their irrigation gates and how much to invest in their common infrastructure.
 
-It is dependent on the [csidex](http://bitbucket.org/virtualcommons/csidex) framework.
+### features
 
-### installation requirements
+* participants are placed in randomized groups and go through a series of chat -> investment -> real-time decision
+  making rounds
+* includes comprehension quizzes with detailed feedback, dynamic graph and chart visualizations via the excellent [JFreeChart](http://www.jfree.org/jfreechart) library
+* round and experiment parameterization support for variable shocks to the infrastructure and water supply and limited
+  information where participants can only communicate and see what is going on with their immediate neighbors
 
-- JDK 1.7
-- [Apache Ant](http://ant.apache.org)
-
-### deployment requirements
-
-Pick one:
-
-- a webserver to deliver JNLP files (can use Maven and its embedded Jetty webserver)
-- networked filesystem where the codebase is installed mounted on each client.
-
-### how to run
-
-Quickstart:
+### how to run the software
 
 * [install and setup Java, Ant, and Maven](https://bitbucket.org/virtualcommons/csidex/wiki/Home)
 * [download and unpack the foraging codebase](https://bitbucket.org/virtualcommons/irrigation/downloads)
-* From the command-line (e.g., Windows PowerShell or Command Prompt, Mac OSX Terminal.app, or any Linux terminal program)
+* For a quick start demo, run the following from the command-line (e.g., Windows PowerShell or Command Prompt, Mac OSX Terminal.app, Linux terminal)
 ```
 #!bash
 % ant prepare-demo
-% ant demo
+% ant demo # this will start a server, a facilitator, and 5 client windows to form a full group
 ```
-For more detailed instructions, please see the [installation instructions on our wiki](https://bitbucket.org/virtualcommons/irrigation/wiki/Installation).
+
+For more detailed instructions, please refer to the [installation instructions on our wiki](https://bitbucket.org/virtualcommons/irrigation/wiki/Installation).
 
 ### how to contribute
 This experiment is not under active development. If you'd like to use it to run experiments or want to extend the
