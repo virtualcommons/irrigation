@@ -1,6 +1,6 @@
 ### irrigation
 A collective action / [public goods experiment](http://en.wikipedia.org/wiki/Public_goods_game) implemented using Java
-Swing and the [csidex](http://bitbucket.org/virtualcommons/csidex) framework that places
+Swing and the [sesef](http://bitbucket.org/virtualcommons/sesef) framework that places
 participants in an upstream-downstream scenario. Participants are randomly partitioned into groups and can choose when
 to open or close their irrigation gates and how much to invest in their common infrastructure.
 
@@ -17,7 +17,7 @@ to open or close their irrigation gates and how much to invest in their common i
 
 ### how to run the software
 
-* [install and setup Java, Ant, and Maven](https://bitbucket.org/virtualcommons/csidex/wiki/Home)
+* [install and setup Java, Ant, and Maven](https://bitbucket.org/virtualcommons/sesef/wiki/Home)
 * [download and unpack the irrigation codebase](https://bitbucket.org/virtualcommons/irrigation/downloads)
 * For a quick start demo, run the following from the command-line (e.g., Windows PowerShell or Command Prompt, Mac OSX Terminal.app, Linux terminal)
 ```

@@ -43,7 +43,7 @@ vim:sts=2:sw=2
     </dependency>
     <dependency>
       <groupId>edu.asu.commons</groupId>
-      <artifactId>csidex</artifactId>
+      <artifactId>sesef</artifactId>
       <version>0.7-SNAPSHOT</version>
     </dependency>
     <dependency>

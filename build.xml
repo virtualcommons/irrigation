@@ -24,7 +24,7 @@
   <property name="client.class" value="edu.asu.commons.irrigation.client.IrrigationClient"/>
   <property name="facilitator.class" value="edu.asu.commons.irrigation.facilitator.Facilitator"/>
   <property name="server.class" value="edu.asu.commons.irrigation.server.IrrigationServer"/>
-  <property name="framework.jar" value="csidex.jar"/>
+  <property name="framework.jar" value="sesef.jar"/>
   <property name="dist.dir" value="."/>
   <property name="resources.dir" value="src/main/resources"/>
   <property name="conf.dir" value="${resources.dir}/configuration"/>
@@ -74,12 +74,12 @@
     </echo>
   </target>
   <target name="build-all" depends="facilitator-jar, client-jar, server-jar, compile"/>
-  <!-- deploys the client + facilitator + csidex jarfiles to the appropriate
+  <!-- deploys the client + facilitator + sesef jarfiles to the appropriate
      webapps directory. -->
   <target name="deploy-to" depends="build-all">
     <mkdir dir="${deploy.dir}"/>
     <!-- 
-    copy client jar, facilitator jar, and csidex.jar to web deployment
+    copy client jar, facilitator jar, and sesef.jar to web deployment
     directory 
     -->
     <copy todir="${deploy.dir}" overwrite="true">
@@ -265,7 +265,7 @@
   </target>
   <!-- Build project documentation -->
   <target name="docs">
-    <javadoc sourcepath="${src.dir}" destdir="${javadoc.dir}" packagenames="*" source="1.7" classpathref="project.classpath" link="http://java.sun.com/javase/6/docs/api/              http://commons.asu.edu/src/csidex/api" overview="${src.dir}/overview.html"/>
+    <javadoc sourcepath="${src.dir}" destdir="${javadoc.dir}" packagenames="*" source="1.7" classpathref="project.classpath" link="http://java.sun.com/javase/7/docs/api/              http://commons.asu.edu/src/sesef/api" overview="${src.dir}/overview.html"/>
   </target>
   <!-- RUN TARGETS -->
   <target name="client" depends="compile">
