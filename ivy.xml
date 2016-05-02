@@ -6,6 +6,7 @@ vim:sts=2:sw=2:
   <info organisation="edu.asu.commons" module="irrigation"/>
   <dependencies>
     <dependency org="edu.asu.commons" name="sesef" rev="0.7-SNAPSHOT" />
-    <dependency org="org.jfree" name="jfreechart" rev="1.0.17"/>
+    <dependency org="org.jfree" name="jfreechart" rev="1.0.19"/>
+    <exclude org="org.eclipse.jetty" />
   </dependencies>
 </ivy-module>

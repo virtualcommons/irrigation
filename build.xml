@@ -4,9 +4,44 @@
      Version: $Revision$
  -->
 <project xmlns:ivy="antlib:org.apache.ivy.ant" name="irrigation" default="build-all" basedir=".">
-  <target name="resolve" description="--&gt; retrieve dependencies with ivy">
+  <!-- default keystore and jar signing properties, override in build.properties -->
+  <property name='keystore.alias' value='foraging' />
+  <property name='keystore.file' value='commons.jks' />
+  <property name='keystore.storepass' value='default_keystore_storepass' />
+  <property name='tsa.url' value='http://timestamp.digicert.com' />
+
+  <!-- auto-install ivy if needed -->
+  <property name='ivy.install.version' value='2.4.0'/>
+  <condition property="ivy.home" value="${env.IVY_HOME}">
+	<isset property="env.IVY_HOME" />
+  </condition>
+  <property name="ivy.home" value="${user.home}/.ant" />
+  <property name="ivy.jar.dir" value="${ivy.home}/lib" />
+  <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar" />
+
+  <target name="download-ivy" unless="offline">
+
+      <mkdir dir="${ivy.jar.dir}"/>
+      <!-- download Ivy from web site so that it can be used even without any special installation -->
+      <get src="https://repo1.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar" 
+            dest="${ivy.jar.file}" usetimestamp="true"/>
+  </target>
+
+  <target name="init-ivy" depends="download-ivy">
+    <!-- try to load ivy here from ivy home, in case the user has not already dropped
+            it into ant's lib dir (note that the latter copy will always take precedence).
+            We will not fail as long as local lib dir exists (it may be empty) and
+            ivy is in at least one of ant's lib dir or the local lib dir. -->
+      <path id="ivy.lib.path">
+          <fileset dir="${ivy.jar.dir}" includes="*.jar"/>
+      </path>
+      <taskdef resource="org/apache/ivy/ant/antlib.xml"
+                uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path"/>
+  </target>
+
+  <target name="resolve" description="--&gt; retrieve dependencies with ivy" depends='init-ivy'>
     <!--      <ivy:retrieve pattern='${lib.dir}/[artifact]-[revision].[ext]'/>  -->
-    <ivy:retrieve pattern="${lib.dir}/[artifact]-[revision].[ext]"/>
+    <ivy:retrieve/>
   </target>
   <!-- Load all properties from the build.properties file,
        then try to define defaults for all the properties.
@@ -76,7 +111,7 @@
   <target name="build-all" depends="facilitator-jar, client-jar, server-jar, compile"/>
   <!-- deploys the client + facilitator + sesef jarfiles to the appropriate
      webapps directory. -->
-  <target name="deploy-to" depends="build-all">
+  <target name="deploy-to" depends="build-all, sign-jars, sign-dependencies">
     <mkdir dir="${deploy.dir}"/>
     <!-- 
     copy client jar, facilitator jar, and sesef.jar to web deployment
@@ -311,6 +346,7 @@
       </batchtest>
     </junit>
   </target>
+
   <property name="savefile.converter.class" value="edu.asu.commons.irrigation.data.IrrigationSaveFileConverter"/>
   <!-- default savefile directory is the raw-data directory -->
   <property name="savefile.dir" value="raw-data"/>
@@ -329,4 +365,36 @@
       </classpath>
     </java>
   </target>
+  <!-- generate keystore and sign jars -->
+  <target name='check-keystore'>
+    <available file='${keystore.file}' property='keystore.present'/>
+  </target>
+  <target name='generate-keystore' depends='check-keystore' unless='keystore.present'>
+    <genkey alias='${keystore.alias}' verbose='true' storepass='${keystore.storepass}'
+      validity='365' keystore='${keystore.file}'>
+      <dname>
+        <param name='CN' value='commons.asu.edu'/>
+        <param name='O' value='Arizona State University'/>
+        <param name='OU' value='Center for Behavior, Institutions, and the Environment'/>
+        <param name='L' value='Tempe'/>
+        <param name='ST' value='Arizona'/>
+        <param name='C' value='US'/>
+      </dname>
+    </genkey>
+  </target>
+  <target name='sign-jars' depends='generate-keystore'>
+    <signjar destDir='${dist.dir}' alias='${keystore.alias}' keystore='${keystore.file}' lazy='true' storepass='${keystore.storepass}' tsaurl='${tsa.url}'>
+      <path>
+        <fileset dir='${dist.dir}' includes='*.jar' />
+      </path>
+    </signjar>
+  </target>
+  <target name='sign-dependencies'>
+    <signjar destDir='${lib.dir}' alias='${keystore.alias}' keystore='${keystore.file}' lazy='true' storepass='${keystore.storepass}' tsaurl='${tsa.url}'>
+      <path>
+        <fileset dir='${lib.dir}' includes='*.jar' />
+      </path>
+    </signjar>
+  </target>
+
 </project>
