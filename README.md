@@ -17,11 +17,12 @@ to open or close their irrigation gates and how much to invest in their common i
 
 ### how to run the software
 
+* [install and setup Java, Ant, and Maven](https://github.com/virtualcommons/sesef/wiki/Home)
+* [download and unpack the foraging codebase](https://github.com/virtualcommons/irrigation)
 * [install and setup Java, Ant, and Maven](https://bitbucket.org/virtualcommons/sesef/wiki/Home)
 * [download and unpack the irrigation codebase](https://bitbucket.org/virtualcommons/irrigation/downloads)
-* For a quick start demo, run the following from the command-line (e.g., Windows PowerShell or Command Prompt, Mac OSX Terminal.app, Linux terminal)
+* For a quick start demo, run the following from the command-line 
 ```
-#!bash
 % ant prepare-demo
 % ant demo # this will start a server, a facilitator, and 5 client windows to form a full group
 ```
