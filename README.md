@@ -27,8 +27,10 @@ Data from this publication is currently archived at http://dev.commons.asu.edu/d
 
 ### how to run the software
 
-* [install and setup Java, Ant, and Maven](https://github.com/virtualcommons/sesef/wiki/Home)
-* [download and unpack the foraging codebase](https://github.com/virtualcommons/irrigation)
+* [install and setup Java, Ant, and Maven](https://github.com/virtualcommons/sesef/wiki/)
+* clone or download this codebase
+* copy `build.properties.example` to `build.properties` and customize as needed, in particular `server.address`, `web.dir`, and `codebase.url`
+* run `ant deploy`
 * For a quick start demo, run the following on the command-line 
 ```
 % ant prepare-demo
