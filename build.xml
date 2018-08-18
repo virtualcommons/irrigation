@@ -274,7 +274,7 @@
   </target>
   <!-- Compile project source files -->
   <target name="compile" depends="prepare">
-    <javac srcdir="${src.dir}" destdir="${build.dir}" debug="on" optimize="off" deprecation="on" includeantruntime="true" source="1.7" target="1.7">
+    <javac srcdir="${src.dir}" destdir="${build.dir}" debug="on" optimize="off" deprecation="on" includeantruntime="true" source="1.8" target="1.8">
       <compilerarg value="-Xlint:unchecked"/>
       <classpath refid="project.classpath"/>
     </javac>
@@ -300,7 +300,7 @@
   </target>
   <!-- Build project documentation -->
   <target name="docs">
-    <javadoc sourcepath="${src.dir}" destdir="${javadoc.dir}" packagenames="*" source="1.7" classpathref="project.classpath" link="http://java.sun.com/javase/7/docs/api/              http://commons.asu.edu/src/sesef/api" overview="${src.dir}/overview.html"/>
+    <javadoc sourcepath="${src.dir}" destdir="${javadoc.dir}" packagenames="*" source="1.8" classpathref="project.classpath" link="http://java.sun.com/javase/7/docs/api/              http://commons.asu.edu/src/sesef/api" overview="${src.dir}/overview.html"/>
   </target>
   <!-- RUN TARGETS -->
   <target name="client" depends="compile">
@@ -326,7 +326,7 @@
   </target>
   <!-- Compile Tests -->
   <target name="compile-tests" depends="compile">
-    <javac srcdir="${test.src.dir}" destdir="${test.build.dir}" source="1.7" target="1.7" debug="on">
+    <javac srcdir="${test.src.dir}" destdir="${test.build.dir}" source="1.8" target="1.8" debug="on">
       <!-- <compilerarg value='-Xlint:unchecked'/> -->
       <classpath refid="project.classpath"/>
     </javac>

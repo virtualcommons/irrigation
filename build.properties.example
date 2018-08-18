@@ -26,5 +26,3 @@ codebase.url=http://${server.address}:8080/irrigation
 # *not* the webserver port, this is the port used by the experiment server to
 # communicate with the individual experiment clients)
 server.port=16001
-
-
