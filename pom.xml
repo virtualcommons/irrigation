@@ -29,7 +29,7 @@ vim:sts=2:sw=2
   </repositories>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <jetty.version>9.4.12.RC0</jetty.version>
+    <jetty.version>9.4.11.v20180605</jetty.version>
   </properties>
   <dependencies>
     <dependency>
@@ -49,6 +49,12 @@ vim:sts=2:sw=2
       <groupId>edu.asu.commons</groupId>
       <artifactId>sesef</artifactId>
       <version>0.9.7</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.eclipse.jetty</groupId>
+          <artifactId>jetty-maven-plugin</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.jfree</groupId>
@@ -82,6 +88,9 @@ vim:sts=2:sw=2
         <artifactId>jetty-maven-plugin</artifactId>
         <version>${jetty.version}</version>
         <configuration>
+          <supportedPackagings>
+            <supportedPackaging>jar</supportedPackaging>
+          </supportedPackagings>
           <scanIntervalSeconds>10</scanIntervalSeconds>
         </configuration>
       </plugin>
